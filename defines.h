@@ -25,12 +25,20 @@ void elevatorCntrl(void) ;
 
 int pulsesat(long) ;
 
+
+#define NUM_INPUTS	5
+#define NUM_OUTPUTS	5
+
+extern int rise[NUM_INPUTS] ; // rising edge clock capture for radio inputs
+extern int pwIn[NUM_INPUTS] ; // pulse widths of radio inputs
+extern int pwTrim[NUM_INPUTS] ; // initial pulse widths for trimming
+extern int pwOut[NUM_OUTPUTS] ; // pulse widths for servo outputs
+
+
 extern struct ADchannel xaccel, yaccel , zaccel ; // x, y, and z accelerometer channels
 extern struct ADchannel xrate , yrate, zrate ;  // x, y, and z gyro channels
 extern struct ADchannel vref ; // reference voltage
 
-extern int risec1 , risec2 , risec7 , risec8 ; // rising edge clock capture for radio inputs
-extern int pwc1 , pwc2 , pwc7 , pwc8 ; // pulse widths of radio inputs
 extern int dutycycle ; // used to compute PWM duty cycle
 extern int firstsamp ; // used on startup to detect first A/D sample
 extern int calibcount ; // number of PWM pulses before control is turned on
@@ -57,7 +65,7 @@ extern union longbbbb x_origin , y_origin , z_origin ;
 
 extern signed char	desired_dir , actual_dir ;
 
-extern int waggle, calib_timer, standby_timer, ailerontrim, elevtrim, pulsesselin, pwaileron, pwele ;
+extern int waggle, calib_timer, standby_timer, pulsesselin ;
 
 
 

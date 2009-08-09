@@ -15,17 +15,14 @@ void init_capture(void)
 	T2CON = 0b1000000000000000  ; // turn on timer 2 with no prescaler
 	TRISD = 0b1111111111111111 ; // make the d port input, to enable IC1 and IC2
 	IC1CON = IC2CON = IC7CON = IC8CON = 0b0010000010000001 ;
-
-	IPC0bits.IC1IP = IPC4bits.IC7IP = IPC4bits.IC8IP = 7 ; // priority 7
-	IFS0bits.IC1IF = IFS1bits.IC7IF = IFS1bits.IC8IF = 0 ; // clear the interrupt
-	IEC0bits.IC1IE = IEC1bits.IC7IE = IEC1bits.IC8IE = 1 ; // turn on the interrupt
-
-//	IC2 is not used in the gentleNAV
-
-//	IPC1bits.IC2IP =  7 ; // priority 7
-//	IFS0bits.IC2IF =  0 ; // clear the interrupt
-//	IEC0bits.IC2IE =  1 ; // turn on the interrupt
-
+	
+	TRISEbits.TRISE8 = 1 ;	 // set E8 to be an input pin
+	INTCON2bits.INT0EP = 0;  // Set up the 5th input channel to start out reading low-to-high edges
+	
+	IPC0bits.IC1IP = IPC1bits.IC2IP = IPC4bits.IC7IP = IPC4bits.IC8IP = IPC0bits.INT0IP = 7 ; // priority 7
+	IFS0bits.IC1IF = IFS0bits.IC2IF = IFS1bits.IC7IF = IFS1bits.IC8IF = IFS0bits.INT0IF = 0 ; // clear the interrupt
+	IEC0bits.IC1IE = IEC0bits.IC2IE = IEC1bits.IC7IE = IEC1bits.IC8IE = IEC0bits.INT0IE = 1 ; // turn on the interrupt
+	
 	return ;
 }
 
@@ -34,12 +31,12 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	indicate_loading_inter ;
 	if (PORTDbits.RD0)
 	{
-		 risec1 = IC1BUF ;
+		 rise[3] = IC1BUF ;
 	}
 	else
 	{
-		pwc1 = ((IC1BUF - risec1) >> 1 );
-		if ( (pwc1> 1500) && (pwc1<4500 ) ) pulsesselin++ ;
+		pwIn[3] = ((IC1BUF - rise[3]) >> 1 );
+		if ( (pwIn[3]> 1500) && (pwIn[3]<4500 ) ) pulsesselin++ ;
 	}
 	IFS0bits.IC1IF =  0 ; // clear the interrupt
 	return ;
@@ -50,11 +47,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 	indicate_loading_inter ;
 	if (PORTDbits.RD1)
 	{
-		 risec2 = IC2BUF ;
+		 rise[2] = IC2BUF ;
 	}
 	else
 	{
-		pwc2 = ((IC2BUF - risec2) >> 1 ) ;
+		pwIn[2] = ((IC2BUF - rise[2]) >> 1 ) ;
 	}
 
 	IFS0bits.IC2IF = 0 ; // clear the interrupt
@@ -66,11 +63,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 	indicate_loading_inter ;
 	if (PORTBbits.RB4)
 	{
-		 risec7 = IC7BUF ;
+		 rise[0] = IC7BUF ;
 	}
 	else
 	{
-		pwc7 = ((IC7BUF - risec7) >> 1 ) ;
+		pwIn[0] = ((IC7BUF - rise[0]) >> 1 ) ;
 	}
 
 	IFS1bits.IC7IF = 0 ; // clear the interrupt
@@ -82,14 +79,43 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 	indicate_loading_inter ;
 	if (PORTBbits.RB5)
 	{
-		 risec8 = IC8BUF ;
+		 rise[1] = IC8BUF ;
 	}
 	else
 	{
-		pwc8 = ((IC8BUF - risec8) >> 1 ) ;
-
+		pwIn[1] = ((IC8BUF - rise[1]) >> 1 ) ;
 	}
 
 	IFS1bits.IC8IF = 0 ; // clear the interrupt
 	return ;
 }
+
+void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
+{
+	indicate_loading_inter ;
+	
+	int t = TMR2 ;
+	
+	if (PORTEbits.RE8)
+	{
+		rise[4] = t ;
+		
+		IEC0bits.INT0IE = 0 ;		// disable the interrupt
+		IFS0bits.INT0IF = 0 ; 		// clear the interrupt
+		INTCON2bits.INT0EP = 1 ;	// Set up the interrupt to read high-to-low edges
+		IEC0bits.INT0IE = 1 ;		// re-enable the interrupt
+	}
+	else
+	{
+		pwIn[4] = ((t - rise[4]) >> 1 ) ;
+
+		IEC0bits.INT0IE = 0 ;		// disable the interrupt
+		IFS0bits.INT0IF = 0 ; 		// clear the interrupt
+		INTCON2bits.INT0EP = 0 ;	// Set up the interrupt to read low-to-high edges
+		IEC0bits.INT0IE = 1 ;		// re-enable the interrupt
+	}
+	
+	return;
+}
+
+

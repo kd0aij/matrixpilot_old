@@ -34,13 +34,13 @@ void state_machine(void)
 		pulsesselin = 0 ;
 		LATFbits.LATF1 = 0 ; // indicate radio on
 		//	Select manual, automatic, or come home, based on pulse width of channel 4 (pwc1).
-		if ( pwc1 > 3500 )
+		if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > 3500 )
 		{
 			flags._.man_req = 0 ;
 			flags._.auto_req = 0 ;
 			flags._.home_req = 1 ;
 		}
-		else if ( pwc1 > 3000 )
+		else if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > 2500 )
 		{
 			flags._.man_req = 0 ;
 			flags._.auto_req = 1 ;
@@ -92,8 +92,11 @@ void ent_acquiringS()
 	stateS = &acquiringS ;
 	standby_timer = STANDBY_PAUSE ;
 	LATFbits.LATF0 = 1 ;
-	ailerontrim = pwc7 ;
-	elevtrim = pwc8 ;
+	
+	int i;
+	for (i=0; i < NUM_INPUTS; i++)
+		pwTrim[i] = pwIn[i] ;
+	
 	return ;
 }
 

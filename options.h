@@ -23,3 +23,29 @@
 
 #define indicate_loading_main LATEbits.LATE0 = 0
 #define indicate_loading_inter LATEbits.LATE0 = 1
+
+
+// Channel numbers on the board, mapped to positions in the pulse width arrays.  Don't edit these.
+#define CHANNEL_1 0
+#define CHANNEL_2 1
+#define CHANNEL_3 2
+#define CHANNEL_4 3
+#define CHANNEL_5 4
+
+
+// Channel numbers for each input.
+// Use as is, or edit to match your setup.
+#define THROTTLE_INPUT_CHANNEL			CHANNEL_3
+#define AILERON_INPUT_CHANNEL			CHANNEL_1
+#define ELEVATOR_INPUT_CHANNEL			CHANNEL_2
+#define RUDDER_INPUT_CHANNEL			CHANNEL_5
+#define MODE_SWITCH_INPUT_CHANNEL		CHANNEL_4
+
+
+// Channel numbers for each output
+// Use as is, or edit to match your setup.
+#define THROTTLE_OUTPUT_CHANNEL			CHANNEL_3
+#define AILERON_OUTPUT_CHANNEL			CHANNEL_1
+#define ELEVATOR_OUTPUT_CHANNEL			CHANNEL_2
+#define RUDDER_OUTPUT_CHANNEL			CHANNEL_5
+#define UNUSED_OUTPUT_CHANNEL			CHANNEL_4 // This could be used for a Reversed Aileron output for a backwards 2nd Aileron servo

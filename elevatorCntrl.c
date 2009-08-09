@@ -19,11 +19,11 @@ void elevatorCntrl(void)
 	union longww elevAccum ;
 	if ( flags._.radio_on )
 	{
-		pwele = pwc8 ;
+		pwOut[ELEVATOR_INPUT_CHANNEL] = pwIn[ELEVATOR_INPUT_CHANNEL] ;
 	}
 	else
 	{
-		pwele = elevtrim ;
+		pwOut[ELEVATOR_INPUT_CHANNEL] = pwTrim[ELEVATOR_INPUT_CHANNEL] ;
 	}
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
@@ -49,13 +49,13 @@ void elevatorCntrl(void)
 	//	use channel 2 switch to reverse the polarity of the control feedback
 	if ( PORTDbits.RD2 )
 	{
-		elevAccum.WW = (long)pwele + (long)elevAccum._.W1 ;
-		PDC2 = pulsesat( elevAccum.WW ) ;
+		elevAccum.WW = (long)pwOut[ELEVATOR_OUTPUT_CHANNEL] + (long)elevAccum._.W1 ;
+		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( elevAccum.WW ) ;
 	}
 	else
 	{
-		elevAccum.WW = (long)pwele - (long)elevAccum._.W1 ;
-		PDC2 = pulsesat( elevAccum.WW ) ;
+		elevAccum.WW = (long)pwOut[ELEVATOR_OUTPUT_CHANNEL] - (long)elevAccum._.W1 ;
+		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( elevAccum.WW ) ;
 	}
 	return ;
 }

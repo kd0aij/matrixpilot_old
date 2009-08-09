@@ -23,11 +23,11 @@ void aileronCntrl(void)
 
 	if ( flags._.radio_on )
 	{
-		pwaileron = pwc7 + waggle ;
+		pwOut[AILERON_OUTPUT_CHANNEL] = pwIn[AILERON_INPUT_CHANNEL] + waggle ;
 	}
 	else
 	{
-		pwaileron = ailerontrim + waggle ;
+		pwOut[AILERON_OUTPUT_CHANNEL] = pwTrim[AILERON_INPUT_CHANNEL] + waggle ;
 	}
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
@@ -81,13 +81,13 @@ void aileronCntrl(void)
 	}
 	if ( PORTDbits.RD3 )
 	{
-		aileronAccum.WW = (long)pwaileron + (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
-		PDC1 = pulsesat( aileronAccum.WW ) ;
+		aileronAccum.WW = (long)pwOut[AILERON_OUTPUT_CHANNEL] + (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
+		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( aileronAccum.WW ) ;
 	}
 	else
 	{
-		aileronAccum.WW = (long)pwaileron - (long)aileronAccum._.W1 + (long)gyroFeedback._.W1 ;
-		PDC1 = pulsesat( aileronAccum.WW ) ;
+		aileronAccum.WW = (long)pwOut[AILERON_OUTPUT_CHANNEL] - (long)aileronAccum._.W1 + (long)gyroFeedback._.W1 ;
+		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( aileronAccum.WW ) ;
 	}	
 	return ;
 }
