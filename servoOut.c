@@ -6,6 +6,7 @@
 //	assumes the use of the 16MHz crystal.
 
 int gpscount ; // counter to initialize GPS
+int outputNum ;
 
 void setupOutputs( void ) ;
 void dummyRudderAndThrottleControl( void ) ;
@@ -21,6 +22,10 @@ void init_pwm( void )	// initialize the PWM
 	calibcount = 400 ; // wait 400 PWM pulses before turning on the control (10 seconds)
 	gpscount = 1000 ; // wait 25 seconds for GPS to initialize
 
+	int i;
+	for (i=0; i < NUM_OUTPUTS; i++)
+		pwOut[i] = 3000;
+	
 	TRISE = 0b1111111111000000 ;
 	PTPER = 25000 ;			// 25 millisecond period at 16 Mz clock, prescale = 4	
 	PTCONbits.PTCKPS = 1;	// prescaler = 4
@@ -36,13 +41,12 @@ void init_pwm( void )	// initialize the PWM
 	IFS2bits.PWMIF = 0 ; 	// clear the PWM interrupt
 	IPC9bits.PWMIP = 3 ;    // priority 3
 	
-	T4CON = 0b1000000000000000  ;	// turn on timer 4 with no prescaler
-	IPC5bits.T4IP = 7 ;				// priority 7
-	IEC1bits.T4IE = 0 ;				// disable timer 4 interrupt for now (enable for each pulse)
-	
-	T5CON = 0b1000000000000000  ;	// turn on timer 5 with no prescaler
-	IPC5bits.T5IP = 7 ;				// priority 7
-	IEC1bits.T5IE = 0 ;				// disable timer 5 interrupt for now (enable for each pulse)
+	if (NUM_OUTPUTS > 3)
+	{
+		T4CON = 0b1000000000000000  ;	// turn on timer 4 with no prescaler
+		IPC5bits.T4IP = 7 ;				// priority 7
+		IEC1bits.T4IE = 0 ;				// disable timer 4 interrupt for now (enable for each pulse)
+	}
 	
 	//  note: at this point the PWM is running, so there are pulses going out,
 	//	but the PWM interrupt is still off, so no interrupts are coming in yet to compute pulses.
@@ -168,15 +172,15 @@ void setupOutputs( void )
 	PDC2 = pwOut[1] ;
 	PDC3 = pwOut[2] ;
 	
-	PR4 = pwOut[3] ;		// set timer to the rudder pulse width (FIXME: Does this need to be scaled?)
-	PORTEbits.RE0 = 1 ;		// start the pulse by setting the pin high
-	TMR4 = 0 ;				// start timer at 0
-	IEC1bits.T4IE = 1 ;		// enable timer 4 interrupt
-	
-	PR5 = pwOut[4] ;		// set timer to the rudder pulse width (FIXME: Does this need to be scaled?)
-	PORTEbits.RE2 = 1 ;		// start the pulse by setting the pin high
-	TMR5 = 0 ;				// start timer at 0
-	IEC1bits.T5IE = 1 ;		// enable timer 5 interrupt
+	if (NUM_OUTPUTS > 3)
+	{
+		outputNum = 3 ;
+		PR4 = (pwOut[3] << 1) ;	// set timer to the rudder pulse width
+		LATEbits.LATE0 = 1 ;	// start the pulse by setting the pin high
+		TMR4 = 0 ;				// start timer at 0
+		IFS1bits.T4IF = 0 ;		// clear the interrupt
+		IEC1bits.T4IE = 1 ;		// enable timer 4 interrupt
+	}
 	
 	return;
 }
@@ -185,21 +189,41 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 {
 	indicate_loading_inter ;
 	
-	PORTEbits.RE0 = 0 ;		// end the pulse by setting the pin low
-	IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
+	switch (outputNum) {
+		case 3:
+			LATEbits.LATE0 = 0 ;		// end the pulse by setting the pin low
+			if (NUM_OUTPUTS > 4)
+			{
+				outputNum = 4 ;
+				PR4 = (pwOut[4] << 1) ;	// set timer to the rudder pulse width
+				LATEbits.LATE2 = 1 ;	// start the pulse by setting the pin high
+				TMR4 = 0 ;				// start timer at 0
+			}
+			else
+			{
+				IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
+			}
+			break;
+		case 4:
+			LATEbits.LATE2 = 0 ;		// end the pulse by setting the pin low
+			if (NUM_OUTPUTS > 5)
+			{
+				outputNum = 5 ;
+				PR4 = (pwOut[5] << 1) ;	// set timer to the rudder pulse width
+				LATEbits.LATE4 = 1 ;	// start the pulse by setting the pin high
+				TMR4 = 0 ;				// start timer at 0
+			}
+			else
+			{
+				IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
+			}
+			break;
+		case 5:
+			LATEbits.LATE4 = 0 ;	// end the pulse by setting the pin low
+			IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
+			break;
+	}
 	IFS1bits.T4IF = 0 ;		// clear the interrupt
 		
 	return;
 }
-
-void __attribute__((__interrupt__,__no_auto_psv__)) _T5Interrupt(void)
-{
-	indicate_loading_inter ;
-	
-	PORTEbits.RE2 = 0 ;		// end the pulse by setting the pin low
-	IEC1bits.T5IE = 0 ;		// disable timer 5 interrupt
-	IFS1bits.T5IF = 0 ;		// clear the interrupt
-		
-	return;
-}
-

@@ -16,6 +16,10 @@ void init_capture(void)
 	TRISD = 0b1111111111111111 ; // make the d port input, to enable IC1 and IC2
 	IC1CON = IC2CON = IC7CON = IC8CON = 0b0010000010000001 ;
 	
+	int i;
+	for (i=0; i < NUM_INPUTS; i++)
+		rise[i] = pwIn[i] = pwTrim[i] = 3000;
+	
 	TRISEbits.TRISE8 = 1 ;	 // set E8 to be an input pin
 	INTCON2bits.INT0EP = 0;  // Set up the 5th input channel to start out reading low-to-high edges
 	

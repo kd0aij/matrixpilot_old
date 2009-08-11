@@ -373,7 +373,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 	rxchar = U1RXREG ;
 	if ( U2STAbits.FERR ) {  init_USART1(); }
 	else if ( U2STAbits.OERR ) {  init_USART1(); }
-	else { __builtin_btg ( &LATE , 8 ) ; }
+//	else { __builtin_btg ( &LATE , 8 ) ; }
 
 	IFS0bits.U1RXIF = 0 ; // clear the interrupt
 	return ;

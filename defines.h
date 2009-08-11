@@ -27,7 +27,7 @@ int pulsesat(long) ;
 
 
 #define NUM_INPUTS	5
-#define NUM_OUTPUTS	5
+#define NUM_OUTPUTS	6
 
 extern int rise[NUM_INPUTS] ; // rising edge clock capture for radio inputs
 extern int pwIn[NUM_INPUTS] ; // pulse widths of radio inputs

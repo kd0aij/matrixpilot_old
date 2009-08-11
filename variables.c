@@ -5,10 +5,10 @@
 //	Variables.
 
 
-int rise[NUM_INPUTS] = {3000, 3000, 3000, 3000, 3000}; // rising edge clock capture for radio inputs
-int pwIn[NUM_INPUTS] = {3000, 3000, 3000, 3000, 3000}; // pulse widths of radio inputs
-int pwTrim[NUM_INPUTS] = {3000, 3000, 3000, 3000, 3000}; // initial pulse widths for trimming
-int pwOut[NUM_OUTPUTS] = {3000, 3000, 3000, 3000, 3000} ; // pulse widths for servo outputs
+int rise[NUM_INPUTS] ;  // rising edge clock capture for radio inputs
+int pwIn[NUM_INPUTS] ; // pulse widths of radio inputs
+int pwTrim[NUM_INPUTS] ; // initial pulse widths for trimming
+int pwOut[NUM_OUTPUTS] ; // pulse widths for servo outputs
 
 int dutycycle ; // used to compute PWM duty cycle
 

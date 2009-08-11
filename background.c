@@ -29,8 +29,8 @@ void __attribute__((interrupt,__no_auto_psv__)) _T1Interrupt(void)
 //	toggle three of the spare digital outputs
 
 //	__builtin_btg ( &LATE , 0 ) ;
-	__builtin_btg ( &LATE , 2 ) ;
-	__builtin_btg ( &LATE , 4 ) ;
+//	__builtin_btg ( &LATE , 2 ) ;
+//	__builtin_btg ( &LATE , 4 ) ;
 
 	IFS0bits.T1IF = 0 ;			// clear the interrupt
 	return ;
