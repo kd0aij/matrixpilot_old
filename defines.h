@@ -25,23 +25,18 @@ void elevatorCntrl(void) ;
 
 int pulsesat(long) ;
 
+extern int rise[NUM_INPUTS] ;	// rising edge clock capture for radio inputs
+extern int pwIn[NUM_INPUTS] ;	// pulse widths of radio inputs
+extern int pwTrim[NUM_INPUTS] ;	// initial pulse widths for trimming
+extern int pwOut[NUM_OUTPUTS] ;	// pulse widths for servo outputs
 
-#define NUM_INPUTS	5
-#define NUM_OUTPUTS	6
+extern struct ADchannel xaccel, yaccel , zaccel ;	// x, y, and z accelerometer channels
+extern struct ADchannel xrate , yrate, zrate ; 		// x, y, and z gyro channels
+extern struct ADchannel vref ;						// reference voltage
 
-extern int rise[NUM_INPUTS] ; // rising edge clock capture for radio inputs
-extern int pwIn[NUM_INPUTS] ; // pulse widths of radio inputs
-extern int pwTrim[NUM_INPUTS] ; // initial pulse widths for trimming
-extern int pwOut[NUM_OUTPUTS] ; // pulse widths for servo outputs
-
-
-extern struct ADchannel xaccel, yaccel , zaccel ; // x, y, and z accelerometer channels
-extern struct ADchannel xrate , yrate, zrate ;  // x, y, and z gyro channels
-extern struct ADchannel vref ; // reference voltage
-
-extern int dutycycle ; // used to compute PWM duty cycle
-extern int firstsamp ; // used on startup to detect first A/D sample
-extern int calibcount ; // number of PWM pulses before control is turned on
+extern int dutycycle ;	// used to compute PWM duty cycle
+extern int firstsamp ;	// used on startup to detect first A/D sample
+extern int calibcount ;	// number of PWM pulses before control is turned on
 
 extern union longbbbb lat_gps_ , long_gps_ , alt_sl_gps_ ;
 extern union intbb    nav_valid_ , nav_type_ , sog_gps_ , cog_gps_ , climb_gps_ ;

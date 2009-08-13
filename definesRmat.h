@@ -1,4 +1,3 @@
-
 #include "optionsRmat.h"
 
 #include <dsp.h>

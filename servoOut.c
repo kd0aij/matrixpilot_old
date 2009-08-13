@@ -11,7 +11,7 @@ int outputNum ;
 void setupOutputs( void ) ;
 void dummyRudderAndThrottleControl( void ) ;
 void manualPassthrough( void ) ;
-void passthroughChannel(int inChannel, int outChannel) ;
+void passthroughChannel(int inChannel, int outChannel, char reversed) ;
 
 void init_pwm( void )	// initialize the PWM
 {
@@ -66,9 +66,10 @@ int pulsesat ( long pw ) // saturation logic to maintain pulse width within boun
 	return pw ;
 }
 
-
 void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 {
+	indicate_loading_inter ;
+	
 	//	Executes whatever needs to be done every 20 milliseconds, using the PWM clock.
 	//	This is a good place to run the A/D digital filters and compute pulse widths for servos.
 	//	Also, this is used to wait a few pulses before recording input DC offsets.
@@ -132,35 +133,44 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	}
 	// count down the startup counter to 0
 	if ( gpscount > 0 ) gpscount-- ;
-
+	
 	IFS2bits.PWMIF = 0 ; /* clear the interrupt */
-
 	return ;
 }
 
 // Eventually replace this with real ruddder, throttle, etc. control functions in separate files
 void dummyRudderAndThrottleControl( void )
 {
-	passthroughChannel(RUDDER_INPUT_CHANNEL, RUDDER_OUTPUT_CHANNEL) ;
-	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL) ;
+	passthroughChannel(RUDDER_INPUT_CHANNEL, RUDDER_OUTPUT_CHANNEL, 0) ;
+	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL, 0) ;
 	
 	return ;
 }
 
 void manualPassthrough( void )
 {
-	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL) ;
-	passthroughChannel(AILERON_INPUT_CHANNEL, AILERON_OUTPUT_CHANNEL) ;
-	passthroughChannel(ELEVATOR_INPUT_CHANNEL, ELEVATOR_OUTPUT_CHANNEL) ;
-	passthroughChannel(RUDDER_INPUT_CHANNEL, RUDDER_OUTPUT_CHANNEL) ;
+	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL, 0) ;
+	passthroughChannel(AILERON_INPUT_CHANNEL, AILERON_OUTPUT_CHANNEL, 0) ;
+	passthroughChannel(AILERON_INPUT_CHANNEL, AILERON_REVERSED_OUTPUT_CHANNEL, 1) ;
+	passthroughChannel(ELEVATOR_INPUT_CHANNEL, ELEVATOR_OUTPUT_CHANNEL, 0) ;
+	passthroughChannel(RUDDER_INPUT_CHANNEL, RUDDER_OUTPUT_CHANNEL, 0) ;
 	
 	return ;
 }
 
-void passthroughChannel(int inChannel, int outChannel)
+void passthroughChannel(int inChannel, int outChannel, char reversed)
 {
 	union longww val ;
-	val.WW = pwIn[inChannel] ;
+	
+	if (reversed == 0)
+	{
+		val.WW = pwIn[inChannel] ;
+	}
+	else
+	{
+		val.WW = (long)6000 - (long)pwIn[inChannel] ;
+	}
+	
 	pwOut[outChannel] = pulsesat(val.WW) ;
 	
 	return ;
@@ -219,11 +229,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 			}
 			break;
 		case 5:
-			LATEbits.LATE4 = 0 ;	// end the pulse by setting the pin low
-			IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
+			LATEbits.LATE4 = 0 ;		// end the pulse by setting the pin low
+			IEC1bits.T4IE = 0 ;			// disable timer 4 interrupt
 			break;
 	}
-	IFS1bits.T4IF = 0 ;		// clear the interrupt
-		
+	
+	IFS1bits.T4IF = 0 ;					// clear the interrupt
 	return;
 }

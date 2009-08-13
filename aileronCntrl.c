@@ -1,8 +1,7 @@
-
 #include "p30f4011.h"
 #include "definesRmat.h"
-
 #include "defines.h"
+
 
 int yawkp = YAWKP*RMAX ;
 int rollkp = ROLLKP*RMAX ;
@@ -16,6 +15,7 @@ void aileronCntrl(void)
 	union longww aileronAccum ;
 	union longww dotprod ;
 	union longww crossprod ;
+	int base ;
 	int desiredX ;
 	int desiredY ;
 	int actualX ;
@@ -23,11 +23,11 @@ void aileronCntrl(void)
 
 	if ( flags._.radio_on )
 	{
-		pwOut[AILERON_OUTPUT_CHANNEL] = pwIn[AILERON_INPUT_CHANNEL] + waggle ;
+		base = pwIn[AILERON_INPUT_CHANNEL] + waggle ;
 	}
 	else
 	{
-		pwOut[AILERON_OUTPUT_CHANNEL] = pwTrim[AILERON_INPUT_CHANNEL] + waggle ;
+		base = pwTrim[AILERON_INPUT_CHANNEL] + waggle ;
 	}
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
@@ -70,6 +70,7 @@ void aileronCntrl(void)
 #ifdef TestGains
 	flags._.pitch_feedback = 1 ;
 #endif
+	
 	if ( flags._.pitch_feedback )
 	{
 		gyroFeedback.WW = __builtin_mulss( rollkd , omega[1] ) ;
@@ -79,16 +80,20 @@ void aileronCntrl(void)
 	{
 		gyroFeedback.WW = 0 ;
 	}
+	
 	if ( PORTDbits.RD3 )
 	{
-		aileronAccum.WW = (long)pwOut[AILERON_OUTPUT_CHANNEL] + (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
+		aileronAccum.WW = (long)base + (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( aileronAccum.WW ) ;
 	}
 	else
 	{
-		aileronAccum.WW = (long)pwOut[AILERON_OUTPUT_CHANNEL] - (long)aileronAccum._.W1 + (long)gyroFeedback._.W1 ;
+		aileronAccum.WW = (long)base - (long)aileronAccum._.W1 + (long)gyroFeedback._.W1 ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( aileronAccum.WW ) ;
 	}	
+	
+	pwOut[AILERON_REVERSED_OUTPUT_CHANNEL] = (long)6000 - (long)pwOut[AILERON_OUTPUT_CHANNEL] ;
+	
 	return ;
 }
 

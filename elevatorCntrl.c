@@ -17,13 +17,15 @@ int pitchgain = PITCHGAIN*RMAX ;
 void elevatorCntrl(void)
 {
 	union longww elevAccum ;
+	int base ;
+	
 	if ( flags._.radio_on )
 	{
-		pwOut[ELEVATOR_INPUT_CHANNEL] = pwIn[ELEVATOR_INPUT_CHANNEL] ;
+		base = pwIn[ELEVATOR_INPUT_CHANNEL] ;
 	}
 	else
 	{
-		pwOut[ELEVATOR_INPUT_CHANNEL] = pwTrim[ELEVATOR_INPUT_CHANNEL] ;
+		base = pwTrim[ELEVATOR_INPUT_CHANNEL] ;
 	}
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
@@ -49,12 +51,12 @@ void elevatorCntrl(void)
 	//	use channel 2 switch to reverse the polarity of the control feedback
 	if ( PORTDbits.RD2 )
 	{
-		elevAccum.WW = (long)pwOut[ELEVATOR_OUTPUT_CHANNEL] + (long)elevAccum._.W1 ;
+		elevAccum.WW = (long)base + (long)elevAccum._.W1 ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( elevAccum.WW ) ;
 	}
 	else
 	{
-		elevAccum.WW = (long)pwOut[ELEVATOR_OUTPUT_CHANNEL] - (long)elevAccum._.W1 ;
+		elevAccum.WW = (long)base - (long)elevAccum._.W1 ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( elevAccum.WW ) ;
 	}
 	return ;

@@ -1,4 +1,3 @@
-
 #include "p30f4011.h"
 #include "definesRmat.h"
 #include "defines.h"
@@ -155,7 +154,7 @@ void calibrateS(void)
 {
 	if(flags._.radio_on)
 	{
-		__builtin_btg( &LATF , 0 ) ;
+		__builtin_btg( (unsigned int*)&LATF , 0 ) ;
 		calib_timer--;
 		if (calib_timer>0) return ;
 		else ent_acquiringS() ;
@@ -237,7 +236,7 @@ void returnS(void)
 
 void circlingS(void)
 {
-	__builtin_btg( &LATF , 0 ) ;	
+	__builtin_btg( (unsigned int*)&LATF , 0 ) ;	
 	if (flags._.radio_on )
 	{
 		if(flags._.man_req) ent_manualS() ;

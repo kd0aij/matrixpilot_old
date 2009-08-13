@@ -130,7 +130,7 @@ void gpsoutbin2(int length , const unsigned char msg[] )  // output a binary mes
 
 void set_bin(void)  // command GPS to select which messages are sent, using NMEA interface
 {
-	gpsoutline2(bin_mode)  ;
+	gpsoutline2((char*)bin_mode)  ;
 	return ;
 }
 
@@ -248,8 +248,8 @@ void msg_PL2 ( unsigned char gpschar )
 			msg_parse = &msg_MSGU ;
 			}
 			break ;
-		}
-		return ;
+	}
+	return ;
 }
 
 void msg_MSG2 ( unsigned char gpschar )
@@ -373,7 +373,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 	rxchar = U1RXREG ;
 	if ( U2STAbits.FERR ) {  init_USART1(); }
 	else if ( U2STAbits.OERR ) {  init_USART1(); }
-//	else { __builtin_btg ( &LATE , 8 ) ; }
 
 	IFS0bits.U1RXIF = 0 ; // clear the interrupt
 	return ;
