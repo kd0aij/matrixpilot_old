@@ -6,6 +6,7 @@
 #include "ConfigGreen.h"
 #endif 
  
+
 #define tmr1_period 0x6000 // sets time period for timer 1 interrupt to 1.5 seconds
 //#define FILTERSHIFT 6 // filter shift divide
 #define FILTERSHIFT 3 
