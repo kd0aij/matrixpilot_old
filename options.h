@@ -53,18 +53,18 @@
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
-#define THROTTLE_INPUT_CHANNEL			CHANNEL_3
-#define AILERON_INPUT_CHANNEL			CHANNEL_1
-#define ELEVATOR_INPUT_CHANNEL			CHANNEL_2
-#define RUDDER_INPUT_CHANNEL			CHANNEL_5
-#define MODE_SWITCH_INPUT_CHANNEL		CHANNEL_4
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
+#define AILERON_INPUT_CHANNEL				CHANNEL_1
+#define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
+#define RUDDER_INPUT_CHANNEL				CHANNEL_5
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
 
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
-#define THROTTLE_OUTPUT_CHANNEL			CHANNEL_3
-#define AILERON_OUTPUT_CHANNEL			CHANNEL_1
-#define ELEVATOR_OUTPUT_CHANNEL			CHANNEL_2
-#define RUDDER_OUTPUT_CHANNEL			CHANNEL_4
-#define AILERON_REVERSED_OUTPUT_CHANNEL	CHANNEL_5
-#define UNUSED_OUTPUT_CHANNEL			CHANNEL_6
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_1	// Switch polarity with switch 1
+#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2	// Switch polarity with switch 2
+#define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5	// Switch polarity relative to the primary aileron channel with switch 3
+#define UNUSED_OUTPUT_CHANNEL				CHANNEL_6

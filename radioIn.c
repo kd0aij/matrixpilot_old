@@ -12,8 +12,9 @@
 
 void init_capture(void)
 {
-	T2CON = 0b1000000000000000  ; // turn on timer 2 with no prescaler
-	TRISD = 0b1111111111111111 ; // make the d port input, to enable IC1 and IC2
+	T2CON = 0b1000000000000000  ;	// turn on timer 2 with no prescaler
+	TRISD = 0b1111111111111111 ;	// make the d port input, to enable IC1 and IC2
+	TRISFbits.TRISF6 = 1 ;			// make F6 an input to enable the 3rd switch
 	IC1CON = IC2CON = IC7CON = IC8CON = 0b0010000010000001 ;
 	
 	int i;
