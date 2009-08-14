@@ -9,7 +9,7 @@ int gpscount ; // counter to initialize GPS
 int outputNum ;
 
 void setupOutputs( void ) ;
-void dummyRudderAndThrottleControl( void ) ;
+void dummyThrottleControl( void ) ;
 void manualPassthrough( void ) ;
 void passthroughChannel(int inChannel, int outChannel, char reversed) ;
 
@@ -80,7 +80,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		imu() ;	
 		aileronCntrl() ;
 		elevatorCntrl() ;
-		dummyRudderAndThrottleControl() ;
+		servoMix() ;
+		dummyThrottleControl() ;
 		break ;
 	}
 
@@ -138,10 +139,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	return ;
 }
 
-// Eventually replace this with real ruddder, throttle, etc. control functions in separate files
-void dummyRudderAndThrottleControl( void )
+// Eventually replace this with throttle, etc. control functions in separate files
+void dummyThrottleControl( void )
 {
-	passthroughChannel(RUDDER_INPUT_CHANNEL, RUDDER_OUTPUT_CHANNEL, 0) ;
 	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL, 0) ;
 	
 	return ;

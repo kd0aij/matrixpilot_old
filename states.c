@@ -199,13 +199,19 @@ void manualS(void)
 	{
 		if ( flags._.home_req & flags._.nav_capable )
 		{
-			ent_circlingS() ;
+			if ( AIRFRAME_TYPE != AIRFRAME_HELI )
+				ent_circlingS() ;
+			else
+				ent_autoS() ;
 		}
 		else if( flags._.auto_req ) ent_autoS() ;
 	}
 	else
 	{
-		ent_returnS() ;
+		if ( AIRFRAME_TYPE != AIRFRAME_HELI )
+			ent_returnS() ;
+		else
+			ent_autoS() ;
 	}
 	return ;
 }
@@ -217,13 +223,15 @@ void autoS(void)
 	{
 		if ( flags._.home_req & flags._.nav_capable )
 		{
-			ent_circlingS() ;
+			if ( AIRFRAME_TYPE != AIRFRAME_HELI )
+				ent_circlingS() ;
 		}
 		else if( flags._.man_req ) ent_manualS() ;
 	}
 	else
 	{
-		ent_returnS() ;
+		if ( AIRFRAME_TYPE != AIRFRAME_HELI )
+			ent_returnS() ;
 	}
 	return ;
 }
@@ -246,5 +254,6 @@ void circlingS(void)
 	{
 		ent_returnS() ;
 	}
+	return ;
 }
 

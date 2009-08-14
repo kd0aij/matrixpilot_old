@@ -10,6 +10,8 @@ int pwIn[NUM_INPUTS] ;		// pulse widths of radio inputs
 int pwTrim[NUM_INPUTS] ;	// initial pulse widths for trimming
 int pwOut[NUM_OUTPUTS] ;	// pulse widths for servo outputs
 
+int pitch_control, roll_control ;
+
 int dutycycle ;				// used to compute PWM duty cycle
 
 int waggle = 0 ;

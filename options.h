@@ -21,10 +21,8 @@
 #define ACCTBYTAU 5120/ACCTAU	// 256*(time_step/time_constant)
 #define RATETBYTAU 5120/RATETAU
 
-#define indicate_loading_main
-#define indicate_loading_inter
-//#define indicate_loading_main LATEbits.LATE0 = 0
-//#define indicate_loading_inter LATEbits.LATE0 = 1
+#define indicate_loading_main 	//LATEbits.LATE0 = 0
+#define indicate_loading_inter	//LATEbits.LATE0 = 1
 
 
 // Channel numbers on the board, mapped to positions in the pulse width arrays.
@@ -35,6 +33,18 @@
 #define CHANNEL_4 3
 #define CHANNEL_5 4
 #define CHANNEL_6 5
+
+
+// Choose the type of air frame by setting AIRFRAME_TYPE
+// Don't edit these.  :)
+#define AIRFRAME_STANDARD	0	// Ailerons and Elevator, and Rudder passthrough
+#define AIRFRAME_VTAIL		1	// Ailerons, and Elevator and Rudder as V-tail controls
+#define AIRFRAME_DELTA		2	// Aileron and Elevator as Elevons, and Rudder passthrough
+#define AIRFRAME_HELI		2	// Aileron (Front-Left), Elevator (Rear), and 2ndAileron (Front-Right), and Rudder passthrough
+
+
+// Choose your airframe type
+#define AIRFRAME_TYPE		AIRFRAME_STANDARD
 
 
 // NUM_INPUTS: Set to 4 or 5 
@@ -62,9 +72,9 @@
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
-#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_5
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1	// Switch polarity with switch 1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2	// Switch polarity with switch 2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5	// Switch polarity relative to the primary aileron channel with switch 3
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3	// Switch polarity relative to the primary aileron channel with switch 3
 #define UNUSED_OUTPUT_CHANNEL				CHANNEL_6

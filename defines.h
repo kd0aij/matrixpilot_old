@@ -22,6 +22,7 @@ void state_machine(void) ;
 void filterInputs(void) ;
 void aileronCntrl(void) ;
 void elevatorCntrl(void) ;
+void mixServos(void) ;
 
 int pulsesat(long) ;
 
@@ -29,6 +30,8 @@ extern int rise[NUM_INPUTS] ;	// rising edge clock capture for radio inputs
 extern int pwIn[NUM_INPUTS] ;	// pulse widths of radio inputs
 extern int pwTrim[NUM_INPUTS] ;	// initial pulse widths for trimming
 extern int pwOut[NUM_OUTPUTS] ;	// pulse widths for servo outputs
+
+extern int pitch_control, roll_control ;
 
 extern struct ADchannel xaccel, yaccel , zaccel ;	// x, y, and z accelerometer channels
 extern struct ADchannel xrate , yrate, zrate ; 		// x, y, and z gyro channels
