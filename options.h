@@ -1,3 +1,5 @@
+#include "definesUAVDB.h"
+
 #ifdef ConfigRed
 #include "ConfigRed.h"
 #endif
@@ -24,26 +26,7 @@
 #define indicate_loading_main 	//LATEbits.LATE0 = 0
 #define indicate_loading_inter	//LATEbits.LATE0 = 1
 
-
-// Channel numbers on the board, mapped to positions in the pulse width arrays.
-// Don't edit these.  :)
-#define CHANNEL_1 0
-#define CHANNEL_2 1
-#define CHANNEL_3 2
-#define CHANNEL_4 3
-#define CHANNEL_5 4
-#define CHANNEL_6 5
-
-
-// Choose the type of air frame by setting AIRFRAME_TYPE
-// Don't edit these.  :)
-#define AIRFRAME_STANDARD	0	// Ailerons and Elevator, and Rudder passthrough
-#define AIRFRAME_VTAIL		1	// Ailerons, and Elevator and Rudder as V-tail controls
-#define AIRFRAME_DELTA		2	// Aileron and Elevator as Elevons, and Rudder passthrough
-#define AIRFRAME_HELI		2	// Aileron (Front-Left), Elevator (Rear), and 2ndAileron (Front-Right), and Rudder passthrough
-
-
-// Choose your airframe type
+// Choose your airframe type: AIRFRAME_STANDARD, AIRFRAME_VTAIL, or AIRFRAME_DELTA
 #define AIRFRAME_TYPE		AIRFRAME_STANDARD
 
 
@@ -78,3 +61,12 @@
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
 #define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3	// Switch polarity relative to the primary aileron channel with switch 3
 #define UNUSED_OUTPUT_CHANNEL				CHANNEL_6
+
+
+// Servo Reversing Configuration
+// Here you can choose which reversing switches use hardware switches,
+// and hard code the rest.  :)
+#define AILERON_CHANNEL_REVERSED			(HW_SWITCH_1 == 0)
+#define ELEVATOR_CHANNEL_REVERSED			(HW_SWITCH_2 == 0)
+#define AILERON_SECONDARY_CHANNEL_REVERSED	(HW_SWITCH_3 == 0)
+#define RUDDER_CHANNEL_REVERSED				0					// Hardcoded to 0.  Set to 1 to reverse this channel.

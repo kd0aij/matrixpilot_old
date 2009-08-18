@@ -15,96 +15,93 @@ void servoMix( void )
 	int rudder_deflection ;
 	
 	// Set up the baseline deflections to include the manual adjustments
-	aileron_deflection = pwIn[AILERON_INPUT_CHANNEL] - pwTrim[AILERON_INPUT_CHANNEL] ;
-	elevator_deflection = pwIn[ELEVATOR_INPUT_CHANNEL] - pwTrim[ELEVATOR_INPUT_CHANNEL] ;
+	// roll_control and pitch_control are already reversed if necessary
+	aileron_deflection = pwIn[AILERON_INPUT_CHANNEL] - pwTrim[AILERON_INPUT_CHANNEL] + roll_control;
+	elevator_deflection = pwIn[ELEVATOR_INPUT_CHANNEL] - pwTrim[ELEVATOR_INPUT_CHANNEL] + pitch_control;
 	rudder_deflection = pwIn[RUDDER_INPUT_CHANNEL] - pwTrim[RUDDER_INPUT_CHANNEL] ;
-	
-	
-	// Add roll and pitch control
-	// use channel 1 switch to reverse the polarity of the aileron control feedback
-	if ( PORTDbits.RD3 == 1 )
-		aileron_deflection += roll_control ;
-	else
-		aileron_deflection += -roll_control ;
-		
-	//	use channel 2 switch to reverse the polarity of the control feedback
-	if ( PORTDbits.RD2 == 1)
-		elevator_deflection += pitch_control ;
-	else
-		elevator_deflection += -pitch_control ;
-	
-	rudder_deflection = 0 ;
-	
 	
 	// Mix aileron, elevator, and rudder deflections into output channels for each airframe type
 	if ( AIRFRAME_TYPE == AIRFRAME_STANDARD )
 	{
-		temp = (long)(pwTrim[AILERON_INPUT_CHANNEL] + waggle) + (long)aileron_deflection ;
+		temp = (long)pwTrim[AILERON_INPUT_CHANNEL] + (long)aileron_deflection + (long)waggle;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		//	use channel 3 switch to reverse the polarity of the secondary aileron
-		if ( PORTFbits.RF6 )
-			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = (long)(pwOut[AILERON_OUTPUT_CHANNEL]) ;
+		//	Reverse the polarity of the secondary aileron if necessary
+		if ( !AILERON_SECONDARY_CHANNEL_REVERSED )
+			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = (long)pwOut[AILERON_OUTPUT_CHANNEL] ;
 		else
-			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = (long)6000 - (long)(pwOut[AILERON_OUTPUT_CHANNEL]) ;
+			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = (long)6000 - (long)pwOut[AILERON_OUTPUT_CHANNEL] ;
 		
-		temp = (long)(pwTrim[ELEVATOR_INPUT_CHANNEL]) + (long)elevator_deflection ;
+		temp = (long)pwTrim[ELEVATOR_INPUT_CHANNEL] + (long)elevator_deflection ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = (long)(pwTrim[RUDDER_INPUT_CHANNEL]) + (long)rudder_deflection ;
+		temp = (long)pwTrim[RUDDER_INPUT_CHANNEL] + (long)rudder_deflection ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 	}
 	
 	
 	else if ( AIRFRAME_TYPE == AIRFRAME_VTAIL )
 	{
-		temp = (long)(pwTrim[AILERON_INPUT_CHANNEL] + waggle) + (long)aileron_deflection ;
+		temp = (long)pwTrim[AILERON_INPUT_CHANNEL] + (long)aileron_deflection + (long)waggle ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		//	use channel 3 switch to reverse the polarity of the secondary aileron
-		if ( PORTFbits.RF6 )
-			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = (long)(pwOut[AILERON_OUTPUT_CHANNEL]) ;
+		//	Reverse the polarity of the secondary aileron if necessary
+		if ( !AILERON_SECONDARY_CHANNEL_REVERSED )
+			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = (long)pwOut[AILERON_OUTPUT_CHANNEL] ;
 		else
-			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = (long)6000 - (long)(pwOut[AILERON_OUTPUT_CHANNEL]) ;
+			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = (long)6000 - (long)pwOut[AILERON_OUTPUT_CHANNEL] ;
 		
-		temp = (long)(pwTrim[ELEVATOR_INPUT_CHANNEL]) + (long)elevator_deflection/2 + (long)rudder_deflection/2 ;
-		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
-		
-		temp = (long)(pwTrim[RUDDER_INPUT_CHANNEL]) + (long)elevator_deflection/2 - (long)rudder_deflection/2 ;
-		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
-	}
-	
+		//	Take into account the possible reversal of the rudder channel
+		if ( !RUDDER_CHANNEL_REVERSED )
+		{
+			temp = (long)pwTrim[ELEVATOR_INPUT_CHANNEL] + (long)elevator_deflection/2 + (long)rudder_deflection/2 ;
+			pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+			
+			temp = (long)pwTrim[RUDDER_INPUT_CHANNEL] + (long)elevator_deflection/2 - (long)rudder_deflection/2 ;
+			pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+		}
+		else
+		{
+			temp = (long)pwTrim[ELEVATOR_INPUT_CHANNEL] + (long)elevator_deflection/2 - (long)rudder_deflection/2 ;
+			pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+			
+			temp = (long)pwTrim[RUDDER_INPUT_CHANNEL] - (long)elevator_deflection/2 - (long)rudder_deflection/2 ;
+			pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+		}
+	}	
 	
 	else if ( AIRFRAME_TYPE == AIRFRAME_DELTA )
 	{
-		temp = (long)(pwTrim[AILERON_INPUT_CHANNEL] + waggle) + (long)aileron_deflection/2 + (long)elevator_deflection/2 ;
+		temp = (long)pwTrim[AILERON_INPUT_CHANNEL] + (long)aileron_deflection/2 + (long)elevator_deflection/2 + (long)waggle ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = (long)(pwTrim[ELEVATOR_INPUT_CHANNEL] - waggle) - (long)aileron_deflection/2 + (long)elevator_deflection/2 ;
+		temp = (long)pwTrim[ELEVATOR_INPUT_CHANNEL] - (long)aileron_deflection/2 + (long)elevator_deflection/2 - (long)waggle ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 	}
 	
 	
 	else if ( AIRFRAME_TYPE == AIRFRAME_HELI )
 	{
-		temp = (long)(pwTrim[AILERON_INPUT_CHANNEL]) + (long)aileron_deflection/2 + (long)elevator_deflection/2 ;
+		temp = (long)pwTrim[AILERON_INPUT_CHANNEL] + (long)aileron_deflection/2 + (long)elevator_deflection/2 ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = (long)(pwTrim[ELEVATOR_INPUT_CHANNEL] + waggle) + (long)elevator_deflection ;
+		temp = (long)pwTrim[ELEVATOR_INPUT_CHANNEL] + (long)elevator_deflection ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		//	use channel 3 switch to reverse the polarity of the secondary aileron
-		if ( PORTFbits.RF6 )
+		//	Reverse the polarity of the secondary aileron if necessary
+		if ( !AILERON_SECONDARY_CHANNEL_REVERSED )
 		{
-			temp = (long)(pwTrim[AILERON_SECONDARY_OUTPUT_CHANNEL]) - (long)aileron_deflection/2 + (long)elevator_deflection/2 ;
+			temp = (long)pwTrim[AILERON_SECONDARY_OUTPUT_CHANNEL] - (long)aileron_deflection/2 + (long)elevator_deflection/2 ;
 			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = temp ;
 		}
 		else
 		{
-			temp = (long)(pwTrim[AILERON_SECONDARY_OUTPUT_CHANNEL]) + (long)aileron_deflection/2 - (long)elevator_deflection/2 ;
+			temp = (long)pwTrim[AILERON_SECONDARY_OUTPUT_CHANNEL] + (long)aileron_deflection/2 - (long)elevator_deflection/2 ;
 			pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = temp ;
 		}
-		temp = (long)(pwTrim[RUDDER_INPUT_CHANNEL]) + (long)rudder_deflection ;
+		temp = (long)pwTrim[RUDDER_INPUT_CHANNEL] + (long)rudder_deflection ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+		
+		// FIXME: when one channel saturates in HELI mixing, fix other channels to compensate
 	}
 }

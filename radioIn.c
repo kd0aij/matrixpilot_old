@@ -110,23 +110,15 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 	if (PORTEbits.RE8)
 	{
 		rise[4] = t ;
-		
-		IEC0bits.INT0IE = 0 ;		// disable the interrupt
-		IFS0bits.INT0IF = 0 ; 		// clear the interrupt
 		INTCON2bits.INT0EP = 1 ;	// Set up the interrupt to read high-to-low edges
-		IEC0bits.INT0IE = 1 ;		// re-enable the interrupt
 	}
 	else
 	{
 		pwIn[4] = ((t - rise[4]) >> 1 ) ;
-
-		IEC0bits.INT0IE = 0 ;		// disable the interrupt
-		IFS0bits.INT0IF = 0 ; 		// clear the interrupt
 		INTCON2bits.INT0EP = 0 ;	// Set up the interrupt to read low-to-high edges
-		IEC0bits.INT0IE = 1 ;		// re-enable the interrupt
 	}
 	
-	// already cleared the interrupt
+	IFS0bits.INT0IF = 0 ; 		// clear the interrupt
 	return;
 }
 
