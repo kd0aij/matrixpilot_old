@@ -11,7 +11,8 @@ int outputNum ;
 void setupOutputs( void ) ;
 void dummyThrottleControl( void ) ;
 void manualPassthrough( void ) ;
-void passthroughChannel(int inChannel, int outChannel, char reversed) ;
+void passthroughChannel(int inChannel, int outChannel) ;
+
 
 void init_pwm( void )	// initialize the PWM
 {
@@ -45,7 +46,7 @@ void init_pwm( void )	// initialize the PWM
 	{
 		T4CON = 0b1000000000000000  ;	// turn on timer 4 with no prescaler
 		IPC5bits.T4IP = 7 ;				// priority 7
-		IEC1bits.T4IE = 0 ;				// disable timer 4 interrupt for now (enable for each pulse)
+		IEC1bits.T4IE = 0 ;				// disable timer 4 interrupt for now (enable for each set of pulses)
 	}
 	
 	//  note: at this point the PWM is running, so there are pulses going out,
@@ -63,7 +64,7 @@ int pulsesat ( long pw ) // saturation logic to maintain pulse width within boun
 {
 	if ( pw > SERVOMAX ) pw = SERVOMAX ;
 	if ( pw < SERVOMIN ) pw = SERVOMIN ;
-	return pw ;
+	return (int)pw ;
 }
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
@@ -80,8 +81,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		imu() ;	
 		aileronCntrl() ;
 		elevatorCntrl() ;
-		servoMix() ;
 		dummyThrottleControl() ;
+		servoMix() ;
 		break ;
 	}
 
@@ -142,36 +143,24 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 // Eventually replace this with throttle, etc. control functions in separate files
 void dummyThrottleControl( void )
 {
-	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL, 0) ;
+	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL) ;
 	
 	return ;
 }
 
 void manualPassthrough( void )
 {
-	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL, 0) ;
-	passthroughChannel(AILERON_INPUT_CHANNEL, AILERON_OUTPUT_CHANNEL, 0) ;
-	passthroughChannel(AILERON_INPUT_CHANNEL, AILERON_SECONDARY_OUTPUT_CHANNEL, PORTFbits.RF6 ) ;
-	passthroughChannel(ELEVATOR_INPUT_CHANNEL, ELEVATOR_OUTPUT_CHANNEL, 0) ;
-	passthroughChannel(RUDDER_INPUT_CHANNEL, RUDDER_OUTPUT_CHANNEL, 0) ;
+	dummyThrottleControl() ;
+	roll_control = pitch_control = 0 ;
+	servoMix() ;
 	
 	return ;
 }
 
-void passthroughChannel(int inChannel, int outChannel, char reversed)
+void passthroughChannel(int inChannel, int outChannel)
 {
-	union longww val ;
-	
-	if (reversed == 0)
-	{
-		val.WW = pwIn[inChannel] ;
-	}
-	else
-	{
-		val.WW = (long)6000 - (long)pwIn[inChannel] ;
-	}
-	
-	pwOut[outChannel] = pulsesat(val.WW) ;
+	long val = (long)pwIn[inChannel] ;
+	pwOut[outChannel] = pulsesat(val) ;
 	
 	return ;
 }
@@ -186,7 +175,7 @@ void setupOutputs( void )
 	{
 		outputNum = 3 ;
 		PR4 = (pwOut[3] << 1) ;	// set timer to the rudder pulse width
-		LATEbits.LATE0 = 1 ;	// start the pulse by setting the pin high
+		LATEbits.LATE0 = 1 ;	// start the pulse by setting the E0 pin high (output 4)
 		TMR4 = 0 ;				// start timer at 0
 		IFS1bits.T4IF = 0 ;		// clear the interrupt
 		IEC1bits.T4IE = 1 ;		// enable timer 4 interrupt
@@ -201,12 +190,12 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 	
 	switch (outputNum) {
 		case 3:
-			LATEbits.LATE0 = 0 ;		// end the pulse by setting the pin low
+			LATEbits.LATE0 = 0 ;		// end the pulse by setting the E0 pin low (output 4)
 			if (NUM_OUTPUTS > 4)
 			{
 				outputNum = 4 ;
 				PR4 = (pwOut[4] << 1) ;	// set timer to the rudder pulse width
-				LATEbits.LATE2 = 1 ;	// start the pulse by setting the pin high
+				LATEbits.LATE2 = 1 ;	// start the pulse by setting the E2 pin high (output 5)
 				TMR4 = 0 ;				// start timer at 0
 			}
 			else
@@ -215,12 +204,12 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 			}
 			break;
 		case 4:
-			LATEbits.LATE2 = 0 ;		// end the pulse by setting the pin low
+			LATEbits.LATE2 = 0 ;		// end the pulse by setting the E2 pin low (output 5)
 			if (NUM_OUTPUTS > 5)
 			{
 				outputNum = 5 ;
 				PR4 = (pwOut[5] << 1) ;	// set timer to the rudder pulse width
-				LATEbits.LATE4 = 1 ;	// start the pulse by setting the pin high
+				LATEbits.LATE4 = 1 ;	// start the pulse by setting the E4 pin high (output 6)
 				TMR4 = 0 ;				// start timer at 0
 			}
 			else
@@ -229,7 +218,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 			}
 			break;
 		case 5:
-			LATEbits.LATE4 = 0 ;		// end the pulse by setting the pin low
+			LATEbits.LATE4 = 0 ;		// end the pulse by setting the E4 pin low (output 6)
 			IEC1bits.T4IE = 0 ;			// disable timer 4 interrupt
 			break;
 	}

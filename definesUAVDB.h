@@ -21,3 +21,14 @@
 #define HW_SWITCH_1			(PORTDbits.RD3)
 #define HW_SWITCH_2			(PORTDbits.RD2)
 #define HW_SWITCH_3			(PORTFbits.RF6)
+
+
+// LED pins
+#define LED_RED				LATFbits.LATF0
+#define LED_GREEN			LATFbits.LATF1
+#define LED_RED_DO_TOGGLE	__builtin_btg( (unsigned int*)&LATF , 0 )
+#define LED_GREEN_DO_TOGGLE	__builtin_btg( (unsigned int*)&LATF , 1 )
+
+// LED states
+#define LED_ON		0
+#define LED_OFF		1

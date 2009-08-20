@@ -37,38 +37,7 @@ void init_capture(void)
 	return ;
 }
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
-{
-	indicate_loading_inter ;
-	if (PORTDbits.RD0)
-	{
-		 rise[3] = IC1BUF ;
-	}
-	else
-	{
-		pwIn[3] = ((IC1BUF - rise[3]) >> 1 );
-		if ( (pwIn[3]> 1500) && (pwIn[3]<4500 ) ) pulsesselin++ ;
-	}
-	IFS0bits.IC1IF =  0 ; // clear the interrupt
-	return ;
-}
-
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
-{
-	indicate_loading_inter ;
-	if (PORTDbits.RD1)
-	{
-		 rise[2] = IC2BUF ;
-	}
-	else
-	{
-		pwIn[2] = ((IC2BUF - rise[2]) >> 1 ) ;
-	}
-
-	IFS0bits.IC2IF = 0 ; // clear the interrupt
-	return ;
-}
-
+// Input Channel 1
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 {
 	indicate_loading_inter ;
@@ -85,6 +54,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 	return ;
 }
 
+// Input Channel 2
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 {
 	indicate_loading_inter ;
@@ -101,6 +71,41 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 	return ;
 }
 
+// Input Channel 3
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
+{
+	indicate_loading_inter ;
+	if (PORTDbits.RD1)
+	{
+		 rise[2] = IC2BUF ;
+	}
+	else
+	{
+		pwIn[2] = ((IC2BUF - rise[2]) >> 1 ) ;
+	}
+
+	IFS0bits.IC2IF = 0 ; // clear the interrupt
+	return ;
+}
+
+// Input Channel 4
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
+{
+	indicate_loading_inter ;
+	if (PORTDbits.RD0)
+	{
+		 rise[3] = IC1BUF ;
+	}
+	else
+	{
+		pwIn[3] = ((IC1BUF - rise[3]) >> 1 );
+		if ( (pwIn[3]> 1500) && (pwIn[3]<4500 ) ) pulsesselin++ ;
+	}
+	IFS0bits.IC1IF =  0 ; // clear the interrupt
+	return ;
+}
+
+// Input Channel 5 (Pin RE8)
 void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 {
 	indicate_loading_inter ;

@@ -8,12 +8,12 @@
 #include "ConfigGreen.h"
 #endif 
  
-#define tmr1_period 0x6000 // sets time period for timer 1 interrupt to 1.5 seconds
+#define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
 //#define FILTERSHIFT 6 // filter shift divide
 #define FILTERSHIFT 3 
 #define LONGDEG_2_BYTECIR 305 // = (256/360)*((256)**4)/(10**7)
 #define COURSEDEG_2_BYTECIR 466 // = (256/360)*((256)**2)/(10**2)
-#define CALIB_PAUSE 4
+#define CALIB_PAUSE 12
 #define STANDBY_PAUSE 16 
 #define WAGGLE 300
 

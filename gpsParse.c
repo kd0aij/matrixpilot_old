@@ -399,7 +399,10 @@ void __attribute__((interrupt,__no_auto_psv__)) _T3Interrupt(void)
 	//	if nav_valid is zero, there is valid GPS data that can be used for navigation.
 	if ( nav_valid_.BB == 0 )
 	{
-		flags._.nav_capable = 1 ;
+		// Don't enable navigation for helicopters yet...
+		if ( AIRFRAME_TYPE != AIRFRAME_HELI )
+			flags._.nav_capable = 1 ;
+		
 		lat_gps		= lat_gps_ ;
 		long_gps	= long_gps_ ;
 		alt_sl_gps	= alt_sl_gps_ ;
