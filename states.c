@@ -94,7 +94,7 @@ void ent_calibrateS()
 void ent_acquiringS()
 {
 	flags._.GPS_steering = 0 ;
-	flags._.pitch_feedback = 0 ;
+	flags._.pitch_feedback = 1 ;
 	waggle = 0 ;
 	stateS = &acquiringS ;
 	standby_timer = STANDBY_PAUSE ;
@@ -187,8 +187,8 @@ void acquiringS(void)
 	{
 		if ( flags._.radio_on )
 		{
-			if (waggle == 0)
-				waggle = WAGGLE ;
+			if (standby_timer == NUM_WAGGLES+1)
+				waggle = WAGGLE_SIZE ;
 			else
 				waggle = - waggle ;
 			

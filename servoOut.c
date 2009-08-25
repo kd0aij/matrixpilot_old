@@ -103,7 +103,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	}
 	
 	setupOutputs() ;
-		
+	
 	// count down the startup counter to 0
 	if ( calibcount > 0 ) calibcount-- ;
 
@@ -126,10 +126,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	}
 
 	default: {
-	}
 		// otherwise, there is not anything to do
 		break ;
 	}
+	}
+	
 	// count down the startup counter to 0
 	if ( gpscount > 0 ) gpscount-- ;
 	

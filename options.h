@@ -15,7 +15,8 @@
 #define COURSEDEG_2_BYTECIR 466 // = (256/360)*((256)**2)/(10**2)
 #define CALIB_PAUSE 12
 #define STANDBY_PAUSE 48 // pause for 16 seconds of runs through the state machine
-#define WAGGLE 300
+#define NUM_WAGGLES 4 // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
+#define WAGGLE_SIZE 300
 
 #define ACCTAU 200 // in milliseconds
 #define RATETAU 100
@@ -41,7 +42,7 @@
 //   4 also enables E0 as the 4th output channel
 //   5 also enables E2 as the 5th output channel
 //   6 also enables E4 as the 6th output channel
-#define NUM_OUTPUTS	6
+#define NUM_OUTPUTS	5
 
 
 // Channel numbers for each input.
@@ -57,7 +58,10 @@
 // Make sure this is set to a channel you actually have plugged into the UAV Dev Board!
 // For Spektrum receivers, set this to THROTTLE_INPUT_CHANNEL, and see the instructions
 // for setting up a low failsafe value in the receiver.
-#define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
+//
+// If you set this to something other than CHANNEL_4, then make sure you are also sending
+// valid servo pulses to Input channel 4 every 20ms, or the failsafe will not work properly.
+#define FAILSAFE_INPUT_CHANNEL				MODE_SWITCH_INPUT_CHANNEL
 
 
 // Channel numbers for each output
@@ -72,6 +76,7 @@
 
 // Servo Reversing Configuration
 // Here you can choose which reversing switches use hardware switches, and hard code the rest.
+// For any of these that evaluate to 1, that servo will be sent reversed controls.
 #define AILERON_CHANNEL_REVERSED			(HW_SWITCH_1 == 0)
 #define ELEVATOR_CHANNEL_REVERSED			(HW_SWITCH_2 == 0)
 #define RUDDER_CHANNEL_REVERSED				(HW_SWITCH_3 == 0)

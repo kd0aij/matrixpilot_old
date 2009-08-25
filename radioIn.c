@@ -100,7 +100,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	{
 		pwIn[3] = ((IC1BUF - rise[3]) >> 1 );
 		
-		// The failsafe channel might not be Input 4, but this still works to test it every 20ms
+		// The failsafe channel might not be Input 4, so if not, make sure to also connect Input 4 to the receiver
+		// to make sure this code is checked.
 		if ( (pwIn[FAILSAFE_INPUT_CHANNEL] > 1500) && (pwIn[FAILSAFE_INPUT_CHANNEL] < 4500 ) ) pulsesselin++ ;
 	}
 	IFS0bits.IC1IF =  0 ; // clear the interrupt
