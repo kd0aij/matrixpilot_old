@@ -9,9 +9,7 @@ int gpscount ; // counter to initialize GPS
 int outputNum ;
 
 void setupOutputs( void ) ;
-void dummyThrottleControl( void ) ;
 void manualPassthrough( void ) ;
-void passthroughChannel(int inChannel, int outChannel) ;
 
 
 void init_pwm( void )	// initialize the PWM
@@ -81,7 +79,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		imu() ;	
 		aileronCntrl() ;
 		elevatorCntrl() ;
-		dummyThrottleControl() ;
 		servoMix() ;
 		break ;
 	}
@@ -140,27 +137,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	return ;
 }
 
-// Eventually replace this with throttle, etc. control functions in separate files
-void dummyThrottleControl( void )
-{
-	passthroughChannel(THROTTLE_INPUT_CHANNEL, THROTTLE_OUTPUT_CHANNEL) ;
-	
-	return ;
-}
-
 void manualPassthrough( void )
 {
-	dummyThrottleControl() ;
 	roll_control = pitch_control = 0 ;
 	servoMix() ;
-	
-	return ;
-}
-
-void passthroughChannel(int inChannel, int outChannel)
-{
-	long val = (long)pwIn[inChannel] ;
-	pwOut[outChannel] = pulsesat(val) ;
 	
 	return ;
 }

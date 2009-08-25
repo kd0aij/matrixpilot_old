@@ -35,11 +35,7 @@ void elevatorCntrl(void)
 		elevAccum.WW = 0 ;
 	}
 	
-	// Reverse the polarity of the control feedback if necessary
-	if ( !ELEVATOR_CHANNEL_REVERSED )
-		pitch_control = (long)elevAccum._.W1 ;
-	else
-		pitch_control = -(long)elevAccum._.W1 ;
-		
+	pitch_control = (long)elevAccum._.W1 ;
+	
 	return ;
 }

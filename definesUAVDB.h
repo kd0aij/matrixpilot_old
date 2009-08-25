@@ -32,3 +32,7 @@
 // LED states
 #define LED_ON		0
 #define LED_OFF		1
+
+
+// If GPS data has not been received for this many state machine cycles, consider the GPS lock to be lost.
+#define GPS_DATA_MAX_AGE	3

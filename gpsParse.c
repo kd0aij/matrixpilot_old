@@ -399,9 +399,7 @@ void __attribute__((interrupt,__no_auto_psv__)) _T3Interrupt(void)
 	//	if nav_valid is zero, there is valid GPS data that can be used for navigation.
 	if ( nav_valid_.BB == 0 )
 	{
-		// Don't enable navigation for helicopters yet...
-		if ( AIRFRAME_TYPE != AIRFRAME_HELI )
-			flags._.nav_capable = 1 ;
+		gps_data_age = 0;
 		
 		lat_gps		= lat_gps_ ;
 		long_gps	= long_gps_ ;
@@ -433,7 +431,7 @@ void __attribute__((interrupt,__no_auto_psv__)) _T3Interrupt(void)
 	}
 	else
 	{
-		flags._.nav_capable = 0 ;
+		gps_data_age = GPS_DATA_MAX_AGE+1;
 	}
 	IFS0bits.T3IF = 0 ;			// clear the interrupt
 	return ;

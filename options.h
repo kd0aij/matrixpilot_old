@@ -14,7 +14,7 @@
 #define LONGDEG_2_BYTECIR 305 // = (256/360)*((256)**4)/(10**7)
 #define COURSEDEG_2_BYTECIR 466 // = (256/360)*((256)**2)/(10**2)
 #define CALIB_PAUSE 12
-#define STANDBY_PAUSE 16 
+#define STANDBY_PAUSE 48 // pause for 16 seconds of runs through the state machine
 #define WAGGLE 300
 
 #define ACCTAU 200 // in milliseconds
@@ -53,20 +53,26 @@
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
 
 
+// The Failsafe Channel is the RX channel that is monitored for loss of signal
+// Make sure this is set to a channel you actually have plugged into the UAV Dev Board!
+// For Spektrum receivers, set this to THROTTLE_INPUT_CHANNEL, and see the instructions
+// for setting up a low failsafe value in the receiver.
+#define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
+
+
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_5
-#define AILERON_OUTPUT_CHANNEL				CHANNEL_1	// Switch polarity with switch 1
-#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2	// Switch polarity with switch 2
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
+#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3	// Switch polarity relative to the primary aileron channel with switch 3
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3
 #define UNUSED_OUTPUT_CHANNEL				CHANNEL_6
 
 
 // Servo Reversing Configuration
-// Here you can choose which reversing switches use hardware switches,
-// and hard code the rest.  :)
+// Here you can choose which reversing switches use hardware switches, and hard code the rest.
 #define AILERON_CHANNEL_REVERSED			(HW_SWITCH_1 == 0)
 #define ELEVATOR_CHANNEL_REVERSED			(HW_SWITCH_2 == 0)
-#define AILERON_SECONDARY_CHANNEL_REVERSED	(HW_SWITCH_3 == 0)
-#define RUDDER_CHANNEL_REVERSED				0					// Hardcoded to 0.  Set to 1 to reverse this channel.
+#define RUDDER_CHANNEL_REVERSED				(HW_SWITCH_3 == 0)
+#define AILERON_SECONDARY_CHANNEL_REVERSED	1	// Hardcoded to be reversed, since we have only 3 switches.

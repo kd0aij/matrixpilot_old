@@ -72,13 +72,7 @@ void aileronCntrl(void)
 		gyroFeedback.WW = 0 ;
 	}
 	
-	// Reverse the polarity of the aileron control feedback if necessary
-	if ( !AILERON_CHANNEL_REVERSED )
-		roll_control = (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
-	else
-		roll_control = -(long)aileronAccum._.W1 + (long)gyroFeedback._.W1 ;
-		
-		
+	roll_control = (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
 	
 	return ;
 }

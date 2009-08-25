@@ -19,6 +19,7 @@ void init_states(void)
 {
 	flags.WW = 0 ;
 	waggle = 0 ;
+	gps_data_age = GPS_DATA_MAX_AGE+1 ;
 	stateS = &startS ;
 	return ;
 }
@@ -30,7 +31,6 @@ void state_machine(void)
 	if ( pulsesselin > 10 )
 	{
 		flags._.radio_on = 1 ;
-		pulsesselin = 0 ;
 		LED_GREEN = LED_ON ; // indicate radio on
 		//	Select manual, automatic, or come home, based on pulse width of the switch input channel as defined in options.h.
 		if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > 3400 )
@@ -59,13 +59,20 @@ void state_machine(void)
 		flags._.auto_req = 0 ;
 		flags._.home_req = 0 ;
 		LED_GREEN = LED_OFF ; // indicate radio off
-		pulsesselin = 0 ;
 	}
+	
+	pulsesselin = 0 ;
+	
+	//	Update the nav capable flag. If the GPS has a lock, gps_data_age will be small.
+	//	For now, nav_capable will always be 0 when the Airframe type is AIRFRAME_HELI.
+#if (AIRFRAME_TYPE != AIRFRAME_HELI)
+	if (gps_data_age < GPS_DATA_MAX_AGE) gps_data_age++ ;
+	flags._.nav_capable = (gps_data_age < GPS_DATA_MAX_AGE) ;
+#endif
+	
 	//	Execute the activities for the current state.
 	(* stateS) () ;
-	//	Reset the nav capable flag. If the GPS has a lock, this flag will be set the next time.
-	//	For now, this will always be 0 when the Airframe type is AIRFRAME_HELI.
-	flags._.nav_capable = 0 ;
+	
 	return ;
 }
 
@@ -88,7 +95,7 @@ void ent_acquiringS()
 {
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
-	waggle = WAGGLE ;
+	waggle = 0 ;
 	stateS = &acquiringS ;
 	standby_timer = STANDBY_PAUSE ;
 	LED_RED = LED_OFF ;
@@ -180,7 +187,11 @@ void acquiringS(void)
 	{
 		if ( flags._.radio_on )
 		{
-			waggle = - waggle ;
+			if (waggle == 0)
+				waggle = WAGGLE ;
+			else
+				waggle = - waggle ;
+			
 			standby_timer-- ;
 			if ( standby_timer <= 0)
 			{
@@ -236,7 +247,12 @@ void autoS(void)
 void returnS(void)
 {
 	if ( flags._.radio_on )
-		ent_manualS() ;
+	{
+		if ( flags._.man_req )
+			ent_manualS() ;
+		else if ( flags._.auto_req )
+			ent_autoS() ;
+	}		
 	return ;
 }
 

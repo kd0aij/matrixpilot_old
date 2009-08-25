@@ -64,6 +64,4 @@ extern union longbbbb x_origin , y_origin , z_origin ;
 extern signed char	desired_dir , actual_dir ;
 
 extern int waggle, calib_timer, standby_timer, pulsesselin ;
-
-
-
+extern int gps_data_age;
