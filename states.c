@@ -94,7 +94,7 @@ void ent_calibrateS()
 void ent_acquiringS()
 {
 	flags._.GPS_steering = 0 ;
-	flags._.pitch_feedback = 1 ;
+	flags._.pitch_feedback = 0 ;
 	waggle = 0 ;
 	stateS = &acquiringS ;
 	standby_timer = STANDBY_PAUSE ;

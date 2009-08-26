@@ -46,7 +46,6 @@ file_018=.
 file_019=.
 file_020=.
 file_021=.
-file_022=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -70,7 +69,6 @@ file_018=no
 file_019=no
 file_020=no
 file_021=no
-file_022=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -94,7 +92,6 @@ file_018=no
 file_019=no
 file_020=no
 file_021=no
-file_022=no
 [FILE_INFO]
 file_000=aileronCntrl.c
 file_001=analog2digital.c
@@ -117,8 +114,7 @@ file_017=defines.h
 file_018=definesRmat.h
 file_019=options.h
 file_020=optionsRmat.h
-file_021=definesUAVDB.h
-file_022=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
+file_021=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

@@ -5,10 +5,10 @@
 
 //	Variables.
 
-int rise[NUM_INPUTS] ;		// rising edge clock capture for radio inputs
-int pwIn[NUM_INPUTS] ;		// pulse widths of radio inputs
-int pwTrim[NUM_INPUTS] ;	// initial pulse widths for trimming
-int pwOut[NUM_OUTPUTS] ;	// pulse widths for servo outputs
+int rise[MAX_INPUTS] ;		// rising edge clock capture for radio inputs
+int pwIn[MAX_INPUTS] ;		// pulse widths of radio inputs
+int pwTrim[MAX_INPUTS] ;	// initial pulse widths for trimming
+int pwOut[MAX_OUTPUTS] ;	// pulse widths for servo outputs
 
 int pitch_control, roll_control ;
 

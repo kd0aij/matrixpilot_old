@@ -1,5 +1,3 @@
-#include "definesUAVDB.h"
-
 #ifdef ConfigRed
 #include "ConfigRed.h"
 #endif
@@ -7,7 +5,7 @@
 #ifdef ConfigGreen
 #include "ConfigGreen.h"
 #endif 
- 
+
 #define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
 //#define FILTERSHIFT 6 // filter shift divide
 #define FILTERSHIFT 3 
@@ -24,8 +22,8 @@
 #define ACCTBYTAU 5120/ACCTAU	// 256*(time_step/time_constant)
 #define RATETBYTAU 5120/RATETAU
 
-#define indicate_loading_main 	//LATEbits.LATE0 = 0
-#define indicate_loading_inter	//LATEbits.LATE0 = 1
+#define indicate_loading_main 	//LATEbits.LATE4 = 0
+#define indicate_loading_inter	//LATEbits.LATE4 = 1
 
 // Choose your airframe type: AIRFRAME_STANDARD, AIRFRAME_VTAIL, or AIRFRAME_DELTA
 #define AIRFRAME_TYPE		AIRFRAME_STANDARD
@@ -79,5 +77,5 @@
 // For any of these that evaluate to 1, that servo will be sent reversed controls.
 #define AILERON_CHANNEL_REVERSED			(HW_SWITCH_1 == 0)
 #define ELEVATOR_CHANNEL_REVERSED			(HW_SWITCH_2 == 0)
-#define RUDDER_CHANNEL_REVERSED				(HW_SWITCH_3 == 0)
-#define AILERON_SECONDARY_CHANNEL_REVERSED	1	// Hardcoded to be reversed, since we have only 3 switches.
+#define RUDDER_CHANNEL_REVERSED				0	// Hardcoded to be unreversed, since we have only 3 switches.
+#define AILERON_SECONDARY_CHANNEL_REVERSED	(HW_SWITCH_3 == 0)
