@@ -21,3 +21,8 @@
 
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
 #define RMAX15 0b0110000000000000	//	1.5 in 2.14 format
+
+#define YAWKP_M		(YAWKP*RMAX)
+#define YAWKD_M		(YAWKD*RMAX)
+#define ROLLKP_M	(ROLLKP*RMAX)
+#define ROLLKD_M	(ROLLKD*RMAX)

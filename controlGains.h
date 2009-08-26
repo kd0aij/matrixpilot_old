@@ -1,6 +1,12 @@
-//YAWKP is the return to launch turning gain, typically around 0.0625
+// control gains.
+// All gains should be positive real numbers.
+
+
+// YAWKP is the proportional feedback gain for the rudder
+// YAWKD is the yaw gyro feedback gain for the rudder
 
 #define YAWKP 0.0625
+#define YAWKD .25
 
 //ROLLKP and ROLLKD are roll stabilization gains.
 //ROLLKP is the proportional gain, approximately 0.25
@@ -22,7 +28,7 @@
 // it is used to increase speed (and wind penetration) during a return to launch.
 // set it to zero if you do want to use this feature.
 
-#define RTLPITCHDOWN 0.0
+#define RTLPITCHDOWN 0.0 // Was 2.0 in MatrixNav
 
 // the real number SERVOSAT limits servo throw by controlling pulse width saturation.
 // set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want
@@ -33,6 +39,3 @@
 // if you define TestGains, there functions will be enabled, even without GPS or Tx turned on.
 
 //#define TestGains
-
-
-

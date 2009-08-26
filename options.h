@@ -25,8 +25,14 @@
 #define indicate_loading_main 	//LATEbits.LATE4 = 0
 #define indicate_loading_inter	//LATEbits.LATE4 = 1
 
-// Choose your airframe type: AIRFRAME_STANDARD, AIRFRAME_VTAIL, or AIRFRAME_DELTA
-#define AIRFRAME_TYPE		AIRFRAME_STANDARD
+
+// Choose your airframe type:
+//    AIRFRAME_STANDARD 	Ailerons and Elevator, and Rudder passthrough
+//    AIRFRAME_VTAIL		Ailerons, and Elevator and Rudder as V-tail controls
+//    AIRFRAME_DELTA		Aileron and Elevator as Elevons, and Rudder passthrough
+//    AIRFRAME_STD_NOAIL	Elevator and Rudder control (like MatrixNav)
+//    AIRFRAME_VTAIL_NOAIL	Elevator and Rudder as V-tail controls (like MatrixNav with VTAIL)
+#define AIRFRAME_TYPE	AIRFRAME_STANDARD
 
 
 // NUM_INPUTS: Set to 4 or 5 

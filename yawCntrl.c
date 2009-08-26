@@ -2,16 +2,16 @@
 #include "definesRmat.h"
 #include "defines.h"
 
-// Only build this code if we have ailerons to control
-#if !USE_MATRIX_NAV_CONTROL
+// Only build this code if we don't have ailerons to control
+#if USE_MATRIX_NAV_CONTROL
 
 
-union longww gyroRollFeedback ;
+union longww gyroYawFeedback ;
 
 
-void rollCntrl(void)
+void yawCntrl(void)
 {
-	union longww rollAccum ;
+	union longww yawAccum ;
 	union longww dotprod ;
 	union longww crossprod ;
 	int desiredX ;
@@ -24,9 +24,10 @@ void rollCntrl(void)
 #endif 
 	if ( flags._.GPS_steering )
 	{
+		gyroYawFeedback.WW = __builtin_mulss( YAWKD_M , omega[2] ) ;
 #ifdef TestGains
-		desiredX = -cosine ( 64 ) ;
-		desiredY = sine ( 64 ) ;
+		desiredX = -cosine ( 0 ) ;
+		desiredY = sine ( 0 ) ;
 #else
 		desiredX = -cosine( desired_dir ) ;
 		desiredY = sine( desired_dir ) ;
@@ -38,40 +39,27 @@ void rollCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			rollAccum.WW = __builtin_mulss( crossprod._.W1 , YAWKP_M ) ;
+			yawAccum.WW = __builtin_mulss( crossprod._.W1 , YAWKP_M ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				rollAccum._.W1 = YAWKP_M/4 ;
+				yawAccum._.W1 = YAWKP_M/4 ;
 			}
 			else
 			{
-				rollAccum._.W1 = -YAWKP_M/4 ;
+				yawAccum._.W1 = -YAWKP_M/4 ;
 			}
 		}
 	}
 	else
 	{
-		rollAccum.WW = 0 ;
-		gyroRollFeedback.WW = 0 ;
-	}
-#ifdef TestGains
-	flags._.pitch_feedback = 1 ;
-#endif
-	
-	if ( flags._.pitch_feedback )
-	{
-		gyroRollFeedback.WW = __builtin_mulss( ROLLKD_M , omega[1] ) ;
-		rollAccum.WW += __builtin_mulss( rmat[6] , ROLLKP_M ) ;
-	}
-	else
-	{
-		gyroRollFeedback.WW = 0 ;
+		yawAccum.WW = 0 ;
+		gyroYawFeedback.WW = 0 ;
 	}
 	
-	roll_control = (long)rollAccum._.W1 - (long)gyroRollFeedback._.W1 ;
+	yaw_control = (long)yawAccum._.W1 - (long)gyroYawFeedback._.W1 ;
 	
 	return ;
 }

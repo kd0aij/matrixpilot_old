@@ -87,6 +87,51 @@ void servoMix( void )
 #endif
 	
 	
+	// Standard airplane airframe
+	// Mix roll_control and waggle into ailerons
+	// Mix pitch_control into elevators
+#if ( AIRFRAME_TYPE == AIRFRAME_STANDARD )
+		temp = pwIn[AILERON_INPUT_CHANNEL] ;
+		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+		
+		pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = 3000 +
+			REVERSE_IF_NEEDED(AILERON_SECONDARY_CHANNEL_REVERSED, pwOut[AILERON_OUTPUT_CHANNEL] - 3000) ;
+		
+		temp = pwIn[ELEVATOR_INPUT_CHANNEL] + REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, pitch_control) ;
+		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+		
+		temp = pwIn[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control + waggle) ;
+		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
+		
+		temp = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
+#endif
+	
+	
+	// V-Tail airplane airframe
+	// Mix roll_control and waggle into ailerons
+	// Mix pitch_control into both elevator and rudder
+#if ( AIRFRAME_TYPE == AIRFRAME_VTAIL )
+		temp = pwIn[AILERON_INPUT_CHANNEL] ;
+		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+		
+		//	Reverse the polarity of the secondary aileron if necessary
+		pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = 3000 +
+			REVERSE_IF_NEEDED(AILERON_SECONDARY_CHANNEL_REVERSED, pwOut[AILERON_OUTPUT_CHANNEL] - 3000) ;
+		
+		temp = pwIn[ELEVATOR_INPUT_CHANNEL] +
+			REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, pitch_control + yaw_control) ;
+		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+		
+		temp = pwIn[RUDDER_INPUT_CHANNEL] +
+			REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, pitch_control - yaw_control) ;
+		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
+		
+		temp = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
+#endif
+	
+	
 	// Helicopter airframe
 	// Mix half of roll_control and half of pitch_control into aileron channels
 	// Mix full pitch_control into elevator

@@ -76,8 +76,12 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	// case 0 is when the control is up and running
 
 	case 0: {
-		imu() ;	
+		imu() ;
+#if USE_MATRIX_NAV_CONTROL
+		yawCntrl() ;
+#else
 		rollCntrl() ;
+#endif
 		pitchCntrl() ;
 		servoMix() ;
 		break ;

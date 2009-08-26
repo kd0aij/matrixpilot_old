@@ -9,6 +9,7 @@
 
 
 void init_clock(void) ;
+void set_gps2(void) ;
 void set_bin(void) ;
 void set_baud(void) ;
 void init_T3(void) ;
@@ -26,8 +27,14 @@ void navigate(void) ;
 
 void state_machine(void) ;
 void filterInputs(void) ;
-void aileronCntrl(void) ;
-void elevatorCntrl(void) ;
+
+#if USE_MATRIX_NAV_CONTROL
+void yawCntrl(void) ;
+#else
+void rollCntrl(void) ;
+#endif
+
+void pitchCntrl(void) ;
 void mixServos(void) ;
 
 int pulsesat(long) ;
@@ -37,7 +44,7 @@ extern int pwIn[MAX_INPUTS] ;	// pulse widths of radio inputs
 extern int pwTrim[MAX_INPUTS] ;	// initial pulse widths for trimming
 extern int pwOut[MAX_OUTPUTS] ;	// pulse widths for servo outputs
 
-extern int pitch_control, roll_control ;
+extern int pitch_control, roll_control, yaw_control ;
 
 extern struct ADchannel xaccel, yaccel , zaccel ;	// x, y, and z accelerometer channels
 extern struct ADchannel xrate , yrate, zrate ; 		// x, y, and z gyro channels
@@ -83,11 +90,14 @@ extern int gps_data_age;
 
 
 // Choose the type of air frame by setting AIRFRAME_TYPE in options.h
-#define AIRFRAME_STANDARD	0	// Ailerons and Elevator, and Rudder passthrough
-#define AIRFRAME_VTAIL		1	// Ailerons, and Elevator and Rudder as V-tail controls
-#define AIRFRAME_DELTA		2	// Aileron and Elevator as Elevons, and Rudder passthrough
-#define AIRFRAME_HELI		3	// Aileron (Front-Left), Elevator (Rear), and 2ndAileron (Front-Right), and Rudder passthrough
+#define AIRFRAME_STANDARD		0	// Ailerons and Elevator, and Rudder passthrough
+#define AIRFRAME_VTAIL			1	// Ailerons, and Elevator and Rudder as V-tail controls
+#define AIRFRAME_DELTA			2	// Aileron and Elevator as Elevons, and Rudder passthrough
+#define AIRFRAME_STD_NOAIL		3	// Elevator and Rudder control (like MatrixNav)
+#define AIRFRAME_VTAIL_NOAIL	4	// Elevator and Rudder as V-tail controls (like MatrixNav with VTAIL)
+#define AIRFRAME_HELI			5	// Aileron (Front-Left), Elevator (Rear), and 2ndAileron (Front-Right), and Rudder passthrough
 
+#define USE_MATRIX_NAV_CONTROL		(AIRFRAME_TYPE == AIRFRAME_STD_NOAIL || AIRFRAME_TYPE == AIRFRAME_VTAIL_NOAIL)
 
 // Pin locations of the hardware toggle switches
 #define HW_SWITCH_1			(PORTDbits.RD3)
