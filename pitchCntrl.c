@@ -10,9 +10,9 @@ int rtlkick = 0 ;
 
 int pitchgain = PITCHGAIN*RMAX ;
 
-void elevatorCntrl(void)
+void pitchCntrl(void)
 {
-	union longww elevAccum ;
+	union longww pitchAccum ;
 	
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
@@ -28,14 +28,14 @@ void elevatorCntrl(void)
 	}
 	if ( flags._.pitch_feedback )
 	{
-		elevAccum.WW = __builtin_mulss( rmat[7] - rtlkick , pitchgain ) ;
+		pitchAccum.WW = __builtin_mulss( rmat[7] - rtlkick , pitchgain ) ;
 	}
 	else
 	{
-		elevAccum.WW = 0 ;
+		pitchAccum.WW = 0 ;
 	}
 	
-	pitch_control = (long)elevAccum._.W1 ;
+	pitch_control = (long)pitchAccum._.W1 ;
 	
 	return ;
 }

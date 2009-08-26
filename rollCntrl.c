@@ -10,9 +10,9 @@ int rollkd = ROLLKD*RMAX ;
 
 union longww gyroFeedback ;
 
-void aileronCntrl(void)
+void rollCntrl(void)
 {
-	union longww aileronAccum ;
+	union longww rollAccum ;
 	union longww dotprod ;
 	union longww crossprod ;
 	int desiredX ;
@@ -39,23 +39,23 @@ void aileronCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			aileronAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
+			rollAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				aileronAccum._.W1 = RMAX*YAWKP/4 ;
+				rollAccum._.W1 = RMAX*YAWKP/4 ;
 			}
 			else
 			{
-				aileronAccum._.W1 = -RMAX*YAWKP/4 ;
+				rollAccum._.W1 = -RMAX*YAWKP/4 ;
 			}
 		}
 	}
 	else
 	{
-		aileronAccum.WW = 0 ;
+		rollAccum.WW = 0 ;
 		gyroFeedback.WW = 0 ;
 	}
 #ifdef TestGains
@@ -65,14 +65,14 @@ void aileronCntrl(void)
 	if ( flags._.pitch_feedback )
 	{
 		gyroFeedback.WW = __builtin_mulss( rollkd , omega[1] ) ;
-		aileronAccum.WW += __builtin_mulss( rmat[6] , rollkp ) ;
+		rollAccum.WW += __builtin_mulss( rmat[6] , rollkp ) ;
 	}
 	else
 	{
 		gyroFeedback.WW = 0 ;
 	}
 	
-	roll_control = (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
+	roll_control = (long)rollAccum._.W1 - (long)gyroFeedback._.W1 ;
 	
 	return ;
 }

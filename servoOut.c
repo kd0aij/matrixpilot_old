@@ -77,8 +77,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 
 	case 0: {
 		imu() ;	
-		aileronCntrl() ;
-		elevatorCntrl() ;
+		rollCntrl() ;
+		pitchCntrl() ;
 		servoMix() ;
 		break ;
 	}
