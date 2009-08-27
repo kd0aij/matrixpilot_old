@@ -16,6 +16,10 @@
 #define NUM_WAGGLES 4 // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
 #define WAGGLE_SIZE 300
 
+#define SERVORANGE (int) SERVOSAT*1000
+#define SERVOMAX 3000 + SERVORANGE
+#define SERVOMIN 3000 - SERVORANGE
+
 #define ACCTAU 200 // in milliseconds
 #define RATETAU 100
 
@@ -27,11 +31,11 @@
 
 
 // Choose your airframe type:
-//    AIRFRAME_STANDARD 	Ailerons and Elevator, and Rudder passthrough
-//    AIRFRAME_VTAIL		Ailerons, and Elevator and Rudder as V-tail controls
-//    AIRFRAME_DELTA		Aileron and Elevator as Elevons, and Rudder passthrough
-//    AIRFRAME_STD_NOAIL	Elevator and Rudder control (like MatrixNav)
-//    AIRFRAME_VTAIL_NOAIL	Elevator and Rudder as V-tail controls (like MatrixNav with VTAIL)
+//    AIRFRAME_STANDARD		 	Ailerons and Elevator, and Rudder passthrough
+//    AIRFRAME_VTAIL			Ailerons, and Elevator and Rudder as V-tail controls
+//    AIRFRAME_DELTA			Aileron and Elevator as Elevons, and Rudder passthrough
+//    AIRFRAME_STANDARD_NOAIL	Elevator and Rudder control (like MatrixNav)
+//    AIRFRAME_VTAIL_NOAIL		Elevator and Rudder as V-tail controls (like MatrixNav with VTAIL)
 #define AIRFRAME_TYPE	AIRFRAME_STANDARD
 
 
@@ -51,10 +55,10 @@
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
-#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_5
 #define AILERON_INPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_5
+#define RUDDER_INPUT_CHANNEL				CHANNEL_3
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
 
 
@@ -73,8 +77,8 @@
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_5
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
-#define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3
+#define RUDDER_OUTPUT_CHANNEL				CHANNEL_4	// If you're set up MatrixNav-style (rudder navigation), then you
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3	// probably want to switch CHANNEL_3 with CHANNEL_4 on these lines.
 #define UNUSED_OUTPUT_CHANNEL				CHANNEL_6
 
 

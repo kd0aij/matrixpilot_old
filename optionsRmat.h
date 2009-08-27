@@ -13,6 +13,8 @@
 #define GRAVITYM ((long long)980) 
 // 100 times gravity, meters/sec/sec
 
+#define ACCELSCALE ((long) ( GRAVITY/GRAVITYM ) )
+
 #define CENTRISCALE (long long) (((long long)519168)*GRAVITY)/(RADPERSEC*GRAVITYM)
 // scale factor in multiplying omega times velocity to get centrifugal acceleration
 
@@ -22,7 +24,7 @@
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
 #define RMAX15 0b0110000000000000	//	1.5 in 2.14 format
 
-#define YAWKP_M		(YAWKP*RMAX)
-#define YAWKD_M		(YAWKD*RMAX)
-#define ROLLKP_M	(ROLLKP*RMAX)
-#define ROLLKD_M	(ROLLKD*RMAX)
+#define YAWKP_M		(int)(YAWKP*RMAX)
+#define YAWKD_M		(int)(YAWKD*RMAX)
+#define ROLLKP_M	(int)(ROLLKP*RMAX)
+#define ROLLKD_M	(int)(ROLLKD*RMAX)

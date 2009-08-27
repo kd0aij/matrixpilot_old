@@ -2,9 +2,6 @@
 #include "definesRmat.h"
 #include "defines.h"
 
-// Only build this code if we have ailerons to control
-#if !USE_MATRIX_NAV_CONTROL
-
 
 union longww gyroRollFeedback ;
 
@@ -75,5 +72,3 @@ void rollCntrl(void)
 	
 	return ;
 }
-
-#endif

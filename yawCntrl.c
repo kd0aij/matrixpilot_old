@@ -2,9 +2,8 @@
 #include "definesRmat.h"
 #include "defines.h"
 
-// Only build this code if we don't have ailerons to control
-#if USE_MATRIX_NAV_CONTROL
 
+int yawbgain = (int)(8.0*YAWBOOST) ;
 
 union longww gyroYawFeedback ;
 
@@ -24,7 +23,6 @@ void yawCntrl(void)
 #endif 
 	if ( flags._.GPS_steering )
 	{
-		gyroYawFeedback.WW = __builtin_mulss( YAWKD_M , omega[2] ) ;
 #ifdef TestGains
 		desiredX = -cosine ( 0 ) ;
 		desiredY = sine ( 0 ) ;
@@ -56,12 +54,20 @@ void yawCntrl(void)
 	else
 	{
 		yawAccum.WW = 0 ;
+	}
+	if ( flags._.GPS_steering || flags._.pitch_feedback )
+	{
+		gyroYawFeedback.WW = __builtin_mulss( YAWKD_M , omegaAccum[2] ) ;
+		yawboost = ( __builtin_mulss( yawbgain , ( pwIn[RUDDER_INPUT_CHANNEL] - pwTrim[RUDDER_INPUT_CHANNEL] ) ))>>3 ;
+		// For now yawboost is only mixed into standard-no-aileron airframes
+	}
+	else
+	{
 		gyroYawFeedback.WW = 0 ;
+		yawboost = 0 ;
 	}
 	
 	yaw_control = (long)yawAccum._.W1 - (long)gyroYawFeedback._.W1 ;
 	
 	return ;
 }
-
-#endif

@@ -54,10 +54,6 @@ void init_pwm( void )	// initialize the PWM
 	return ;
 }
 
-#define SERVORANGE SERVOSAT*1000
-#define SERVOMAX 3000 + SERVORANGE
-#define SERVOMIN 3000 - SERVORANGE
-
 int pulsesat ( long pw ) // saturation logic to maintain pulse width within bounds
 {
 	if ( pw > SERVOMAX ) pw = SERVOMAX ;
@@ -77,11 +73,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 
 	case 0: {
 		imu() ;
-#if USE_MATRIX_NAV_CONTROL
-		yawCntrl() ;
-#else
 		rollCntrl() ;
-#endif
+		yawCntrl() ;
 		pitchCntrl() ;
 		servoMix() ;
 		break ;
