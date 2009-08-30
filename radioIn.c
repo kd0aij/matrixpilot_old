@@ -18,7 +18,7 @@ void init_capture(void)
 	IC1CON = IC2CON = IC7CON = IC8CON = 0b0010000010000001 ;
 	
 	int i;
-	for (i=0; i < NUM_INPUTS; i++)
+	for (i=0; i <= NUM_INPUTS; i++)
 		rise[i] = pwIn[i] = pwTrim[i] = 3000;
 	
 	IPC0bits.IC1IP = IPC1bits.IC2IP = IPC4bits.IC7IP = IPC4bits.IC8IP = 7 ; // priority 7

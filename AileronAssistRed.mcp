@@ -48,6 +48,7 @@ file_020=.
 file_021=.
 file_022=.
 file_023=.
+file_024=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -73,6 +74,7 @@ file_020=no
 file_021=no
 file_022=no
 file_023=no
+file_024=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -98,6 +100,7 @@ file_020=no
 file_021=no
 file_022=no
 file_023=no
+file_024=no
 [FILE_INFO]
 file_000=analog2digital.c
 file_001=background.c
@@ -116,13 +119,14 @@ file_013=pitchCntrl.c
 file_014=rollCntrl.c
 file_015=yawCntrl.c
 file_016=altitudeCntrl.c
-file_017=ConfigRed.h
-file_018=controlGains.h
-file_019=defines.h
-file_020=definesRmat.h
-file_021=options.h
-file_022=optionsRmat.h
-file_023=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
+file_017=cameraCntrl.c
+file_018=ConfigRed.h
+file_019=controlGains.h
+file_020=defines.h
+file_021=definesRmat.h
+file_022=options.h
+file_023=optionsRmat.h
+file_024=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

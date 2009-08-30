@@ -104,7 +104,7 @@ void ent_acquiringS()
 	LED_RED = LED_OFF ;
 	
 	int i;
-	for (i=0; i < NUM_INPUTS; i++)
+	for (i=1; i <= NUM_INPUTS; i++)
 		pwTrim[i] = pwIn[i] ;
 	
 	return ;

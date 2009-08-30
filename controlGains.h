@@ -43,6 +43,13 @@
 #define PITCHATZEROTHROTTLE 0.0 // target pitch angle in degrees while gliding
 
 
+// The following section is for camera stabilization
+// These values are untested and will need adjustment
+#define CAMERA_ROLLKP	0.5
+#define CAMERA_PITCHKP	0.5
+#define CAMERA_YAWKP	0.5
+
+
 // the following define is used to test the above gains and parameters.
 // if you define TestGains, there functions will be enabled, even without GPS or Tx turned on.
 //#define TestGains		// uncomment this line if you want to test your gains without using GPS

@@ -9,17 +9,13 @@
 //	Mix computed roll and pitch controls into the output channels for the compiled airframe type
 
 
-#define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)		((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))
-
-
-
 void servoMix( void )
 {
 	long temp ;
 	
 	// If radio is off, use pwTrim values instead of the pwIn values
 	if (!flags._.radio_on)
-		for (temp = 0; temp < NUM_INPUTS; temp++)
+		for (temp = 1; temp <= NUM_INPUTS; temp++)
 			pwIn[temp] = pwTrim[temp];
 	
 	

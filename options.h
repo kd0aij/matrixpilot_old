@@ -74,11 +74,21 @@
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
+//   - Only assign each channel to one output purpose
+//   - If you don't want to use an output channel, set it to CHANNEL_UNUSED
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_5
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4	// If you're set up MatrixNav-style (rudder navigation), then you
 #define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3	// probably want to switch CHANNEL_3 with CHANNEL_4 on these lines.
+#define CAMERA_ROLL_OUTPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
+
+
+// Camera Stabilization
+// To enable, set this value to 1, and assign one or more of the CAMERA_*_OUTPUT_CHANNELS above.
+#define USE_CAMERA_STABILIZATION			0
 
 
 // Servo Reversing Configuration
@@ -89,3 +99,6 @@
 #define RUDDER_CHANNEL_REVERSED				0	// Hardcoded to be unreversed, since we have only 3 switches.
 #define AILERON_SECONDARY_CHANNEL_REVERSED	(HW_SWITCH_3 == 0)
 #define THROTTLE_CHANNEL_REVERSED			0
+#define CAMERA_ROLL_CHANNEL_REVERSED		0
+#define CAMERA_PITCH_CHANNEL_REVERSED		0
+#define CAMERA_YAW_CHANNEL_REVERSED			0

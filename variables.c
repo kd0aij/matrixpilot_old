@@ -5,10 +5,10 @@
 
 //	Variables.
 
-int rise[MAX_INPUTS] ;		// rising edge clock capture for radio inputs
-int pwIn[MAX_INPUTS] ;		// pulse widths of radio inputs
-int pwTrim[MAX_INPUTS] ;	// initial pulse widths for trimming
-int pwOut[MAX_OUTPUTS] ;	// pulse widths for servo outputs
+int rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
+int pwIn[MAX_INPUTS+1] ;	// pulse widths of radio inputs
+int pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
+int pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 
 int pitch_control, roll_control, yaw_control, altitude_control ;
 long pitchboost = 0 ;

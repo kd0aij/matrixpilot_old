@@ -22,7 +22,7 @@ void init_pwm( void )	// initialize the PWM
 	gpscount = 1000 ; // wait 25 seconds for GPS to initialize
 
 	int i;
-	for (i=0; i < NUM_OUTPUTS; i++)
+	for (i=0; i <= NUM_OUTPUTS; i++)
 		pwOut[i] = 3000;
 	
 	TRISE = 0b1111111111000000 ;
@@ -77,6 +77,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		yawCntrl() ;
 		pitchCntrl() ;
 		altitudeCntrl();
+#if ( USE_CAMERA_STABILIZATION == 1 )
+		cameraCntrl();
+#endif
 		servoMix() ;
 		break ;
 	}

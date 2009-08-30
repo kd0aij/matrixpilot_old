@@ -32,14 +32,15 @@ void yawCntrl(void) ;
 void rollCntrl(void) ;
 void pitchCntrl(void) ;
 void altitudeCntrl(void) ;
+void cameraCntrl(void) ;
 void mixServos(void) ;
 
 int pulsesat(long) ;
 
-extern int rise[MAX_INPUTS] ;	// rising edge clock capture for radio inputs
-extern int pwIn[MAX_INPUTS] ;	// pulse widths of radio inputs
-extern int pwTrim[MAX_INPUTS] ;	// initial pulse widths for trimming
-extern int pwOut[MAX_OUTPUTS] ;	// pulse widths for servo outputs
+extern int rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
+extern int pwIn[MAX_INPUTS+1] ;	// pulse widths of radio inputs
+extern int pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
+extern int pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 
 extern int pitch_control, roll_control, yaw_control, altitude_control ;
 extern long pitchboost ;
@@ -91,13 +92,13 @@ extern int velocity_previous  ;
 
 
 // Channel numbers on the board, mapped to positions in the pulse width arrays.
-#define CHANNEL_1 0
-#define CHANNEL_2 1
-#define CHANNEL_3 2
-#define CHANNEL_4 3
-#define CHANNEL_5 4
-#define CHANNEL_6 5
-#define CHANNEL_UNUSED 999
+#define CHANNEL_UNUSED 0
+#define CHANNEL_1 1
+#define CHANNEL_2 2
+#define CHANNEL_3 3
+#define CHANNEL_4 4
+#define CHANNEL_5 5
+#define CHANNEL_6 6
 
 
 // Choose the type of air frame by setting AIRFRAME_TYPE in options.h
@@ -129,3 +130,6 @@ extern int velocity_previous  ;
 
 // If GPS data has not been received for this many state machine cycles, consider the GPS lock to be lost.
 #define GPS_DATA_MAX_AGE	3
+
+
+#define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)		((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))

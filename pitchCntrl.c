@@ -46,6 +46,7 @@ void pitchCntrl(void)
 	{
 		rtlkick = 0 ;
 	}
+	
 	if ( flags._.pitch_feedback )
 	{
 		pitchAccum.WW = 	__builtin_mulss( rmat[7] - rtlkick + pitchAltitudeAdjust, pitchgain ) 
