@@ -39,7 +39,7 @@ void servoMix( void )
 		temp = pwIn[RUDDER_INPUT_CHANNEL] /*+ REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control)*/ ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
-		temp = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		temp = pwIn[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -63,7 +63,7 @@ void servoMix( void )
 			REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, pitch_control /*- yaw_control*/) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		temp = pwIn[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -82,7 +82,7 @@ void servoMix( void )
 		temp = pwIn[RUDDER_INPUT_CHANNEL] /*+ REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control)*/ ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
-		temp = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		temp = pwIn[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -103,7 +103,7 @@ void servoMix( void )
 		temp = pwIn[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control + waggle) + yawboost;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
-		temp = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		temp = pwIn[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -126,7 +126,7 @@ void servoMix( void )
 			REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, pitch_control - yaw_control) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		temp = pwIn[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -151,7 +151,7 @@ void servoMix( void )
 		temp = pwIn[RUDDER_INPUT_CHANNEL] /*+ REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control)*/ ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		temp = pwIn[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 }

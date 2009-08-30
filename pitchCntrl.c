@@ -10,18 +10,10 @@ int rtlkick = 0 ;
 
 int pitchgain = (int)(PITCHGAIN*RMAX) ;
 int pitchrate = 0 ;
-//int pitchkd = (int)(PITCHKD*RMAX) ;
-int pitchkd = 0 ;
-//int pitchbgain = (int)(8.0*PITCHBOOST) ;
-int pitchbgain = 0 ;
-
-// note: I was using experimenting with pitchkd and PITCHBOOST for a while.
-// they are not really needed, so I did not leave them in.
-// if you want to try them out, you are welcome to turn them back on. - WJP
+int pitchbgain = (int)(8.0*PITCHBOOST) ;
 
 int rudderElevMixGain = (int)(RMAX*RUDDERELEVMIX) ;
 int rudderElevMix ;
-
 
 void pitchCntrl(void)
 {
@@ -56,8 +48,9 @@ void pitchCntrl(void)
 	}
 	if ( flags._.pitch_feedback )
 	{
-		pitchAccum.WW = 	__builtin_mulss( rmat[7] - rtlkick , pitchgain ) 
-						+	__builtin_mulss( pitchkd , pitchrate ) ;
+		pitchAccum.WW = 	__builtin_mulss( rmat[7] - rtlkick + pitchAltitudeAdjust, pitchgain ) 
+						+	__builtin_mulss( PITCHKD_RM , pitchrate ) ;
+		
 		pitchboost =  (__builtin_mulss(pitchbgain , (	pwIn[ELEVATOR_INPUT_CHANNEL] - pwTrim[ELEVATOR_INPUT_CHANNEL] ))>>3) ;
 		// For now pitchboost is only mixed into standard-no-aileron airframes
 	}
@@ -68,6 +61,7 @@ void pitchCntrl(void)
 	}
 	
 	pitch_control = (long)pitchAccum._.W1 + rudderElevMix ;
+	// Servo reversing is handled in servoMix.c
 	
 	return ;
 }

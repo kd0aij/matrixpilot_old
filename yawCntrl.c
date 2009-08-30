@@ -37,17 +37,17 @@ void yawCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			yawAccum.WW = __builtin_mulss( crossprod._.W1 , YAWKP_M ) ;
+			yawAccum.WW = __builtin_mulss( crossprod._.W1 , YAWKP_RM ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				yawAccum._.W1 = YAWKP_M/4 ;
+				yawAccum._.W1 = YAWKP_RM/4 ;
 			}
 			else
 			{
-				yawAccum._.W1 = -YAWKP_M/4 ;
+				yawAccum._.W1 = -YAWKP_RM/4 ;
 			}
 		}
 	}
@@ -57,7 +57,7 @@ void yawCntrl(void)
 	}
 	if ( flags._.GPS_steering || flags._.pitch_feedback )
 	{
-		gyroYawFeedback.WW = __builtin_mulss( YAWKD_M , omegaAccum[2] ) ;
+		gyroYawFeedback.WW = __builtin_mulss( YAWKD_RM , omegaAccum[2] ) ;
 		yawboost = ( __builtin_mulss( yawbgain , ( pwIn[RUDDER_INPUT_CHANNEL] - pwTrim[RUDDER_INPUT_CHANNEL] ) ))>>3 ;
 		// For now yawboost is only mixed into standard-no-aileron airframes
 	}
@@ -68,6 +68,7 @@ void yawCntrl(void)
 	}
 	
 	yaw_control = (long)yawAccum._.W1 - (long)gyroYawFeedback._.W1 ;
+	// Servo reversing is handled in servoMix.c
 	
 	return ;
 }

@@ -68,7 +68,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	//	Executes whatever needs to be done every 20 milliseconds, using the PWM clock.
 	//	This is a good place to run the A/D digital filters and compute pulse widths for servos.
 	//	Also, this is used to wait a few pulses before recording input DC offsets.
-	switch (calibcount ) {
+	switch ( calibcount ) {
 	// case 0 is when the control is up and running
 
 	case 0: {
@@ -76,6 +76,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		rollCntrl() ;
 		yawCntrl() ;
 		pitchCntrl() ;
+		altitudeCntrl();
 		servoMix() ;
 		break ;
 	}
@@ -137,7 +138,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 
 void manualPassthrough( void )
 {
-	roll_control = pitch_control = 0 ;
+	roll_control = pitch_control = yaw_control = altitude_control = 0 ;
 	servoMix() ;
 	
 	return ;

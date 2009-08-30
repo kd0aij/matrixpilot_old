@@ -30,8 +30,8 @@ void filterInputs(void) ;
 
 void yawCntrl(void) ;
 void rollCntrl(void) ;
-
 void pitchCntrl(void) ;
+void altitudeCntrl(void) ;
 void mixServos(void) ;
 
 int pulsesat(long) ;
@@ -41,7 +41,7 @@ extern int pwIn[MAX_INPUTS] ;	// pulse widths of radio inputs
 extern int pwTrim[MAX_INPUTS] ;	// initial pulse widths for trimming
 extern int pwOut[MAX_OUTPUTS] ;	// pulse widths for servo outputs
 
-extern int pitch_control, roll_control, yaw_control ;
+extern int pitch_control, roll_control, yaw_control, altitude_control ;
 extern long pitchboost ;
 extern long yawboost ;
 
@@ -80,6 +80,9 @@ extern int height ;
 extern int waggle, calib_timer, standby_timer, pulsesselin ;
 extern int gps_data_age;
 
+extern union longww throttleFiltered ;
+extern int pitchAltitudeAdjust ;
+
 extern signed char GPS_pitch  ;
 
 extern int velocity_magnitude ;
@@ -94,6 +97,7 @@ extern int velocity_previous  ;
 #define CHANNEL_4 3
 #define CHANNEL_5 4
 #define CHANNEL_6 5
+#define CHANNEL_UNUSED 999
 
 
 // Choose the type of air frame by setting AIRFRAME_TYPE in options.h

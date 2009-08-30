@@ -83,6 +83,7 @@ void ent_calibrateS()
 {
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
+	flags._.altitude_hold = 0 ;
 	waggle = 0 ;
 	stateS = &calibrateS ;
 	calib_timer = CALIB_PAUSE ;
@@ -95,7 +96,9 @@ void ent_acquiringS()
 {
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
+	flags._.altitude_hold = 0 ;
 	waggle = 0 ;
+	throttleFiltered._.W1 = 0 ;
 	stateS = &acquiringS ;
 	standby_timer = STANDBY_PAUSE ;
 	LED_RED = LED_OFF ;
@@ -112,6 +115,7 @@ void ent_manualS()
 {
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
+	flags._.altitude_hold = 0 ;
 	waggle = 0 ;
 	LED_RED = LED_OFF ;
 	stateS = &manualS ;
@@ -123,6 +127,7 @@ void ent_autoS()
 {
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 1 ;
+	flags._.altitude_hold = 1 ;
 	waggle = 0 ;
 	LED_RED = LED_ON ;
 	stateS = &autoS ;
@@ -134,6 +139,7 @@ void ent_returnS()
 {
 	flags._.GPS_steering = 1 ;
 	flags._.pitch_feedback = 1 ;
+	flags._.altitude_hold = 0 ;
 	waggle = 0 ;
 	LED_RED = LED_ON ;
 	stateS = &returnS ;
@@ -146,6 +152,7 @@ void ent_circlingS()
 {
 	flags._.GPS_steering = 1 ;
 	flags._.pitch_feedback = 1 ;
+	flags._.altitude_hold = 1 ;
 	waggle = 0 ;
 	LED_RED = LED_ON ;
 	stateS = &circlingS ;

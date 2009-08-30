@@ -79,7 +79,6 @@
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4	// If you're set up MatrixNav-style (rudder navigation), then you
 #define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3	// probably want to switch CHANNEL_3 with CHANNEL_4 on these lines.
-#define UNUSED_OUTPUT_CHANNEL				CHANNEL_6
 
 
 // Servo Reversing Configuration
@@ -89,3 +88,4 @@
 #define ELEVATOR_CHANNEL_REVERSED			(HW_SWITCH_2 == 0)
 #define RUDDER_CHANNEL_REVERSED				0	// Hardcoded to be unreversed, since we have only 3 switches.
 #define AILERON_SECONDARY_CHANNEL_REVERSED	(HW_SWITCH_3 == 0)
+#define THROTTLE_CHANNEL_REVERSED			0

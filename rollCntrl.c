@@ -35,17 +35,17 @@ void rollCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			rollAccum.WW = __builtin_mulss( crossprod._.W1 , YAWKP_M ) ;
+			rollAccum.WW = __builtin_mulss( crossprod._.W1 , YAWKP_RM ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				rollAccum._.W1 = YAWKP_M/4 ;
+				rollAccum._.W1 = YAWKP_RM/4 ;
 			}
 			else
 			{
-				rollAccum._.W1 = -YAWKP_M/4 ;
+				rollAccum._.W1 = -YAWKP_RM/4 ;
 			}
 		}
 	}
@@ -60,8 +60,8 @@ void rollCntrl(void)
 	
 	if ( flags._.pitch_feedback )
 	{
-		gyroRollFeedback.WW = __builtin_mulss( ROLLKD_M , omega[1] ) ;
-		rollAccum.WW += __builtin_mulss( rmat[6] , ROLLKP_M ) ;
+		gyroRollFeedback.WW = __builtin_mulss( ROLLKD_RM , omegaAccum[1] ) ;
+		rollAccum.WW += __builtin_mulss( rmat[6] , ROLLKP_RM ) ;
 	}
 	else
 	{
@@ -69,6 +69,7 @@ void rollCntrl(void)
 	}
 	
 	roll_control = (long)rollAccum._.W1 - (long)gyroRollFeedback._.W1 ;
+	// Servo reversing is handled in servoMix.c
 	
 	return ;
 }
