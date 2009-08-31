@@ -43,11 +43,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 	indicate_loading_inter ;
 	if (PORTBbits.RB4)
 	{
-		 rise[0] = IC7BUF ;
+		 rise[1] = IC7BUF ;
 	}
 	else
 	{
-		pwIn[0] = ((IC7BUF - rise[0]) >> 1 ) ;
+		pwIn[1] = ((IC7BUF - rise[1]) >> 1 ) ;
 	}
 
 	IFS1bits.IC7IF = 0 ; // clear the interrupt
@@ -60,11 +60,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 	indicate_loading_inter ;
 	if (PORTBbits.RB5)
 	{
-		 rise[1] = IC8BUF ;
+		 rise[2] = IC8BUF ;
 	}
 	else
 	{
-		pwIn[1] = ((IC8BUF - rise[1]) >> 1 ) ;
+		pwIn[2] = ((IC8BUF - rise[2]) >> 1 ) ;
 	}
 
 	IFS1bits.IC8IF = 0 ; // clear the interrupt
@@ -77,11 +77,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 	indicate_loading_inter ;
 	if (PORTDbits.RD1)
 	{
-		 rise[2] = IC2BUF ;
+		 rise[3] = IC2BUF ;
 	}
 	else
 	{
-		pwIn[2] = ((IC2BUF - rise[2]) >> 1 ) ;
+		pwIn[3] = ((IC2BUF - rise[3]) >> 1 ) ;
 	}
 
 	IFS0bits.IC2IF = 0 ; // clear the interrupt
@@ -94,11 +94,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	indicate_loading_inter ;
 	if (PORTDbits.RD0)
 	{
-		 rise[3] = IC1BUF ;
+		 rise[4] = IC1BUF ;
 	}
 	else
 	{
-		pwIn[3] = ((IC1BUF - rise[3]) >> 1 );
+		pwIn[4] = ((IC1BUF - rise[4]) >> 1 );
 		
 		// The failsafe channel might not be Input 4, so if not, make sure to also connect Input 4 to the receiver
 		// to make sure this code is checked.
@@ -117,12 +117,12 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 	
 	if (PORTEbits.RE8)
 	{
-		rise[4] = t ;
+		rise[5] = t ;
 		INTCON2bits.INT0EP = 1 ;	// Set up the interrupt to read high-to-low edges
 	}
 	else
 	{
-		pwIn[4] = ((t - rise[4]) >> 1 ) ;
+		pwIn[5] = ((t - rise[5]) >> 1 ) ;
 		INTCON2bits.INT0EP = 0 ;	// Set up the interrupt to read low-to-high edges
 	}
 	

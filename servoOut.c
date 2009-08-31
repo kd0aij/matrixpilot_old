@@ -149,14 +149,14 @@ void manualPassthrough( void )
 
 void setupOutputs( void )
 {
-	PDC1 = pwOut[0] ;
-	PDC2 = pwOut[1] ;
-	PDC3 = pwOut[2] ;
+	PDC1 = pwOut[1] ;
+	PDC2 = pwOut[2] ;
+	PDC3 = pwOut[3] ;
 	
 	if (NUM_OUTPUTS > 3)
 	{
 		outputNum = 3 ;
-		PR4 = (pwOut[3] << 1) ;	// set timer to the rudder pulse width
+		PR4 = (pwOut[4] << 1) ;	// set timer to the rudder pulse width
 		LATEbits.LATE0 = 1 ;	// start the pulse by setting the E0 pin high (output 4)
 		TMR4 = 0 ;				// start timer at 0
 		IFS1bits.T4IF = 0 ;		// clear the interrupt
@@ -176,7 +176,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 			if (NUM_OUTPUTS > 4)
 			{
 				outputNum = 4 ;
-				PR4 = (pwOut[4] << 1) ;	// set timer to the rudder pulse width
+				PR4 = (pwOut[5] << 1) ;	// set timer to the rudder pulse width
 				LATEbits.LATE2 = 1 ;	// start the pulse by setting the E2 pin high (output 5)
 				TMR4 = 0 ;				// start timer at 0
 			}
@@ -190,7 +190,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 			if (NUM_OUTPUTS > 5)
 			{
 				outputNum = 5 ;
-				PR4 = (pwOut[5] << 1) ;	// set timer to the rudder pulse width
+				PR4 = (pwOut[6] << 1) ;	// set timer to the rudder pulse width
 				LATEbits.LATE4 = 1 ;	// start the pulse by setting the E4 pin high (output 6)
 				TMR4 = 0 ;				// start timer at 0
 			}
