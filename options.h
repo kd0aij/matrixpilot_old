@@ -55,10 +55,12 @@
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
-#define THROTTLE_INPUT_CHANNEL				CHANNEL_5
+//   - If you're set up MatrixNav-style (rudder navigation), then you may want to swap
+//     the aileron and runner channels so that rudder is CHANNEL_1, and aileron is 5.
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
 #define AILERON_INPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_3
+#define RUDDER_INPUT_CHANNEL				CHANNEL_5
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
 
 
@@ -76,11 +78,13 @@
 // Use as is, or edit to match your setup.
 //   - Only assign each channel to one output purpose
 //   - If you don't want to use an output channel, set it to CHANNEL_UNUSED
-#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_5
+//   - If you're set up MatrixNav-style (rudder navigation), then you may want to swap
+//     the aileron and runner channels so that rudder is CHANNEL_1, and aileron is 5.
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
-#define RUDDER_OUTPUT_CHANNEL				CHANNEL_4	// If you're set up MatrixNav-style (rudder navigation), then you
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_3	// probably want to switch CHANNEL_3 with CHANNEL_4 on these lines.
+#define RUDDER_OUTPUT_CHANNEL				CHANNEL_5
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_4
 #define CAMERA_ROLL_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
