@@ -30,8 +30,8 @@ void cameraCntrl( void )
 	// Low pass filter the current yaw of the plane, and adjust the yaw of the camera proportionally to that
 	// Bill or Pete, maybe you can improve this filtering...
 	cam.WW = REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, __builtin_mulss( rmat[8] , CAMERA_YAWKP_RM )) ;
-	filteredCameraYawControl -= filteredCameraYawControl/20 ;
-	filteredCameraYawControl += cam._.W1/20 ;
+	filteredCameraYawControl -= filteredCameraYawControl >> 4 ;
+	filteredCameraYawControl += cam._.W1 >> 4 ;
 	pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = 3000 - pulsesat(filteredCameraYawControl) ;
 
 #endif

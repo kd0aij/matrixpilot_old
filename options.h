@@ -93,7 +93,9 @@
 
 // Servo Reversing Configuration
 // Here you can choose which reversing switches use hardware switches, and hard code the rest.
-// For any of these that evaluate to 1, that servo will be sent reversed controls.
+// Note that your servo reversing settings here should match what you set on your transmitter.
+// For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
+// as you define below), that servo will be sent reversed controls.
 #define AILERON_CHANNEL_REVERSED			(HW_SWITCH_1 == 0)
 #define ELEVATOR_CHANNEL_REVERSED			(HW_SWITCH_2 == 0)
 #define RUDDER_CHANNEL_REVERSED				0	// Hardcoded to be unreversed, since we have only 3 switches.
