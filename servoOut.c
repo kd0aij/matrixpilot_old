@@ -77,10 +77,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		yawCntrl() ;
 		pitchCntrl() ;
 		altitudeCntrl();
+		servoMix() ;
 #if ( USE_CAMERA_STABILIZATION == 1 )
 		cameraCntrl();
 #endif
-		servoMix() ;
 		break ;
 	}
 

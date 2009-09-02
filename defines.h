@@ -92,22 +92,23 @@ extern int velocity_previous  ;
 
 
 // Channel numbers on the board, mapped to positions in the pulse width arrays.
-#define CHANNEL_UNUSED 0
-#define CHANNEL_1 1
-#define CHANNEL_2 2
-#define CHANNEL_3 3
-#define CHANNEL_4 4
-#define CHANNEL_5 5
-#define CHANNEL_6 6
+#define CHANNEL_UNUSED	0	// pwIn[0], pwOut[0], etc. are not used, but allow lazy code everywhere else  :)
+#define CHANNEL_1		1
+#define CHANNEL_2		2
+#define CHANNEL_3		3
+#define CHANNEL_4		4
+#define CHANNEL_5		5
+#define CHANNEL_6		6
 
 
 // Choose the type of air frame by setting AIRFRAME_TYPE in options.h
-#define AIRFRAME_STANDARD			0	// Ailerons and Elevator, and Rudder passthrough
-#define AIRFRAME_VTAIL				1	// Ailerons, and Elevator and Rudder as V-tail controls
-#define AIRFRAME_DELTA				2	// Aileron and Elevator as Elevons, and Rudder passthrough
-#define AIRFRAME_STANDARD_NOAIL		3	// Elevator and Rudder control (like MatrixNav)
-#define AIRFRAME_VTAIL_NOAIL		4	// Elevator and Rudder as V-tail controls (like MatrixNav with VTAIL)
-#define AIRFRAME_HELI				5	// Aileron (Front-Left), Elevator (Rear), and 2ndAileron (Front-Right), and Rudder passthrough
+// See options.h for a description of each type
+#define AIRFRAME_STANDARD			0
+#define AIRFRAME_VTAIL				1
+#define AIRFRAME_DELTA				2
+#define AIRFRAME_STANDARD_NOAIL		3
+#define AIRFRAME_VTAIL_NOAIL		4
+#define AIRFRAME_HELI				5
 
 #define USE_RUDDER_NAV_CONTROL		(AIRFRAME_TYPE == AIRFRAME_STANDARD_NOAIL || AIRFRAME_TYPE == AIRFRAME_VTAIL_NOAIL)
 

@@ -17,15 +17,16 @@ void cameraCntrl( void )
 
 	union longww cam ;
 	
+	// If the radio is off, pwIn[] values will already be set to pwTrim[] values in servoMix()
 	
 	// Adjust the roll of the camera proportionally to the current roll of the plane
 	cam.WW = REVERSE_IF_NEEDED(CAMERA_ROLL_CHANNEL_REVERSED, __builtin_mulss( rmat[6] , CAMERA_ROLLKP_RM )) ;
-	pwOut[CAMERA_ROLL_OUTPUT_CHANNEL] = pulsesat(3000 - cam._.W1) ;
+	pwOut[CAMERA_ROLL_OUTPUT_CHANNEL] = pulsesat(pwIn[CAMERA_ROLL_INPUT_CHANNEL] - cam._.W1) ;
 	
 	
 	// Adjust the pitch of the camera proportionally to the current pitch of the plane
 	cam.WW = REVERSE_IF_NEEDED(CAMERA_PITCH_CHANNEL_REVERSED, __builtin_mulss( rmat[7] , CAMERA_PITCHKP_RM )) ;
-	pwOut[CAMERA_PITCH_OUTPUT_CHANNEL] = pulsesat(3000 - cam._.W1) ;
+	pwOut[CAMERA_PITCH_OUTPUT_CHANNEL] = pulsesat(pwIn[CAMERA_PITCH_INPUT_CHANNEL] - cam._.W1) ;
 	
 	
 	// High pass filter the current yaw of the plane, and adjust the yaw of the camera proportionally to that
@@ -34,7 +35,8 @@ void cameraCntrl( void )
 	lpFilteredCameraYawControl -= lpFilteredCameraYawControl >> 5 ;
 	lpFilteredCameraYawControl += cam._.W1 >> 5 ;
 	long hpFilteredCameraYawControl = (long)cam._.W1 - lpFilteredCameraYawControl ;
-	pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = pulsesat(3000 - REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, hpFilteredCameraYawControl)) ;
+	pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = pulsesat(pwIn[CAMERA_YAW_INPUT_CHANNEL] -
+		REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, hpFilteredCameraYawControl)) ;
 
 #endif
 }

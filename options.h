@@ -62,16 +62,24 @@
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
 #define RUDDER_INPUT_CHANNEL				CHANNEL_5
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
+#define CAMERA_ROLL_INPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
 
 
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
 // Make sure this is set to a channel you actually have plugged into the UAV Dev Board!
-// For Spektrum receivers, set this to THROTTLE_INPUT_CHANNEL, and see the instructions
-// for setting up a low failsafe value in the receiver.
+// For Spektrum receivers, set this to THROTTLE_INPUT_CHANNEL,and set FAILSAFE_INPUT_MIN
+// to 1900.  See the instructions for setting up a low failsafe value in a Spektrum receiver.
 //
 // If you set this to something other than CHANNEL_4, then make sure you are also sending
 // valid servo pulses to Input channel 4 every 20ms, or the failsafe will not work properly.
+//
+// FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
+// Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				MODE_SWITCH_INPUT_CHANNEL
+#define FAILSAFE_INPUT_MIN					1500
+#define FAILSAFE_INPUT_MAX					4500
 
 
 // Channel numbers for each output
