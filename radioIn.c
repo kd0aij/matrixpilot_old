@@ -40,6 +40,8 @@ void init_capture(void)
 // Input Channel 1
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	indicate_loading_inter ;
 	if (PORTBbits.RB4)
 	{
@@ -51,12 +53,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 	}
 
 	IFS1bits.IC7IF = 0 ; // clear the interrupt
+	
+	interrupt_restore_extended_state ;
 	return ;
 }
 
 // Input Channel 2
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	indicate_loading_inter ;
 	if (PORTBbits.RB5)
 	{
@@ -68,12 +74,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 	}
 
 	IFS1bits.IC8IF = 0 ; // clear the interrupt
+	
+	interrupt_restore_extended_state ;
 	return ;
 }
 
 // Input Channel 3
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	indicate_loading_inter ;
 	if (PORTDbits.RD1)
 	{
@@ -85,12 +95,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 	}
 
 	IFS0bits.IC2IF = 0 ; // clear the interrupt
+	
+	interrupt_restore_extended_state ;
 	return ;
 }
 
 // Input Channel 4
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	indicate_loading_inter ;
 	if (PORTDbits.RD0)
 	{
@@ -108,12 +122,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 		}
 	}
 	IFS0bits.IC1IF =  0 ; // clear the interrupt
+	
+	interrupt_restore_extended_state ;
 	return ;
 }
 
 // Input Channel 5 (Pin RE8)
 void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	indicate_loading_inter ;
 	
 	int t = TMR2 ;
@@ -130,6 +148,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 	}
 	
 	IFS0bits.INT0IF = 0 ; 		// clear the interrupt
+	
+	interrupt_restore_extended_state ;
 	return;
 }
 

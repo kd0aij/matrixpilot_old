@@ -26,9 +26,6 @@
 #define ACCTBYTAU 5120/ACCTAU	// 256*(time_step/time_constant)
 #define RATETBYTAU 5120/RATETAU
 
-#define indicate_loading_main 	//LATEbits.LATE4 = 0
-#define indicate_loading_inter	//LATEbits.LATE4 = 1
-
 
 // Choose your airframe type:
 //    AIRFRAME_STANDARD		 	Ailerons and Elevator, and Rudder passthrough

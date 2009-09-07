@@ -331,6 +331,8 @@ void msg_B0 ( unsigned char gpschar )
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	unsigned char rxchar ;
 //	indicate_loading_inter ;
 	if ( U2STAbits.FERR ) { init_GPS2(); }
@@ -342,6 +344,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 //	bin_out ( rxchar ) ; // binary out to the debugging USART
 		(* msg_parse) ( rxchar ) ; // parse the input byte
 	}
+	
+	interrupt_restore_extended_state ;
 	return ;
 }
 
@@ -368,6 +372,8 @@ void init_USART1(void)
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	char rxchar ;
 //	indicate_loading_inter ;
 	rxchar = U1RXREG ;
@@ -375,6 +381,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 	else if ( U2STAbits.OERR ) {  init_USART1(); }
 
 	IFS0bits.U1RXIF = 0 ; // clear the interrupt
+	
+	interrupt_restore_extended_state ;
 	return ;
 }
 
@@ -389,10 +397,9 @@ void init_T3(void)	// set up the use of the T3 interrupt
 	IEC0bits.T3IE = 1 ;		// enable the interrupt
 }
 
-void __attribute__((interrupt,__no_auto_psv__)) _T3Interrupt(void) 
+void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void) 
 //  process T3 interrupt
 {
-
 	nav_valid = nav_valid_ ;
 	nav_type  = nav_type_ ;
 	estYawDrift() ;
@@ -433,6 +440,7 @@ void __attribute__((interrupt,__no_auto_psv__)) _T3Interrupt(void)
 	{
 		gps_data_age = GPS_DATA_MAX_AGE+1;
 	}
+	
 	IFS0bits.T3IF = 0 ;			// clear the interrupt
 	return ;
 }

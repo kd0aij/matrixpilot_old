@@ -40,6 +40,8 @@ void init_ADC( void )
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _ADCInterrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	xrate.input =  xrateBUFF  ;
 	yrate.input =  yrateBUFF  ;
 	zrate.input =  zrateBUFF ;
@@ -76,6 +78,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADCInterrupt(void)
 		vref.value = vref.value + (( (vref.input>>1) - (vref.value>>1) )>> FILTERSHIFT ) ;
 #endif
 	}
+	
 	IFS0bits.ADIF = 0 ; 	// clear the AD interrupt
+	
+	interrupt_restore_extended_state ;
 	return ;
 }

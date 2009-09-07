@@ -7,7 +7,10 @@
 
 _FOSC( CSW_FSCM_OFF & HS ) ; 	// external high speed crystal
 _FWDT( WDT_OFF ) ;				// no watchdog timer
-_FBORPOR( 	PBOR_OFF & // brown out off
+_FBORPOR( 	PBOR_OFF & // brown out detection off
+			//PBOR_ON & // brown out detection on
+			//BORV_27 & // brown out triggered at 2.7V
+			//PWRT_64 & // powerup timer at 64ms
 			MCLR_EN &  // enable MCLR
 			RST_PWMPIN & // pwm pins as pwm
 			PWMxH_ACT_HI & // PWMH is active high
@@ -30,6 +33,7 @@ void init_all(void)
 
 int main (void)
 {	//	Initialize all modules and turn on the interrupts.
+	defaultCorcon = CORCON;
 	init_all() 		;   // initialize interrupt handlers
 	SRbits.IPL = 0 ;	// turn on all interrupt priorities
 	while (1)			//  nothing else to do...entirely interrupt driven

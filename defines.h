@@ -90,6 +90,49 @@ extern int velocity_magnitude ;
 extern int forward_acceleration  ;
 extern int velocity_previous  ;
 
+extern char needSaveExtendedState ;
+extern int defaultCorcon ;
+
+#define indicate_loading_main 	//LATEbits.LATE4 = 0
+#define indicate_loading_inter	//LATEbits.LATE4 = 1
+
+#define interrupt_save_extended_state		if (needSaveExtendedState) { \
+												__asm__("push CORCON"); \
+												__asm__("push SR"); \
+												__asm__("push MODCON"); \
+												__asm__("push XBREV"); \
+												__asm__("push ACCAL"); \
+												__asm__("push ACCAH"); \
+												__asm__("push ACCAU"); \
+												__asm__("push ACCBL"); \
+												__asm__("push ACCBH"); \
+												__asm__("push ACCBU"); \
+												__asm__("push RCOUNT"); \
+												__asm__("push DCOUNT"); \
+												__asm__("push DOSTARTL"); \
+												__asm__("push DOSTARTH"); \
+												__asm__("push DOENDL"); \
+												__asm__("push DOENDH"); \
+												CORCON = defaultCorcon; \
+											}
+#define interrupt_restore_extended_state	if (needSaveExtendedState) { \
+												__asm__("pop DOENDH"); \
+												__asm__("pop DOENDL"); \
+												__asm__("pop DOSTARTH"); \
+												__asm__("pop DOSTARTL"); \
+												__asm__("pop DCOUNT"); \
+												__asm__("pop RCOUNT"); \
+												__asm__("pop ACCBU"); \
+												__asm__("pop ACCBH"); \
+												__asm__("pop ACCBL"); \
+												__asm__("pop ACCAU"); \
+												__asm__("pop ACCAH"); \
+												__asm__("pop ACCAL"); \
+												__asm__("pop XBREV"); \
+												__asm__("pop MODCON"); \
+												__asm__("pop SR"); \
+												__asm__("pop CORCON"); \
+											}
 
 // Channel numbers on the board, mapped to positions in the pulse width arrays.
 #define CHANNEL_UNUSED	0	// pwIn[0], pwOut[0], etc. are not used, but allow lazy code everywhere else  :)

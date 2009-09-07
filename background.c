@@ -18,7 +18,7 @@ void init_clock(void)	/* initialize timer 1 and LEDs */
 	return ;
 }
 
-void __attribute__((interrupt,__no_auto_psv__)) _T1Interrupt(void) 
+void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void) 
 // excute whatever needs to run in the background, once every 0.5 seconds
 {
 	indicate_loading_inter ;

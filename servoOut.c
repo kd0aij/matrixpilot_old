@@ -168,6 +168,8 @@ void setupOutputs( void )
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 {
+	interrupt_save_extended_state ;
+	
 	indicate_loading_inter ;
 	
 	switch (outputNum) {
@@ -206,5 +208,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 	}
 	
 	IFS1bits.T4IF = 0 ;					// clear the interrupt
+	
+	interrupt_restore_extended_state ;
 	return;
 }
