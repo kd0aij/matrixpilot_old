@@ -21,5 +21,5 @@ int calib_timer, standby_timer ;
 int pulsesselin = 0 ;
 int gps_data_age;
 
-char needSaveExtendedState = 0;
+boolean needSaveExtendedState = 0;
 int defaultCorcon = 0;

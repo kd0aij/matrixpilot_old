@@ -3,6 +3,11 @@
 #include "controlGains.h"
 
 
+typedef char boolean;
+#define true	1
+#define false	0
+
+
 // Max inputs and outputs
 #define MAX_INPUTS	5
 #define MAX_OUTPUTS	6
@@ -90,12 +95,20 @@ extern int velocity_magnitude ;
 extern int forward_acceleration  ;
 extern int velocity_previous  ;
 
-extern char needSaveExtendedState ;
+extern boolean needSaveExtendedState ;
 extern int defaultCorcon ;
 
 #define indicate_loading_main 	//LATEbits.LATE4 = 0
 #define indicate_loading_inter	//LATEbits.LATE4 = 1
 
+
+// When ISRs fire during dsp math calls, state is not preserved properly, so we
+// have to help preserve extra register state on entry and exit from ISRs.
+// In addition, the dsp math calls change and restore CORCON internally, so
+// if we fire an ISR in the middle of a dsp math call, CORCON can be set to
+// an unexpected value, so we also restore CORCON to the application default,
+// which we save in main().  We keep track of whether or not we're running dsp
+// calls in needSaveExtendedState var, and only perform these actions if so.
 #define interrupt_save_extended_state		if (needSaveExtendedState) { \
 												__asm__("push CORCON"); \
 												__asm__("push SR"); \
