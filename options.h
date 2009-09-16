@@ -1,10 +1,8 @@
-#ifdef ConfigRed
+// Uncomment the line below that matches the color of your board.
+// (Leave the // in front of the line that does not match your board.) 
 #include "ConfigRed.h"
-#endif
+//#include "ConfigGreen.h"
 
-#ifdef ConfigGreen
-#include "ConfigGreen.h"
-#endif 
 
 #define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
 //#define FILTERSHIFT 6 // filter shift divide
