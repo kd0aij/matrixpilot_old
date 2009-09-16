@@ -43,7 +43,7 @@ void altitudeCntrl(void)
 		{
 			pitchAltitudeAdjust = 0 ;
 			pwIn[THROTTLE_INPUT_CHANNEL] = pwTrim[THROTTLE_INPUT_CHANNEL] ;
-			throttleFiltered.WW += (((long)( throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
+			throttleFiltered.WW += (((long)(throttleIn - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
 			altitude_control = throttleFiltered._.W1 ;
 		}
 		else
@@ -64,6 +64,7 @@ void altitudeCntrl(void)
 				pitchAltitudeAdjust = PITCHATMAX + PITCHHEIGHTGAIN*( desiredHeight - height ) ;
 			}
 			
+			// Servo reversing is handled in servoMix.c
 			throttleFiltered.WW += (((long)( throttleAccum.WW - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT );
 			altitude_control = throttleFiltered._.W1 ;
 		}
@@ -71,9 +72,7 @@ void altitudeCntrl(void)
 	else
 	{
 		pitchAltitudeAdjust = 0 ;
-		throttleFiltered.WW += (((long)( throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT );
-		altitude_control = throttleFiltered._.W1 ;
-		// Servo reversing is handled in servoMix.c
+		altitude_control = 0 ;
 	}
 	
 	return ;

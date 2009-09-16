@@ -1,28 +1,8 @@
+// Set Up Board Type (Red or Green board)
 // Uncomment the line below that matches the color of your board.
 // (Leave the // in front of the line that does not match your board.) 
 #include "ConfigRed.h"
 //#include "ConfigGreen.h"
-
-
-#define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
-//#define FILTERSHIFT 6 // filter shift divide
-#define FILTERSHIFT 3 
-#define LONGDEG_2_BYTECIR 305 // = (256/360)*((256)**4)/(10**7)
-#define COURSEDEG_2_BYTECIR 466 // = (256/360)*((256)**2)/(10**2)
-#define CALIB_PAUSE 12
-#define STANDBY_PAUSE 48 // pause for 16 seconds of runs through the state machine
-#define NUM_WAGGLES 4 // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
-#define WAGGLE_SIZE 300
-
-#define SERVORANGE (int) SERVOSAT*1000
-#define SERVOMAX 3000 + SERVORANGE
-#define SERVOMIN 3000 - SERVORANGE
-
-#define ACCTAU 200 // in milliseconds
-#define RATETAU 100
-
-#define ACCTBYTAU 5120/ACCTAU	// 256*(time_step/time_constant)
-#define RATETBYTAU 5120/RATETAU
 
 
 // Choose your airframe type:
@@ -98,6 +78,11 @@
 #define USE_CAMERA_STABILIZATION			0
 
 
+// Altitude Hold
+// Set this to 0 to disable altitude hold.
+#define USE_ALTITUDEHOLD					0
+
+
 // Servo Reversing Configuration
 // Here you can choose which reversing switches use hardware switches, and hard code the rest.
 // Note that your servo reversing settings here should match what you set on your transmitter.
@@ -111,3 +96,30 @@
 #define CAMERA_ROLL_CHANNEL_REVERSED		0
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED			0
+
+
+
+
+// Other settings, which you hopefully will not need to adjust.
+
+#define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
+//#define FILTERSHIFT 6 // filter shift divide
+#define FILTERSHIFT 3 
+#define LONGDEG_2_BYTECIR 305 // = (256/360)*((256)**4)/(10**7)
+#define COURSEDEG_2_BYTECIR 466 // = (256/360)*((256)**2)/(10**2)
+#define CALIB_PAUSE 12
+#define STANDBY_PAUSE 48 // pause for 16 seconds of runs through the state machine
+#define NUM_WAGGLES 4 // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
+#define WAGGLE_SIZE 300
+
+#define SERVORANGE (int) SERVOSAT*1000
+#define SERVOMAX 3000 + SERVORANGE
+#define SERVOMIN 3000 - SERVORANGE
+
+#define ACCTAU 200 // in milliseconds
+#define RATETAU 100
+
+#define ACCTBYTAU 5120/ACCTAU	// 256*(time_step/time_constant)
+#define RATETBYTAU 5120/RATETAU
+
+
