@@ -169,9 +169,9 @@ extern int defaultCorcon ;
 #define USE_RUDDER_NAV_CONTROL		(AIRFRAME_TYPE == AIRFRAME_STANDARD_NOAIL || AIRFRAME_TYPE == AIRFRAME_VTAIL_NOAIL)
 
 // Pin locations of the hardware toggle switches
-#define HW_SWITCH_1			(PORTDbits.RD3)
-#define HW_SWITCH_2			(PORTDbits.RD2)
-#define HW_SWITCH_3			(PORTFbits.RF6)
+#define HW_SWITCH_1			(PORTDbits.RD3 == 0)
+#define HW_SWITCH_2			(PORTDbits.RD2 == 0)
+#define HW_SWITCH_3			(PORTFbits.RF6 == 0)
 
 
 // LED pins
