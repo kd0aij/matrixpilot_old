@@ -80,7 +80,7 @@
 
 // Altitude Hold
 // Set this to 0 to disable altitude hold.
-#define USE_ALTITUDEHOLD					0
+#define USE_ALTITUDEHOLD					1
 
 
 // Servo Reversing Configuration
