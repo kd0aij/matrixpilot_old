@@ -29,7 +29,7 @@ void state_machine(void)
 	//	Configure the GPS for binary if there is a request to do so.
 	//	Determine whether the radio is on.
 	
-#ifndef NORADIO
+#ifdef NORADIO
 	pulsesselin = 100 ;
 #endif
 	
