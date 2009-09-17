@@ -28,6 +28,11 @@ void state_machine(void)
 {
 	//	Configure the GPS for binary if there is a request to do so.
 	//	Determine whether the radio is on.
+	
+#ifndef NORADIO
+	pulsesselin = 100 ;
+#endif
+	
 	if ( pulsesselin > 10 )
 	{
 		flags._.radio_on = 1 ;
@@ -84,6 +89,7 @@ void ent_calibrateS()
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
 	flags._.altitude_hold = 0 ;
+	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
 	stateS = &calibrateS ;
 	calib_timer = CALIB_PAUSE ;
@@ -97,6 +103,7 @@ void ent_acquiringS()
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
 	flags._.altitude_hold = 0 ;
+	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
 	throttleFiltered._.W1 = 0 ;
 	stateS = &acquiringS ;
@@ -116,6 +123,7 @@ void ent_manualS()
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
 	flags._.altitude_hold = 0 ;
+	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
 	LED_RED = LED_OFF ;
 	stateS = &manualS ;
@@ -128,6 +136,7 @@ void ent_autoS()
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 1 ;
 	flags._.altitude_hold = 1 ;
+	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
 	LED_RED = LED_ON ;
 	stateS = &autoS ;
@@ -140,6 +149,7 @@ void ent_returnS()
 	flags._.GPS_steering = 1 ;
 	flags._.pitch_feedback = 1 ;
 	flags._.altitude_hold = 0 ;
+	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
 	LED_RED = LED_ON ;
 	stateS = &returnS ;
@@ -150,9 +160,11 @@ void ent_returnS()
 //	Come home is commanded by the mode switch channel (defaults to channel 4).
 void ent_circlingS()
 {
+	init_waypoints() ;
 	flags._.GPS_steering = 1 ;
 	flags._.pitch_feedback = 1 ;
 	flags._.altitude_hold = 1 ;
+	flags._.use_waypoints = 1 ;
 	waggle = 0 ;
 	LED_RED = LED_ON ;
 	stateS = &circlingS ;
@@ -200,9 +212,12 @@ void acquiringS(void)
 				waggle = - waggle ;
 			
 			standby_timer-- ;
-			if ( standby_timer <= 0)
+			if ( standby_timer == 2 )
 			{
 				flags._.save_origin = 1 ;
+			}
+			else if ( standby_timer <= 0)
+			{
 				ent_manualS() ;
 			}
 		}

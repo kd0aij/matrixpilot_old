@@ -42,6 +42,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADCInterrupt(void)
 {
 	interrupt_save_extended_state ;
 	
+	indicate_loading_inter ;
+	
 	xrate.input =  xrateBUFF  ;
 	yrate.input =  yrateBUFF  ;
 	zrate.input =  zrateBUFF ;

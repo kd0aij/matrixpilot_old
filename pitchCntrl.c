@@ -4,10 +4,6 @@
 
 //	If the state machine selects pitch feedback, compute it from the pitch gyro and accelerometer.
 
-int rtlkick = 0 ;
-
-#define RTLKICK RMAX*(RTLPITCHDOWN/57.3)
-
 int pitchgain = (int)(PITCHGAIN*RMAX) ;
 int pitchrate = 0 ;
 int pitchbgain = (int)(8.0*PITCHBOOST) ;
@@ -37,19 +33,11 @@ void pitchCntrl(void)
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
 	flags._.pitch_feedback = 1 ;
-#endif 
-	if ( flags._.GPS_steering )
-	{
-		rtlkick = RTLKICK ;
-	}
-	else
-	{
-		rtlkick = 0 ;
-	}
+#endif
 	
 	if ( flags._.pitch_feedback )
 	{
-		pitchAccum.WW = 	__builtin_mulss( rmat[7] - rtlkick + pitchAltitudeAdjust, pitchgain ) 
+		pitchAccum.WW = 	__builtin_mulss( rmat[7] + pitchAltitudeAdjust, pitchgain ) 
 						+	__builtin_mulss( PITCHKD_RM , pitchrate ) ;
 		
 		pitchboost =  (__builtin_mulss(pitchbgain , (	pwIn[ELEVATOR_INPUT_CHANNEL] - pwTrim[ELEVATOR_INPUT_CHANNEL] ))>>3) ;

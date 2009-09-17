@@ -1,8 +1,5 @@
-// Set Up Board Type (Red or Green board)
-// Uncomment the line below that matches the color of your board.
-// (Leave the // in front of the line that does not match your board.) 
-#include "ConfigRed.h"
-//#include "ConfigGreen.h"
+// Set Up Board Type (Set to RED_BOARD or GREEN_BOARD)
+#define BOARD_TYPE 		RED_BOARD
 
 
 // Choose your airframe type:

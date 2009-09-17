@@ -43,13 +43,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 	interrupt_save_extended_state ;
 	
 	indicate_loading_inter ;
+	
 	if (PORTBbits.RB4)
 	{
 		 rise[1] = IC7BUF ;
 	}
 	else
 	{
+#ifndef NORADIO
 		pwIn[1] = ((IC7BUF - rise[1]) >> 1 ) ;
+#endif
 	}
 
 	IFS1bits.IC7IF = 0 ; // clear the interrupt
@@ -64,13 +67,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 	interrupt_save_extended_state ;
 	
 	indicate_loading_inter ;
+	
 	if (PORTBbits.RB5)
 	{
 		 rise[2] = IC8BUF ;
 	}
 	else
 	{
+#ifndef NORADIO
 		pwIn[2] = ((IC8BUF - rise[2]) >> 1 ) ;
+#endif
 	}
 
 	IFS1bits.IC8IF = 0 ; // clear the interrupt
@@ -85,13 +91,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 	interrupt_save_extended_state ;
 	
 	indicate_loading_inter ;
+	
 	if (PORTDbits.RD1)
 	{
 		 rise[3] = IC2BUF ;
 	}
 	else
 	{
+#ifndef NORADIO
 		pwIn[3] = ((IC2BUF - rise[3]) >> 1 ) ;
+#endif
 	}
 
 	IFS0bits.IC2IF = 0 ; // clear the interrupt
@@ -106,12 +115,14 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	interrupt_save_extended_state ;
 	
 	indicate_loading_inter ;
+	
 	if (PORTDbits.RD0)
 	{
 		 rise[4] = IC1BUF ;
 	}
 	else
 	{
+#ifndef NORADIO
 		pwIn[4] = ((IC1BUF - rise[4]) >> 1 );
 		
 		// The failsafe channel might not be Input 4, so if not, make sure to also connect Input 4 to the receiver
@@ -120,6 +131,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 		{
 			pulsesselin++ ;
 		}
+#endif
 	}
 	IFS0bits.IC1IF =  0 ; // clear the interrupt
 	
@@ -143,7 +155,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 	}
 	else
 	{
+#ifndef NORADIO
 		pwIn[5] = ((t - rise[5]) >> 1 ) ;
+#endif
 		INTCON2bits.INT0EP = 0 ;	// Set up the interrupt to read low-to-high edges
 	}
 	

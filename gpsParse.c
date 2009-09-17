@@ -333,8 +333,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 {
 	interrupt_save_extended_state ;
 	
+	indicate_loading_inter ;
+	
 	unsigned char rxchar ;
-//	indicate_loading_inter ;
+	
 	if ( U2STAbits.FERR ) { init_GPS2(); }
 	if ( U2STAbits.OERR ) { init_GPS2(); }
 	IFS1bits.U2RXIF = 0 ; // clear the interrupt
@@ -344,43 +346,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 //	bin_out ( rxchar ) ; // binary out to the debugging USART
 		(* msg_parse) ( rxchar ) ; // parse the input byte
 	}
-	
-	interrupt_restore_extended_state ;
-	return ;
-}
-
-void init_USART1(void)
-{	
-//	debugging USART, runs at 19200 baud
-	U1MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
-	U1STA  = 0b0000010100010000 ;
-
-//	U1BRG =  51 ; // 4800 baud
-	U1BRG =  12 ; // 19200 baud
-
-	U1MODEbits.UARTEN = 1 ; // turn on uart
-	U1MODEbits.ALTIO = 1 ; // alternate pins
-	
-	U1STAbits.UTXEN = 1 ; // turn on transmitter
-
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
-	IPC2bits.U1RXIP = 3 ; // priority 3
-	IEC0bits.U1RXIE = 1 ; // turn on the interrupt
-
-	return ;
-}
-
-void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
-{
-	interrupt_save_extended_state ;
-	
-	char rxchar ;
-//	indicate_loading_inter ;
-	rxchar = U1RXREG ;
-	if ( U2STAbits.FERR ) {  init_USART1(); }
-	else if ( U2STAbits.OERR ) {  init_USART1(); }
-
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
 	
 	interrupt_restore_extended_state ;
 	return ;
@@ -400,6 +365,8 @@ void init_T3(void)	// set up the use of the T3 interrupt
 void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void) 
 //  process T3 interrupt
 {
+	indicate_loading_inter ;
+	
 	nav_valid = nav_valid_ ;
 	nav_type  = nav_type_ ;
 	estYawDrift() ;
@@ -429,6 +396,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 //
 //		Perform the once per second navigation!!
 		navigate() ;
+		processwaypoints() ;
 //		Ideally, navigate should take less than one second. For the gentleNAV, navigation takes only
 //		a few milliseconds.
 //		If you rewrite navigation to perform some rather ambitious calculations, perhaps using floating
@@ -440,6 +408,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 	{
 		gps_data_age = GPS_DATA_MAX_AGE+1;
 	}
+	
+//	debug_output() ;   // debugging printout on the spare serial port
 	
 	IFS0bits.T3IF = 0 ;			// clear the interrupt
 	return ;

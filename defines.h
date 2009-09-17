@@ -1,6 +1,5 @@
 #include "p30f4011.h"
 #include "options.h"
-#include "controlGains.h"
 
 
 typedef char boolean;
@@ -40,7 +39,25 @@ void altitudeCntrl(void) ;
 void cameraCntrl(void) ;
 void mixServos(void) ;
 
+void debug_output(void) ;
+
+void processwaypoints(void) ;
+void init_waypoints(void) ;
+
 int pulsesat(long) ;
+
+
+struct relative3D { int x ; int y ; int z ; } ;
+
+struct absolute2D { long Lat ; long Long ; } ;
+
+extern struct relative3D GPSlocation ;
+extern struct relative3D GPSvelocity ;
+
+extern union longww IMUlocationx , IMUlocationy , IMUlocationz   ;
+extern struct relative3D IMUvelocity ;
+struct waypointparameters { int x ; int y ; int cosphi ; int sinphi ; signed char phi ; int height ; } ;
+
 
 extern int rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
 extern int pwIn[MAX_INPUTS+1] ;	// pulse widths of radio inputs
@@ -157,6 +174,11 @@ extern int defaultCorcon ;
 #define CHANNEL_6		6
 
 
+// Build for the red or green board
+#define RED_BOARD	1
+#define GREEN_BOARD	2
+
+
 // Choose the type of air frame by setting AIRFRAME_TYPE in options.h
 // See options.h for a description of each type
 #define AIRFRAME_STANDARD			0
@@ -190,3 +212,16 @@ extern int defaultCorcon ;
 
 
 #define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)		((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))
+
+
+#if (USE_RUDDER_NAV_CONTROL)
+#include "controlGains-MatrixNav.h"
+#else
+#include "controlGains-AileronAssist.h"
+#endif
+
+#if (BOARD_TYPE == RED_BOARD)
+#include "ConfigRed.h"
+#elif (BOARD_TYPE == GREEN_BOARD)
+#include "ConfigGreen.h"
+#endif

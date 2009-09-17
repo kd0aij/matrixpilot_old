@@ -21,7 +21,7 @@ signed char compute_cog(void)
 	int delta_lat ;
 	int delta_long ;
 	union longbbbb temporary ;
-	struct xypair delta_gps ;
+	struct relative2D delta_gps ;
 	delta_lat = (int)(lat_gps.WW - previous_lat) ;
 	delta_long = (int)(long_gps.WW - previous_long) ;
 	previous_lat = lat_gps.WW ;
