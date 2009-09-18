@@ -147,8 +147,8 @@ file_023=options.h
 file_024=optionsRmat.h
 file_025=ConfigGreen.h
 file_026=waypoints.h
-file_027=controlGains-AileronAssist.h
-file_028=controlGains-MatrixNav.h
+file_027=controlGains-AileronNav.h
+file_028=controlGains-RudderNav.h
 file_029=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
 file_030=C:\Program Files\Microchip\MPLAB C30\support\dsPIC30F\h\p30f4011.h
 [SUITE_INFO]

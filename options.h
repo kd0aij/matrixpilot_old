@@ -11,6 +11,22 @@
 #define AIRFRAME_TYPE	AIRFRAME_STANDARD
 
 
+// Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
+// receiver. (Totally autonomous.)  This is not recommended since you'll have no manual control to
+// fall back on if things go wrong.  It may not even be legal in your area.
+#define NORADIO								0
+
+
+// Camera Stabilization
+// To enable, set this value to 1, and assign one or more of the CAMERA_*_OUTPUT_CHANNELS above.
+#define USE_CAMERA_STABILIZATION			0
+
+
+// Altitude Hold
+// Set this to 0 to disable altitude hold.
+#define USE_ALTITUDEHOLD					1
+
+
 // NUM_INPUTS: Set to 4 or 5 
 //   4 enables only the standard 4 input channels
 //   5 also enables E8 as the 5th input channel
@@ -27,8 +43,13 @@
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
-//   - If you're set up MatrixNav-style (rudder navigation), then you may want to swap
-//     the aileron and runner channels so that rudder is CHANNEL_1, and aileron is 5.
+//   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
+//     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
+// 
+// NOTE: If your board is powered from your ESC through the throttle cable, make sure to
+// connect THROTTLE_INPUT_CHANNEL to one of the built-in Inputs (1, 2, 3, or 4) to make
+// sure your board gets power.
+// 
 #define THROTTLE_INPUT_CHANNEL				CHANNEL_3
 #define AILERON_INPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
@@ -41,16 +62,15 @@
 
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
 // Make sure this is set to a channel you actually have plugged into the UAV Dev Board!
-// For Spektrum receivers, set this to THROTTLE_INPUT_CHANNEL,and set FAILSAFE_INPUT_MIN
-// to 1900.  See the instructions for setting up a low failsafe value in a Spektrum receiver.
+// See the instructions for setting up a low failsafe value in a Spektrum receiver.
 //
-// If you set this to something other than CHANNEL_4, then make sure you are also sending
-// valid servo pulses to Input channel 4 every 20ms, or the failsafe will not work properly.
+// If you set this to something other than CHANNEL_3, then make sure you are also sending
+// valid servo pulses to Input channel 3 every ~20ms, or the failsafe will not work properly.
 //
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
-#define FAILSAFE_INPUT_CHANNEL				MODE_SWITCH_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN					1500
+#define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
+#define FAILSAFE_INPUT_MIN					1600
 #define FAILSAFE_INPUT_MAX					4500
 
 
@@ -58,7 +78,7 @@
 // Use as is, or edit to match your setup.
 //   - Only assign each channel to one output purpose
 //   - If you don't want to use an output channel, set it to CHANNEL_UNUSED
-//   - If you're set up MatrixNav-style (rudder navigation), then you may want to swap
+//   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and runner channels so that rudder is CHANNEL_1, and aileron is 5.
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
@@ -68,16 +88,6 @@
 #define CAMERA_ROLL_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
-
-
-// Camera Stabilization
-// To enable, set this value to 1, and assign one or more of the CAMERA_*_OUTPUT_CHANNELS above.
-#define USE_CAMERA_STABILIZATION			0
-
-
-// Altitude Hold
-// Set this to 0 to disable altitude hold.
-#define USE_ALTITUDEHOLD					1
 
 
 // Servo Reversing Configuration

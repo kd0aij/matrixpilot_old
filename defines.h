@@ -215,9 +215,9 @@ extern int defaultCorcon ;
 
 
 #if (USE_RUDDER_NAV_CONTROL)
-#include "controlGains-MatrixNav.h"
+#include "controlGains-RudderNav.h"
 #else
-#include "controlGains-AileronAssist.h"
+#include "controlGains-AileronNav.h"
 #endif
 
 #if (BOARD_TYPE == RED_BOARD)

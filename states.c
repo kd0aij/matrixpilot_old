@@ -29,7 +29,7 @@ void state_machine(void)
 	//	Configure the GPS for binary if there is a request to do so.
 	//	Determine whether the radio is on.
 	
-#ifdef NORADIO
+#if (NORADIO == 1)
 	pulsesselin = 100 ;
 #endif
 	
@@ -37,6 +37,7 @@ void state_machine(void)
 	{
 		flags._.radio_on = 1 ;
 		LED_GREEN = LED_ON ; // indicate radio on
+		
 		//	Select manual, automatic, or come home, based on pulse width of the switch input channel as defined in options.h.
 		if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > 3400 )
 		{
@@ -60,10 +61,11 @@ void state_machine(void)
 	else
 	{
 		flags._.radio_on = 0 ;
+		LED_GREEN = LED_OFF ; // indicate radio off
+		
 		flags._.man_req = 0 ;
 		flags._.auto_req = 0 ;
 		flags._.home_req = 0 ;
-		LED_GREEN = LED_OFF ; // indicate radio off
 	}
 	
 	pulsesselin = 0 ;
