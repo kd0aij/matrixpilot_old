@@ -11,10 +11,9 @@
 #define AIRFRAME_TYPE	AIRFRAME_STANDARD
 
 
-// Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
-// receiver. (Totally autonomous.)  This is not recommended since you'll have no manual control to
-// fall back on if things go wrong.  It may not even be legal in your area.
-#define NORADIO								0
+// Altitude Hold
+// Set this to 0 to disable altitude hold.
+#define USE_ALTITUDEHOLD					1
 
 
 // Camera Stabilization
@@ -22,9 +21,10 @@
 #define USE_CAMERA_STABILIZATION			0
 
 
-// Altitude Hold
-// Set this to 0 to disable altitude hold.
-#define USE_ALTITUDEHOLD					1
+// Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
+// receiver. (Totally autonomous.)  This is not recommended since you'll have no manual control to
+// fall back on if things go wrong.  It may not even be legal in your area.
+#define NORADIO								0
 
 
 // NUM_INPUTS: Set to 4 or 5 
@@ -45,11 +45,6 @@
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
-// 
-// NOTE: If your board is powered from your ESC through the throttle cable, make sure to
-// connect THROTTLE_INPUT_CHANNEL to one of the built-in Inputs (1, 2, 3, or 4) to make
-// sure your board gets power.
-// 
 #define THROTTLE_INPUT_CHANNEL				CHANNEL_3
 #define AILERON_INPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
@@ -80,6 +75,11 @@
 //   - If you don't want to use an output channel, set it to CHANNEL_UNUSED
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and runner channels so that rudder is CHANNEL_1, and aileron is 5.
+// 
+// NOTE: If your board is powered from your ESC through the throttle cable, make sure to
+// connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
+// sure your board gets power.
+// 
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
