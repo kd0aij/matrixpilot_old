@@ -4,7 +4,7 @@
 // YAWKP is the proportional feedback gain for the rudder
 // YAWKD is the yaw gyro feedback gain for the rudder
 // YAWBOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP 0.0625 // 0.100
+#define YAWKP 0.100
 #define YAWKD (0.5*SCALEGYRO)
 #define YAWBOOST 1.0
 

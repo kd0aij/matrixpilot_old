@@ -15,7 +15,7 @@ void manualPassthrough( void ) ;
 void init_pwm( void )	// initialize the PWM
 {
 	PDC1 = PDC2 = 3000 + SERVOSAT*500 ;
-	PDC3 = 3000 ;
+	PDC3 = 2000 ;
 	
 	firstsamp = 1;	// flag for the first sample
 	calibcount = 400 ; // wait 400 PWM pulses before turning on the control (10 seconds)
@@ -24,6 +24,8 @@ void init_pwm( void )	// initialize the PWM
 	int i;
 	for (i=0; i <= NUM_OUTPUTS; i++)
 		pwOut[i] = 3000;
+	
+	pwOut[THROTTLE_OUTPUT_CHANNEL] = 2000;
 	
 	TRISE = 0b1111111111000000 ;
 	PTPER = 25000 ;			// 25 millisecond period at 16 Mz clock, prescale = 4	

@@ -39,7 +39,10 @@ void altitudeCntrl(void)
 {
 	if ( flags._.altitude_hold )
 	{
-		throttleIn = pwIn[THROTTLE_INPUT_CHANNEL] - pwTrim[THROTTLE_INPUT_CHANNEL] ;
+		// keep the In and Trim throttle values within 2000-4000 to account for
+		// Spektrum receivers using failsafe values below 2000.
+		throttleIn = pulsesat( pwIn[THROTTLE_INPUT_CHANNEL] ) - pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] ) ;
+		
 		if ( THROTTLE_CHANNEL_REVERSED ) throttleIn = - throttleIn ;
 		
 		if ( flags._.use_waypoints == 1 )
@@ -54,8 +57,7 @@ void altitudeCntrl(void)
 		if ( throttleIn < DEADBAND )
 		{
 			pitchAltitudeAdjust = 0 ;
-			pwIn[THROTTLE_INPUT_CHANNEL] = pwTrim[THROTTLE_INPUT_CHANNEL] ;
-			throttleFiltered.WW += (((long)(throttleIn - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
+			throttleFiltered.WW += (((long)(0 - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
 			altitude_control = throttleFiltered._.W1 ;
 		}
 		else
