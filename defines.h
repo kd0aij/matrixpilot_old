@@ -127,6 +127,7 @@ extern int defaultCorcon ;
 // which we save in main().  We keep track of whether or not we're running dsp
 // calls in needSaveExtendedState var, and only perform these actions if so.
 #define interrupt_save_extended_state		if (needSaveExtendedState) { \
+												CORCON = defaultCorcon; \
 												__asm__("push CORCON"); \
 												__asm__("push SR"); \
 												__asm__("push MODCON"); \
@@ -143,7 +144,6 @@ extern int defaultCorcon ;
 												__asm__("push DOSTARTH"); \
 												__asm__("push DOENDL"); \
 												__asm__("push DOENDH"); \
-												CORCON = defaultCorcon; \
 											}
 #define interrupt_restore_extended_state	if (needSaveExtendedState) { \
 												__asm__("pop DOENDH"); \
