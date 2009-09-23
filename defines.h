@@ -59,7 +59,7 @@ extern struct relative3D IMUvelocity ;
 struct waypointparameters { int x ; int y ; int cosphi ; int sinphi ; signed char phi ; int height ; } ;
 
 
-extern unsigned long rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
+extern unsigned int rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
 extern int pwIn[MAX_INPUTS+1] ;	// pulse widths of radio inputs
 extern int pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
 extern int pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs

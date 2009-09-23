@@ -5,7 +5,7 @@
 
 //	Variables.
 
-unsigned long rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
+unsigned int rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
 int pwIn[MAX_INPUTS+1] ;	// pulse widths of radio inputs
 int pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
 int pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
