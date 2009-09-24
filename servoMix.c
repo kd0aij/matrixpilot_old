@@ -39,6 +39,7 @@ void servoMix( void )
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
+		if (temp < pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -63,6 +64,7 @@ void servoMix( void )
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
+		if (temp < pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -82,6 +84,7 @@ void servoMix( void )
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
+		if (temp < pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -103,6 +106,7 @@ void servoMix( void )
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
+		if (temp < pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -126,6 +130,7 @@ void servoMix( void )
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
+		if (temp < pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 	
@@ -151,6 +156,7 @@ void servoMix( void )
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
+		if (temp < pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 #endif
 }
