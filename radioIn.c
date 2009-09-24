@@ -25,9 +25,6 @@ void init_capture(void)
 		pwIn[MODE_SWITCH_INPUT_CHANNEL] = pwTrim[MODE_SWITCH_INPUT_CHANNEL] = 4000 ;
 #endif
 	
-	pwIn[THROTTLE_INPUT_CHANNEL] = pwTrim[THROTTLE_INPUT_CHANNEL] = 2000 ;
-	pwIn[FAILSAFE_INPUT_CHANNEL] = 0 ;
-	
 	IPC0bits.IC1IP = IPC1bits.IC2IP = IPC4bits.IC7IP = IPC4bits.IC8IP = 7 ; // priority 7
 	IFS0bits.IC1IF = IFS0bits.IC2IF = IFS1bits.IC7IF = IFS1bits.IC8IF = 0 ; // clear the interrupt
 	IEC0bits.IC1IE = IEC0bits.IC2IE = IEC1bits.IC7IE = IEC1bits.IC8IE = 1 ; // turn on the interrupt
