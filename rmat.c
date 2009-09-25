@@ -299,8 +299,6 @@ void PI_feedback(void)
 	return ;
 }
 
-extern signed char computed_cog ;
-
 /*
 void output_matrix(void)
 //	This routine makes the direction cosine matrix evident
