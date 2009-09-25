@@ -2,6 +2,10 @@
 #include "definesRmat.h"
 #include "defines.h"
 
+int yawkp = YAWKP*RMAX ;
+int rollkp = ROLLKP*RMAX ;
+
+int rollkd = ROLLKD*RMAX ;
 
 union longww gyroRollFeedback ;
 
@@ -35,17 +39,17 @@ void rollCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			rollAccum.WW = __builtin_mulss( crossprod._.W1 , YAWKP_RM ) ;
+			rollAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				rollAccum._.W1 = YAWKP_RM/4 ;
+				rollAccum._.W1 = yawkp/4 ;
 			}
 			else
 			{
-				rollAccum._.W1 = -YAWKP_RM/4 ;
+				rollAccum._.W1 = -yawkp/4 ;
 			}
 		}
 	}
@@ -59,8 +63,8 @@ void rollCntrl(void)
 	
 	if ( flags._.pitch_feedback )
 	{
-		gyroRollFeedback.WW = __builtin_mulss( ROLLKD_RM , omegaAccum[1] ) ;
-		rollAccum.WW += __builtin_mulss( rmat[6] , ROLLKP_RM ) ;
+		gyroRollFeedback.WW = __builtin_mulss( rollkd , omegaAccum[1] ) ;
+		rollAccum.WW += __builtin_mulss( rmat[6] , rollkp ) ;
 	}
 	else
 	{

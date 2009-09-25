@@ -23,13 +23,3 @@
 
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
 #define RMAX15 0b0110000000000000	//	1.5 in 2.14 format
-
-#define YAWKP_RM	(int)(YAWKP*RMAX)
-#define YAWKD_RM	(int)(YAWKD*RMAX)
-#define ROLLKP_RM	(int)(ROLLKP*RMAX)
-#define ROLLKD_RM	(int)(ROLLKD*RMAX)
-#define PITCHKD_RM	(int)(PITCHKD*RMAX)
-
-#define CAMERA_ROLLKP_RM	(int)(CAMERA_ROLLKP*RMAX)
-#define CAMERA_PITCHKP_RM	(int)(CAMERA_PITCHKP*RMAX)
-#define CAMERA_YAWKP_RM		(int)(CAMERA_YAWKP*RMAX)

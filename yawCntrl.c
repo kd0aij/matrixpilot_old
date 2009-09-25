@@ -2,6 +2,9 @@
 #include "definesRmat.h"
 #include "defines.h"
 
+extern int yawkp ;
+
+int yawkd = YAWKD*RMAX ;
 
 int yawbgain = (int)(8.0*YAWBOOST) ;
 
@@ -37,17 +40,17 @@ void yawCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			yawAccum.WW = __builtin_mulss( crossprod._.W1 , YAWKP_RM ) ;
+			yawAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				yawAccum._.W1 = YAWKP_RM/4 ;
+				yawAccum._.W1 = yawkp/4 ;
 			}
 			else
 			{
-				yawAccum._.W1 = -YAWKP_RM/4 ;
+				yawAccum._.W1 = -yawkp/4 ;
 			}
 		}
 	}
@@ -57,7 +60,7 @@ void yawCntrl(void)
 	}
 	if ( flags._.GPS_steering || flags._.pitch_feedback )
 	{
-		gyroYawFeedback.WW = __builtin_mulss( YAWKD_RM , omegaAccum[2] ) ;
+		gyroYawFeedback.WW = __builtin_mulss( yawkd , omegaAccum[2] ) ;
 		yawboost = ( __builtin_mulss( yawbgain , ( pwIn[RUDDER_INPUT_CHANNEL] - pwTrim[RUDDER_INPUT_CHANNEL] ) ))>>3 ;
 		// For now yawboost is only mixed into standard-no-aileron airframes
 	}

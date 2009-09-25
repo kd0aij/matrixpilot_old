@@ -6,6 +6,8 @@
 
 int pitchgain = (int)(PITCHGAIN*RMAX) ;
 int pitchrate = 0 ;
+int pitchkd = (int) (PITCHKD*RMAX) ;
+
 int pitchbgain = (int)(8.0*PITCHBOOST) ;
 
 int rudderElevMixGain = (int)(RMAX*RUDDERELEVMIX) ;
@@ -38,7 +40,7 @@ void pitchCntrl(void)
 	if ( flags._.pitch_feedback )
 	{
 		pitchAccum.WW = 	__builtin_mulss( rmat[7] + pitchAltitudeAdjust, pitchgain ) 
-						+	__builtin_mulss( PITCHKD_RM , pitchrate ) ;
+						+	__builtin_mulss( pitchkd , pitchrate ) ;
 		
 		pitchboost =  (__builtin_mulss(pitchbgain , (	pwIn[ELEVATOR_INPUT_CHANNEL] - pwTrim[ELEVATOR_INPUT_CHANNEL] ))>>3) ;
 		// For now pitchboost is only mixed into standard-no-aileron airframes
