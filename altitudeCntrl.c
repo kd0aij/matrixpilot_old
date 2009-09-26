@@ -78,6 +78,13 @@ void altitudeCntrl(void)
 				pitchAltitudeAdjust = PITCHATMAX + PITCHHEIGHTGAIN*( desiredHeight - height - HEIGHTMARGIN ) ;
 			}
 			
+#if (RACING_MODE == 1)
+			if ( flags._.GPS_steering )
+			{
+				throttleAccum.WW = MAXTHROTTLE ;
+			}
+#endif
+			
 			// Servo reversing is handled in servoMix.c
 			throttleFiltered.WW += (((long)( throttleAccum.WW - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT );
 			altitude_control = throttleFiltered._.W1 ;
