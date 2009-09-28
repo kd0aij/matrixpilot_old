@@ -1,7 +1,5 @@
-
 #include "p30f4011.h"
 #include "definesRmat.h"
-
 #include "defines.h"
 
 int yawkp = YAWKP*RMAX ;
@@ -9,11 +7,12 @@ int rollkp = ROLLKP*RMAX ;
 
 int rollkd = ROLLKD*RMAX ;
 
-union longww gyroFeedback ;
+union longww gyroRollFeedback ;
 
-void aileronCntrl(void)
+
+void rollCntrl(void)
 {
-	union longww aileronAccum ;
+	union longww rollAccum ;
 	union longww dotprod ;
 	union longww crossprod ;
 	int desiredX ;
@@ -21,14 +20,6 @@ void aileronCntrl(void)
 	int actualX ;
 	int actualY ;
 
-	if ( flags._.radio_on )
-	{
-		pwaileron = pwc7 + waggle ;
-	}
-	else
-	{
-		pwaileron = ailerontrim + waggle ;
-	}
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
 #endif 
@@ -48,47 +39,40 @@ void aileronCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			aileronAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
+			rollAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				aileronAccum._.W1 = RMAX*YAWKP/4 ;
+				rollAccum._.W1 = yawkp/4 ;
 			}
 			else
 			{
-				aileronAccum._.W1 = -RMAX*YAWKP/4 ;
+				rollAccum._.W1 = -yawkp/4 ;
 			}
 		}
 	}
 	else
 	{
-		aileronAccum.WW = 0 ;
-		gyroFeedback.WW = 0 ;
+		rollAccum.WW = 0 ;
 	}
 #ifdef TestGains
 	flags._.pitch_feedback = 1 ;
 #endif
+	
 	if ( flags._.pitch_feedback )
 	{
-		gyroFeedback.WW = __builtin_mulss( rollkd , omegaAccum[1] ) ;
-		aileronAccum.WW += __builtin_mulss( rmat[6] , rollkp ) ;
+		gyroRollFeedback.WW = __builtin_mulss( rollkd , omegaAccum[1] ) ;
+		rollAccum.WW += __builtin_mulss( rmat[6] , rollkp ) ;
 	}
 	else
 	{
-		gyroFeedback.WW = 0 ;
+		gyroRollFeedback.WW = 0 ;
 	}
-	if ( PORTDbits.RD3 )
-	{
-		aileronAccum.WW = (long)pwaileron + (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
-		PDC1 = pulsesat( aileronAccum.WW ) ;
-	}
-	else
-	{
-		aileronAccum.WW = (long)pwaileron - (long)aileronAccum._.W1 + (long)gyroFeedback._.W1 ;
-		PDC1 = pulsesat( aileronAccum.WW ) ;
-	}	
+	
+	roll_control = (long)rollAccum._.W1 - (long)gyroRollFeedback._.W1 ;
+	// Servo reversing is handled in servoMix.c
+	
 	return ;
 }
-
