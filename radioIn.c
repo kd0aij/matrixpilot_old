@@ -104,13 +104,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 	{
 #if (NORADIO == 0)
 		pwIn[3] = ((IC2BUF - rise[3]) >> 1 ) ;
-		
-		// The failsafe channel might not be Input 3, so if not, make sure to also connect Input 3 to the receiver
-		// to make sure this code is checked.
-		if ( (pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
-		{
-			pulsesselin++ ;
-		}
 #endif
 	}
 
@@ -135,6 +128,13 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	{
 #if (NORADIO == 0)
 		pwIn[4] = ((IC1BUF - rise[4]) >> 1 );
+		
+		// Whether or not the FAILSAFE_INPUT_CHANNEL is CHANNEL_4, make sure to connect
+		// Input 4 to the receiver so that this code will get run evry ~20ms.
+		if ( (pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
+		{
+			pulsesselin++ ;
+		}
 #endif
 	}
 	IFS0bits.IC1IF =  0 ; // clear the interrupt

@@ -208,7 +208,7 @@ extern int defaultCorcon ;
 
 
 // If GPS data has not been received for this many state machine cycles, consider the GPS lock to be lost.
-#define GPS_DATA_MAX_AGE	3
+#define GPS_DATA_MAX_AGE	9
 
 
 #define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)		((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))

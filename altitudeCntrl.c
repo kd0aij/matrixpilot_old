@@ -86,8 +86,9 @@ void altitudeCntrl(void)
 #endif
 			
 			// Servo reversing is handled in servoMix.c
-			throttleFiltered.WW += (((long)( throttleAccum.WW - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT );
-			altitude_control = throttleFiltered._.W1 ;
+			int throttleOut = pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] + throttleAccum.WW ) ;
+			throttleFiltered.WW += (((long)( throttleOut - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT );
+			altitude_control = throttleFiltered._.W1 - pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		}
 	}
 	else

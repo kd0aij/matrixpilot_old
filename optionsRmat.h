@@ -15,10 +15,10 @@
 
 #define ACCELSCALE ((long) ( GRAVITY/GRAVITYM ) )
 
-#define CENTRISCALE (long) (((long long)519168.0)*GRAVITY)/((long long)RADPERSEC*GRAVITYM)
+#define CENTRISCALE ((long) (((long long)519168.0)*GRAVITY)/((long long)RADPERSEC*GRAVITYM))
 // scale factor in multiplying omega times velocity to get centrifugal acceleration
 
-#define CENTRIFSAT (long) (GRAVITYM*RADPERSEC)/(GRAVITY*((long long)32))
+#define CENTRIFSAT ((long) (GRAVITYM*RADPERSEC)/(GRAVITY*((long long)32)))
 // saturation limit for the centrifugal adjustment to avoid numeric overflow
 
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format

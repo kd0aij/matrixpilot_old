@@ -36,7 +36,7 @@ void estYawDrift(void)
 
 	if ( nav_valid_.BB == 0 )
 	{
-		dirovergndHGPS[0] = -cosine (actual_dir ) ;
+		dirovergndHGPS[0] = -cosine ( actual_dir ) ;
 		dirovergndHGPS[1] = sine ( actual_dir ) ;
 	}
 	else

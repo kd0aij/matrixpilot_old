@@ -56,6 +56,7 @@ void rollCntrl(void)
 	else
 	{
 		rollAccum.WW = 0 ;
+		gyroRollFeedback.WW = 0 ;
 	}
 #ifdef TestGains
 	flags._.pitch_feedback = 1 ;
