@@ -46,11 +46,11 @@ void yawCntrl(void)
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				yawAccum._.W1 = yawkp/4 ;
+				yawAccum._.W1 = RMAX*YAWKP/4 ;
 			}
 			else
 			{
-				yawAccum._.W1 = -yawkp/4 ;
+				yawAccum._.W1 = -RMAX*YAWKP/4 ;
 			}
 		}
 	}
