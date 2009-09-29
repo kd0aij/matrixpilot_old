@@ -2,19 +2,15 @@
 #include "definesRmat.h"
 #include "defines.h"
 
-// ******************************************************
-
-// Revision 2, 4/24/09
-// Sets the GPS interface to binary, 19,200 baud, to eliminate the
-// 12 seconds latency in the GPS communications buffer.
-//
-
 //	main program for testing the IMU.
 //	Select device options:
 
 _FOSC( CSW_FSCM_OFF & HS ) ; 	// external high speed crystal
 _FWDT( WDT_OFF ) ;				// no watchdog timer
-_FBORPOR( 	PBOR_OFF & // brown out off
+_FBORPOR( 	PBOR_OFF & // brown out detection off
+			//PBOR_ON & // brown out detection on
+			//BORV_27 & // brown out triggered at 2.7V
+			//PWRT_64 & // powerup timer at 64ms
 			MCLR_EN &  // enable MCLR
 			RST_PWMPIN & // pwm pins as pwm
 			PWMxH_ACT_HI & // PWMH is active high
@@ -32,16 +28,18 @@ void init_all(void)
 	init_clock() ; 		//  turn on the clock
 	init_T3()  ;		//  enable the T3 internally triggered interrupt
 	init_states() ;
+	init_USART1() ;
 	return ;
 }
 
 int main (void)
 {	//	Initialize all modules and turn on the interrupts.
+	defaultCorcon = CORCON;
 	init_all() 		;   // initialize interrupt handlers
 	SRbits.IPL = 0 ;	// turn on all interrupt priorities
 	while (1)			//  nothing else to do...entirely interrupt driven
 	{
-
+		indicate_loading_main ;
 	}
 	return 0 ;
 }

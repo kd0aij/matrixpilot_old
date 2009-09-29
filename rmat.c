@@ -23,7 +23,6 @@
 fractional ggain = GGAIN ;
 
 //Paul's gains:
-
 #define KPROLLPITCH 256*10
 #define KIROLLPITCH 256*2
 
@@ -104,15 +103,11 @@ void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
 }
 
 // the compiler does not respect the resource used by the Microchip math
-// library, so interrupts should be temporarily suspended
-void interruptsOff(void)
+// library, so interrupts need to save and restore extended state, and
+// reset CORCON if firing in the middle of a math lib call.
+void setDSPLibInUse(boolean inUse)
 {
-	__asm__("DISI #1000");
-	return ;
-}
-void interruptsOn(void)
-{
-	DISICNT = 0 ;
+	needSaveExtendedState = inUse ;
 	return ;
 }
 
@@ -170,11 +165,11 @@ void adj_accel()
 	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , (unsigned int) sog_gps.BB ) ;
 //	gplane[1]=gplane[1] ;
 	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , (unsigned int) sog_gps.BB ) ;
-
+	
 //	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , (unsigned int) velocity_magnitude ) ;
 	gplane[1]=gplane[1]+ ACCELSCALE*forward_acceleration ;
 //	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , (unsigned int) velocity_magnitude ) ;
-
+	
 	return ;
 }
 
@@ -184,7 +179,7 @@ void rupdate(void)
 //	on the direction cosine matrix, based on the gyro vector and correction.
 //	It uses vector and matrix routines furnished by Microchip.
 {
-	interruptsOff();
+	setDSPLibInUse(true) ;
 	VectorAdd( 3 , omegaAccum , omegagyro , omegacorrI ) ;
 	VectorAdd( 3 , omega , omegaAccum , omegacorrP ) ;
 	//	scale by the integration factor:
@@ -200,7 +195,7 @@ void rupdate(void)
 	MatrixMultiply( 3 , 3 , 3 , rbuff , rmat , rup ) ;
 	//	multiply by 2 and copy back from rbuff to rmat:
 	MatrixAdd( 3 , 3 , rmat , rbuff , rbuff ) ; 
-	interruptsOn() ;
+	setDSPLibInUse(false) ;
 	return ;
 }
 
@@ -214,7 +209,7 @@ void normalize(void)
 {
 	fractional norm ; // actual magnitude
 	fractional renorm ;	// renormalization factor
-	interruptsOff() ;
+	setDSPLibInUse(true) ;
 	//	compute -1/2 of the dot product between rows 1 and 2
 	error =  - VectorDotProduct( 3 , &rmat[0] , &rmat[3] ) ; // note, 1/2 is built into 2.14
 	//	scale rows 1 and 2 by the error
@@ -243,15 +238,15 @@ void normalize(void)
 	renorm = RMAX15 - norm ;
 	VectorScale( 3 , &rbuff[6] , &rbuff[6] , renorm ) ;
 	VectorAdd( 3 , &rmat[6] , &rbuff[6] , &rbuff[6] ) ;
-	interruptsOn() ;
+	setDSPLibInUse(false) ;
 	return ;
 }
 
 void roll_pitch_drift()
 {
-	interruptsOff() ;
+	setDSPLibInUse(true) ;
 	VectorCross( errorRP , gplane , &rmat[6] ) ;
-	interruptsOn() ;
+	setDSPLibInUse(false) ;
 	return ;
 }
 
@@ -260,7 +255,7 @@ void yaw_drift()
 	//	although yaw correction is done in horizontal plane,
 	//	this is done in 3 dimensions, just in case we change our minds later
 	//	form the horizontal direction over ground based on rmat
-	interruptsOff() ;
+	setDSPLibInUse(true) ;
 	if (flags._.yaw_req )
 	{
 		//	vector cross product to get the rotation error in ground frame
@@ -271,20 +266,24 @@ void yaw_drift()
 
 		flags._.yaw_req = 0 ;
 	}
-	interruptsOn();
+	setDSPLibInUse(false) ;
 	return ;
 }
 
 void PI_feedback(void)
 {
 	fractional errorRPScaled[3] ;
-	interruptsOff();
+	
+	setDSPLibInUse(true) ;
+	
 	VectorAdd( 3 , errorTotal , errorRP , errorYawplane ) ;
 
 	VectorScale( 3 , omegacorrP , errorYawplane , KPYAW ) ;
 	VectorScale( 3 , errorRPScaled , errorRP , KPROLLPITCH ) ;
 	VectorAdd( 3 , omegacorrP , omegacorrP , errorRPScaled ) ;
 
+	setDSPLibInUse(false) ;
+	
 	CorrectionIntegral[0].WW += ( __builtin_mulss( errorRP[0] , KIROLLPITCH )>>3) ;
 	CorrectionIntegral[1].WW += ( __builtin_mulss( errorRP[1] , KIROLLPITCH )>>3) ;
 	CorrectionIntegral[2].WW += ( __builtin_mulss( errorRP[2] , KIROLLPITCH )>>3) ;
@@ -297,11 +296,10 @@ void PI_feedback(void)
 	omegacorrI[1] = CorrectionIntegral[1]._.W1>>3 ;
 	omegacorrI[2] = CorrectionIntegral[2]._.W1>>3 ;
 	
-	interruptsOn();
+	return ;
 }
 
-extern signed char computed_cog ;
-
+/*
 void output_matrix(void)
 //	This routine makes the direction cosine matrix evident
 //	by setting the three servos to the three values in the
@@ -317,6 +315,7 @@ void output_matrix(void)
 
 	return ;
 }
+*/
 
 void imu(void)
 //	Read the gyros and accelerometers, 
