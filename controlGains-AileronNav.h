@@ -20,9 +20,14 @@
 // RUDDERELEVMIX is the degree of elevator adjustment for rudder and banking
 #define PITCHGAIN 0.150  //0.225
 #define PITCHKD (0.0625*SCALEGYRO)
-#define PITCHBOOST 1.0
-
+#define PITCHBOOST 0.5
 #define RUDDERELEVMIX 1.0
+
+// return to launch pitch down in degrees, a real number.
+// this is the real angle in degrees that the nose of the plane will pitch downward during a return to launch.
+// it is used to increase speed (and wind penetration) during a return to launch.
+// set it to zero if you do not want to use this feature.
+#define RTLPITCHDOWN 0.0
 
 // the real number SERVOSAT limits servo throw by controlling pulse width saturation.
 // set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want
