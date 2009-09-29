@@ -65,9 +65,10 @@
 // Make sure this is set to a channel you actually have plugged into the UAV Dev Board!
 // See the instructions for setting up a low failsafe value in a Spektrum receiver.
 //
-// If you set this to something other than CHANNEL_3, then make sure you are also sending
-// valid servo pulses to Input channel 3 every ~20ms, or the failsafe will not work properly.
-//
+// No matter which input you use as your failsafe, make sure you are also sending
+// valid servo pulses to Input channel 4 every ~20ms, or the failsafe will not work properly.
+// Just making sure you have Input 4 connected to your receiver will accomplish this.
+// 
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
