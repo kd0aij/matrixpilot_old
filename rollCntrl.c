@@ -45,11 +45,11 @@ void rollCntrl(void)
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				rollAccum._.W1 = yawkp/4 ;
+				rollAccum._.W1 = RMAX*YAWKP/4 ;
 			}
 			else
 			{
-				rollAccum._.W1 = -yawkp/4 ;
+				rollAccum._.W1 = -RMAX*YAWKP/4 ;
 			}
 		}
 	}
