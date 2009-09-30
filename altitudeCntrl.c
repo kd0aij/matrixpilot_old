@@ -18,7 +18,7 @@ union longww throttleFiltered = { 0 } ;
 
 #define MAXTHROTTLE ((int) 2.0*SERVORANGE*SERVOSAT  )
 
-#define THROTTLEHEIGHTGAIN ( (int ) ( ( (1.0 - MINIMUMTHROTTLE ) * MAXTHROTTLE ) / ( HEIGHTMARGIN*2 ) ) )
+#define THROTTLEHEIGHTGAIN ( (int ) ( ( (1.0 - MINIMUMTHROTTLE ) * MAXTHROTTLE ) / ( HEIGHTMARGIN ) ) )
 
 #define PITCHATMAX ((long)PITCHATMAXTHROTTLE)*((long)RMAX)/((long)57.3)
 #define PITCHATMIN ((long)PITCHATMINTHROTTLE)*((long)RMAX)/((long)57.3)
@@ -57,8 +57,8 @@ void altitudeCntrl(void)
 		if ( throttleIn < DEADBAND )
 		{
 			pitchAltitudeAdjust = 0 ;
-			throttleFiltered.WW += (((long)(0 - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
-			altitude_control = throttleFiltered._.W1 ;
+			throttleFiltered.WW += (((long)(pwTrim[THROTTLE_INPUT_CHANNEL] - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
+			altitude_control = throttleFiltered._.W1 - pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		}
 		else
 		{
@@ -86,7 +86,7 @@ void altitudeCntrl(void)
 #endif
 			
 			// Servo reversing is handled in servoMix.c
-			int throttleOut = pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] + throttleAccum.WW ) ;
+			int throttleOut = pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] - throttleAccum.WW ) ;
 			throttleFiltered.WW += (((long)( throttleOut - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT );
 			altitude_control = throttleFiltered._.W1 - pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		}
