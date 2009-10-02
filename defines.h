@@ -209,14 +209,30 @@ extern int defaultCorcon ;
 #define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)		((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))
 
 
-#if (AILERON_NAVIGATION == 0)
-#include "controlGains-RudderNav.h"
-#else
-#include "controlGains-AileronNav.h"
-#endif
-
 #if (BOARD_TYPE == RED_BOARD)
 #include "ConfigRed.h"
 #elif (BOARD_TYPE == GREEN_BOARD)
 #include "ConfigGreen.h"
 #endif
+
+
+#define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
+//#define FILTERSHIFT 6 // filter shift divide
+#define FILTERSHIFT 3 
+#define LONGDEG_2_BYTECIR 305 // = (256/360)*((256)**4)/(10**7)
+#define COURSEDEG_2_BYTECIR 466 // = (256/360)*((256)**2)/(10**2)
+#define CALIB_PAUSE 12
+#define STANDBY_PAUSE 48 // pause for 16 seconds of runs through the state machine
+#define NUM_WAGGLES 4 // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
+#define WAGGLE_SIZE 300
+
+#define SERVORANGE (int) SERVOSAT*1000
+#define SERVOMAX 3000 + SERVORANGE
+#define SERVOMIN 3000 - SERVORANGE
+
+#define ACCTAU 200 // in milliseconds
+#define RATETAU 100
+
+#define ACCTBYTAU 5120/ACCTAU	// 256*(time_step/time_constant)
+#define RATETBYTAU 5120/RATETAU
+
