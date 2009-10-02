@@ -11,8 +11,6 @@ int pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
 int pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 
 int pitch_control, roll_control, yaw_control, altitude_control ;
-long pitchboost = 0 ;
-long yawboost = 0 ;
 
 int dutycycle ;				// used to compute PWM duty cycle
 

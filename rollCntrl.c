@@ -23,7 +23,7 @@ void rollCntrl(void)
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
 #endif 
-	if ( flags._.GPS_steering )
+	if ( AILERON_NAVIGATION && flags._.GPS_steering )
 	{
 #ifdef TestGains
 		desiredX = -cosine ( 64 ) ;
@@ -45,24 +45,23 @@ void rollCntrl(void)
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				rollAccum._.W1 = RMAX*YAWKP/4 ;
+				rollAccum._.W1 = yawkp/4 ;
 			}
 			else
 			{
-				rollAccum._.W1 = -RMAX*YAWKP/4 ;
+				rollAccum._.W1 = -yawkp/4 ;
 			}
 		}
 	}
 	else
 	{
 		rollAccum.WW = 0 ;
-		gyroRollFeedback.WW = 0 ;
 	}
 #ifdef TestGains
 	flags._.pitch_feedback = 1 ;
 #endif
 	
-	if ( flags._.pitch_feedback )
+	if ( ROLL_STABILIZATION && flags._.pitch_feedback )
 	{
 		gyroRollFeedback.WW = __builtin_mulss( rollkd , omegaAccum[1] ) ;
 		rollAccum.WW += __builtin_mulss( rmat[6] , rollkp ) ;

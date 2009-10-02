@@ -3,10 +3,8 @@
 
 // YAWKP is the proportional feedback gain for the rudder
 // YAWKD is the yaw gyro feedback gain for the rudder
-// YAWBOOST is the additional gain multiplier for the manually commanded rudder deflection
 #define YAWKP 0.0625
 #define YAWKD (0.5*SCALEGYRO)
-#define YAWBOOST 1.0
 
 // Roll stabilization gains.
 // ROLLKP is the proportional gain, approximately 0.25
@@ -16,11 +14,9 @@
 
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
 // PITCHKD feedback gain for pitch damping, around 0.0625
-// PITCHBOOST is optional (I do not use it myself), around 0.25
 // RUDDERELEVMIX is the degree of elevator adjustment for rudder and banking
 #define PITCHGAIN 0.150  //0.225
 #define PITCHKD (0.0625*SCALEGYRO)
-#define PITCHBOOST 0.5
 #define RUDDERELEVMIX 1.0
 
 // return to launch pitch down in degrees, a real number.

@@ -6,8 +6,6 @@ extern int yawkp ;
 
 int yawkd = YAWKD*RMAX ;
 
-int yawbgain = (int)(8.0*YAWBOOST) ;
-
 union longww gyroYawFeedback ;
 
 
@@ -24,7 +22,7 @@ void yawCntrl(void)
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
 #endif 
-	if ( flags._.GPS_steering )
+	if ( RUDDER_NAVIGATION && flags._.GPS_steering )
 	{
 #ifdef TestGains
 		desiredX = -cosine ( 0 ) ;
@@ -46,11 +44,11 @@ void yawCntrl(void)
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				yawAccum._.W1 = RMAX*YAWKP/4 ;
+				yawAccum._.W1 = yawkp/4 ;
 			}
 			else
 			{
-				yawAccum._.W1 = -RMAX*YAWKP/4 ;
+				yawAccum._.W1 = -yawkp/4 ;
 			}
 		}
 	}
@@ -58,16 +56,14 @@ void yawCntrl(void)
 	{
 		yawAccum.WW = 0 ;
 	}
-	if ( flags._.GPS_steering || flags._.pitch_feedback )
+	
+	if ( YAW_STABILIZATION && (flags._.GPS_steering || flags._.pitch_feedback) )
 	{
 		gyroYawFeedback.WW = __builtin_mulss( yawkd , omegaAccum[2] ) ;
-		yawboost = ( __builtin_mulss( yawbgain , ( pwIn[RUDDER_INPUT_CHANNEL] - pwTrim[RUDDER_INPUT_CHANNEL] ) ))>>3 ;
-		// For now yawboost is only mixed into standard-no-aileron airframes
 	}
 	else
 	{
 		gyroYawFeedback.WW = 0 ;
-		yawboost = 0 ;
 	}
 	
 	yaw_control = (long)yawAccum._.W1 - (long)gyroYawFeedback._.W1 ;

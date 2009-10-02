@@ -65,8 +65,6 @@ extern int pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
 extern int pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 
 extern int pitch_control, roll_control, yaw_control, altitude_control ;
-extern long pitchboost ;
-extern long yawboost ;
 
 extern struct ADchannel xaccel, yaccel , zaccel ;	// x, y, and z accelerometer channels
 extern struct ADchannel xrate , yrate, zrate ; 		// x, y, and z gyro channels
@@ -184,11 +182,8 @@ extern int defaultCorcon ;
 #define AIRFRAME_STANDARD			0
 #define AIRFRAME_VTAIL				1
 #define AIRFRAME_DELTA				2
-#define AIRFRAME_STANDARD_NOAIL		3
-#define AIRFRAME_VTAIL_NOAIL		4
-#define AIRFRAME_HELI				5
+#define AIRFRAME_HELI				3
 
-#define USE_RUDDER_NAV_CONTROL		(AIRFRAME_TYPE == AIRFRAME_STANDARD_NOAIL || AIRFRAME_TYPE == AIRFRAME_VTAIL_NOAIL)
 
 // Pin locations of the hardware toggle switches
 #define HW_SWITCH_1			(PORTDbits.RD3 == 0)
@@ -214,7 +209,7 @@ extern int defaultCorcon ;
 #define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)		((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))
 
 
-#if (USE_RUDDER_NAV_CONTROL)
+#if (AILERON_NAVIGATION == 0)
 #include "controlGains-RudderNav.h"
 #else
 #include "controlGains-AileronNav.h"

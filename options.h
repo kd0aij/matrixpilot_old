@@ -3,12 +3,23 @@
 
 
 // Choose your airframe type:
-//    AIRFRAME_STANDARD		 	Ailerons and Elevator, and Rudder passthrough
+//    AIRFRAME_STANDARD		 	Ailerons, Elevator, and Rudder control
 //    AIRFRAME_VTAIL			Ailerons, and Elevator and Rudder as V-tail controls
-//    AIRFRAME_DELTA			Aileron and Elevator as Elevons, and Rudder passthrough
-//    AIRFRAME_STANDARD_NOAIL	Elevator and Rudder control (like MatrixNav)
-//    AIRFRAME_VTAIL_NOAIL		Elevator and Rudder as V-tail controls (like MatrixNav with VTAIL)
+//    AIRFRAME_DELTA			Aileron and Elevator as Elevons, and Rudder
 #define AIRFRAME_TYPE	AIRFRAME_STANDARD
+
+
+// Roll, Pitch, and Yaw Stabilization
+// Set any of these to 0 to disable the stabilization in that axis.
+#define ROLL_STABILIZATION					1
+#define PITCH_STABILIZATION					1
+#define YAW_STABILIZATION					0
+
+
+// Aileron and Rudder Navigation
+// Set either of these to 0 to disable use of that control surface for navigation.
+#define AILERON_NAVIGATION					1
+#define RUDDER_NAVIGATION					1
 
 
 // Altitude Hold
@@ -17,7 +28,7 @@
 
 
 // Camera Stabilization
-// To enable, set this value to 1, and assign one or more of the CAMERA_*_OUTPUT_CHANNELS above.
+// To enable, set this value to 1, and assign one or more of the CAMERA_*_OUTPUT_CHANNELS below.
 #define USE_CAMERA_STABILIZATION			0
 
 
@@ -90,8 +101,8 @@
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
-#define RUDDER_OUTPUT_CHANNEL				CHANNEL_5
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_4
+#define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
 #define CAMERA_ROLL_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
@@ -104,9 +115,9 @@
 // as you define below), that servo will be sent reversed controls.
 #define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
 #define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
-#define RUDDER_CHANNEL_REVERSED				0	// Hardcoded to be unreversed, since we have only 3 switches.
-#define AILERON_SECONDARY_CHANNEL_REVERSED	HW_SWITCH_3
-#define THROTTLE_CHANNEL_REVERSED			0
+#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
+#define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
+#define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_ROLL_CHANNEL_REVERSED		0
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED			0
