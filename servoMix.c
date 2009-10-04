@@ -56,7 +56,7 @@ void servoMix( void )
 		temp = pwManual[ELEVATOR_INPUT_CHANNEL] + REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, pitch_control) ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control) ;
+		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control + (int)(AILERONRUDDERMIX * roll_control)) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
@@ -112,8 +112,8 @@ void servoMix( void )
 	// Mix roll_control, pitch_control, and waggle into aileron and elevator
 	// Mix rudder_control into  rudder
 #if ( AIRFRAME_TYPE == AIRFRAME_DELTA )
-		int elevon_1_control = scale_for_manual(AILERON_INPUT_CHANNEL, roll_control + pitch_control + waggle) ;
-		int elevon_2_control = scale_for_manual(ELEVATOR_INPUT_CHANNEL, -roll_control + pitch_control - waggle) ;
+		int elevon_1_control = scale_for_manual(AILERON_INPUT_CHANNEL, -roll_control + pitch_control + waggle) ;
+		int elevon_2_control = scale_for_manual(ELEVATOR_INPUT_CHANNEL, roll_control + pitch_control - waggle) ;
 		yaw_control = scale_for_manual(RUDDER_INPUT_CHANNEL, yaw_control) ;
 		
 		temp = pwManual[AILERON_INPUT_CHANNEL] +
