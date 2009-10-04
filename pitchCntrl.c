@@ -13,7 +13,8 @@ int pitchrate = 0 ;
 int pitchkd = (int) (PITCHKD*RMAX) ;
 
 int rudderElevMixGain = (int)(RMAX*RUDDERELEVMIX) ;
-int rudderElevMix ;
+int aileronElevMixGain = (int)(RMAX*AILERONELEVMIX) ;
+int navElevMix ;
 
 int elevInput ;
 
@@ -21,15 +22,21 @@ void pitchCntrl(void)
 {
 	union longww pitchAccum ;
 	
-	if ( RUDDER_NAVIGATION && flags._.pitch_feedback )
+	if ( AILERON_NAVIGATION && flags._.pitch_feedback )
+	{
+		pitchAccum.WW = __builtin_mulss( rmat[6] , aileronElevMixGain ) ;
+		pitchAccum.WW = __builtin_mulss( pitchAccum._.W1 , roll_control ) << 4 ;
+		navElevMix = pitchAccum._.W1 ;
+	}
+	else if ( RUDDER_NAVIGATION && flags._.pitch_feedback )
 	{
 		pitchAccum.WW = __builtin_mulss( rmat[6] , rudderElevMixGain ) ;
 		pitchAccum.WW = __builtin_mulss( pitchAccum._.W1 , yaw_control ) << 4 ;
-		rudderElevMix = pitchAccum._.W1 ;
+		navElevMix = pitchAccum._.W1 ;
 	}
 	else
 	{
-		rudderElevMix = 0 ;
+		navElevMix = 0 ;
 	}
 
 	pitchAccum.WW = (	__builtin_mulss( rmat[8] , omegagyro[0] )
@@ -60,7 +67,7 @@ void pitchCntrl(void)
 		pitchAccum.WW = 0 ;
 	}
 	
-	pitch_control = (long)pitchAccum._.W1 + rudderElevMix ;
+	pitch_control = (long)pitchAccum._.W1 + navElevMix ;
 	// Servo reversing is handled in servoMix.c
 	
 	return ;

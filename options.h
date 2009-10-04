@@ -146,9 +146,11 @@
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
 // PITCHKD feedback gain for pitch damping, around 0.0625
 // RUDDERELEVMIX is the degree of elevator adjustment for rudder and banking
+// AILERONELEVMIX is the degree of elevator adjustment for aileron
 #define PITCHGAIN 0.150
 #define PITCHKD (0.0625*SCALEGYRO) // Ben:0.075
 #define RUDDERELEVMIX 0.2 // Ben: 0.2
+#define AILERONELEVMIX 0.0
 
 // return to launch pitch down in degrees, a real number.
 // this is the real angle in degrees that the nose of the plane will pitch downward during a return to launch.
