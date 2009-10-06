@@ -20,7 +20,7 @@
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
 #define AILERON_NAVIGATION					1
-#define RUDDER_NAVIGATION					0
+#define RUDDER_NAVIGATION					1
 
 
 // Altitude Hold
@@ -40,8 +40,9 @@
 
 
 // Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
-// receiver. (Totally autonomous.)  This is not recommended since you'll have no manual control to
-// fall back on if things go wrong.  It may not even be legal in your area.
+// receiver. (Totally autonomous.)  This is just meant for debugging.  It is not recommended that
+// you acually use this since there is no automatic landing code yet, and you'd have no manual
+// control to fall back on if things go wrong.  It may not even be legal in your area.
 #define NORADIO								0
 
 
@@ -130,33 +131,35 @@
 // Control gains.
 // All gains should be positive real numbers.
 
-// YAWKP is the proportional feedback gain for the rudder
-// YAWKD is the yaw gyro feedback gain for the rudder
-#define YAWKP 0.0625
-#define YAWKD (0.5*SCALEGYRO)
-
-// Roll stabilization gains.
+// Aileron/Roll Control Gains
+// YAWKP_AILERON is the proportional feedback gain for aileron navigation
 // ROLLKP is the proportional gain, approximately 0.25
 // ROLLKD is the deriviate (gyro) gain, approximately 0.125
-// AILERONRUDDERMIX is the degree of rudder deflection added for a given amount of aileron deflection
-#define ROLLKP 0.25 // Ben:0.20
-#define ROLLKD (0.125*SCALEGYRO) // Ben:0.075
-#define AILERONRUDDERMIX 0.0 // only applied to standard airframes // Ben: 0.75
+#define YAWKP_AILERON 0.100
+#define ROLLKP 0.25 // Ben: 0.20
+#define ROLLKD (0.125*SCALEGYRO) // Ben: 0.075
 
+// Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
 // PITCHKD feedback gain for pitch damping, around 0.0625
 // RUDDERELEVMIX is the degree of elevator adjustment for rudder and banking
 // AILERONELEVMIX is the degree of elevator adjustment for aileron
 #define PITCHGAIN 0.150
-#define PITCHKD (0.0625*SCALEGYRO) // Ben:0.075
-#define RUDDERELEVMIX 0.2 // Ben: 0.2
+#define PITCHKD (0.0625*SCALEGYRO) // Ben: 0.075
+#define RUDDERELEVMIX 0.2
 #define AILERONELEVMIX 0.0
+
+// Rudder/Yaw Control Gains
+// YAWKP_RUDDER is the proportional feedback gain for rudder navigation
+// YAWKD is the yaw gyro feedback gain for the rudder
+#define YAWKP_RUDDER 0.0625 // Ben: 0.05
+#define YAWKD (0.5*SCALEGYRO)
 
 // return to launch pitch down in degrees, a real number.
 // this is the real angle in degrees that the nose of the plane will pitch downward during a return to launch.
 // it is used to increase speed (and wind penetration) during a return to launch.
 // set it to zero if you do not want to use this feature.
-#define RTLPITCHDOWN 0.0 // Ben: 5.0
+#define RTLPITCHDOWN 0.0 // Ben: 2.0
 
 // the real number SERVOSAT limits servo throw by controlling pulse width saturation.
 // set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want
@@ -166,9 +169,9 @@
 // the following section is for altitude hold
 #define HEIGHTMAX 100.0 // maximum target height in meters
 #define MINIMUMTHROTTLE 0.35 // minimum throttle
-#define PITCHATMINTHROTTLE 0.0  // target pitch angle in degrees at minimum throttle
+#define PITCHATMINTHROTTLE 0.0  // target pitch angle in degrees at minimum throttle // Ben: -8.0
 #define PITCHATMAXTHROTTLE 15.0 // target pitch angle in degrees at maximum throttle
-#define PITCHATZEROTHROTTLE 0.0 // target pitch angle in degrees while gliding
+#define PITCHATZEROTHROTTLE 0.0 // target pitch angle in degrees while gliding // Ben: -2.0
 
 
 // The following section is for camera stabilization

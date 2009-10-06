@@ -3,11 +3,11 @@
 // in which navigation is based on the distance of the plane
 // to the line between the waypoints.
 // Or you can use navigation directly toward the goal point.
-// If you want to use cross tracking, define CROSSTRACKING,
+// If you want to use cross tracking, set CROSSTRACKING to 1,
 // otherwise, to use navigation directly toward the goal,
-// comment out the following #define CROSSTRACKING:
+// set CROSSTRACKING to 0:
 
-#define CROSSTRACKING
+#define CROSSTRACKING	0
 
 // waypoint definitions
 
@@ -31,7 +31,7 @@
 
 // As an example, here is the T3 contest course
 
-// Prior to fligh, initialize the board at the center of the course.
+// Prior to flight, initialize the board at the center of the course.
 
 // CORNER is the absolute value of the X or Y coordinate at the corners of the course.
  

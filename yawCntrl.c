@@ -2,7 +2,7 @@
 #include "definesRmat.h"
 #include "defines.h"
 
-extern int yawkp ;
+int yawkprud = YAWKP_RUDDER*RMAX ;
 
 int yawkd = YAWKD*RMAX ;
 
@@ -38,17 +38,17 @@ void yawCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			yawAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
+			yawAccum.WW = __builtin_mulss( crossprod._.W1 , yawkprud ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				yawAccum._.W1 = yawkp/4 ;
+				yawAccum._.W1 = yawkprud/4 ;
 			}
 			else
 			{
-				yawAccum._.W1 = -yawkp/4 ;
+				yawAccum._.W1 = -yawkprud/4 ;
 			}
 		}
 	}

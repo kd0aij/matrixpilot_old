@@ -2,7 +2,7 @@
 #include "definesRmat.h"
 #include "defines.h"
 
-int yawkp = YAWKP*RMAX ;
+int yawkpail = YAWKP_AILERON*RMAX ;
 int rollkp = ROLLKP*RMAX ;
 
 int rollkd = ROLLKD*RMAX ;
@@ -39,17 +39,17 @@ void rollCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			rollAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
+			rollAccum.WW = __builtin_mulss( crossprod._.W1 , yawkpail ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				rollAccum._.W1 = yawkp/4 ;
+				rollAccum._.W1 = yawkpail/4 ;
 			}
 			else
 			{
-				rollAccum._.W1 = -yawkp/4 ;
+				rollAccum._.W1 = -yawkpail/4 ;
 			}
 		}
 	}
