@@ -4,6 +4,7 @@
 
 void init_clock(void)	/* initialize timer 1 and LEDs */
 {
+		
 	TRISF = 0b1111111111101100 ;
 
 	TMR1 = 0 ; 				// initialize timer
@@ -18,13 +19,18 @@ void init_clock(void)	/* initialize timer 1 and LEDs */
 	return ;
 }
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void) 
-// excute whatever needs to run in the background, once every 0.5 seconds
+void __attribute__((interrupt,__no_auto_psv__)) _T1Interrupt(void) 
+// excute whatever needs to run in the background, once every 2 seconds
 {
 	indicate_loading_inter ;
-	
 //	run the state machine 
 	state_machine() ;
+
+//	toggle three of the spare digital outputs
+
+//	__builtin_btg ( &LATE , 0 ) ;
+	__builtin_btg ( &LATE , 2 ) ;
+	__builtin_btg ( &LATE , 4 ) ;
 
 	IFS0bits.T1IF = 0 ;			// clear the interrupt
 	return ;

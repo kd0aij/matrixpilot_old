@@ -1,5 +1,7 @@
+
 #include "p30f4011.h"
 #include "definesRmat.h"
+
 #include "defines.h"
 
 int yawkp = YAWKP*RMAX ;
@@ -7,12 +9,11 @@ int rollkp = ROLLKP*RMAX ;
 
 int rollkd = ROLLKD*RMAX ;
 
-union longww gyroRollFeedback ;
+union longww gyroFeedback ;
 
-
-void rollCntrl(void)
+void aileronCntrl(void)
 {
-	union longww rollAccum ;
+	union longww aileronAccum ;
 	union longww dotprod ;
 	union longww crossprod ;
 	int desiredX ;
@@ -20,6 +21,14 @@ void rollCntrl(void)
 	int actualX ;
 	int actualY ;
 
+	if ( flags._.radio_on )
+	{
+		pwaileron = pwc7 + waggle ;
+	}
+	else
+	{
+		pwaileron = ailerontrim + waggle ;
+	}
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
 #endif 
@@ -39,41 +48,47 @@ void rollCntrl(void)
 		crossprod.WW = crossprod.WW<<2 ;
 		if ( dotprod._.W1 > 0 )
 		{
-			rollAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
+			aileronAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
 		}
 		else
 		{
 			if ( crossprod._.W1 > 0 )
 			{
-				rollAccum._.W1 = RMAX*YAWKP/4 ;
+				aileronAccum._.W1 = RMAX*YAWKP/4 ;
 			}
 			else
 			{
-				rollAccum._.W1 = -RMAX*YAWKP/4 ;
+				aileronAccum._.W1 = -RMAX*YAWKP/4 ;
 			}
 		}
 	}
 	else
 	{
-		rollAccum.WW = 0 ;
-		gyroRollFeedback.WW = 0 ;
+		aileronAccum.WW = 0 ;
+		gyroFeedback.WW = 0 ;
 	}
 #ifdef TestGains
 	flags._.pitch_feedback = 1 ;
 #endif
-	
 	if ( flags._.pitch_feedback )
 	{
-		gyroRollFeedback.WW = __builtin_mulss( rollkd , omegaAccum[1] ) ;
-		rollAccum.WW += __builtin_mulss( rmat[6] , rollkp ) ;
+		gyroFeedback.WW = __builtin_mulss( rollkd , omegaAccum[1] ) ;
+		aileronAccum.WW += __builtin_mulss( rmat[6] , rollkp ) ;
 	}
 	else
 	{
-		gyroRollFeedback.WW = 0 ;
+		gyroFeedback.WW = 0 ;
 	}
-	
-	roll_control = (long)rollAccum._.W1 - (long)gyroRollFeedback._.W1 ;
-	// Servo reversing is handled in servoMix.c
-	
+	if ( PORTDbits.RD3 )
+	{
+		aileronAccum.WW = (long)pwaileron + (long)aileronAccum._.W1 - (long)gyroFeedback._.W1 ;
+		PDC1 = pulsesat( aileronAccum.WW ) ;
+	}
+	else
+	{
+		aileronAccum.WW = (long)pwaileron - (long)aileronAccum._.W1 + (long)gyroFeedback._.W1 ;
+		PDC1 = pulsesat( aileronAccum.WW ) ;
+	}	
 	return ;
 }
+

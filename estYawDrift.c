@@ -18,7 +18,6 @@ fractional rmat4filt = RMAX ;
 
 #define GPSFILT (4.0/GPSTAU)*RMAX
 
-
 void estYawDrift(void)
 {
 	union longbbbb accum ;
@@ -36,6 +35,7 @@ void estYawDrift(void)
 
 	if ( nav_valid_.BB == 0 )
 	{
+//		__builtin_btg ( &LATF , 0 ) ;
 		dirovergndHGPS[0] = -cosine ( actual_dir ) ;
 		dirovergndHGPS[1] = sine ( actual_dir ) ;
 	}

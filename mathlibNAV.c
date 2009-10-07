@@ -71,7 +71,7 @@ signed char rect_to_polar ( struct relative2D *xy )
 {
 	//	Convert from rectangular to polar coordinates using "CORDIC" arithmetic, which is basically
 	//	a binary search for the angle.
-	//	As a by product, the xy is rotated onto the x axis, so that y is driven to zero,
+	//	As a by product,  xy is rotated onto the x axis, so that y is driven to zero,
 	//	and the magnitude of the vector winds up as the x component.
 
 	signed char theta = 0 ;
