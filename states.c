@@ -1,4 +1,3 @@
-
 #include "p30f4011.h"
 #include "definesRmat.h"
 #include "defines.h"
@@ -20,8 +19,8 @@ void init_states(void)
 {
 	flags.WW = 0 ;
 	waggle = 0 ;
+	gps_data_age = GPS_DATA_MAX_AGE+1 ;
 	stateS = &startS ;
-//	flags._.GPS_config = 1 ;
 	return ;
 }
 
@@ -29,22 +28,24 @@ void state_machine(void)
 {
 	//	Configure the GPS for binary if there is a request to do so.
 	//	Determine whether the radio is on.
-#ifdef NORADIO
+	
+#if (NORADIO == 1)
 	pulsesselin = 100 ;
 #endif
-	if ( pulsesselin > 50 )
+	
+	if ( pulsesselin > 10 )
 	{
 		flags._.radio_on = 1 ;
-		pulsesselin = 0 ;
-		LATFbits.LATF1 = 0 ; // indicate radio on
-		//	Select manual, automatic, or come home, based on pulse width of channel 4 (pwc1).
-		if ( pwc1 > 3500 )
+		LED_GREEN = LED_ON ; // indicate radio on
+		
+		//	Select manual, automatic, or come home, based on pulse width of the switch input channel as defined in options.h.
+		if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > 3400 )
 		{
 			flags._.man_req = 0 ;
 			flags._.auto_req = 0 ;
 			flags._.home_req = 1 ;
 		}
-		else if ( pwc1 > 3000 )
+		else if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > 2600 )
 		{
 			flags._.man_req = 0 ;
 			flags._.auto_req = 1 ;
@@ -60,16 +61,25 @@ void state_machine(void)
 	else
 	{
 		flags._.radio_on = 0 ;
+		LED_GREEN = LED_OFF ; // indicate radio off
+		
 		flags._.man_req = 0 ;
 		flags._.auto_req = 0 ;
 		flags._.home_req = 0 ;
-		LATFbits.LATF1 = 1 ; // indicate radio off
-		pulsesselin = 0 ;
 	}
+	
+	pulsesselin = 0 ;
+	
+	//	Update the nav capable flag. If the GPS has a lock, gps_data_age will be small.
+	//	For now, nav_capable will always be 0 when the Airframe type is AIRFRAME_HELI.
+#if (AIRFRAME_TYPE != AIRFRAME_HELI)
+	if (gps_data_age < GPS_DATA_MAX_AGE) gps_data_age++ ;
+	flags._.nav_capable = (gps_data_age < GPS_DATA_MAX_AGE) ;
+#endif
+	
 	//	Execute the activities for the current state.
 	(* stateS) () ;
-	//	Reset the nav capable flag. If the GPS has a lock, this flag will be set the next time.
-	flags._.nav_capable = 0 ;
+	
 	return ;
 }
 
@@ -80,30 +90,32 @@ void ent_calibrateS()
 {
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
-	flags._.altitude_hold = 0 ; 
+	flags._.altitude_hold = 0 ;
 	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
 	stateS = &calibrateS ;
 	calib_timer = CALIB_PAUSE ;
-	LATFbits.LATF0 = 0 ; // turn on mode led
+	LED_RED = LED_ON ; // turn on mode led
 	return ;
 }
 
 //	Acquire state is used to wait for the GPS to achieve lock.
 void ent_acquiringS()
 {
-//	flags._.GPS_config = 1 ;
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
-	flags._.altitude_hold = 0 ; 
+	flags._.altitude_hold = 0 ;
 	flags._.use_waypoints = 0 ;
-	waggle = WAGGLE ;
+	waggle = 0 ;
+	throttleFiltered._.W1 = 0 ;
 	stateS = &acquiringS ;
 	standby_timer = STANDBY_PAUSE ;
-	LATFbits.LATF0 = 1 ;
-	throttleIdle = throttleFiltered._.W1 = pwc2 ;
-	ailerontrim = pwc7 ;
-	elevtrim = pwc8 ;
+	LED_RED = LED_OFF ;
+	
+	int i;
+	for (i=1; i <= NUM_INPUTS; i++)
+		pwTrim[i] = pwIn[i] ;
+	
 	return ;
 }
 
@@ -112,52 +124,51 @@ void ent_manualS()
 {
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 0 ;
-	flags._.altitude_hold = 0 ; 
+	flags._.altitude_hold = 0 ;
 	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
-	LATFbits.LATF0 = 1 ;
+	LED_RED = LED_OFF ;
 	stateS = &manualS ;
 	return ;
 }
 
 //	Auto state provides augmented control. 
-//	Rudder is direct control, elevator has accelerometer and gyro.
 void ent_autoS()
 {
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 1 ;
-	flags._.altitude_hold = 1 ; 
+	flags._.altitude_hold = 1 ;
 	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
-	LATFbits.LATF0 = 0 ;
+	LED_RED = LED_ON ;
 	stateS = &autoS ;
 	return ;
 }
 
-//	Come home state, entered when the radio signal is lost.
+//	Come home state, entered when the radio signal is lost, and gps is locked.
 void ent_returnS()
 {
 	flags._.GPS_steering = 1 ;
 	flags._.pitch_feedback = 1 ;
-	flags._.altitude_hold = 0 ; 
+	flags._.altitude_hold = 0 ;
 	flags._.use_waypoints = 0 ;
 	waggle = 0 ;
-	LATFbits.LATF0 = 0 ;
+	LED_RED = LED_ON ;
 	stateS = &returnS ;
 	return ;
 }
 
 //	Same as the come home state, except the radio is on.
-//	Come home is commanded by channel 4.
+//	Come home is commanded by the mode switch channel (defaults to channel 4).
 void ent_circlingS()
 {
 	init_waypoints() ;
 	flags._.GPS_steering = 1 ;
 	flags._.pitch_feedback = 1 ;
-	flags._.altitude_hold = 1 ; 
+	flags._.altitude_hold = 1 ;
 	flags._.use_waypoints = 1 ;
 	waggle = 0 ;
-	LATFbits.LATF0 = 0 ;
+	LED_RED = LED_ON ;
 	stateS = &circlingS ;
 	return ;
 }
@@ -170,12 +181,13 @@ void startS(void)
 
 void calibrateS(void)
 {
-	if(flags._.radio_on)
+	if ( flags._.radio_on )
 	{
-		__builtin_btg( &LATF , 0 ) ;
+		LED_RED_DO_TOGGLE ;
+		
 		calib_timer--;
-		if (calib_timer>0) return ;
-		else ent_acquiringS() ;
+		if (calib_timer <= 0)
+			ent_acquiringS() ;
 	}
 	else
 	{
@@ -186,16 +198,28 @@ void calibrateS(void)
 
 void acquiringS(void)
 {
-	if(flags._.nav_capable)
+	if ( AIRFRAME_TYPE == AIRFRAME_HELI )
 	{
-		if(flags._.radio_on)
+		ent_manualS();
+		return;
+	}
+	
+	if ( flags._.nav_capable )
+	{
+		if ( flags._.radio_on )
 		{
-			waggle = - waggle ;
-			standby_timer-- ;
-			if ( standby_timer>0) return ;
+			if (standby_timer == NUM_WAGGLES+1)
+				waggle = WAGGLE_SIZE ;
 			else
+				waggle = - waggle ;
+			
+			standby_timer-- ;
+			if ( standby_timer == 2 )
 			{
 				flags._.save_origin = 1 ;
+			}
+			else if ( standby_timer <= 0)
+			{
 				ent_manualS() ;
 			}
 		}
@@ -204,29 +228,24 @@ void acquiringS(void)
 			ent_calibrateS() ;
 		}
 	}
-	else
-	{
-		ent_acquiringS() ;
-	}
 	return ;
 }
 
 void manualS(void) 
 {
-	if(flags._.radio_on)
+	if ( flags._.radio_on )
 	{
 		if ( flags._.home_req & flags._.nav_capable )
-		{
 			ent_circlingS() ;
-		}
-		else if( flags._.auto_req ) 
-		{
+		else if ( flags._.auto_req )
 			ent_autoS() ;
-		}
 	}
 	else
 	{
-		ent_returnS() ;
+		if ( flags._.nav_capable )
+			ent_returnS() ;
+		else
+			ent_autoS() ;
 	}
 	return ;
 }
@@ -234,38 +253,48 @@ void manualS(void)
 
 void autoS(void) 
 {
-	if(flags._.radio_on)
+	if ( flags._.radio_on )
 	{
 		if ( flags._.home_req & flags._.nav_capable )
-		{
 			ent_circlingS() ;
-		}
-		else if( flags._.man_req ) ent_manualS() ;
+		else if ( flags._.man_req )
+			ent_manualS() ;
 	}
 	else
 	{
-		ent_returnS() ;
+		if ( flags._.nav_capable )
+			ent_returnS() ;
 	}
 	return ;
 }
 
 void returnS(void)
 {
-	if( flags._.radio_on ) ent_manualS() ;
+	if ( flags._.radio_on )
+	{
+		if ( flags._.man_req )
+			ent_manualS() ;
+		else if ( flags._.auto_req )
+			ent_autoS() ;
+	}		
 	return ;
 }
 
 void circlingS(void)
 {
-	__builtin_btg( &LATF , 0 ) ;	
+	LED_RED_DO_TOGGLE ;
+	
 	if (flags._.radio_on )
 	{
-		if(flags._.man_req) ent_manualS() ;
-		else if (flags._.auto_req) ent_autoS() ;
+		if ( flags._.man_req )
+			ent_manualS() ;
+		else if ( flags._.auto_req )
+			ent_autoS() ;
 	}
 	else
 	{
 		ent_returnS() ;
 	}
+	return ;
 }
 

@@ -81,7 +81,7 @@ void processwaypoints(void)
 
 		tofinish = temporary._.W1 ;
 
-#ifdef CROSSTRACKING
+#if ( CROSSTRACKING == 1 )
 
 		// project the goal vector perpendicular to the desired direction vector
 		// to get the crosstrack error

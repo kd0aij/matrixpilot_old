@@ -28,14 +28,8 @@ const unsigned char mode[] = {0x86,
 							0x08,
 							0x01,
 							0x00,
-							0x00
-							} ;
-
-void set_baud(void)
-{
-	gpsoutbin2( mode_length , mode ) ;
-	return ;
-}
+							0x00 
+								} ;
 
 const int log_buffer[10] ;
 
@@ -136,7 +130,13 @@ void gpsoutbin2(int length , const unsigned char msg[] )  // output a binary mes
 
 void set_bin(void)  // command GPS to select which messages are sent, using NMEA interface
 {
-	gpsoutline2(bin_mode)  ;
+	gpsoutline2((char*)bin_mode)  ;
+	return ;
+}
+
+void set_baud(void)
+{
+	gpsoutbin2( mode_length , mode ) ;
 	return ;
 }
 
@@ -248,8 +248,8 @@ void msg_PL2 ( unsigned char gpschar )
 			msg_parse = &msg_MSGU ;
 			}
 			break ;
-		}
-		return ;
+	}
+	return ;
 }
 
 void msg_MSG2 ( unsigned char gpschar )
@@ -331,8 +331,12 @@ void msg_B0 ( unsigned char gpschar )
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 {
+	interrupt_save_extended_state ;
+	
+	indicate_loading_inter ;
+	
 	unsigned char rxchar ;
-//	indicate_loading_inter ;
+	
 	if ( U2STAbits.FERR ) { init_GPS2(); }
 	if ( U2STAbits.OERR ) { init_GPS2(); }
 	IFS1bits.U2RXIF = 0 ; // clear the interrupt
@@ -342,40 +346,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 //	bin_out ( rxchar ) ; // binary out to the debugging USART
 		(* msg_parse) ( rxchar ) ; // parse the input byte
 	}
-	return ;
-}
-
-void init_USART1(void)
-{	
-//	debugging USART, runs at 19200 baud
-	U1MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
-	U1STA  = 0b0000010100010000 ;
-
-//	U1BRG =  51 ; // 4800 baud
-	U1BRG =  12 ; // 19200 baud
-
-	U1MODEbits.UARTEN = 1 ; // turn on uart
-	U1MODEbits.ALTIO = 1 ; // alternate pins
 	
-	U1STAbits.UTXEN = 1 ; // turn on transmitter
-
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
-	IPC2bits.U1RXIP = 3 ; // priority 3
-	IEC0bits.U1RXIE = 1 ; // turn on the interrupt
-
-	return ;
-}
-
-void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
-{
-	char rxchar ;
-//	indicate_loading_inter ;
-	rxchar = U1RXREG ;
-	if ( U2STAbits.FERR ) {  init_USART1(); }
-	else if ( U2STAbits.OERR ) {  init_USART1(); }
-	else { __builtin_btg ( &LATE , 8 ) ; }
-
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
+	interrupt_restore_extended_state ;
 	return ;
 }
 
@@ -390,17 +362,19 @@ void init_T3(void)	// set up the use of the T3 interrupt
 	IEC0bits.T3IE = 1 ;		// enable the interrupt
 }
 
-void __attribute__((interrupt,__no_auto_psv__)) _T3Interrupt(void) 
+void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void) 
 //  process T3 interrupt
 {
-
+	indicate_loading_inter ;
+	
 	nav_valid = nav_valid_ ;
 	nav_type  = nav_type_ ;
 	estYawDrift() ;
 	//	if nav_valid is zero, there is valid GPS data that can be used for navigation.
 	if ( nav_valid_.BB == 0 )
 	{
-		flags._.nav_capable = 1 ;
+		gps_data_age = 0;
+		
 		lat_gps		= lat_gps_ ;
 		long_gps	= long_gps_ ;
 		alt_sl_gps	= alt_sl_gps_ ;
@@ -432,8 +406,11 @@ void __attribute__((interrupt,__no_auto_psv__)) _T3Interrupt(void)
 	}
 	else
 	{
-		flags._.nav_capable = 0 ;
+		gps_data_age = GPS_DATA_MAX_AGE+1;
 	}
+	
+//	debug_output() ;   // debugging printout on the spare serial port
+	
 	IFS0bits.T3IF = 0 ;			// clear the interrupt
 	return ;
 }
