@@ -7,6 +7,7 @@
 //    AIRFRAME_STANDARD		 	Elevator, and Ailerons and/or Rudder control
 //    AIRFRAME_VTAIL			Ailerons(optional), and Elevator and Rudder as V-tail controls
 //    AIRFRAME_DELTA			Aileron and Elevator as Elevons, and Rudder(optional)
+// (Note that although AIRFRAME_HELI is also recognized, the code for this airframe type is not ready.)
 #define AIRFRAME_TYPE	AIRFRAME_STANDARD
 
 
@@ -74,14 +75,28 @@
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
 
 
+// Mode Switch is ideally controlled by a 3-position switch on your transmitter.
+// Often the Flap channel will be controlled by a 3-position switch.
+// These are the thresholds for the cutoffs between low and middle, and between middle and high.
+// Normal signals should fall within about 2000 - 4000.
+#define MODE_SWITCH_THRESHOLD_LOW			2600
+#define MODE_SWITCH_THRESHOLD_HIGH			3400
+
+
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
 // Make sure this is set to a channel you actually have plugged into the UAV Dev Board!
-// See the instructions for setting up a low failsafe value in a Spektrum receiver.
-//
+// 
 // No matter which input you use as your failsafe, make sure you are also sending
 // valid servo pulses to Input channel 4 every ~20ms, or the failsafe will not work properly.
 // Just making sure you have Input 4 connected to your receiver will accomplish this.
 // 
+// For a receiver that remembers a failsafe value for when it loses the transmitter signal,
+// like the Spektrum AR6100, you can program the receiver's failsafe value to a value below
+// the normal low value for that channel.  Then set the FAILSAFE_INPUT_MIN value to a value
+// between the receiver's programmed failsafe value and the transmitter's normal lowest
+// value for that channel.  This way the firmware can detect the difference between a normal
+// signal, and a lost transmitter.
+//
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
@@ -135,25 +150,31 @@
 // YAWKP_AILERON is the proportional feedback gain for aileron navigation
 // ROLLKP is the proportional gain, approximately 0.25
 // ROLLKD is the deriviate (gyro) gain, approximately 0.125
+// AILERONBOOST is the additional gain multiplier for the manually commanded aileron deflection
 #define YAWKP_AILERON 0.100
 #define ROLLKP 0.25 // Ben: 0.20
 #define ROLLKD (0.125*SCALEGYRO) // Ben: 0.075
+#define AILERONBOOST 1.0
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
 // PITCHKD feedback gain for pitch damping, around 0.0625
 // RUDDERELEVMIX is the degree of elevator adjustment for rudder and banking
 // AILERONELEVMIX is the degree of elevator adjustment for aileron
+// ELEVATORBOOST is the additional gain multiplier for the manually commanded elevator deflection
 #define PITCHGAIN 0.150
 #define PITCHKD (0.0625*SCALEGYRO) // Ben: 0.075
-#define RUDDERELEVMIX 0.2
+#define RUDDERELEVMIX 0.5
 #define AILERONELEVMIX 0.0
+#define ELEVATORBOOST 0.5
 
 // Rudder/Yaw Control Gains
 // YAWKP_RUDDER is the proportional feedback gain for rudder navigation
 // YAWKD is the yaw gyro feedback gain for the rudder
+// RUDDERBOOST is the additional gain multiplier for the manually commanded rudder deflection
 #define YAWKP_RUDDER 0.0625 // Ben: 0.05
 #define YAWKD (0.5*SCALEGYRO)
+#define RUDDERBOOST 1.0
 
 // return to launch pitch down in degrees, a real number.
 // this is the real angle in degrees that the nose of the plane will pitch downward during a return to launch.
@@ -168,6 +189,7 @@
 
 // the following section is for altitude hold
 #define HEIGHTMAX 100.0 // maximum target height in meters
+#define HEIGHTMIN 25.0 // minimum target height in meters
 #define MINIMUMTHROTTLE 0.35 // minimum throttle
 #define PITCHATMINTHROTTLE 0.0  // target pitch angle in degrees at minimum throttle // Ben: -8.0
 #define PITCHATMAXTHROTTLE 15.0 // target pitch angle in degrees at maximum throttle

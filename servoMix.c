@@ -9,22 +9,11 @@
 //	Mix computed roll and pitch controls into the output channels for the compiled airframe type
 
 
-int scale_for_manual(int channel, int control)
-{
-	if (control == 0) return 0 ;
-	
-	int deflection = abs(pwIn[channel] - pwTrim[channel]) ;
-	
-	if (deflection <= 150) return control ;
-	
-	deflection -= 150 ;
-	if (deflection > 600)
-		deflection = 600 ;
-	
-	return (int)((600 - deflection) / 600.0 * control) ;
-}
+int aileronbgain = (int)(8.0*AILERONBOOST) ;
+int elevatorbgain = (int)(8.0*ELEVATORBOOST) ;
+int rudderbgain = (int)(8.0*RUDDERBOOST) ;
 
-	
+
 void servoMix( void )
 {
 	long temp ;
@@ -38,16 +27,20 @@ void servoMix( void )
 			pwManual[temp] = pwTrim[temp];
 	
 	
+	// Apply boosts if in a stabilized mode
+	if (flags._.radio_on && flags._.pitch_feedback)
+	{
+		pwManual[AILERON_INPUT_CHANNEL] += ((pwManual[AILERON_INPUT_CHANNEL] - pwTrim[AILERON_INPUT_CHANNEL]) * aileronbgain) >> 3 ;
+		pwManual[ELEVATOR_INPUT_CHANNEL] += ((pwManual[ELEVATOR_INPUT_CHANNEL] - pwTrim[ELEVATOR_INPUT_CHANNEL]) * elevatorbgain) >> 3 ;
+		pwManual[RUDDER_INPUT_CHANNEL] += ((pwManual[RUDDER_INPUT_CHANNEL] - pwTrim[RUDDER_INPUT_CHANNEL]) * rudderbgain) >> 3 ;
+	}
+	
 	// Standard airplane airframe
 	// Mix roll_control and waggle into ailerons
 	// Mix pitch_control into elevators
 	// Mix yaw control into rudder
 #if ( AIRFRAME_TYPE == AIRFRAME_STANDARD )
-		roll_control = scale_for_manual(AILERON_INPUT_CHANNEL, roll_control + waggle) ;
-		pitch_control = scale_for_manual(ELEVATOR_INPUT_CHANNEL, pitch_control) ;
-		yaw_control = scale_for_manual(RUDDER_INPUT_CHANNEL, yaw_control) ;
-		
-		temp = pwManual[AILERON_INPUT_CHANNEL] + REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control) ;
+		temp = pwManual[AILERON_INPUT_CHANNEL] + REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control + waggle) ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = 3000 +
@@ -76,11 +69,7 @@ void servoMix( void )
 	// Mix roll_control and waggle into ailerons
 	// Mix pitch_control and yaw_control into both elevator and rudder
 #if ( AIRFRAME_TYPE == AIRFRAME_VTAIL )
-		roll_control = scale_for_manual(AILERON_INPUT_CHANNEL, roll_control + waggle) ;
-		int tail_1_control = scale_for_manual(ELEVATOR_INPUT_CHANNEL, pitch_control + yaw_control) ;
-		int tail_2_control = scale_for_manual(RUDDER_INPUT_CHANNEL, pitch_control - yaw_control) ;
-		
-		temp = pwManual[AILERON_INPUT_CHANNEL] + REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control) ;
+		temp = pwManual[AILERON_INPUT_CHANNEL] + REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control + waggle) ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		//	Reverse the polarity of the secondary aileron if necessary
@@ -88,11 +77,11 @@ void servoMix( void )
 			REVERSE_IF_NEEDED(AILERON_SECONDARY_CHANNEL_REVERSED, pwOut[AILERON_OUTPUT_CHANNEL] - 3000) ;
 		
 		temp = pwManual[ELEVATOR_INPUT_CHANNEL] +
-			REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, tail_1_control) ;
+			REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, pitch_control + yaw_control) ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[RUDDER_INPUT_CHANNEL] +
-			REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, tail_2_control) ;
+			REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, pitch_control - yaw_control) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
@@ -112,16 +101,12 @@ void servoMix( void )
 	// Mix roll_control, pitch_control, and waggle into aileron and elevator
 	// Mix rudder_control into  rudder
 #if ( AIRFRAME_TYPE == AIRFRAME_DELTA )
-		int elevon_1_control = scale_for_manual(AILERON_INPUT_CHANNEL, -roll_control + pitch_control + waggle) ;
-		int elevon_2_control = scale_for_manual(ELEVATOR_INPUT_CHANNEL, roll_control + pitch_control - waggle) ;
-		yaw_control = scale_for_manual(RUDDER_INPUT_CHANNEL, yaw_control) ;
-		
 		temp = pwManual[AILERON_INPUT_CHANNEL] +
-			REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, elevon_1_control) ;
+			REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, -roll_control + pitch_control - waggle) ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[ELEVATOR_INPUT_CHANNEL] +
-			REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, elevon_2_control) ;
+			REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, roll_control + pitch_control + waggle) ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control) ;
@@ -146,20 +131,15 @@ void servoMix( void )
 	// Ignore waggle for now
 	// FIXME: when one channel saturates, fix other channels to compensate?  Or is this not necessary?
 #if ( AIRFRAME_TYPE == AIRFRAME_HELI )
-		int aileron_1_control = scale_for_manual(AILERON_INPUT_CHANNEL, roll_control/2 + pitch_control/2) ;
-		int aileron_2_control = scale_for_manual(AILERON_SECONDARY_INPUT_CHANNEL, -roll_control/2 + pitch_control/2) ;
-		pitch_control = scale_for_manual(ELEVATOR_INPUT_CHANNEL, pitch_control) ;
-		yaw_control = scale_for_manual(RUDDER_INPUT_CHANNEL, yaw_control) ;
-		
 		temp = pwManual[AILERON_INPUT_CHANNEL] +
-			REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, aileron_1_control) ;
+			REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control/2 + pitch_control/2) ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[ELEVATOR_INPUT_CHANNEL] + REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, pitch_control) ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		temp = pwManual[AILERON_SECONDARY_OUTPUT_CHANNEL] + 
-			REVERSE_IF_NEEDED(AILERON_SECONDARY_CHANNEL_REVERSED, aileron_2_control) ;
+			REVERSE_IF_NEEDED(AILERON_SECONDARY_CHANNEL_REVERSED, -roll_control/2 + pitch_control/2) ;
 		pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = temp ;
 		
 		temp = pwManual[RUDDER_INPUT_CHANNEL] /*+ REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control)*/ ;

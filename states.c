@@ -39,13 +39,13 @@ void state_machine(void)
 		LED_GREEN = LED_ON ; // indicate radio on
 		
 		//	Select manual, automatic, or come home, based on pulse width of the switch input channel as defined in options.h.
-		if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > 3400 )
+		if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH )
 		{
 			flags._.man_req = 0 ;
 			flags._.auto_req = 0 ;
 			flags._.home_req = 1 ;
 		}
-		else if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > 2600 )
+		else if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_LOW )
 		{
 			flags._.man_req = 0 ;
 			flags._.auto_req = 1 ;

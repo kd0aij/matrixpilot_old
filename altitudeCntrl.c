@@ -52,6 +52,7 @@ void altitudeCntrl(void)
 		else
 		{
 			desiredHeight =(( __builtin_mulss(  HEIGHTTHROTTLEGAIN, throttleIn ))>>11) ;
+			if (desiredHeight < HEIGHTMIN) desiredHeight = HEIGHTMIN ;
 		}
 		
 		if ( throttleIn < DEADBAND )

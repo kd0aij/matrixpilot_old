@@ -22,21 +22,18 @@ void pitchCntrl(void)
 {
 	union longww pitchAccum ;
 	
+	navElevMix = 0;
+	if ( RUDDER_NAVIGATION && flags._.pitch_feedback )
+	{
+		pitchAccum.WW = __builtin_mulss( rmat[6] , rudderElevMixGain ) ;
+		pitchAccum.WW = __builtin_mulss( pitchAccum._.W1 , yaw_control ) << 4 ;
+		navElevMix += pitchAccum._.W1 ;
+	}
 	if ( AILERON_NAVIGATION && flags._.pitch_feedback )
 	{
 		pitchAccum.WW = __builtin_mulss( rmat[6] , aileronElevMixGain ) ;
 		pitchAccum.WW = __builtin_mulss( pitchAccum._.W1 , roll_control ) << 4 ;
-		navElevMix = pitchAccum._.W1 ;
-	}
-	else if ( RUDDER_NAVIGATION && flags._.pitch_feedback )
-	{
-		pitchAccum.WW = __builtin_mulss( rmat[6] , rudderElevMixGain ) ;
-		pitchAccum.WW = __builtin_mulss( pitchAccum._.W1 , yaw_control ) << 4 ;
-		navElevMix = pitchAccum._.W1 ;
-	}
-	else
-	{
-		navElevMix = 0 ;
+		navElevMix += pitchAccum._.W1 ;
 	}
 
 	pitchAccum.WW = (	__builtin_mulss( rmat[8] , omegagyro[0] )
