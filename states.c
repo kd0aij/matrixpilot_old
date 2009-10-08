@@ -155,6 +155,7 @@ void ent_returnS()
 	waggle = 0 ;
 	LED_RED = LED_ON ;
 	stateS = &returnS ;
+	IFS0bits.T3IF = 1 ;			// trigger navigation immediately
 	return ;
 }
 
@@ -170,6 +171,7 @@ void ent_circlingS()
 	waggle = 0 ;
 	LED_RED = LED_ON ;
 	stateS = &circlingS ;
+	IFS0bits.T3IF = 1 ;			// trigger navigation immediately
 	return ;
 }
 
@@ -276,6 +278,8 @@ void returnS(void)
 			ent_manualS() ;
 		else if ( flags._.auto_req )
 			ent_autoS() ;
+		else if ( flags._.home_req & flags._.nav_capable )
+			ent_circlingS() ;
 	}		
 	return ;
 }

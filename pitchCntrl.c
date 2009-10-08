@@ -22,6 +22,11 @@ void pitchCntrl(void)
 {
 	union longww pitchAccum ;
 	
+#ifdef TestGains
+	flags._.GPS_steering = 1 ;
+	flags._.pitch_feedback = 1 ;
+#endif
+	
 	navElevMix = 0;
 	if ( RUDDER_NAVIGATION && flags._.pitch_feedback )
 	{
@@ -39,11 +44,6 @@ void pitchCntrl(void)
 	pitchAccum.WW = (	__builtin_mulss( rmat[8] , omegagyro[0] )
 					-	__builtin_mulss( rmat[6] , omegagyro[2] ))<<1 ;
 	pitchrate = pitchAccum._.W1 ;
-	
-#ifdef TestGains
-	flags._.GPS_steering = 1 ;
-	flags._.pitch_feedback = 1 ;
-#endif
 	
 	if ( (RUDDER_NAVIGATION || AILERON_NAVIGATION) && flags._.GPS_steering )
 	{
