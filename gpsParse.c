@@ -413,7 +413,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 		gps_data_age = GPS_DATA_MAX_AGE+1;
 	}
 	
-	debug_output_gps() ;   // debugging printout on the spare serial port
+	serial_output_gps() ;   // printout on the spare serial port
 	
 	IFS0bits.T3IF = 0 ;			// clear the interrupt
 	return ;

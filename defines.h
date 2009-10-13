@@ -39,9 +39,9 @@ void altitudeCntrl(void) ;
 void cameraCntrl(void) ;
 void mixServos(void) ;
 
-void debug_output( char* format, ... ) ;
-void debug_output_gps(void) ;
-void debug_output_rapid(void) ;
+void serial_output( char* format, ... ) ;
+void serial_output_gps(void) ;
+void serial_output_rapid(void) ;
 
 void processwaypoints(void) ;
 void init_waypoints(void) ;
