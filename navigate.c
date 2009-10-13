@@ -17,6 +17,7 @@ union longww heightlong = { 0 } ;
 int velocity_magnitude = 0 ;
 int forward_acceleration = 0 ;
 int velocity_previous = 0 ;
+int bearing_to_origin = 0 ;
 
 extern signed char desired_dir_waypoint ;
 
@@ -25,7 +26,6 @@ void navigate(void)
 	union longbbbb accum_nav ;
 	union longww accum_velocity ;
 	struct relative2D vector_to_origin ;
-	signed char bearing_to_origin ;
 	
 	if ( flags._.save_origin )
 	{

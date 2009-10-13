@@ -39,7 +39,9 @@ void altitudeCntrl(void) ;
 void cameraCntrl(void) ;
 void mixServos(void) ;
 
-void debug_output(void) ;
+void debug_output( char* format, ... ) ;
+void debug_output_gps(void) ;
+void debug_output_rapid(void) ;
 
 void processwaypoints(void) ;
 void init_waypoints(void) ;
@@ -74,15 +76,15 @@ extern int dutycycle ;	// used to compute PWM duty cycle
 extern int firstsamp ;	// used on startup to detect first A/D sample
 extern int calibcount ;	// number of PWM pulses before control is turned on
 
-extern union longbbbb lat_gps_ , long_gps_ , alt_sl_gps_ ;
-extern union intbb    nav_valid_ , nav_type_ , sog_gps_ , cog_gps_ , climb_gps_ ;
+extern union longbbbb lat_gps_ , long_gps_ , alt_sl_gps_ , tow_;
+extern union intbb    nav_valid_ , nav_type_ , sog_gps_ , cog_gps_ , climb_gps_ , week_no_ ;
 extern unsigned char  hdop_ ;
 extern union longbbbb xpg_ , ypg_ , zpg_ ;
 extern union intbb    xvg_ , yvg_ , zvg_ ;
 extern unsigned char  mode1_ , mode2_ , svs_ ;
 
-extern union longbbbb lat_gps , long_gps , alt_sl_gps ;
-extern union intbb    nav_valid , nav_type , sog_gps , cog_gps , climb_gps ;
+extern union longbbbb lat_gps , long_gps , alt_sl_gps , tow ;
+extern union intbb    nav_valid , nav_type , sog_gps , cog_gps , climb_gps, week_no ;
 extern unsigned char  hdop ;
 extern union longbbbb xpg , ypg , zpg ;
 extern union intbb    xvg , yvg , zvg ;
@@ -201,6 +203,11 @@ extern int defaultCorcon ;
 #define LED_ON		0
 #define LED_OFF		1
 
+// Serial Output Format
+#define SERIAL_NONE			0	// No serial data is sent
+#define SERIAL_DEBUG		1	// UAV Dev Board debug info
+#define SERIAL_ARDUSTATION	2	// Compatible with ArduStation
+#define SERIAL_PXML			3	// Pete's XML format
 
 // If GPS data has not been received for this many state machine cycles, consider the GPS lock to be lost.
 #define GPS_DATA_MAX_AGE	9

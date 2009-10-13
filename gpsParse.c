@@ -62,14 +62,16 @@ unsigned char * const msg2parse[] = {
 			&un , &un , &un , &un , &un , &un ,
 			&un , &un } ;
 
-union longbbbb lat_gps_ , long_gps_ , alt_sl_gps_ ;
-union intbb    nav_valid_ , nav_type_ , sog_gps_ , cog_gps_ , climb_gps_ ;
+union longbbbb lat_gps_ , long_gps_ , alt_sl_gps_ , tow_ ;
+union intbb    nav_valid_ , nav_type_ , sog_gps_ , cog_gps_ , climb_gps_ , week_no_ ;
 unsigned char  hdop_ ;
 
 unsigned char * const msg41parse[] = {
 			&nav_valid_._.B1 , &nav_valid_._.B0 ,
 			&nav_type_._.B1  , &nav_type_._.B0  ,
-			&un , &un , &un , &un , &un , &un ,
+			// &un , &un , &un , &un , &un , &un ,
+            &week_no_._.B1  , &week_no_._.B0 ,
+            &tow_.__.B3 , &tow_.__.B2 , &tow_.__.B1 , &tow_.__.B0 ,
 			&un , &un , &un , &un , &un , &un ,
 			&un , &un , &un , &un , &un , &un ,
 			&lat_gps_.__.B3  , &lat_gps_.__.B2  , &lat_gps_.__.B1  , &lat_gps_.__.B0 ,
@@ -375,6 +377,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 	{
 		gps_data_age = 0;
 		
+		week_no		= week_no_ ;
+		tow			= tow_ ;
 		lat_gps		= lat_gps_ ;
 		long_gps	= long_gps_ ;
 		alt_sl_gps	= alt_sl_gps_ ;
@@ -409,14 +413,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 		gps_data_age = GPS_DATA_MAX_AGE+1;
 	}
 	
-//	debug_output() ;   // debugging printout on the spare serial port
+	debug_output_gps() ;   // debugging printout on the spare serial port
 	
 	IFS0bits.T3IF = 0 ;			// clear the interrupt
 	return ;
 }
 
-union longbbbb lat_gps , long_gps , alt_sl_gps ;  	// latitude, longitude, altitude
-union intbb    nav_valid , nav_type ;				// navigation valid, navigation type
+union longbbbb lat_gps , long_gps , alt_sl_gps, tow ;  	// latitude, longitude, altitude
+                                                        // time of week in seconds * 10 ^ 3
+union intbb    nav_valid , nav_type, week_no ;			// navigation valid, navigation type
+														// week number: week 0 starts Jan 6 1980
 union intbb    sog_gps , cog_gps , climb_gps ;		// speed over ground, course over ground, climb
 unsigned char  hdop ;								// horizontal dilution of precision
 

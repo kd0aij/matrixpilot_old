@@ -140,6 +140,11 @@
 #define CAMERA_YAW_CHANNEL_REVERSED			0
 
 
+// Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, or SERIAL_PETEXML)
+// This determines the format of the output sent out the spare serial port.
+#define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
+
+
 
 
 ///////////////////////////////////////////////////////////////////////
