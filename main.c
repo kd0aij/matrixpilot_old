@@ -37,6 +37,7 @@ int main (void)
 	defaultCorcon = CORCON;
 	init_all() 		;   // initialize interrupt handlers
 	SRbits.IPL = 0 ;	// turn on all interrupt priorities
+	
 	while (1)			//  nothing else to do...entirely interrupt driven
 	{
 		indicate_loading_main ;
