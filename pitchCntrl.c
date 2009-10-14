@@ -36,7 +36,7 @@ void pitchCntrl(void)
 	}
 	if ( AILERON_NAVIGATION && flags._.pitch_feedback )
 	{
-		pitchAccum.WW = __builtin_mulss( rmat[6] , aileronElevMixGain ) << 2 ;
+		pitchAccum.WW = __builtin_mulss( rmat[6] , aileronElevMixGain ) << 1 ;
 		pitchAccum.WW = __builtin_mulss( pitchAccum._.W1 , rmat[6] ) ;
 		navElevMix += pitchAccum._.W1 ;
 	}
