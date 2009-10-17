@@ -9,9 +9,9 @@
 //	Mix computed roll and pitch controls into the output channels for the compiled airframe type
 
 
-int aileronbgain = (int)(8.0*AILERONBOOST) ;
-int elevatorbgain = (int)(8.0*ELEVATORBOOST) ;
-int rudderbgain = (int)(8.0*RUDDERBOOST) ;
+int aileronbgain = (int)(8.0*AILERON_BOOST) ;
+int elevatorbgain = (int)(8.0*ELEVATOR_BOOST) ;
+int rudderbgain = (int)(8.0*RUDDER_BOOST) ;
 
 
 void servoMix( void )

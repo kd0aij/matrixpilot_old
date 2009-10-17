@@ -3,10 +3,7 @@
 #include "defines.h"
 
 int yawkprud = YAWKP_RUDDER*RMAX ;
-
-int yawkd = YAWKD*RMAX ;
-
-union longww gyroYawFeedback ;
+int yawkdrud = YAWKD_RUDDER*RMAX ;
 
 
 void yawCntrl(void)
@@ -14,6 +11,7 @@ void yawCntrl(void)
 	union longww yawAccum ;
 	union longww dotprod ;
 	union longww crossprod ;
+	union longww gyroYawFeedback ;
 	int desiredX ;
 	int desiredY ;
 	int actualX ;
@@ -57,9 +55,9 @@ void yawCntrl(void)
 		yawAccum.WW = 0 ;
 	}
 	
-	if ( YAW_STABILIZATION && (flags._.GPS_steering || flags._.pitch_feedback) )
+	if ( YAW_STABILIZATION_RUDDER && (flags._.GPS_steering || flags._.pitch_feedback) )
 	{
-		gyroYawFeedback.WW = __builtin_mulss( yawkd , omegaAccum[2] ) ;
+		gyroYawFeedback.WW = __builtin_mulss( yawkdrud , omegaAccum[2] ) ;
 	}
 	else
 	{

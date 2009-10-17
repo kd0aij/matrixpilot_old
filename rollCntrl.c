@@ -3,11 +3,10 @@
 #include "defines.h"
 
 int yawkpail = YAWKP_AILERON*RMAX ;
+int yawkdail = YAWKD_AILERON*RMAX ;
+
 int rollkp = ROLLKP*RMAX ;
-
 int rollkd = ROLLKD*RMAX ;
-
-union longww gyroRollFeedback ;
 
 
 void rollCntrl(void)
@@ -15,6 +14,8 @@ void rollCntrl(void)
 	union longww rollAccum ;
 	union longww dotprod ;
 	union longww crossprod ;
+	union longww gyroRollFeedback ;
+	union longww gyroYawFeedback ;
 	int desiredX ;
 	int desiredY ;
 	int actualX ;
@@ -71,7 +72,16 @@ void rollCntrl(void)
 		gyroRollFeedback.WW = 0 ;
 	}
 	
-	roll_control = (long)rollAccum._.W1 - (long)gyroRollFeedback._.W1 ;
+	if ( YAW_STABILIZATION_AILERON && (flags._.GPS_steering || flags._.pitch_feedback) )
+	{
+		gyroYawFeedback.WW = __builtin_mulss( yawkdail , omegaAccum[2] ) ;
+	}
+	else
+	{
+		gyroYawFeedback.WW = 0 ;
+	}
+	
+	roll_control = (long)rollAccum._.W1 - (long)gyroRollFeedback._.W1 - (long)gyroYawFeedback._.W1 ;
 	// Servo reversing is handled in servoMix.c
 	
 	return ;

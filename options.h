@@ -11,11 +11,12 @@
 #define AIRFRAME_TYPE	AIRFRAME_STANDARD
 
 
-// Roll, Pitch, and Yaw Stabilization
+// Roll, Pitch, and Yaw Stabilization (via rudder and/or ailerons)
 // Set any of these to 0 to disable the stabilization in that axis.
 #define ROLL_STABILIZATION					1
 #define PITCH_STABILIZATION					1
-#define YAW_STABILIZATION					0
+#define YAW_STABILIZATION_RUDDER			1
+#define YAW_STABILIZATION_AILERON			1
 
 
 // Aileron and Rudder Navigation
@@ -157,9 +158,10 @@
 // ROLLKD is the deriviate (gyro) gain, approximately 0.125
 // AILERONBOOST is the additional gain multiplier for the manually commanded aileron deflection
 #define YAWKP_AILERON 0.100
+#define YAWKD_AILERON (0.2*SCALEGYRO)
 #define ROLLKP 0.25 // Ben: 0.20
 #define ROLLKD (0.125*SCALEGYRO) // Ben: 0.075
-#define AILERONBOOST 1.0
+#define AILERON_BOOST 1.0
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
@@ -169,23 +171,23 @@
 // ELEVATORBOOST is the additional gain multiplier for the manually commanded elevator deflection
 #define PITCHGAIN 0.150
 #define PITCHKD (0.0625*SCALEGYRO) // Ben: 0.075
-#define RUDDERELEVMIX 0.5
-#define AILERONELEVMIX 0.0
-#define ELEVATORBOOST 0.5
+#define RUDDER_ELEV_MIX 0.5
+#define ROLL_ELEV_MIX 0.1
+#define ELEVATOR_BOOST 0.5
 
 // Rudder/Yaw Control Gains
 // YAWKP_RUDDER is the proportional feedback gain for rudder navigation
 // YAWKD is the yaw gyro feedback gain for the rudder
 // RUDDERBOOST is the additional gain multiplier for the manually commanded rudder deflection
 #define YAWKP_RUDDER 0.0625 // Ben: 0.05
-#define YAWKD (0.5*SCALEGYRO)
-#define RUDDERBOOST 1.0
+#define YAWKD_RUDDER (0.5*SCALEGYRO)
+#define RUDDER_BOOST 1.0
 
 // return to launch pitch down in degrees, a real number.
 // this is the real angle in degrees that the nose of the plane will pitch downward during a return to launch.
 // it is used to increase speed (and wind penetration) during a return to launch.
 // set it to zero if you do not want to use this feature.
-#define RTLPITCHDOWN 0.0 // Ben: 2.0
+#define RTL_PITCH_DOWN 0.0
 
 // the real number SERVOSAT limits servo throw by controlling pulse width saturation.
 // set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want

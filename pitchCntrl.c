@@ -6,14 +6,14 @@
 
 int rtlkick = 0 ;
 
-#define RTLKICK RMAX*(RTLPITCHDOWN/57.3)
+#define RTLKICK RMAX*(RTL_PITCH_DOWN/57.3)
 
 int pitchgain = (int)(PITCHGAIN*RMAX) ;
 int pitchrate = 0 ;
 int pitchkd = (int) (PITCHKD*RMAX) ;
 
-int rudderElevMixGain = (int)(RMAX*RUDDERELEVMIX) ;
-int aileronElevMixGain = (int)(RMAX*AILERONELEVMIX) ;
+int rudderElevMixGain = (int)(RMAX*RUDDER_ELEV_MIX) ;
+int rollElevMixGain = (int)(RMAX*ROLL_ELEV_MIX) ;
 int navElevMix ;
 
 int elevInput ;
@@ -36,7 +36,7 @@ void pitchCntrl(void)
 	}
 	if ( AILERON_NAVIGATION && flags._.pitch_feedback )
 	{
-		pitchAccum.WW = __builtin_mulss( rmat[6] , aileronElevMixGain ) << 1 ;
+		pitchAccum.WW = __builtin_mulss( rmat[6] , rollElevMixGain ) << 1 ;
 		pitchAccum.WW = __builtin_mulss( pitchAccum._.W1 , rmat[6] )  >> 3 ;
 		navElevMix += pitchAccum._.W1 ;
 	}
