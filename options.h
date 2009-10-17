@@ -140,6 +140,9 @@
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED			0
 
+// Set this to 1 if you need to switch the left and right elevon or vtail surfaces
+#define ELEVON_VTAIL_SURFACES_REVERSED		0
+
 
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, or SERIAL_PETEXML)
 // This determines the format of the output sent out the spare serial port.
@@ -154,6 +157,7 @@
 
 // Aileron/Roll Control Gains
 // YAWKP_AILERON is the proportional feedback gain for aileron navigation
+// YAWKD_AILERON is the derivative feedback gain for aileron navigation
 // ROLLKP is the proportional gain, approximately 0.25
 // ROLLKD is the deriviate (gyro) gain, approximately 0.125
 // AILERONBOOST is the additional gain multiplier for the manually commanded aileron deflection
