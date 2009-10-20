@@ -3,10 +3,6 @@
 #include "defines.h"
 #include "options.h"
 
-int throttleIn = 0 ;
-int throttleOut = 0 ;
-int desiredHeight = 0 ;
-
 union longww throttleFiltered = { 0 } ;
 
 #define THROTTLEFILTSHIFT 12
@@ -16,7 +12,7 @@ union longww throttleFiltered = { 0 } ;
 
 #define DEADBAND 150
 
-#define MAXTHROTTLE ((int) 2.0*SERVORANGE*SERVOSAT  )
+#define MAXTHROTTLE ((int) 2.0*SERVORANGE*SERVOSAT*MAXIMUMTHROTTLE  )
 
 #define THROTTLEHEIGHTGAIN ( (int ) ( ( (1.0 - MINIMUMTHROTTLE ) * MAXTHROTTLE ) / ( HEIGHTMARGIN ) ) )
 
@@ -37,13 +33,26 @@ extern struct waypointparameters goal ;
 
 void altitudeCntrl(void)
 {
+	int throttleIn ;
+	int throttleInOffset ;
+	int desiredHeight ;
+	
 	if ( flags._.altitude_hold )
 	{
-		// keep the In and Trim throttle values within 2000-4000 to account for
-		// Spektrum receivers using failsafe values below 2000.
-		throttleIn = pulsesat( pwIn[THROTTLE_INPUT_CHANNEL] ) - pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] ) ;
+		if ( flags._.radio_on == 1 )
+		{
+			throttleIn = pwIn[THROTTLE_INPUT_CHANNEL] ;
+			// keep the In and Trim throttle values within 2000-4000 to account for
+			// Spektrum receivers using failsafe values below 2000.
+			throttleInOffset = pulsesat( pwIn[THROTTLE_INPUT_CHANNEL] ) - pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] ) ;
+		}
+		else
+		{
+			throttleIn = pwTrim[THROTTLE_INPUT_CHANNEL] ;
+			throttleInOffset = 0 ;
+		}
 		
-		if ( THROTTLE_CHANNEL_REVERSED ) throttleIn = - throttleIn ;
+		if ( THROTTLE_CHANNEL_REVERSED ) throttleInOffset = - throttleInOffset ;
 		
 		if ( flags._.use_waypoints == 1 )
 		{
@@ -51,15 +60,15 @@ void altitudeCntrl(void)
 		}
 		else
 		{
-			desiredHeight =(( __builtin_mulss(  HEIGHTTHROTTLEGAIN, throttleIn ))>>11) ;
+			desiredHeight =(( __builtin_mulss(  HEIGHTTHROTTLEGAIN, throttleInOffset ))>>11) ;
 			if (desiredHeight < HEIGHTMIN) desiredHeight = HEIGHTMIN ;
 		}
 		
-		if ( throttleIn < DEADBAND )
+		if ( throttleInOffset < DEADBAND )
 		{
 			pitchAltitudeAdjust = 0 ;
 			throttleFiltered.WW += (((long)(pwTrim[THROTTLE_INPUT_CHANNEL] - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
-			altitude_control = throttleFiltered._.W1 - pwIn[THROTTLE_INPUT_CHANNEL] ;
+			altitude_control = throttleFiltered._.W1 - throttleIn ;
 		}
 		else
 		{
@@ -76,6 +85,7 @@ void altitudeCntrl(void)
 			else
 			{
 				throttleAccum.WW = MAXTHROTTLE + __builtin_mulss( THROTTLEHEIGHTGAIN, ( desiredHeight - height - HEIGHTMARGIN ) );
+				if ( throttleAccum.WW > MAXTHROTTLE ) throttleAccum.WW = MAXTHROTTLE ;
 				pitchAltitudeAdjust = PITCHATMAX + PITCHHEIGHTGAIN*( desiredHeight - height - HEIGHTMARGIN ) ;
 			}
 			
@@ -89,7 +99,7 @@ void altitudeCntrl(void)
 			// Servo reversing is handled in servoMix.c
 			int throttleOut = pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] + throttleAccum.WW ) ;
 			throttleFiltered.WW += (((long)( throttleOut - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT );
-			altitude_control = throttleFiltered._.W1 - pwIn[THROTTLE_INPUT_CHANNEL] ;
+			altitude_control = throttleFiltered._.W1 - throttleIn ;
 		}
 	}
 	else

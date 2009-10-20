@@ -106,7 +106,7 @@ void ent_acquiringS()
 	flags._.pitch_feedback = 0 ;
 	flags._.altitude_hold = 0 ;
 	flags._.use_waypoints = 0 ;
-	waggle = 0 ;
+	waggle = WAGGLE_SIZE ;
 	throttleFiltered._.W1 = 0 ;
 	stateS = &acquiringS ;
 	standby_timer = STANDBY_PAUSE ;
@@ -200,20 +200,21 @@ void calibrateS(void)
 
 void acquiringS(void)
 {
-	if ( AIRFRAME_TYPE == AIRFRAME_HELI )
-	{
-		ent_manualS();
-		return;
-	}
-	
+#if ( AIRFRAME_TYPE == AIRFRAME_HELI )
+	ent_manualS();
+	return;
+#endif
+		
 	if ( flags._.nav_capable )
 	{
 		if ( flags._.radio_on )
 		{
 			if (standby_timer == NUM_WAGGLES+1)
 				waggle = WAGGLE_SIZE ;
-			else
+			else if (standby_timer <= NUM_WAGGLES)
 				waggle = - waggle ;
+			else
+				waggle = 0 ;
 			
 			standby_timer-- ;
 			if ( standby_timer == 2 )
@@ -225,10 +226,13 @@ void acquiringS(void)
 				ent_manualS() ;
 			}
 		}
-		else
-		{
-			ent_calibrateS() ;
+		else {
+			waggle = 0 ;
 		}
+	}
+	else
+	{
+		waggle = 0 ;
 	}
 	return ;
 }

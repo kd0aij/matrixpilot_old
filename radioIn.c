@@ -21,6 +21,8 @@ void init_capture(void)
 	for (i=0; i <= NUM_INPUTS; i++)
 		pwIn[i] = pwTrim[i] = 3000;
 	
+	pwIn[THROTTLE_INPUT_CHANNEL] = pwTrim[THROTTLE_INPUT_CHANNEL] = 0 ;
+	
 #if (NORADIO == 1)
 		pwIn[MODE_SWITCH_INPUT_CHANNEL] = pwTrim[MODE_SWITCH_INPUT_CHANNEL] = 4000 ;
 #endif

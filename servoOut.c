@@ -24,6 +24,8 @@ void init_pwm( void )	// initialize the PWM
 	for (i=0; i <= NUM_OUTPUTS; i++)
 		pwOut[i] = 3000;
 	
+	pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
+	
 	TRISE = 0b1111111111000000 ;
 	PTPER = 25000 ;			// 25 millisecond period at 16 Mz clock, prescale = 4	
 	PTCONbits.PTCKPS = 1;	// prescaler = 4
@@ -164,9 +166,17 @@ void setupOutputs( void )
 	
 	if (NUM_OUTPUTS > 3)
 	{
-		outputNum = 3 ;
-		PR4 = (pwOut[4] << 1) ;	// set timer to the rudder pulse width
-		LATEbits.LATE0 = 1 ;	// start the pulse by setting the E0 pin high (output 4)
+		outputNum = 4 ;
+		if ( pwOut[4] > 0 )
+		{
+			PR4 = (pwOut[4] << 1) ;	// set timer to the pulse width
+			LATEbits.LATE0 = 1 ;	// start the pulse by setting the E0 pin high (output 4)
+		}
+		else
+		{
+			PR4 = 100 ;				// set timer to a short wait
+			LATEbits.LATE0 = 0 ;	// skip the pulse by setting the E0 pin low (output 4)
+		}	
 		TMR4 = 0 ;				// start timer at 0
 		IFS1bits.T4IF = 0 ;		// clear the interrupt
 		IEC1bits.T4IE = 1 ;		// enable timer 4 interrupt
@@ -181,39 +191,56 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 	
 	indicate_loading_inter ;
 	
-	switch (outputNum) {
-		case 3:
+	switch ( outputNum ) {
+		case 4:
 			LATEbits.LATE0 = 0 ;		// end the pulse by setting the E0 pin low (output 4)
 			if (NUM_OUTPUTS > 4)
 			{
-				outputNum = 4 ;
-				PR4 = (pwOut[5] << 1) ;	// set timer to the rudder pulse width
-				LATEbits.LATE2 = 1 ;	// start the pulse by setting the E2 pin high (output 5)
+				outputNum = 5 ;
+				if ( pwOut[5] > 0 )
+				{
+					PR4 = (pwOut[5] << 1) ;	// set timer to the pulse width
+					LATEbits.LATE2 = 1 ;	// start the pulse by setting the E2 pin high (output 5)
+				}
+				else
+				{
+					PR4 = 100 ;				// set timer to the pulse width
+					LATEbits.LATE2 = 0 ;	// skip the pulse by setting the E2 pin low (output 5)
+				}	
 				TMR4 = 0 ;				// start timer at 0
 			}
 			else
 			{
 				IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
 			}
-			break;
-		case 4:
+			break ;
+		
+		case 5:
 			LATEbits.LATE2 = 0 ;		// end the pulse by setting the E2 pin low (output 5)
 			if (NUM_OUTPUTS > 5)
 			{
-				outputNum = 5 ;
-				PR4 = (pwOut[6] << 1) ;	// set timer to the rudder pulse width
-				LATEbits.LATE4 = 1 ;	// start the pulse by setting the E4 pin high (output 6)
+				outputNum = 6 ;
+				if ( pwOut[6] > 0 )
+				{
+					PR4 = (pwOut[6] << 1) ;	// set timer to the pulse width
+					LATEbits.LATE4 = 1 ;	// start the pulse by setting the E4 pin high (output 6)
+				}
+				else
+				{
+					PR4 = 100 ;				// set timer to the pulse width
+					LATEbits.LATE4 = 0 ;	// start the pulse by setting the E4 pin high (output 6)
+				}
 				TMR4 = 0 ;				// start timer at 0
 			}
 			else
 			{
 				IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
 			}
-			break;
-		case 5:
+			break ;
+		case 6:
 			LATEbits.LATE4 = 0 ;		// end the pulse by setting the E4 pin low (output 6)
 			IEC1bits.T4IE = 0 ;			// disable timer 4 interrupt
-			break;
+			break ;
 	}
 	
 	IFS1bits.T4IF = 0 ;					// clear the interrupt

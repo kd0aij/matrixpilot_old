@@ -202,6 +202,7 @@
 #define HEIGHTMAX 100.0 // maximum target height in meters
 #define HEIGHTMIN 25.0 // minimum target height in meters
 #define MINIMUMTHROTTLE 0.35 // minimum throttle
+#define MAXIMUMTHROTTLE 1.0 // maximum throttle from 0.0 - 1.0
 #define PITCHATMINTHROTTLE 0.0  // target pitch angle in degrees at minimum throttle // Ben: -8.0
 #define PITCHATMAXTHROTTLE 15.0 // target pitch angle in degrees at maximum throttle
 #define PITCHATZEROTHROTTLE 0.0 // target pitch angle in degrees while gliding // Ben: -2.0
