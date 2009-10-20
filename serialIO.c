@@ -112,11 +112,17 @@ void serial_output_gps( void )
 		tow.WW, lat_gps.WW , long_gps.WW , sog_gps.BB, climb_gps.BB, alt_sl_gps.WW, desiredHeight, cog_gps.BB, bearing_to_origin,
 		waypointIndex, tofinish) ;
 
-#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_PXML )
-	serial_output("<tm>%li</tm><st>%d%d%d%d</st><lat>%li</lat><lon>%li</lon><alt>%li</alt>\r\n",
-        tow.WW,
-        flags._.radio_on, flags._.nav_capable, flags._.GPS_steering, flags._.use_waypoints,
-        lat_gps.WW , long_gps.WW , alt_sl_gps.WW );
+#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )
+		// F2 below means "Format Revision 2: and is used by a Telemetry parser to invoke the right pattern matching
+        // If you change this output format, then change F2 to F3 or F4, etc - to mark a new revision of format.
+		// F2 is a compromise between easy reading of raw data in a file and not droppping chars in transmission.
+		serial_output("F2:T%li:S%d%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%i:s%i:\r\n",
+		tow, flags._.radio_on, flags._.nav_capable, flags._.GPS_steering, flags._.use_waypoints,
+	 	lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
+		rmat[0] , rmat[1] , rmat[2] , 
+		rmat[3] , rmat[4] , rmat[5] , 
+		rmat[6] , rmat[7] , rmat[8] ,
+		cog_gps, sog_gps ) ;
 #endif
 }
 

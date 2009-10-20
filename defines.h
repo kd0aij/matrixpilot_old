@@ -207,7 +207,7 @@ extern int defaultCorcon ;
 #define SERIAL_NONE			0	// No serial data is sent
 #define SERIAL_DEBUG		1	// UAV Dev Board debug info
 #define SERIAL_ARDUSTATION	2	// Compatible with ArduStation
-#define SERIAL_PXML			3	// Pete's XML format
+#define SERIAL_UDB			3	// Pete's efficient UAV Dev Board format
 
 // If GPS data has not been received for this many state machine cycles, consider the GPS lock to be lost.
 #define GPS_DATA_MAX_AGE	9
