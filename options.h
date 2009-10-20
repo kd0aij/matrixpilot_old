@@ -146,7 +146,7 @@
 
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, or SERIAL_UDB)
 // This determines the format of the output sent out the spare serial port.
-#define SERIAL_OUTPUT_FORMAT				SERIAL_UDB
+#define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
 
 
 

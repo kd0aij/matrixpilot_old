@@ -36,11 +36,11 @@ void servoMix( void )
 	}
 	
 	// Standard airplane airframe
-	// Mix roll_control and waggle into ailerons
+	// Mix roll_control into ailerons
 	// Mix pitch_control into elevators
-	// Mix yaw control into rudder
+	// Mix yaw control and waggle into rudder
 #if ( AIRFRAME_TYPE == AIRFRAME_STANDARD )
-		temp = pwManual[AILERON_INPUT_CHANNEL] + REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control + waggle) ;
+		temp = pwManual[AILERON_INPUT_CHANNEL] + REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control) ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = 3000 +
@@ -49,7 +49,7 @@ void servoMix( void )
 		temp = pwManual[ELEVATOR_INPUT_CHANNEL] + REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, pitch_control) ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control - waggle) ;
+		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control + waggle) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
 		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
