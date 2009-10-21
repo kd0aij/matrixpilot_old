@@ -40,7 +40,7 @@ void servoMix( void )
 	// Mix pitch_control into elevators
 	// Mix yaw control and waggle into rudder
 #if ( AIRFRAME_TYPE == AIRFRAME_STANDARD )
-		temp = pwManual[AILERON_INPUT_CHANNEL] + REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control) ;
+		temp = pwManual[AILERON_INPUT_CHANNEL] + REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, roll_control + waggle) ;
 		pwOut[AILERON_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
 		pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL] = 3000 +
@@ -49,16 +49,16 @@ void servoMix( void )
 		temp = pwManual[ELEVATOR_INPUT_CHANNEL] + REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, pitch_control) ;
 		pwOut[ELEVATOR_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control + waggle) ;
+		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control - waggle) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
-		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
-		if ( pwTrim[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
 		{
 			pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}
 		else
 		{	
+			temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 			if ( THROTTLE_CHANNEL_REVERSED )
 			{
 				if (temp > pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
@@ -93,13 +93,13 @@ void servoMix( void )
 			REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, pitch_control - yaw_control) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
-		if ( pwTrim[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
 		{
 			pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}
 		else
 		{	
+			temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 			if ( THROTTLE_CHANNEL_REVERSED )
 			{
 				if (temp > pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
@@ -130,13 +130,13 @@ void servoMix( void )
 		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
-		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
-		if ( pwTrim[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
 		{
 			pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}
 		else
 		{	
+			temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 			if ( THROTTLE_CHANNEL_REVERSED )
 			{
 				if (temp > pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
@@ -170,13 +170,13 @@ void servoMix( void )
 		temp = pwManual[RUDDER_INPUT_CHANNEL] /*+ REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control)*/ ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
-		if ( pwTrim[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
 		{
 			pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}
 		else
 		{	
+			temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, altitude_control) ;
 			if ( THROTTLE_CHANNEL_REVERSED )
 			{
 				if (temp > pwTrim[THROTTLE_INPUT_CHANNEL]) temp = pwTrim[THROTTLE_INPUT_CHANNEL] ;
