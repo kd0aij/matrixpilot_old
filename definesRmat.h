@@ -48,20 +48,6 @@ extern fractional omega[] ;
 extern fractional omegaAccum[] ;
 extern fractional omegagyro[] ;
 
-extern union longbbbb lat_gps_ , long_gps_ , alt_sl_gps_ ;
-extern union intbb    nav_valid_ , nav_type_ , sog_gps_ , cog_gps_ , climb_gps_ ;
-extern unsigned char  hdop_ ;
-extern union longbbbb xpg_ , ypg_ , zpg_ ;
-extern union intbb    xvg_ , yvg_ , zvg_ ;
-extern unsigned char  mode1_ , mode2_ , svs_ ;
-
-extern union longbbbb lat_gps , long_gps , alt_sl_gps ;
-extern union intbb    nav_valid , nav_type , sog_gps , cog_gps , climb_gps ;
-extern unsigned char  hdop ;
-extern union longbbbb xpg , ypg , zpg ;
-extern union intbb    xvg , yvg , zvg ;
-extern unsigned char  mode1 , mode2 , svs ;
-
 extern unsigned char  	lat_cir ;
 extern int				cos_lat ;
 

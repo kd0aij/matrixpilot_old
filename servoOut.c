@@ -116,18 +116,18 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	switch (gpscount ) {
 	// case 0 is when the control is up and running
 
-	case 8:
+	case 12:
 	{
-		U2BRG = 12 ;
+		gps_setup_1() ;
 	}
 	case 10:
 	{
-		set_baud() ; //	change the baud rate if it was used at 4800 binary
+		gps_setup_2() ;
 		break ;
 	}
-	case 12:
+	case 8:
 	{
-		set_bin() ;	// put into binary mode, if it is fresh from the factory
+		gps_setup_3() ;
 		break ;
 	}
 

@@ -34,7 +34,7 @@ void estYawDrift(void)
 	dirovergndHRmat[1] = rmat4filt ;
 	dirovergndHRmat[2] = 0 ;
 
-	if ( nav_valid_.BB == 0 )
+	if ( gps_nav_valid() )
 	{
 		dirovergndHGPS[0] = -cosine ( actual_dir ) ;
 		dirovergndHGPS[1] = sine ( actual_dir ) ;

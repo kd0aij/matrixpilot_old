@@ -149,6 +149,10 @@
 #define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
 
 
+// Set this value to your GPS type.  (Set to GPS_STD or GPS_UBX.)
+#define GPS_TYPE							GPS_STD
+
+
 
 
 ///////////////////////////////////////////////////////////////////////

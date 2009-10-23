@@ -52,6 +52,7 @@ void serial_output( char* format, ... )
 {
 	va_list arglist ;
 	unsigned char txchar ;
+	boolean needsRestarting = 0 ;
 	
 	va_start(arglist, format) ;
 	
@@ -60,6 +61,7 @@ void serial_output( char* format, ... )
 	{
 		sb_index = 0 ;
 		end_index = 0 ;
+		needsRestarting = 1 ;
 	}
 	
 	int remaining = SERIAL_BUFFER_SIZE - end_index ;
@@ -69,7 +71,7 @@ void serial_output( char* format, ... )
 		end_index = end_index + wrote;
 	}
 	
-	if (sb_index == 0)
+	if (needsRestarting)
 		IFS0bits.U1TXIF = 1 ; // trigger the TX interrupt
 	
 	va_end(arglist);

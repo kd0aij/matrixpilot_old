@@ -65,7 +65,7 @@ void processwaypoints(void)
 	// locations have a range of +-32000 meters (20 miles) from origin
 
 	union longww temporary ;
-	if ( ( nav_valid_.BB == 0) && (flags._.use_waypoints == 1) )
+	if ( gps_nav_valid() && (flags._.use_waypoints == 1) )
 	{
 
 		// compute the goal vector from present position to waypoint target in meters:

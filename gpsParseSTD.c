@@ -2,6 +2,9 @@
 #include "definesRmat.h"
 #include "defines.h"
 
+
+#if ( GPS_TYPE == GPS_STD )
+
 //	Parse the GPS messages, using the binary interface.
 //	The parser uses a state machine implemented via a pointer to a function.
 //	Binary values received from the GPS are directed to program variables via a table
@@ -30,8 +33,6 @@ const unsigned char mode[] = {0x86,
 							0x00,
 							0x00 
 								} ;
-
-const int log_buffer[10] ;
 
 void (* msg_parse ) ( unsigned char inchar ) = &msg_B3 ;
 
@@ -91,54 +92,31 @@ unsigned char * const msg41parse[] = {
 			&hdop_ ,
 			&un , &un , &un } ;
 
-void gpsoutchar2 ( unsigned char outchar ) // output one character to the GPS
+
+//	if nav_valid is zero, there is valid GPS data that can be used for navigation.
+boolean gps_nav_valid(void)
 {
-	while ( ! U2STAbits.TRMT ) { }
-	U2TXREG = outchar ;
-	return ;
+	return (nav_valid_.BB == 0) ;
 }
 
-void gpsoutline2(char message[]) // output one NMEA line to the GPS
-{
-	int index ;
-	char outchar ;
-	index= 0 ;
-	while  (  (outchar = message[index++])  ) 
-	{
-		gpsoutchar2( outchar ) ;
-	}
-}
-
-void gpsoutbin2(int length , const unsigned char msg[] )  // output a binary message to the GPS
-{
-	int checksum = 0 ;
-	int index = 0 ;
-	gpsoutchar2( 0xA0 ) ;
-	gpsoutchar2( 0xA2 ) ;
-	gpsoutchar2 ( ( ( unsigned char)(( length >> 8 ) & 0x00FF )) ) ;
-	gpsoutchar2 ( ( ( unsigned char)((  length     ) & 0x00FF )) ) ;
-	while ( index < length )
-	{
-		gpsoutchar2( msg[index] ) ;
-		checksum = checksum + msg[index++] ;
-		checksum = checksum & 0x7FFF ;
-	}
-	gpsoutchar2 ( ( ( unsigned char)(( checksum >> 8 ) & 0x00FF )) ) ;
-	gpsoutchar2 ( ( ( unsigned char)(( checksum      ) & 0x00FF )) ) ;
-	gpsoutchar2 ( 0xB0 ) ;
-	gpsoutchar2 ( 0xB3 ) ;
-	return ;
-}
-
-void set_bin(void)  // command GPS to select which messages are sent, using NMEA interface
+// set the GPS to use binary mode
+void gps_setup_1(void)
 {
 	gpsoutline2((char*)bin_mode)  ;
 	return ;
 }
 
-void set_baud(void)
+// command GPS to select which messages are sent, using NMEA interface
+void gps_setup_2(void)
 {
 	gpsoutbin2( mode_length , mode ) ;
+	return ;
+}
+
+// Switch to 19200 baud
+void gps_setup_3(void)
+{
+	U2BRG = 12 ;
 	return ;
 }
 
@@ -331,112 +309,29 @@ void msg_B0 ( unsigned char gpschar )
 	return ;
 }
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
+void commit_gps_data(void) 
 {
-	interrupt_save_extended_state ;
+	week_no		= week_no_ ;
+	tow			= tow_ ;
+	lat_gps		= lat_gps_ ;
+	long_gps	= long_gps_ ;
+	alt_sl_gps	= alt_sl_gps_ ;
+	sog_gps		= sog_gps_ ; 
+	cog_gps		= cog_gps_ ;
+	climb_gps	= climb_gps_ ;
+	hdop		= hdop_ ;
+	xpg			= xpg_ ;
+	ypg			= ypg_ ; 
+	zpg			= zpg_ ;
+	xvg			= xvg_ ; 
+	yvg			= yvg_ ; 
+	zvg			= zvg_ ;
+	mode1		= mode1_ ; 
+	mode2 		= mode2_ ; 
+	svs			= svs_ ;
 	
-	indicate_loading_inter ;
-	
-	unsigned char rxchar ;
-	
-	if ( U2STAbits.FERR ) { init_GPS2(); }
-	if ( U2STAbits.OERR ) { init_GPS2(); }
-	IFS1bits.U2RXIF = 0 ; // clear the interrupt
-	while( U2STAbits.URXDA )
-	{
-		rxchar = U2RXREG ;
-//	bin_out ( rxchar ) ; // binary out to the debugging USART
-		(* msg_parse) ( rxchar ) ; // parse the input byte
-	}
-	
-	interrupt_restore_extended_state ;
 	return ;
 }
 
 
-void init_T3(void)	// set up the use of the T3 interrupt
-{	
-	//	The T3 interrupt is used to kick off the navigation processing after binary data
-	//	is received from the GPS.
-	
-	IPC1bits.T3IP = 2 ;		// priority 2
-	IFS0bits.T3IF = 0 ;		// clear the interrupt
-	IEC0bits.T3IE = 1 ;		// enable the interrupt
-}
-
-void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void) 
-//  process T3 interrupt
-{
-	indicate_loading_inter ;
-	
-	nav_valid = nav_valid_ ;
-	nav_type  = nav_type_ ;
-	estYawDrift() ;
-	//	if nav_valid is zero, there is valid GPS data that can be used for navigation.
-	if ( nav_valid_.BB == 0 )
-	{
-		gps_data_age = 0;
-		
-		week_no		= week_no_ ;
-		tow			= tow_ ;
-		lat_gps		= lat_gps_ ;
-		long_gps	= long_gps_ ;
-		alt_sl_gps	= alt_sl_gps_ ;
-		nav_type	= nav_type_ ; 
-		sog_gps		= sog_gps_ ; 
-		cog_gps		= cog_gps_ ;
-		climb_gps	= climb_gps_ ;
-		hdop		= hdop_ ;
-		xpg			= xpg_ ;
-		ypg			= ypg_ ; 
-		zpg			= zpg_ ;
-		xvg			= xvg_ ; 
-		yvg			= yvg_ ; 
-		zvg			= zvg_ ;
-		mode1		= mode1_ ; 
-		mode2 		= mode2_ ; 
-		svs			= svs_ ;
-//
-//
-//		Perform the once per second navigation!!
-		navigate() ;
-		processwaypoints() ;
-//		Ideally, navigate should take less than one second. For the gentleNAV, navigation takes only
-//		a few milliseconds.
-//		If you rewrite navigation to perform some rather ambitious calculations, perhaps using floating
-//		point, matrix inversions, Kalman filters, etc., you will not cause a stack overflow if you
-//		take more than 1 second, the interrupt handler will simply skip some of the navigation passes.
-
-	}
-	else
-	{
-		gps_data_age = GPS_DATA_MAX_AGE+1;
-	}
-	
-	serial_output_gps() ;   // printout on the spare serial port
-	
-	IFS0bits.T3IF = 0 ;			// clear the interrupt
-	return ;
-}
-
-union longbbbb lat_gps , long_gps , alt_sl_gps, tow ;  	// latitude, longitude, altitude
-                                                        // time of week in seconds * 10 ^ 3
-union intbb    nav_valid , nav_type, week_no ;			// navigation valid, navigation type
-														// week number: week 0 starts Jan 6 1980
-union intbb    sog_gps , cog_gps , climb_gps ;		// speed over ground, course over ground, climb
-unsigned char  hdop ;								// horizontal dilution of precision
-
-union longbbbb xpg , ypg , zpg ;					// gps x, y, z position
-union intbb    xvg , yvg , zvg ;					// gps x, y, z velocity 
-unsigned char  mode1 , mode2 , svs ;				// gps mode1, mode2, and number of satellites
-
-unsigned char  	lat_cir ;
-int				cos_lat ;
-
-union longbbbb lat_origin , long_origin , alt_origin ;
-union longbbbb x_origin , y_origin , z_origin ;
-
-union fbts_int flags ;
-
-signed char actual_dir , desired_dir ;
-
+#endif
