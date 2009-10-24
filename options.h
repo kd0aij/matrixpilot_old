@@ -38,7 +38,7 @@
 // Racing Mode
 // Setting this to 1 will keep the plane at full throttle while in waypoint mode
 // Racing performance can be improved by disabling CROSSTRACKING in waypoints.h
-#define RACING_MODE							0
+#define RACING_MODE							1
 
 
 // Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
@@ -101,7 +101,7 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN					1500
+#define FAILSAFE_INPUT_MIN					2150
 #define FAILSAFE_INPUT_MAX					4500
 
 
@@ -146,12 +146,11 @@
 
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, or SERIAL_UDB)
 // This determines the format of the output sent out the spare serial port.
-#define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
+#define SERIAL_OUTPUT_FORMAT				SERIAL_UDB
 
 
 // Set this value to your GPS type.  (Set to GPS_STD or GPS_UBX.)
-#define GPS_TYPE							GPS_STD
-
+#define GPS_TYPE							GPS_UBX
 
 
 
@@ -165,11 +164,11 @@
 // ROLLKP is the proportional gain, approximately 0.25
 // ROLLKD is the deriviate (gyro) gain, approximately 0.125
 // AILERONBOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define YAWKP_AILERON 0.100
+#define YAWKP_AILERON 0.08
 #define YAWKD_AILERON (0.2*SCALEGYRO)
-#define ROLLKP 0.25 // Ben: 0.20
-#define ROLLKD (0.125*SCALEGYRO) // Ben: 0.075
-#define AILERON_BOOST 1.0
+#define ROLLKP 0.15 // Ben: 0.20
+#define ROLLKD (0.075*SCALEGYRO) // Ben: 0.075
+#define AILERON_BOOST 0.7
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
@@ -178,18 +177,18 @@
 // AILERONELEVMIX is the degree of elevator adjustment for aileron
 // ELEVATORBOOST is the additional gain multiplier for the manually commanded elevator deflection
 #define PITCHGAIN 0.150
-#define PITCHKD (0.0625*SCALEGYRO) // Ben: 0.075
-#define RUDDER_ELEV_MIX 0.5
-#define ROLL_ELEV_MIX 0.1
+#define PITCHKD (0.075*SCALEGYRO) // Ben: 0.075
+#define RUDDER_ELEV_MIX 0.1
+#define ROLL_ELEV_MIX 0.2
 #define ELEVATOR_BOOST 0.5
 
 // Rudder/Yaw Control Gains
 // YAWKP_RUDDER is the proportional feedback gain for rudder navigation
 // YAWKD is the yaw gyro feedback gain for the rudder
 // RUDDERBOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER 0.0625 // Ben: 0.05
-#define YAWKD_RUDDER (0.5*SCALEGYRO)
-#define RUDDER_BOOST 1.0
+#define YAWKP_RUDDER 0.05 // Ben: 0.05
+#define YAWKD_RUDDER (0.05*SCALEGYRO)
+#define RUDDER_BOOST 0.7
 
 // return to launch pitch down in degrees, a real number.
 // this is the real angle in degrees that the nose of the plane will pitch downward during a return to launch.
@@ -203,13 +202,13 @@
 
 
 // the following section is for altitude hold
-#define HEIGHTMAX 100.0 // maximum target height in meters
+#define HEIGHTMAX 110.0 // maximum target height in meters
 #define HEIGHTMIN 25.0 // minimum target height in meters
-#define MINIMUMTHROTTLE 0.35 // minimum throttle
-#define MAXIMUMTHROTTLE 1.0 // maximum throttle from 0.0 - 1.0
-#define PITCHATMINTHROTTLE 0.0  // target pitch angle in degrees at minimum throttle // Ben: -8.0
+#define MINIMUMTHROTTLE 0.35 // minimum throttle from 0.0 - 1.0
+#define MAXIMUMTHROTTLE 0.5 // maximum throttle from 0.0 - 1.0
+#define PITCHATMINTHROTTLE -5.0 // target pitch angle in degrees at minimum throttle // Ben: -8.0
 #define PITCHATMAXTHROTTLE 15.0 // target pitch angle in degrees at maximum throttle
-#define PITCHATZEROTHROTTLE 0.0 // target pitch angle in degrees while gliding // Ben: -2.0
+#define PITCHATZEROTHROTTLE -5.0 // target pitch angle in degrees while gliding // Ben: -2.0
 
 
 // The following section is for camera stabilization

@@ -113,31 +113,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	// count down the startup counter to 0
 	if ( calibcount > 0 ) calibcount-- ;
 
-	switch (gpscount ) {
-	// case 0 is when the control is up and running
-
-	case 12:
-	{
-		gps_setup_1() ;
-	}
-	case 10:
-	{
-		gps_setup_2() ;
-		break ;
-	}
-	case 8:
-	{
-		gps_setup_3() ;
-		break ;
-	}
-
-	default: {
-		// otherwise, there is not anything to do
-		break ;
-	}
-	}
 	
 	// count down the startup counter to 0
+	gps_startup_sequence(gpscount) ;
 	if ( gpscount > 0 ) gpscount-- ;
 	
 	

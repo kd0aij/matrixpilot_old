@@ -12,9 +12,7 @@ typedef char boolean;
 #define MAX_OUTPUTS	6
 
 
-void gps_setup_1(void) ;
-void gps_setup_2(void) ;
-void gps_setup_3(void) ;
+void gps_startup_sequence(int gpscount) ;
 boolean gps_nav_valid(void) ;
 
 void init_clock(void) ;

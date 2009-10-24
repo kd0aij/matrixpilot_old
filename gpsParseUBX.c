@@ -131,11 +131,69 @@ const unsigned char enable_NAV_DOP[] = {0xB5, 0x62, 				// Header
 										0x15, 0xCC 					// Checksum
 										};
 
+const unsigned char disable_SBAS[] =   {0xB5, 0x62, 				// Header
+										0x06, 0x16, 				// ID
+										0x08, 0x00, 				// Payload length
+										0x00, 						// Disable SBAS
+										0x01, 						// 
+										0x01, 						// 
+										0x00, 						// 
+										0x00, 						// 
+										0x00, 						// 
+										0x00, 						// 
+										0x00, 						// 
+										0x26, 0x97 					// Checksum
+										};
+
+const unsigned char config_NAV5[] =    {0xB5, 0x62, 				// Header
+										0x06, 0x24, 				// ID
+										0x24, 0x00, 				// Payload length
+										0xFF, 						// 
+										0xFF, 						// 
+										0x08, 						// Dynamic Model Number
+										0x03, 						// 
+										0x00, 						// 
+										0x00, 						// 
+										0x00, 						// 
+										0x00, 						// 
+										0x10,						//
+										0x27, 						// 
+										0x00, 						// 
+										0x00, 						// 
+										0x05, 						// 
+										0x00, 						// 
+										0xFA,						//
+										0x00, 						// 
+										0xFA,						//
+										0x00, 						// 
+										0x64, 						// 
+										0x00, 						// 
+										0x2C, 						// 
+										0x01, 						// 
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x00,						//
+										0x18, 0x20					// Checksum
+										};
+
 const unsigned int  enable_NAV_SOL_length = 16 ;
 const unsigned int  enable_NAV_POSLLH_length = 16 ;
 const unsigned int  enable_NAV_VELNED_length = 16 ;
 const unsigned int  enable_NAV_DOP_length = 16 ;
 const unsigned int  enable_UBX_only_length = 28;
+const unsigned int  disable_SBAS_length = 16;
+const unsigned int  config_NAV5_length = 44;
 
 void (* msg_parse ) ( unsigned char inchar ) = &msg_B3 ;
 
@@ -204,29 +262,31 @@ unsigned char * const msg_VELNED_parse[] = {
 			&un, &un, &un, &un,																//cAcc
 };
 
-// set the UBX to use binary mode
-void gps_setup_1(void)  
+
+void gps_startup_sequence(int gpscount)
 {
-	gpsoutline2((char*)bin_mode)  ;
+	if (gpscount == 20)
+		// set the UBX to use binary mode
+		gpsoutline2((char*)bin_mode) ;
+	else if (gpscount == 18)
+		// command GPS to select which messages are sent, using UBX interface
+		gpsoutbin2( enable_NAV_SOL_length, enable_NAV_SOL );
+	else if (gpscount == 16)
+		gpsoutbin2( enable_NAV_POSLLH_length, enable_NAV_POSLLH );
+	else if (gpscount == 14)
+		gpsoutbin2( enable_NAV_VELNED_length, enable_NAV_VELNED );
+	else if (gpscount == 12)
+		gpsoutbin2( enable_NAV_DOP_length, enable_NAV_DOP );
+	else if (gpscount == 10)
+		gpsoutbin2( enable_UBX_only_length, enable_UBX_only);
+	else if (gpscount == 8)
+		gpsoutbin2( disable_SBAS_length, disable_SBAS);
+	else if (gpscount == 6)
+		gpsoutbin2( config_NAV5_length, config_NAV5);
+	
 	return ;
 }
 
-// command GPS to select which messages are sent, using UBX interface
-void gps_setup_2(void)
-{
-	gpsoutbin2( enable_NAV_SOL_length, enable_NAV_SOL );
-	gpsoutbin2( enable_NAV_POSLLH_length, enable_NAV_POSLLH );
-	gpsoutbin2( enable_NAV_VELNED_length, enable_NAV_VELNED );
-	gpsoutbin2( enable_NAV_DOP_length, enable_NAV_DOP );
-	//gpsoutbin2( enable_UBX_only_length, enable_UBX_NMEA); USE THIS TO ENABLE UBX+NMEA FOR TESTING
-	gpsoutbin2( enable_UBX_only_length, enable_UBX_only);
-	return ;
-}
-
-void gps_setup_3(void)
-{
-	return ;
-}
 
 void init_GPS2(void)
 {
@@ -460,6 +520,7 @@ void msg_SOL( unsigned char gpschar )
 		// was zero to start with. either way, the byte we just received is the first checksum byte.
 		//gpsoutchar2(0x0A);
 		checksum._.B1 = gpschar;
+		IFS0bits.T3IF = 1 ;  // parsing is complete, schedule navigation
 		msg_parse = &msg_CS1 ;
 	}
 	return ;
@@ -480,7 +541,6 @@ void msg_VELNED( unsigned char gpschar )
 		// was zero to start with. either way, the byte we just received is the first checksum byte.
 		//gpsoutchar2(0x0B);
 		checksum._.B1 = gpschar;
-		IFS0bits.T3IF = 1 ;  // parsing is complete, schedule navigation
 		msg_parse = &msg_CS1 ;
 	}
 	return ;

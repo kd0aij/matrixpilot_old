@@ -99,26 +99,22 @@ boolean gps_nav_valid(void)
 	return (nav_valid_.BB == 0) ;
 }
 
-// set the GPS to use binary mode
-void gps_setup_1(void)
+
+void gps_startup_sequence(int gpscount)
 {
-	gpsoutline2((char*)bin_mode)  ;
+	if (gpscount == 12)
+		// set the GPS to use binary mode
+		gpsoutline2((char*)bin_mode)  ;
+	else if (gpscount == 10)
+		// command GPS to select which messages are sent, using NMEA interface
+		gpsoutbin2( mode_length , mode ) ;
+	else if (gpscount == 8)
+		// Switch to 19200 baud
+		U2BRG = 12 ;
+	
 	return ;
 }
 
-// command GPS to select which messages are sent, using NMEA interface
-void gps_setup_2(void)
-{
-	gpsoutbin2( mode_length , mode ) ;
-	return ;
-}
-
-// Switch to 19200 baud
-void gps_setup_3(void)
-{
-	U2BRG = 12 ;
-	return ;
-}
 
 void init_GPS2(void)
 {
