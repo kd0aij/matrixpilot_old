@@ -75,10 +75,6 @@ void navigate(void)
 		desired_dir = bearing_to_origin ;
 	}
 	
-	//	convert course over ground from CW GPS units to mathematical CCW units
-	accum_nav.WW = __builtin_mulss ( COURSEDEG_2_BYTECIR , cog_gps.BB ) ;
-	actual_dir = -accum_nav.__.B2 + 64 ;
-	
 	velocity_magnitude = sog_gps.BB ;
 	forward_acceleration = velocity_magnitude - velocity_previous ;
 	velocity_previous = velocity_magnitude ;
