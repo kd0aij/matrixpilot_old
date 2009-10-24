@@ -52,27 +52,21 @@ void serial_output( char* format, ... )
 {
 	va_list arglist ;
 	unsigned char txchar ;
-	boolean needsRestarting = 0 ;
 	
 	va_start(arglist, format) ;
 	
-	// if we're done sending the last message, start buffer at 0, otherwise we'll append
-	if (serial_buffer[sb_index] == '\0')
-	{
-		sb_index = 0 ;
-		end_index = 0 ;
-		needsRestarting = 1 ;
-	}
-	
-	int remaining = SERIAL_BUFFER_SIZE - end_index ;
+	int start_index = end_index ;
+	int remaining = SERIAL_BUFFER_SIZE - start_index ;
 	
 	if (remaining > 0) {
-		int wrote = vsnprintf( (char*)(&serial_buffer[end_index]), (size_t)remaining, format, arglist) ;
-		end_index = end_index + wrote;
+		int wrote = vsnprintf( (char*)(&serial_buffer[start_index]), (size_t)remaining, format, arglist) ;
+		end_index = start_index + wrote;
 	}
 	
-	if (needsRestarting)
+	if (sb_index == 0)
+	{
 		IFS0bits.U1TXIF = 1 ; // trigger the TX interrupt
+	}
 	
 	va_end(arglist);
 	
@@ -83,11 +77,15 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 {
 	unsigned char txchar ;
 	IFS0bits.U1TXIF = 0 ; // clear the interrupt 
-	txchar = serial_buffer[ sb_index ] ;
+	txchar = serial_buffer[ sb_index++ ] ;
 	if ( txchar )
 	{
-		sb_index++;
 		U1TXREG = txchar ;
+	}
+	else
+	{
+		sb_index = 0 ;
+		end_index = 0 ;
 	}
 	
 	return ;
