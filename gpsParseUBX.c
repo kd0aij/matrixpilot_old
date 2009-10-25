@@ -44,7 +44,15 @@ void bin_out( char outchar );
 const char bin_mode[]  = "$PUBX,41,1,0003,0001,9600,0*16\r\n" ; // turn on binary mode, 9600 baud
 
 
-const unsigned char enable_UBX_only[] = {0xB5, 0x62, 				// Header
+const unsigned char set_4hz_rate[] =  { 0xB5, 0x62,  // Header
+										0x06, 0x08, // ID
+										0x06, 0x00, // Payload Length
+										0xFA, 0x00, // measRate
+										0x01, 0x00, // navRate
+										0x01, 0x00, // timeRef
+										0x10, 0x96}; // Checksum
+
+const unsigned char enable_UBX_only[] ={0xB5, 0x62, 				// Header
 										0x06, 0x00, 				// ID
 										0x14, 0x00, 				// Payload length
 										0x01, 						// Port ID
@@ -59,7 +67,7 @@ const unsigned char enable_UBX_only[] = {0xB5, 0x62, 				// Header
 										0x9C, 0x89					// checksum
 										};
 
-const unsigned char enable_UBX_NMEA[] = {0xB5, 0x62, 				// Header
+const unsigned char enable_UBX_NMEA[] ={0xB5, 0x62, 				// Header
 										0x06, 0x00, 				// ID
 										0x14, 0x00, 				// Payload length
 										0x01, 						// Port ID
@@ -123,12 +131,12 @@ const unsigned char enable_NAV_DOP[] = {0xB5, 0x62, 				// Header
 										0x01, 						// NAV message class
 										0x04, 						// DOP message ID
 										0x00, 						// Rate on I2C
-										0x01, 						// Rate on UART 1
+										0x04, 						// Rate on UART 1
 										0x00, 						// Rate on UART 2
 										0x00, 						// Rate on USB
 										0x00, 						// Rate on SPI
 										0x00, 						// Rate on ???
-										0x15, 0xCC 					// Checksum
+										0x18, 0xDB 					// Checksum
 										};
 
 const unsigned char disable_SBAS[] =   {0xB5, 0x62, 				// Header
@@ -187,6 +195,7 @@ const unsigned char config_NAV5[] =    {0xB5, 0x62, 				// Header
 										0x18, 0x20					// Checksum
 										};
 
+const unsigned int  set_4hz_rate_length = 14 ;
 const unsigned int  enable_NAV_SOL_length = 16 ;
 const unsigned int  enable_NAV_POSLLH_length = 16 ;
 const unsigned int  enable_NAV_VELNED_length = 16 ;
@@ -265,9 +274,11 @@ unsigned char * const msg_VELNED_parse[] = {
 
 void gps_startup_sequence(int gpscount)
 {
-	if (gpscount == 20)
+	if (gpscount == 22)
 		// set the UBX to use binary mode
 		gpsoutline2((char*)bin_mode) ;
+	else if (gpscount == 20)
+		gpsoutbin2( set_4hz_rate_length, set_4hz_rate );
 	else if (gpscount == 18)
 		// command GPS to select which messages are sent, using UBX interface
 		gpsoutbin2( enable_NAV_SOL_length, enable_NAV_SOL );

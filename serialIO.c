@@ -108,21 +108,21 @@ void serial_output_gps( void )
 		
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_ARDUSTATION )
 	// I still need to rework the units of many of these items
-	serial_output("!!!TIM:%li,LAT:%li,LON:%li,SPD:%i,CRT:%i,ALT:%li,ALH:%i,CRS:%i,BER:%i,WPN:%i,DST:%i,***\r\n",
-		tow.WW, lat_gps.WW , long_gps.WW , sog_gps.BB, climb_gps.BB, alt_sl_gps.WW, desiredHeight, cog_gps.BB, bearing_to_origin,
+	serial_output("!!!TIM:%li,LAT:%li,LON:%li,SPD:%i,CRT:%i,ALT:%li,ALH:%i,CRS:%u,BER:%i,WPN:%i,DST:%i,***\r\n",
+		tow.WW, lat_gps.WW , long_gps.WW , sog_gps.BB, climb_gps.BB, alt_sl_gps.WW, desiredHeight, (unsigned int)cog_gps.BB, bearing_to_origin,
 		waypointIndex, tofinish) ;
 
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )
 		// F2 below means "Format Revision 2: and is used by a Telemetry parser to invoke the right pattern matching
         // If you change this output format, then change F2 to F3 or F4, etc - to mark a new revision of format.
 		// F2 is a compromise between easy reading of raw data in a file and not droppping chars in transmission.
-		serial_output("F2:T%li:S%d%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%i:s%i:\r\n",
+		serial_output("F2:T%li:S%d%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:\r\n",
 		tow, flags._.radio_on, flags._.nav_capable, flags._.GPS_steering, flags._.use_waypoints,
 	 	lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
 		rmat[0] , rmat[1] , rmat[2] , 
 		rmat[3] , rmat[4] , rmat[5] , 
 		rmat[6] , rmat[7] , rmat[8] ,
-		cog_gps, sog_gps ) ;
+		(unsigned int)cog_gps.BB, sog_gps.BB ) ;
 #endif
 }
 
