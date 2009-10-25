@@ -29,11 +29,17 @@ void estYawDrift(void)
 	rmat1filt = rmat1filt + accum._.W1 ;
 	accum.WW = __builtin_mulss( GPSFILT , (rmat[4] - rmat4filt )) ;
 	rmat4filt = rmat4filt + accum._.W1 ;
-
+	
+#if ( GPS_TYPE == GPS_STD )
 	dirovergndHRmat[0] = rmat1filt ;
 	dirovergndHRmat[1] = rmat4filt ;
 	dirovergndHRmat[2] = 0 ;
-
+#else
+	dirovergndHRmat[0] = rmat[1] ;
+	dirovergndHRmat[1] = rmat[4] ;
+	dirovergndHRmat[2] = 0 ;
+#endif
+	
 	if ( gps_nav_valid() )
 	{
 		dirovergndHGPS[0] = -cosine ( actual_dir ) ;
