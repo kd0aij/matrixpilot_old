@@ -274,25 +274,25 @@ unsigned char * const msg_VELNED_parse[] = {
 
 void gps_startup_sequence(int gpscount)
 {
-	if (gpscount == 22)
+	if (gpscount == 200)
 		// set the UBX to use binary mode
 		gpsoutline2((char*)bin_mode) ;
-	else if (gpscount == 20)
+	else if (gpscount == 190)
 		gpsoutbin2( set_4hz_rate_length, set_4hz_rate );
-	else if (gpscount == 18)
+	else if (gpscount == 180)
 		// command GPS to select which messages are sent, using UBX interface
 		gpsoutbin2( enable_NAV_SOL_length, enable_NAV_SOL );
-	else if (gpscount == 16)
+	else if (gpscount == 170)
 		gpsoutbin2( enable_NAV_POSLLH_length, enable_NAV_POSLLH );
-	else if (gpscount == 14)
+	else if (gpscount == 160)
 		gpsoutbin2( enable_NAV_VELNED_length, enable_NAV_VELNED );
-	else if (gpscount == 12)
+	else if (gpscount == 150)
 		gpsoutbin2( enable_NAV_DOP_length, enable_NAV_DOP );
-	else if (gpscount == 10)
+	else if (gpscount == 140)
 		gpsoutbin2( enable_UBX_only_length, enable_UBX_only);
-	else if (gpscount == 8)
+	else if (gpscount == 130)
 		gpsoutbin2( disable_SBAS_length, disable_SBAS);
-	else if (gpscount == 6)
+	else if (gpscount == 110)
 		gpsoutbin2( config_NAV5_length, config_NAV5);
 	
 	return ;
