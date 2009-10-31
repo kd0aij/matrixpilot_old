@@ -292,7 +292,7 @@ void gps_startup_sequence(int gpscount)
 		gpsoutbin2( enable_UBX_only_length, enable_UBX_only);
 	else if (gpscount == 130)
 		gpsoutbin2( disable_SBAS_length, disable_SBAS);
-	else if (gpscount == 110)
+	else if (gpscount == 120)
 		gpsoutbin2( config_NAV5_length, config_NAV5);
 	
 	return ;

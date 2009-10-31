@@ -47,8 +47,8 @@ void estYawDrift(void)
 	}
 	else
 	{
-		dirovergndHGPS[0] = rmat1filt ;
-		dirovergndHGPS[1] = rmat4filt ;
+		dirovergndHGPS[0] = dirovergndHRmat[0] ;
+		dirovergndHGPS[1] = dirovergndHRmat[1] ;
 	}
 	dirovergndHGPS[2] = 0 ;
 	flags._.yaw_req = 1 ;
