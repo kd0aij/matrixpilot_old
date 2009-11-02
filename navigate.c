@@ -17,7 +17,7 @@ union longww heightlong = { 0 } ;
 int velocity_magnitude = 0 ;
 int forward_acceleration = 0 ;
 int velocity_previous = 0 ;
-int bearing_to_origin = 0 ;
+signed char bearing_to_origin = 0 ;
 
 extern signed char desired_dir_waypoint ;
 
@@ -66,14 +66,6 @@ void navigate(void)
 	
 	//	convert to polar to produce
 	bearing_to_origin = rect_to_polar( &vector_to_origin ) ;
-	if ( flags._.use_waypoints == 1 )
-	{
-		desired_dir = desired_dir_waypoint ;
-	}
-	else
-	{
-		desired_dir = bearing_to_origin ;
-	}
 	
 	velocity_magnitude = sog_gps.BB ;
 	forward_acceleration = velocity_magnitude - velocity_previous ;

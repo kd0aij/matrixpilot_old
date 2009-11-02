@@ -16,6 +16,8 @@ int tofinish  = 0 ;
 int crosstrack = 0 ;
 signed char desired_dir_waypoint = 0 ;
 
+extern signed char bearing_to_origin ;
+
 void set_goal( struct relative3D fromPoint , struct relative3D toPoint )
 {
 	struct relative2D courseLeg ;
@@ -37,35 +39,9 @@ void init_waypoints ( void )
 	return ;
 }
 
-void next_waypoint ( void ) 
+void compute_waypoint ( void )
 {
-	waypointIndex ++ ;
-	if ( waypointIndex >= NUMBERPOINTS ) waypointIndex = 0 ;
-	if ( waypointIndex == 0 )
-	{
-		set_goal( waypoints[NUMBERPOINTS-1] , waypoints[0] ) ;
-	}
-	else
-	{
-		set_goal( waypoints[waypointIndex-1] , waypoints[waypointIndex] ) ;
-	}
-	return ;
-}
-
-
-void processwaypoints(void)
-{
-
-	// steering is based on cross track error.
- 	// waypoint arrival is detected computing distance to the "finish line".
-
-	// note: locations are measured in meters
-	//		 velocities are in centimeters per second
-
-	// locations have a range of +-32000 meters (20 miles) from origin
-
 	union longww temporary ;
-	if ( gps_nav_valid() && (flags._.use_waypoints == 1) )
 	{
 
 		// compute the goal vector from present position to waypoint target in meters:
@@ -106,11 +82,60 @@ void processwaypoints(void)
 		{
 			desired_dir_waypoint = goal.phi + crosstrack ;
 		}
-		if ( tofinish < 0 ) next_waypoint() ; // crossed the finish line
 #else
 		desired_dir_waypoint = rect_to_polar ( & togoal ) ;
+#endif
+	}
+
+}
+
+void next_waypoint ( void ) 
+{
+	union longww temporary ;
+
+	waypointIndex ++ ;
+	if ( waypointIndex >= NUMBERPOINTS ) waypointIndex = 0 ;
+	if ( waypointIndex == 0 )
+	{
+		set_goal( waypoints[NUMBERPOINTS-1] , waypoints[0] ) ;
+	}
+	else
+	{
+		set_goal( waypoints[waypointIndex-1] , waypoints[waypointIndex] ) ;
+	}
+	compute_waypoint() ;
+	return ;
+}
+
+
+void processwaypoints(void)
+{
+	if ( gps_nav_valid() && (flags._.use_waypoints == 1) )
+	{
+	// steering is based on cross track error.
+ 	// waypoint arrival is detected computing distance to the "finish line".
+
+	// note: locations are measured in meters
+	//		 velocities are in centimeters per second
+
+	// locations have a range of +-32000 meters (20 miles) from origin
+
+		compute_waypoint() ;
+
+#if ( CROSSTRACKING == 1 )
+
+		if ( tofinish < 0 ) next_waypoint() ; // crossed the finish line
+#else
 		if (( tofinish < 0 )|| ( togoal.x < 25)) next_waypoint() ; // crossed the finish line
 #endif
+	}
+	if ( flags._.use_waypoints == 1 )
+	{
+		desired_dir = desired_dir_waypoint ;
+	}
+	else
+	{
+		desired_dir = bearing_to_origin ;
 	}
 	return ;
 }

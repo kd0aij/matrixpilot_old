@@ -156,43 +156,26 @@ const unsigned char disable_SBAS[] =   {0xB5, 0x62, 				// Header
 const unsigned char config_NAV5[] =    {0xB5, 0x62, 				// Header
 										0x06, 0x24, 				// ID
 										0x24, 0x00, 				// Payload length
-										0xFF, 						// 
-										0xFF, 						// 
-										0x08, 						// Dynamic Model Number
-										0x03, 						// 
-										0x00, 						// 
-										0x00, 						// 
-										0x00, 						// 
-										0x00, 						// 
-										0x10,						//
-										0x27, 						// 
-										0x00, 						// 
-										0x00, 						// 
-										0x05, 						// 
-										0x00, 						// 
-										0xFA,						//
-										0x00, 						// 
-										0xFA,						//
-										0x00, 						// 
-										0x64, 						// 
-										0x00, 						// 
-										0x2C, 						// 
-										0x01, 						// 
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x00,						//
-										0x18, 0x20					// Checksum
+										0xFF, 0xFF,					//
+										0x08, 						// Dynamic Model Number (or 0x07 for <2g)
+										0x03, 						//
+										0x00, 0x00,					//
+										0x00, 0x00,					//
+										0x10, 0x27,					//
+										0x00, 0x00,					//
+										0x05, 0x00,					//
+										0xFA, 0x00,					//
+										0xFA, 0x00,					//
+										0x64, 0x00, 				//
+										0x2C, 0x01, 				//
+										0x00, 0x00,					//
+										0x00, 0x00,					//
+										0x00, 0x00,					//
+										0x00, 0x00,					//
+										0x00, 0x00,					//
+										0x00, 0x00,					//
+										0x00, 0x00,					//
+										0x18, 0x20					// Checksum (or 0x17, 0xFE for <2g)
 										};
 
 const unsigned int  set_4hz_rate_length = 14 ;
