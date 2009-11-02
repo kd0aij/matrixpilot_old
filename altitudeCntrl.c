@@ -25,6 +25,7 @@ union longww throttleFiltered = { 0 } ;
 #define HEIGHTTHROTTLEGAIN ( (int )  ( ((long) (1.5*HEIGHTMAX)*(long) 1024 ) / ((long) SERVORANGE*(long)SERVOSAT ) ))
 
 int pitchAltitudeAdjust = 0 ;
+boolean filterManual = false;
 
 union longww throttleAccum ;
 
@@ -37,21 +38,21 @@ void altitudeCntrl(void)
 	int throttleInOffset ;
 	int desiredHeight ;
 	
+	if ( flags._.radio_on == 1 )
+	{
+		throttleIn = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		// keep the In and Trim throttle values within 2000-4000 to account for
+		// Spektrum receivers using failsafe values below 2000.
+		throttleInOffset = pulsesat( pwIn[THROTTLE_INPUT_CHANNEL] ) - pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] ) ;
+	}
+	else
+	{
+		throttleIn = pwTrim[THROTTLE_INPUT_CHANNEL] ;
+		throttleInOffset = 0 ;
+	}
+	
 	if ( flags._.altitude_hold )
 	{
-		if ( flags._.radio_on == 1 )
-		{
-			throttleIn = pwIn[THROTTLE_INPUT_CHANNEL] ;
-			// keep the In and Trim throttle values within 2000-4000 to account for
-			// Spektrum receivers using failsafe values below 2000.
-			throttleInOffset = pulsesat( pwIn[THROTTLE_INPUT_CHANNEL] ) - pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] ) ;
-		}
-		else
-		{
-			throttleIn = pwTrim[THROTTLE_INPUT_CHANNEL] ;
-			throttleInOffset = 0 ;
-		}
-		
 		if ( THROTTLE_CHANNEL_REVERSED ) throttleInOffset = - throttleInOffset ;
 		
 		if ( flags._.use_waypoints == 1 )
@@ -98,14 +99,27 @@ void altitudeCntrl(void)
 			
 			// Servo reversing is handled in servoMix.c
 			int throttleOut = pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] + throttleAccum.WW ) ;
-			throttleFiltered.WW += (((long)( throttleOut - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT );
+			throttleFiltered.WW += (((long)( throttleOut - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
 			altitude_control = throttleFiltered._.W1 - throttleIn ;
 		}
+		filterManual = true;
 	}
 	else
 	{
 		pitchAltitudeAdjust = 0 ;
-		altitude_control = 0 ;
+		throttleFiltered.WW += (((long)( throttleIn - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
+		
+		if (filterManual) {
+			// Continue to filter the throttle control value in manual mode to avoid large, instant
+			// changes to throttle value, which can burn out a brushed motor.  But after fading over
+			// to the new throttle value, stop applying the filter to the throttle out to allow
+			// faster control.
+			altitude_control = throttleFiltered._.W1 - throttleIn ;
+			if (altitude_control < 10) filterManual = false ;
+		}
+		else {
+			altitude_control = 0 ;
+		}
 	}
 	
 	return ;

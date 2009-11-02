@@ -169,6 +169,13 @@ void serial_output_gps( void )
 	return ;
 }
 
+#else
+
+void serial_output_gps( void )
+{
+	return ;
+}
+
 #endif
 
 
