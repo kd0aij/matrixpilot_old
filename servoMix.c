@@ -52,7 +52,7 @@ void servoMix( void )
 		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control - waggle) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
-		if ( pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwManual[THROTTLE_INPUT_CHANNEL] == 0 )
 		{
 			pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}
@@ -93,7 +93,7 @@ void servoMix( void )
 			REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, pitch_control - yaw_control) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		if ( pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwManual[THROTTLE_INPUT_CHANNEL] == 0 )
 		{
 			pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}
@@ -130,7 +130,7 @@ void servoMix( void )
 		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control) ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		
-		if ( pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwManual[THROTTLE_INPUT_CHANNEL] == 0 )
 		{
 			pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}
@@ -170,7 +170,7 @@ void servoMix( void )
 		temp = pwManual[RUDDER_INPUT_CHANNEL] /*+ REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control)*/ ;
 		pwOut[RUDDER_OUTPUT_CHANNEL] = pulsesat( temp ) ;
 		
-		if ( pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwManual[THROTTLE_INPUT_CHANNEL] == 0 )
 		{
 			pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}

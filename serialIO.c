@@ -41,8 +41,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 	char rxchar ;
 	indicate_loading_inter ;
 	rxchar = U1RXREG ;
-	if ( U2STAbits.FERR ) {  init_USART1(); }
-	else if ( U2STAbits.OERR ) {  init_USART1(); }
+	if ( U1STAbits.FERR ) {  init_USART1(); }
+	else if ( U1STAbits.OERR ) {  init_USART1(); }
 	
 	IFS0bits.U1RXIF = 0 ; // clear the interrupt
 	return ;
