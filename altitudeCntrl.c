@@ -29,6 +29,8 @@ boolean filterManual = false;
 
 union longww throttleAccum ;
 
+int desiredHeight ;
+
 extern struct waypointparameters goal ;
 
 
@@ -36,7 +38,6 @@ void altitudeCntrl(void)
 {
 	int throttleIn ;
 	int throttleInOffset ;
-	int desiredHeight ;
 	
 	if ( flags._.radio_on == 1 )
 	{
