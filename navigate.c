@@ -68,7 +68,13 @@ void navigate(void)
 	bearing_to_origin = rect_to_polar( &vector_to_origin ) ;
 	
 	velocity_magnitude = sog_gps.BB ;
-	forward_acceleration = velocity_magnitude - velocity_previous ;
+	
+#if ( GPS_TYPE == GPS_UBX )
+	forward_acceleration = (velocity_magnitude - velocity_previous) << 2 ; // Ublox enters code 4 times per second
+#else
+	forward_acceleration = velocity_magnitude - velocity_previous ; // EM406 standard GPS enters code once per second
+#endif
+	
 	velocity_previous = velocity_magnitude ;
 	
 	accum_velocity.WW = __builtin_mulss( cosine( actual_dir ) , velocity_magnitude) << 2 ;
