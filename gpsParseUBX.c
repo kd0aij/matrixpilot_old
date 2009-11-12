@@ -302,7 +302,7 @@ void init_GPS2(void)
 
 boolean gps_nav_valid(void)
 {
-	return (nav_valid_ == 3) && (svs_ > 4) ;
+	return (nav_valid_ == 3);
 }
 
 
