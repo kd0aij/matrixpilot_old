@@ -297,6 +297,9 @@ void gps_startup_sequence(int gpscount)
 		gpsoutline2( (char*)disable_GSA );
 	else if (gpscount == 170)
 		gpsoutline2( (char*)disable_GLL );
+#else
+	if (gpscount == 190);
+		// do nothing
 #endif
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
