@@ -144,7 +144,7 @@
 #define ELEVON_VTAIL_SURFACES_REVERSED		0
 
 
-// Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, or SERIAL_UDB)
+// Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB, or SERIAL_REMZIBI)
 // This determines the format of the output sent out the spare serial port.
 #define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
 

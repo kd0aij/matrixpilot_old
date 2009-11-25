@@ -330,12 +330,39 @@ void bin_out( char outchar )
 	return ;
 }
 
+int countdown = 0 ; //used by nmea_passthru to count how many more bytes are passed through
+
 int store_index = 0 ;
 
 //	The parsing routines follow. Each routine is named for the state in which the routine is applied.
 //	States correspond to the portions of the binary messages.
 //	For example, msg_B3 is the routine that is applied to the byte received after a B3 is received.
 //	If an A0 is received, the state machine transitions to the A0 state.
+
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_REMZIBI )
+void nmea_passthru ( unsigned char gpschar)
+{
+	U1TXREG = gpschar;
+	countdown --;
+/* removed in favor of the line ending mechanism, see below. While this is compliant with
+   (published) standards, the issue appears to center around the end of line.
+
+	if ( gpschar == '*' )
+	{ // * indicates the start of the checksum, 2 characters remain in the message
+		countdown = 2;
+	}
+*/
+	if ( gpschar == 0x0A )
+    { // end of line appears to always be 0x0D, 0x0A (\r\n)
+		msg_parse = &msg_B3; // back to the inital state
+	}
+	else if (countdown == 0)
+	{
+		msg_parse = &msg_B3; // back to the inital state
+		return;
+	}
+}
+#endif
 
 void msg_B3 ( unsigned char gpschar )
 {
@@ -345,6 +372,16 @@ void msg_B3 ( unsigned char gpschar )
 		//bin_out(0x01);
 		msg_parse = &msg_SYNC1 ;
 	}
+
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_REMZIBI )
+	else if ( gpschar == '$')
+	{
+		countdown = 1024; // this limits the number of characters we will passthrough. //TODO: smaller number?
+		msg_parse = &nmea_passthru;
+		nmea_passthru ( gpschar );
+	}
+#endif
+
 	else
 	{
 				// error condition
