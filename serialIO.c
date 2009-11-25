@@ -18,10 +18,10 @@ void init_USART1(void)
 	U1STA  = 0b0000010100010000 ;
 
 //Baud Rate = FCY / (16*(BRG+1))
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_REMZIBI )
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
 	// For the Remzibi OSD, the 'extra' serial port is set to 9600 baud
 	U1BRG =  25 ; // 9600 baud
-#elif
+#else
 	// Otherwise, the baud rate is set as specified below
 //	U1BRG =  51 ; // 4800 baud
 	U1BRG =  12 ; // 19200 baud
@@ -175,11 +175,12 @@ void serial_output_gps( void )
 	telemetry_counter-- ;
 	return ;
 }
-#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_REMZIBI )
+#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
 
 void serial_output_gps( void )
 {
-	//TODO: Output interesting information for OSD.
+	// TODO: Output interesting information for OSD.
+	// But first we'll have to implement a buffer for passthrough characters to avoid output corruption.
 	return ;
 }
 

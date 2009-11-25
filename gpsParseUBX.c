@@ -1,3 +1,4 @@
+
 #include "p30f4011.h"
 #include "defines.h"
 #include "definesRmat.h"
@@ -41,8 +42,19 @@ void msg_ACK_ID( unsigned char inchar );
 
 void bin_out( char outchar );
 
-const char bin_mode[]  = "$PUBX,41,1,0003,0001,9600,0*16\r\n" ; // turn on binary mode, 9600 baud
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
+	const char bin_mode[]  = "$PUBX,41,1,0003,0003,9600,0*14\r\n" ; // turn on UBX + NMEA, 9600 baud
+	// FOR TESTING ONLY
+	// const char bin_mode[]  = "$PUBX,41,1,0003,0003,19200,0*21\r\n" ; // turn on UBX + NMEA, 19200 baud
+#else
+	const char bin_mode[]  = "$PUBX,41,1,0003,0001,9600,0*16\r\n" ; // turn on UBX only, 9600 baud
+#endif
 
+
+const char disable_GSV[] = "$PUBX,40,GSV,0,0,0,0,0,0*59\r\n" ; //Disable the $GPGSV NMEA message
+const char disable_VTG[] = "$PUBX,40,VTG,0,0,0,0,0,0*5E\r\n" ; //Disable the $GPVTG NMEA message
+const char disable_GLL[] = "$PUBX,40,GLL,0,0,0,0,0,0*5C\r\n" ; //Disable the $GPGLL NMEA message
+const char disable_GSA[] = "$PUBX,40,GSA,0,0,0,0,0,0*4E\r\n" ; //Disable the $GPGSA NMEA message
 
 const unsigned char set_4hz_rate[] =  { 0xB5, 0x62,  // Header
 										0x06, 0x08, // ID
@@ -67,6 +79,26 @@ const unsigned char enable_UBX_only[] ={0xB5, 0x62, 				// Header
 										0x9C, 0x89					// checksum
 										};
 
+//enable UBX + NMEA @ 19200
+/*const unsigned char enable_UBX_NMEA[] ={0xB5, 0x62, 				// Header
+										0x06, 0x00, 				// ID
+										0x14, 0x00, 				// Payload length
+										0x01, 						// Port ID
+										0x00, 						// res0
+										0x00, 0x00, 				// res1
+										0xD0, 0x08, 0x00, 0x00, 	// mode
+										0x00, 0x4B, 0x00, 0x00, 	// baudrate
+										0x03, 0x00, 				// inProtoMask
+										0x03, 0x00, 				// outProtoMask
+										0x00, 0x00, 				// Flags - reserved, set to 0
+										0x00, 0x00,					// Pad - reserved, set to 0
+										0x44, 0x37					// checksum
+										};*/
+
+
+
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
+//enable UBX + NMEA @ 9600 - only needed if were using an OSD
 const unsigned char enable_UBX_NMEA[] ={0xB5, 0x62, 				// Header
 										0x06, 0x00, 				// ID
 										0x14, 0x00, 				// Payload length
@@ -81,6 +113,7 @@ const unsigned char enable_UBX_NMEA[] ={0xB5, 0x62, 				// Header
 										0x00, 0x00,					// Pad - reserved, set to 0
 										0x9E, 0x95					// checksum
 										};
+#endif
 
 
 const unsigned char enable_NAV_SOL[] = {0xB5, 0x62, 				// Header
@@ -257,26 +290,47 @@ unsigned char * const msg_VELNED_parse[] = {
 
 void gps_startup_sequence(int gpscount)
 {
-	if (gpscount == 200)
-		// set the UBX to use binary mode
-		gpsoutline2((char*)bin_mode) ;
-	else if (gpscount == 190)
-		gpsoutbin2( set_4hz_rate_length, set_4hz_rate );
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
+	if (gpscount == 190)
+		gpsoutline2( (char*)disable_GSV );
 	else if (gpscount == 180)
+		gpsoutline2( (char*)disable_GSA );
+	else if (gpscount == 170)
+		gpsoutline2( (char*)disable_GLL );
+#endif
+
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
+	else if (gpscount == 160)
+		gpsoutline2( (char*)disable_VTG );
+#endif
+	
+	else if (gpscount == 150)
+		//set the UBX to use binary mode
+		gpsoutline2( (char*)bin_mode );
+	else if (gpscount == 140)
+		gpsoutbin2( set_4hz_rate_length, set_4hz_rate );
+	else if (gpscount == 130)
 		// command GPS to select which messages are sent, using UBX interface
 		gpsoutbin2( enable_NAV_SOL_length, enable_NAV_SOL );
-	else if (gpscount == 170)
-		gpsoutbin2( enable_NAV_POSLLH_length, enable_NAV_POSLLH );
-	else if (gpscount == 160)
-		gpsoutbin2( enable_NAV_VELNED_length, enable_NAV_VELNED );
-	else if (gpscount == 150)
-		gpsoutbin2( enable_NAV_DOP_length, enable_NAV_DOP );
-	else if (gpscount == 140)
-		gpsoutbin2( enable_UBX_only_length, enable_UBX_only);
-	else if (gpscount == 130)
-		gpsoutbin2( disable_SBAS_length, disable_SBAS);
 	else if (gpscount == 120)
-		gpsoutbin2( config_NAV5_length, config_NAV5);
+		gpsoutbin2( enable_NAV_POSLLH_length, enable_NAV_POSLLH );
+	else if (gpscount == 110)
+		gpsoutbin2( enable_NAV_VELNED_length, enable_NAV_VELNED );
+	else if (gpscount == 100)
+		gpsoutbin2( enable_NAV_DOP_length, enable_NAV_DOP );
+	
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
+	else if (gpscount == 90)
+		gpsoutbin2( enable_UBX_only_length, enable_UBX_NMEA );
+#else
+	else if (gpscount == 90)
+		gpsoutbin2( enable_UBX_only_length, enable_UBX_only );
+#endif
+	
+	else if (gpscount == 80)
+		gpsoutbin2( disable_SBAS_length, disable_SBAS );
+	else if (gpscount == 70)
+		gpsoutbin2( config_NAV5_length, config_NAV5 );
 	
 	return ;
 }
@@ -330,7 +384,6 @@ void bin_out( char outchar )
 	return ;
 }
 
-int countdown = 0 ; //used by nmea_passthru to count how many more bytes are passed through
 
 int store_index = 0 ;
 
@@ -339,7 +392,10 @@ int store_index = 0 ;
 //	For example, msg_B3 is the routine that is applied to the byte received after a B3 is received.
 //	If an A0 is received, the state machine transitions to the A0 state.
 
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_REMZIBI )
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
+
+int countdown = 0 ; //used by nmea_passthru to count how many more bytes are passed through
+
 void nmea_passthru ( unsigned char gpschar)
 {
 	U1TXREG = gpschar;
@@ -359,8 +415,8 @@ void nmea_passthru ( unsigned char gpschar)
 	else if (countdown == 0)
 	{
 		msg_parse = &msg_B3; // back to the inital state
-		return;
 	}
+	return;
 }
 #endif
 
@@ -373,7 +429,7 @@ void msg_B3 ( unsigned char gpschar )
 		msg_parse = &msg_SYNC1 ;
 	}
 
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_REMZIBI )
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
 	else if ( gpschar == '$')
 	{
 		countdown = 1024; // this limits the number of characters we will passthrough. //TODO: smaller number?

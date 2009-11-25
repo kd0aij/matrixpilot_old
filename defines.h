@@ -202,6 +202,8 @@ extern int defaultCorcon ;
 #define SERIAL_DEBUG		1	// UAV Dev Board debug info
 #define SERIAL_ARDUSTATION	2	// Compatible with ArduStation
 #define SERIAL_UDB			3	// Pete's efficient UAV Dev Board format
+#define SERIAL_OSD_REMZIBI	4	// Output data formatted to use as input to a Remzibi OSD (only works with GPS_UBX)
+#define SERIAL_OSD_IF		5	// Output data formatted to use as input to a IF OSD (only works with GPS_UBX)
 
 // GPS Type
 #define GPS_STD				1
