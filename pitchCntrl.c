@@ -10,7 +10,7 @@ int rtlkick = 0 ;
 
 int pitchgain = (int)(PITCHGAIN*RMAX) ;
 int pitchrate = 0 ;
-int pitchkd = (int) (PITCHKD*RMAX) ;
+int pitchkd = (int) (PITCHKD*SCALEGYRO*RMAX) ;
 
 int rudderElevMixGain = (int)(RMAX*RUDDER_ELEV_MIX) ;
 int rollElevMixGain = (int)(RMAX*ROLL_ELEV_MIX) ;

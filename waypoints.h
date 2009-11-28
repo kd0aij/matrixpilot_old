@@ -29,7 +29,17 @@
 // You do not need to specify how many points you have, the compiler will count them for you.
 // You can use the facilities of the compiler to do some simple calculations in defining the course.
 
-// As an example, here is the T3 contest course
+
+// By default the only waypoint is defined to be above the starting point.
+
+const struct relative3D waypoints[] = {
+						{  0  ,  0  , 50 } ,  // return to, and circle 50 meters above the startup position
+						} ;
+
+
+
+/*
+// As a more complex example, here is the DIY Drones T3-2 contest course
 
 // Prior to flight, initialize the board at the center of the course.
 
@@ -60,13 +70,4 @@ const struct relative3D waypoints[] = {
 
 										} ;	
 
-// Here is how you can implement return to launch at 50 meters, using a single waypoint:
-
-/*
-
-const struct relative3D waypoints[] = {
-						{    0  ,    0  , 50 } ,
-										} ;	
-
 */
-

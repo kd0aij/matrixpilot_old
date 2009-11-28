@@ -161,12 +161,6 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// SERVOSAT limits servo throw by controlling pulse width saturation.
-// set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want
-#define SERVOSAT							1.0
-
-
-////////////////////////////////////////////////////////////////////////////////
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB, or SERIAL_OSD_REMZIBI)
 // This determines the format of the output sent out the spare serial port.
 // Note that SERIAL_OSD_REMZIBI only works with GPS_UBX.
@@ -176,7 +170,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Control gains.
 // All gains should be positive real numbers.
-//
+
+// SERVOSAT limits servo throw by controlling pulse width saturation.
+// set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want
+#define SERVOSAT				1.0
+
 // Aileron/Roll Control Gains
 // ROLLKP is the proportional gain, approximately 0.25
 // ROLLKD is the deriviate (gyro) gain, approximately 0.125
@@ -184,9 +182,9 @@
 // YAWKD_AILERON is the derivative feedback gain for ailerons in reponse to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
 #define ROLLKP					0.25
-#define ROLLKD					(0.125*SCALEGYRO)
+#define ROLLKD					0.125
 #define YAWKP_AILERON			0.100
-#define YAWKD_AILERON			(0.2*SCALEGYRO)
+#define YAWKD_AILERON			0.2
 #define AILERON_BOOST			1.0
 
 // Elevator/Pitch Control Gains
@@ -196,7 +194,7 @@
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
 #define PITCHGAIN				0.150
-#define PITCHKD					(0.0625*SCALEGYRO)
+#define PITCHKD					0.0625
 #define RUDDER_ELEV_MIX			0.5
 #define ROLL_ELEV_MIX			0.1
 #define ELEVATOR_BOOST			0.5
@@ -206,7 +204,7 @@
 // YAWKD_RUDDER is the yaw gyro feedback gain for the rudder in reponse to yaw rotation
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
 #define YAWKP_RUDDER			0.0625
-#define YAWKD_RUDDER			(0.5*SCALEGYRO)
+#define YAWKD_RUDDER			0.5
 #define RUDDER_BOOST			1.0
 
 // The following section is for camera stabilization

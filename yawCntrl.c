@@ -3,7 +3,7 @@
 #include "defines.h"
 
 int yawkprud = YAWKP_RUDDER*RMAX ;
-int yawkdrud = YAWKD_RUDDER*RMAX ;
+int yawkdrud = YAWKD_RUDDER*SCALEGYRO*RMAX ;
 
 
 void yawCntrl(void)

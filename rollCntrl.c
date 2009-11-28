@@ -3,10 +3,10 @@
 #include "defines.h"
 
 int yawkpail = YAWKP_AILERON*RMAX ;
-int yawkdail = YAWKD_AILERON*RMAX ;
+int yawkdail = YAWKD_AILERON*SCALEGYRO*RMAX ;
 
 int rollkp = ROLLKP*RMAX ;
-int rollkd = ROLLKD*RMAX ;
+int rollkd = ROLLKD*SCALEGYRO*RMAX ;
 
 
 void rollCntrl(void)
