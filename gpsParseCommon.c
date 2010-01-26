@@ -23,6 +23,9 @@ signed char actual_dir , desired_dir ;
 
 extern void (* msg_parse ) ( unsigned char inchar ) ;
 
+extern char serial_buffer2[] ;
+extern int sb_index2;
+extern int end_index2;
 
 void gpsoutchar2 ( unsigned char outchar ) // output one character to the GPS
 {
@@ -123,3 +126,22 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 	return ;
 }
 
+/*void __attribute__((__interrupt__,__no_auto_psv__)) _U2TXInterrupt(void)
+{
+	indicate_loading_inter ;
+	
+	unsigned char txchar ;
+	IFS1bits.U2TXIF = 0 ; // clear the interrupt 
+	txchar = serial_buffer2[ sb_index2++ ] ;
+	if ( txchar )
+	{
+		U2TXREG = txchar ;
+	}
+	else
+	{
+		sb_index2 = 0 ;
+		end_index2 = 0 ;
+	}
+	
+	return ;
+}*/

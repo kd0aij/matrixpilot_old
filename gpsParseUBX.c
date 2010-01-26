@@ -35,6 +35,10 @@ void msg_SOL( unsigned char inchar ) ;
 void msg_VELNED( unsigned char inchar ) ;
 void msg_CS1( unsigned char inchar ) ;
 
+#ifdef HILSIM
+	void msg_BODYRATES( unsigned char inchar ) ;
+#endif
+
 void msg_MSGU( unsigned char inchar ) ;
 
 void msg_ACK_CLASS( unsigned char inchar );
@@ -231,6 +235,15 @@ union longbbbb 	lat_gps_ , long_gps_ , alt_sl_gps_ ;
 union longbbbb  sog_gps_ , cog_gps_ , climb_gps_ , tow_ ;
 union intbb   	hdop_ , week_no_ ;
 
+#ifdef HILSIM
+	union intbb		u_dot_sim_, v_dot_sim_, w_dot_sim_; 
+	union intbb		u_dot_sim, v_dot_sim, w_dot_sim; 
+	union intbb		p_sim_, q_sim_, r_sim_; 
+	union intbb		p_sim, q_sim, r_sim; 
+	
+	void commit_bodyrate_data(void);
+#endif
+
 unsigned char svsmin = 24 ;
 unsigned char svsmax = 0 ;
 
@@ -287,6 +300,17 @@ unsigned char * const msg_VELNED_parse[] = {
 			&un, &un, &un, &un,																//cAcc
 };
 
+#ifdef HILSIM
+// These are the data being delivered from the hardware-in-the-loop simulator
+unsigned char * const msg_BODYRATES_parse[] = {
+			&p_sim_._.B0, &p_sim_._.B1, 							// roll rate
+			&q_sim_._.B0, &q_sim_._.B1, 							// pitch rate
+			&r_sim_._.B0, &r_sim_._.B1, 							// yaw rate
+			&u_dot_sim_._.B0, &u_dot_sim_._.B1, 					// x accel (body frame)
+			&v_dot_sim_._.B0, &v_dot_sim_._.B1, 					// y accel (body frame)
+			&w_dot_sim_._.B0, &w_dot_sim_._.B1, 					// z accel (body frame)
+};
+#endif
 
 void gps_startup_sequence(int gpscount)
 {
@@ -345,7 +369,8 @@ void init_GPS2(void)
 	U2MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
 	U2STA  = 0b0000010100010000 ;
 
-	U2BRG =  25 ;
+	//U2BRG =  25 ;
+	U2BRG =  12 ;
 
 	U2MODE = 0b1010000000000000 ;
 	U2STA  = 0b0000010100010000 ;
@@ -353,6 +378,10 @@ void init_GPS2(void)
 	IFS1bits.U2RXIF = 0 ; // clear the interrupt
 	IPC6bits.U2RXIP = 4 ; // priority 4
 	IEC1bits.U2RXIE = 1 ; // turn on the interrupt
+
+	//IFS1bits.U2TXIF = 0 ; // clear the interrupt 
+ 	//IPC6bits.U2TXIP = 4 ; // priority 4 
+ 	//IEC1bits.U2TXIE = 1 ; // turn on the interrupt
 	
 	return ;
 }
@@ -425,10 +454,8 @@ void nmea_passthru ( unsigned char gpschar)
 
 void msg_B3 ( unsigned char gpschar )
 {
-	
 	if ( gpschar == 0xB5 )
 	{
-		//bin_out(0x01);
 		msg_parse = &msg_SYNC1 ;
 	}
 
@@ -519,6 +546,11 @@ void msg_PL1 ( unsigned char gpschar )
 				break ;
 	case 0x12 : {	// NAV-VELNED message
 		msg_parse = &msg_VELNED ;
+				}
+				break ;
+	case 0xAB : {	// NAV-BODYRATES message - THIS IS NOT AN OFFICIAL UBX MESSAGE
+					// WE ARE FAKING THIS FOR HIL SIMULATION
+		msg_parse = &msg_BODYRATES ;
 				}
 				break ;
 	default : { 	// some other NAV class message
@@ -636,6 +668,25 @@ void msg_VELNED( unsigned char gpschar )
 	return ;
 }
 
+void msg_BODYRATES( unsigned char gpschar )
+{
+	if ( payloadlength.BB > 0 )
+	{
+		*msg_BODYRATES_parse[store_index++] = gpschar ;
+		CK_A += gpschar;
+		CK_B += CK_A;
+		payloadlength.BB-- ;
+	}
+	else
+	{
+		// If the payload length is zero, we have received the entire payload, or the payload length
+		// was zero to start with. either way, the byte we just received is the first checksum byte.
+		checksum._.B1 = gpschar;
+		msg_parse = &msg_CS1 ;
+	}
+	return ;
+}
+
 void msg_ACK_CLASS ( unsigned char gpschar )
 {
 	//bin_out(0xAA);
@@ -680,10 +731,13 @@ void msg_CS1 ( unsigned char gpschar )
 	checksum._.B0 = gpschar;
 	if((checksum._.B1 == CK_A) && (checksum._.B0 == CK_B))
 	{
-		if(msg_id == 0x02)
+		#if (HILSIM == 1)
+		if(msg_id == 0xAB)
 		{
-			//correct checksum, do nothing
+			//If we got the correct checksum for bodyrates, commit that data immediately
+			commit_bodyrate_data();
 		}
+		#endif
 	}	
 	else
 	{
@@ -723,5 +777,16 @@ void commit_gps_data(void)
 	
 	return ;
 }
+#if (HILSIM == 1)
+void commit_bodyrate_data(void)
+{
+	u_dot_sim = u_dot_sim_;
+	v_dot_sim = v_dot_sim_; 
+	w_dot_sim = w_dot_sim_; 
+	p_sim = p_sim_;
+	q_sim = q_sim_;
+	r_sim = r_sim_; 
+}
+#endif
 
 #endif

@@ -11,6 +11,18 @@ int outputNum ;
 void setupOutputs( void ) ;
 void manualPassthrough( void ) ;
 
+#if ( HILSIM == 1 )
+unsigned char ServoOutputs[] = {	0xFF, 0xEE,		//sync
+									0x03, 0x04,		//S1
+									0x05, 0x06,		//S2
+									0x07, 0x08,		//S3
+									0x09, 0x0A,		//S4
+									0x0B, 0x0C,		//S5
+									0x0D, 0x0E,		//S6
+									0x0F, 0x10		//checksum
+									};						
+#endif								
+
 
 void init_pwm( void )	// initialize the PWM
 {
@@ -102,6 +114,27 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 #if ( USE_CAMERA_STABILIZATION == 1 )
 		cameraCntrl();
 #endif
+#if ( HILSIM == 1 )
+		int i;
+		unsigned char CK_A = 0;
+		unsigned char CK_B = 0;
+		union intbb TempBB;
+		for(i=1;i<=NUM_OUTPUTS;i++)
+		{
+			TempBB.BB = pwOut[i];
+			ServoOutputs[2*i] = TempBB._.B1;
+			ServoOutputs[(2*i)+1] = TempBB._.B0;
+		}
+		for(i=2;i<14;i++)
+		{
+			CK_A += ServoOutputs[i];
+			CK_B += CK_A;
+		}
+		ServoOutputs[14] = CK_A;
+		ServoOutputs[15] = CK_B;
+		gpsoutbin2(16, ServoOutputs);	
+#endif
+
 		break ;
 	}
 

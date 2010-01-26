@@ -188,4 +188,12 @@ void servoMix( void )
 			pwOut[THROTTLE_OUTPUT_CHANNEL] =  pulsesat( temp ) ;
 		}
 #endif
+
+/*serial_output("%4d,%4d,%4d,%4d,%4d\r\n",
+	pwOut[THROTTLE_OUTPUT_CHANNEL],
+	pwOut[ELEVATOR_OUTPUT_CHANNEL],
+	pwOut[RUDDER_OUTPUT_CHANNEL],
+	pwOut[AILERON_OUTPUT_CHANNEL],
+	pwOut[AILERON_SECONDARY_OUTPUT_CHANNEL]);*/
+
 }

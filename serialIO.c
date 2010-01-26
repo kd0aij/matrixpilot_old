@@ -4,9 +4,14 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+int telemetry_counter = 5 ;
 
 union intbb voltage_milis = {0} ;
 union intbb voltage_temp ;
+extern union intbb		u_dot_sim, v_dot_sim, w_dot_sim; 
+extern union intbb		p_sim, q_sim, r_sim; 
+extern fractional omegagyro[];
+extern fractional gplane[];
 
 void sio_newMsg(unsigned char);
 void sio_voltage_low( unsigned char inchar ) ;
@@ -223,11 +228,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 
 void serial_output_4hz( void )
 {
-	serial_output("lat: %li, long: %li, alt: %li\r\nrmat: %i, %i, %i, %i, %i, %i, %i, %i, %i\r\n" ,
-		lat_gps.WW , long_gps.WW , alt_sl_gps.WW ,
-		rmat[0] , rmat[1] , rmat[2] ,
-		rmat[3] , rmat[4] , rmat[5] ,
-		rmat[6] , rmat[7] , rmat[8]  ) ;
+	serial_output("ax: %05i, ay: %05i, az: %05i P: %05i, Q: %05i, R: %05i\r\n" ,
+		gplane[0] , gplane[1] , gplane[2], omegagyro[0], omegagyro[1], omegagyro[2]) ;
 	return ;
 }
 
@@ -315,6 +317,7 @@ void serial_output_4hz( void )
 			mode
 		) ;
 		skip = 0 ;
+
 	}
 	
 	return ;
@@ -341,26 +344,31 @@ void serial_output_4hz( void )
 	{
 		// The first 5 lines of telemetry data sent contain info about the compile-time settings from the options.h file
 		case 5:
-			serial_output("F4:R_STAB=%i:P_STAB=%i:Y_STAB_R=%i:Y_STAB_A=%i:AIL_NAV=%i:RUD_NAV=%i:ALT_HOLD=%i:RACE=%i:\r\n",
-				ROLL_STABILIZATION, PITCH_STABILIZATION, YAW_STABILIZATION_RUDDER, YAW_STABILIZATION_AILERON,
-				AILERON_NAVIGATION, RUDDER_NAVIGATION, USE_ALTITUDEHOLD, RACING_MODE) ;
+//			serial_output("F4:R_STAB=%i:P_STAB=%i:Y_STAB_R=%i:Y_STAB_A=%i:AIL_NAV=%i:RUD_NAV=%i:ALT_HOLD=%i:RACE=%i:\r\n",
+//				ROLL_STABILIZATION, PITCH_STABILIZATION, YAW_STABILIZATION_RUDDER, YAW_STABILIZATION_AILERON,
+//				AILERON_NAVIGATION, RUDDER_NAVIGATION, USE_ALTITUDEHOLD, RACING_MODE) ;
+			serial_output("Rebooting 5...");
 			break ;
 		case 4:
-			serial_output("F5:YAWKP_A=%5.3f:YAWKD_A=%5.3f:ROLLKP=%5.3f:ROLLKD=%5.3f:A_BOOST=%3.1f:\r\n",
-				YAWKP_AILERON, YAWKD_AILERON, ROLLKP, ROLLKD, AILERON_BOOST ) ;
+//			serial_output("F5:YAWKP_A=%5.3f:YAWKD_A=%5.3f:ROLLKP=%5.3f:ROLLKD=%5.3f:A_BOOST=%3.1f:\r\n",
+//				YAWKP_AILERON, YAWKD_AILERON, ROLLKP, ROLLKD, AILERON_BOOST ) ;
+			serial_output("Rebooting 4...");
 			break ;
 		case 3:
-			serial_output("F6:P_GAIN=%5.3f:P_KD=%5.3f:RUD_E_MIX=%5.3f:ROL_E_MIX=%5.3f:E_BOOST=%3.1f:\r\n",
-				PITCHGAIN, PITCHKD, RUDDER_ELEV_MIX, ROLL_ELEV_MIX, ELEVATOR_BOOST) ;
+//			serial_output("F6:P_GAIN=%5.3f:P_KD=%5.3f:RUD_E_MIX=%5.3f:ROL_E_MIX=%5.3f:E_BOOST=%3.1f:\r\n",
+//				PITCHGAIN, PITCHKD, RUDDER_ELEV_MIX, ROLL_ELEV_MIX, ELEVATOR_BOOST) ;
+			serial_output("Rebooting 3...");
 			break ;
 		case 2:
-			serial_output("F7:Y_KP_R=%5.4f:Y_KD_R=%5.3f:RUD_BOOST=%5.3f:RTL_PITCH_DN=%5.3f:\r\n",
-				YAWKP_RUDDER, YAWKD_RUDDER, RUDDER_BOOST, RTL_PITCH_DOWN) ;
+//			serial_output("F7:Y_KP_R=%5.4f:Y_KD_R=%5.3f:RUD_BOOST=%5.3f:RTL_PITCH_DN=%5.3f:\r\n",
+//				YAWKP_RUDDER, YAWKD_RUDDER, RUDDER_BOOST, RTL_PITCH_DOWN) ;
+			serial_output("Rebooting 2...");
 			break ;
 		case 1:
-			serial_output("F8:H_MAX=%6.1f:H_MIN=%6.1f:MIN_THR=%3.2f:MAX_THR=%3.2f:PITCH_MIN_THR=%4.1f:PITCH_MAX_THR=%4.1f:PITCH_ZERO_THR=%4.1f:\r\n",
-				HEIGHT_TARGET_MAX, HEIGHT_TARGET_MIN, ALT_HOLD_THROTTLE_MIN, ALT_HOLD_THROTTLE_MAX,
-				ALT_HOLD_PITCH_MIN, ALT_HOLD_PITCH_MAX, ALT_HOLD_PITCH_HIGH) ;
+//			serial_output("F8:H_MAX=%6.1f:H_MIN=%6.1f:MIN_THR=%3.2f:MAX_THR=%3.2f:PITCH_MIN_THR=%4.1f:PITCH_MAX_THR=%4.1f:PITCH_ZERO_THR=%4.1f:\r\n",
+//				HEIGHT_TARGET_MAX, HEIGHT_TARGET_MIN, ALT_HOLD_THROTTLE_MIN, ALT_HOLD_THROTTLE_MAX,
+//				ALT_HOLD_PITCH_MIN, ALT_HOLD_PITCH_MAX, ALT_HOLD_PITCH_HIGH) ;
+			serial_output("Rebooting 1...");
 			break ;
 		default:
 			// convert cpu_timer into cpu load percentage in the high word of accum
