@@ -3,26 +3,22 @@
 #include "defines.h"
 
 // servo throw can be more than 3 turns - 1080 degrees - so use integers rather than char
-const int tan_pitch_in_stabilized_mode = TAN_PITCH_IN_STABILIZED_MODE ;
-const int yaw_in_stabilized_mode   = YAW_IN_STABILIZED_MODE   * 256.0 / 360.0 ;
+const int tan_pitch_in_stabilized_mode = CAM_TAN_PITCH_IN_STABILIZED_MODE ;
+const int yaw_in_stabilized_mode   = CAM_YAW_IN_STABILIZED_MODE   * 256.0 / 360.0 ;
 
-const int pitch_offset_centred = PITCH_OFFSET_CENTRED * 256.0 / 360.0 ;
-const int roll_offset_centred  = ROLL_OFFSET_CENTRED  * 256.0 / 360.0 ;
-const int yaw_offset_centred   = YAW_OFFSET_CENTRED   * 256.0 / 360.0 ;
+const int pitch_offset_centred = CAM_PITCH_OFFSET_CENTRED * 256.0 / 360.0 ;
+const int yaw_offset_centred   = CAM_YAW_OFFSET_CENTRED   * 256.0 / 360.0 ;
 
-const int pitch_servo_max = PITCH_SERVO_MAX  * 256.0 / 360.0 ;
-const int pitch_servo_min = PITCH_SERVO_MIN  * 256.0 / 360.0 ;
-const int roll_servo_max  =  ROLL_SERVO_MAX  * 256.0 / 360.0 ;
-const int roll_servo_min  =  ROLL_SERVO_MIN  * 256.0 / 360.0 ;
-const int yaw_servo_max   =  YAW_SERVO_MAX   * 256.0 / 360.0 ;
-const int yaw_servo_min   =  YAW_SERVO_MIN   * 256.0 / 360.0 ;
+const int pitch_servo_max = CAM_PITCH_SERVO_MAX  * 256.0 / 360.0 ;
+const int pitch_servo_min = CAM_PITCH_SERVO_MIN  * 256.0 / 360.0 ;
+const int yaw_servo_max   =  CAM_YAW_SERVO_MAX   * 256.0 / 360.0 ;
+const int yaw_servo_min   =  CAM_YAW_SERVO_MIN   * 256.0 / 360.0 ;
 
 // servo_ratios are used to convert degrees of rotation into servo pulse code lengths
 // This code is configured for the full throw of the servo to be achieved by a range of
 // 2000 units being sent to pwOut. (i.e. min 2000, centred 3000, max 4000 )
-const int pitch_servo_ratio = (( 2000.0 / ((PITCH_SERVO_THROW / 360.0) * 256.0 )) * 256.0 );
-const int roll_servo_ratio  = (( 2000.0 / ((ROLL_SERVO_THROW  / 360.0) * 256.0 )) * 256.0 );
-const int yaw_servo_ratio   = (( 2000.0 / ((YAW_SERVO_THROW   / 360.0) * 256.0 )) * 256.0 ) ;
+const int pitch_servo_ratio = (( 2000.0 / ((CAM_PITCH_SERVO_THROW / 360.0) * 256.0 )) * 256.0 );
+const int yaw_servo_ratio   = (( 2000.0 / ((CAM_YAW_SERVO_THROW   / 360.0) * 256.0 )) * 256.0 ) ;
 
 
 // incremental length of pulse times to create servo travel
@@ -37,14 +33,6 @@ int pitchServoLimit(int angle)
 {
 	if ( angle > pitch_servo_max) angle = pitch_servo_max ;
 	if ( angle < pitch_servo_min) angle = pitch_servo_min ;
-	return (angle) ;
-}
-
-
-int rollServoLimit(int angle)
-{
-	if ( angle > roll_servo_max) angle = roll_servo_max ;
-	if ( angle < roll_servo_min) angle = roll_servo_min ;
 	return (angle) ;
 }
 
@@ -74,11 +62,9 @@ void cameraCntrl( void )
 	union longbbbb accum ;
 
 	int delta_pitch_servo ;
-	int delta_roll_servo ;
 	int delta_yaw_servo ;
 
 	signed char pitch = 0;		// pitch accumalator in byte circular.
-	signed char roll  = 0;		// roll accumalator in byte curcular.
 	signed char yaw   = 0;		// yaw accumalator in byte circular.
 
 	struct relative2D matrix_accum = { 0 , 0 } ;
@@ -89,7 +75,7 @@ void cameraCntrl( void )
 	
 	// In Manual Mode 
 	
-	if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 0 && flags._.use_waypoints == 0)
+	if ( flags._.GPS_steering == 0 && flags._.pitch_feedback == 0 )
 	{
 		//if ( ! flags._.servos_set)
 		{
@@ -116,7 +102,7 @@ void cameraCntrl( void )
 	else
 	{
 	 	// Stabilised Mode
-		if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 1 && flags._.use_waypoints == 0)
+		if ( flags._.GPS_steering == 0 && flags._.pitch_feedback == 1 )
 		{
 			// Stabilised mode is actually the most complex translation. It requires a 
 			// a mix of settings from the ground reference and the plane's reference.

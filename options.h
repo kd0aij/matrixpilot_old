@@ -22,7 +22,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Set this value to your GPS type.  (Set to GPS_STD or GPS_UBX)
+// Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, or GPS_UBX_4HZ)
 #define GPS_TYPE							GPS_STD
 
 
@@ -87,8 +87,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Configure Input and Output Channels
 //
-// NUM_INPUTS: Set to 4 or 5 
-//   4 enables only the standard 4 input channels
+// NUM_INPUTS: Set to 1-5 
+//   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
 #define NUM_INPUTS	5
 
@@ -178,6 +178,22 @@
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
 #define FAILSAFE_INPUT_MIN					1500
 #define FAILSAFE_INPUT_MAX					4500
+
+// FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
+// signal.  (Set to FAILSAFE_RTL or FAILSAFE_WAYPOINTS.)
+// 
+// When using FAILSAFE_RTL (Return To Launch), the UDB will begin following the rtlWaypoints
+// course as defined near the bottom of the waypoints.h file.  By default, this is set to
+// return to a point above the location where the UDB was powered up, and to loiter there.
+// See the waypoints.h file for info on modifying this behavior.
+// 
+// When set to FAILSAFE_WAYPOINTS, the UDB will instead follow the main waypoints definition from
+// waypoints.h.  If the UDB was already in waypoint mode when it lost signal, the plane will
+// just continue following the waypoints without starting them over.  And if the transmitter is
+// still in waypoint mode when the UDB sees it again, the UDB will still continue following the
+// waypoints without restarting.  If the UDB loses signal while not in waypoint mode, it will
+// start the waypoint list from the beginning.
+#define FAILSAFE_TYPE						FAILSAFE_RTL
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -303,30 +319,25 @@
 // To save cpu cycles, you will need to pre-compute the tangent of the desired pitch of the camera
 // when in stabilized mode. This should be expressed in 2:14 format. 
 // Example: You require the camera to be pitched down by 15 degrees from the horizon.
-// TAN_PITCH_IN_STABILIZED_MODE = TAN((15/180)*3.1414) * 16384 = 0.2679 * 16384 = 4389
-// Note that TAN_PITCH_IN_STABILIZED_MODE should not exceed 32767 (integer overflows to negative).
+// CAM_TAN_PITCH_IN_STABILIZED_MODE = TAN((15/180)*3.1414) * 16384 = 0.2679 * 16384 = 4389
+// Note that CAM_TAN_PITCH_IN_STABILIZED_MODE should not exceed 32767 (integer overflows to negative).
 
-#define TAN_PITCH_IN_STABILIZED_MODE		 0	// in degrees down relative to the ground horizon. Example: 4389
-#define YAW_IN_STABILIZED_MODE				90	// in degrees relative to the plane's yaw axis.    Example: 0
+#define CAM_TAN_PITCH_IN_STABILIZED_MODE	 0	// in degrees down relative to the ground horizon. Example: 4389
+#define CAM_YAW_IN_STABILIZED_MODE			90	// in degrees relative to the plane's yaw axis.    Example: 0
 
 // Camera values to set at installation of camera servos
 // All number should be integers
-#define PITCH_SERVO_THROW					90	// Camera lens rotation at maximum servo movement in Degrees. Example: 90
-#define PITCH_SERVO_MAX						25	// Max forward throw of camera from centred servo in Degrees  Example: 45
-#define PITCH_SERVO_MIN					   -45	// Max reverse throw of camera from centred servo in Degrees  Example -45
-#define PITCH_OFFSET_CENTRED				35	// Offset in Degrees of servo that results in a level camera. Example  35
+#define CAM_PITCH_SERVO_THROW				90	// Camera lens rotation at maximum servo movement in Degrees. Example: 90
+#define CAM_PITCH_SERVO_MAX					25	// Max forward throw of camera from centred servo in Degrees  Example: 45
+#define CAM_PITCH_SERVO_MIN				   -45	// Max reverse throw of camera from centred servo in Degrees  Example -45
+#define CAM_PITCH_OFFSET_CENTRED			35	// Offset in Degrees of servo that results in a level camera. Example  35
 												// Example: 35 would mean that a centred pitch servo points the camera
 												// 35 degrees down from horizontal when looking to the front of the plane.
 
-#define ROLL_SERVO_THROW					90	// Camera lens rotation at maximum servo movement in Degrees. Example: 90
-#define ROLL_SERVO_MAX						45	// Max roll throw of camera from centred servo in Degrees     Example: 45
-#define ROLL_SERVO_MIN					   -45	// Max reverse roll throw of camera from centre in Degrees    Example: -45
-#define ROLL_OFFSET_CENTRED					 0	// Offset of servo that results in a level camera             Example  5
-
-#define YAW_SERVO_THROW					   360	// Camera yaw movement for maximum yaw servo movement in Degrees. Example: 360
-#define YAW_SERVO_MAX					   100	// Max yaw of camera from a centred servo in Degrees. 		     Example: 130
-#define YAW_SERVO_MIN					  -160	// Max reverse yaw of camera from a centred servo in Degrees.     Example:-160
-#define YAW_OFFSET_CENTRED					30	// Yaw offset in degrees that results in camera pointing forward  Example: 10
+#define CAM_YAW_SERVO_THROW				   360	// Camera yaw movement for maximum yaw servo movement in Degrees. Example: 360
+#define CAM_YAW_SERVO_MAX				   100	// Max yaw of camera from a centred servo in Degrees. 		     Example: 130
+#define CAM_YAW_SERVO_MIN				  -160	// Max reverse yaw of camera from a centred servo in Degrees.     Example:-160
+#define CAM_YAW_OFFSET_CENTRED				30	// Yaw offset in degrees that results in camera pointing forward  Example: 10
 
 
 ////////////////////////////////////////////////////////////////////////////////
