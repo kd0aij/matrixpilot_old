@@ -39,7 +39,7 @@
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
 #define AILERON_NAVIGATION					0
-#define RUDDER_NAVIGATION					0
+#define RUDDER_NAVIGATION					1
 
 // Altitude Hold
 // Set this to 0 to disable altitude hold.
@@ -81,10 +81,10 @@
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
-#define THROTTLE_INPUT_CHANNEL				CHANNEL_1
-#define AILERON_INPUT_CHANNEL				CHANNEL_5
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
+#define AILERON_INPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_3
+#define RUDDER_INPUT_CHANNEL				CHANNEL_5
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
 #define CAMERA_ROLL_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -109,10 +109,10 @@
 // sure your board gets power.
 // 
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
-#define AILERON_OUTPUT_CHANNEL				CHANNEL_2
-#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_4
-#define RUDDER_OUTPUT_CHANNEL				CHANNEL_1
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
+#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
+#define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_ROLL_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
@@ -143,7 +143,7 @@
 // These are the thresholds for the cutoffs between low and middle, and between middle and high.
 // Normal signals should fall within about 2000 - 4000.
 #define MODE_SWITCH_THRESHOLD_LOW			2600
-#define MODE_SWITCH_THRESHOLD_HIGH			4500
+#define MODE_SWITCH_THRESHOLD_HIGH			3400
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB, or SERIAL_OSD_REMZIBI)
 // This determines the format of the output sent out the spare serial port.
 // Note that SERIAL_OSD_REMZIBI only works with GPS_UBX.
-#define SERIAL_OUTPUT_FORMAT				SERIAL_ARDUSTATION
+#define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
 
 #define OPEN_LOG							0
 
