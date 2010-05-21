@@ -14,7 +14,3 @@ int dutycycle ;				// used to compute PWM duty cycle
 int waggle = 0 ;
 int calib_timer, standby_timer ;
 int gps_data_age;
-
-boolean timer_5_on = 0 ;
-boolean needSaveExtendedState = 0 ;
-int defaultCorcon = 0 ;

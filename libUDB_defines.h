@@ -44,13 +44,6 @@ struct ADchannel {
 #define LED_OFF		1
 
 
-// Constants
-#define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
-#define FILTERSHIFT 3
-#define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
-#define GRAVITY ((long long)5280.0/SCALEACCEL)  // gravity in AtoD/2 units
-
-
 // Channel numbers on the board, mapped to positions in the pulse width arrays.
 #define CHANNEL_UNUSED	0	// udb_pwIn[0], udb_pwOut[0], etc. are not used, but allow lazy code everywhere else  :)
 #define CHANNEL_1		1
@@ -61,6 +54,13 @@ struct ADchannel {
 #define CHANNEL_6		6
 #define CHANNEL_7		7
 #define CHANNEL_8		8
+
+
+// Constants
+#define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
+#define FILTERSHIFT 3
+#define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
+#define GRAVITY ((long long)5280.0/SCALEACCEL)  // gravity in AtoD/2 units
 
 
 extern boolean needSaveExtendedState ;

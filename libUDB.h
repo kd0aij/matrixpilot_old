@@ -1,8 +1,10 @@
 #include "options.h"
-#include "udb_defines.h"
+#include "libUDB_defines.h"
 #include "magnetometerOptions.h"
 #include <dsp.h>
 
+// libUDB.h defines the API for accessing the UDB hardware through libUDB
+//
 // libUDB requires an options.h file be included that defines the following constants:
 // 
 // #define NUM_INPUTS

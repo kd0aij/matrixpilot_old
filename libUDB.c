@@ -1,5 +1,10 @@
 #include "libUDB_internal.h"
 
+boolean timer_5_on = 0 ;
+boolean needSaveExtendedState = 0 ;
+int defaultCorcon = 0 ;
+
+
 void udb_init()
 {
 	defaultCorcon = CORCON;

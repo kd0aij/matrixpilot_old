@@ -188,7 +188,7 @@ file_034=options.h
 file_035=waypoints.h
 file_036=libUDB.h
 file_037=libUDB_internal.h
-file_038=udb_defines.h
+file_038=libUDB_defines.h
 file_039=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
 file_040=C:\Program Files\Microchip\MPLAB C30\support\dsPIC30F\h\p30f4011.h
 [SUITE_INFO]
