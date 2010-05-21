@@ -1,13 +1,27 @@
-#include "optionsRmat.h"
+#include "libUDB.h"
 
-#include <dsp.h>
+#define LONGDEG_2_BYTECIR 305
+// = (256/360)*((256)**4)/(10**7)
 
-struct ADchannel {
- 	int input ; // raw input
-	int value ; // filtered a little bit as part of A/D
-	int offset ;  // baseline at power up 
-	 }  // variables for processing an AD channel
- ;
+#define COURSEDEG_2_BYTECIR 466
+ // = (256/360)*((256)**2)/(10**2)
+
+#define RADPERSEC ((long long)5632.0/SCALEGYRO)
+// one radian per second, in AtoD/2 units
+
+#define GRAVITYM ((long long)980.0) 
+// 100 times gravity, meters/sec/sec
+
+#define ACCELSCALE ((long) ( GRAVITY/GRAVITYM ) )
+
+#define CENTRISCALE ((long) (((long long)519168.0)*GRAVITY)/((long long)RADPERSEC*GRAVITYM))
+// scale factor in multiplying omega times velocity to get centrifugal acceleration
+
+#define CENTRIFSAT ((long) (GRAVITYM*RADPERSEC)/(GRAVITY*((long long)32)))
+// saturation limit for the centrifugal adjustment to avoid numeric overflow
+
+#define RMAX15 0b0110000000000000	//	1.5 in 2.14 format
+
 
 struct ww { int W0 ; int W1 ; } ;
 union longww { long  WW ; struct ww _ ; } ;
@@ -15,10 +29,6 @@ union longww { long  WW ; struct ww _ ; } ;
 void init_ADC( void ) ;
 void init_pwm( void ) ;
 void imu(void) ;
-
-extern struct ADchannel xaccel, yaccel , zaccel ; // x, y, and z accelerometer channels
-extern struct ADchannel xrate , yrate, zrate ;  // x, y, and z gyro channels
-extern struct ADchannel vref ; // reference voltage
 
 extern int firstsamp ; // used on startup to detect first A/D sample
 extern int calibcount ; // number of PWM pulses before control is turned on
@@ -33,8 +43,6 @@ union longbbbb { long WW ; struct ww _ ; struct bbbb __ ; } ;
 
 void set_gps2(void) ;
 void init_T3(void) ;
-void init_GPS2(void) ;
-void init_USART1(void) ;
 
 int cosine ( signed char angle ) ;
 int sine ( signed char angle ) ;
@@ -55,7 +63,7 @@ extern union longbbbb lat_origin , long_origin , alt_origin ;
 extern union longbbbb x_origin , y_origin , z_origin ;
 
 struct flag_bits {
-			unsigned int unused					: 2 ;
+			unsigned int unused					: 3 ;
 			unsigned int mag_drift_req			: 1 ;
 			unsigned int first_mag_reading		: 1 ;
 			unsigned int yaw_req				: 1 ;
@@ -64,7 +72,6 @@ struct flag_bits {
 			unsigned int pitch_feedback			: 1 ;
 			unsigned int altitude_hold_throttle	: 1 ;
 			unsigned int altitude_hold_pitch	: 1 ;
-			unsigned int radio_on				: 1 ;
 			unsigned int man_req				: 1 ;
 			unsigned int auto_req				: 1 ;
 			unsigned int home_req				: 1 ;

@@ -1,6 +1,6 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
+#include "libUDB.h"
 #include "defines.h"
+#include "definesRmat.h"
 
 // servo throw can be more than 3 turns - 1080 degrees - so use integers rather than char
 const int tan_pitch_in_stabilized_mode = CAM_TAN_PITCH_IN_STABILIZED_MODE ;
@@ -16,7 +16,7 @@ const int yaw_servo_min   =  CAM_YAW_SERVO_MIN   * 256.0 / 360.0 ;
 
 // servo_ratios are used to convert degrees of rotation into servo pulse code lengths
 // This code is configured for the full throw of the servo to be achieved by a range of
-// 2000 units being sent to pwOut. (i.e. min 2000, centred 3000, max 4000 )
+// 2000 units being sent to udb_pwOut. (i.e. min 2000, centred 3000, max 4000 )
 const int pitch_servo_ratio = (( 2000.0 / ((CAM_PITCH_SERVO_THROW / 360.0) * 256.0 )) * 256.0 );
 const int yaw_servo_ratio   = (( 2000.0 / ((CAM_YAW_SERVO_THROW   / 360.0) * 256.0 )) * 256.0 ) ;
 
@@ -85,7 +85,7 @@ void cameraCntrl( void )
 			accum.__.B1 = cam.__.B2 ;
 			accum.__.B0 = cam.__.B1 ;
 			pitch_servo = ( accum._.W0 + 0x80 );
-			pwOut[CAMERA_PITCH_OUTPUT_CHANNEL] = pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_PITCH_CHANNEL_REVERSED, pitch_servo)) ;
+			udb_pwOut[CAMERA_PITCH_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_PITCH_CHANNEL_REVERSED, pitch_servo)) ;
 			
 			// Roll Servo
 			// Not implemented
@@ -95,7 +95,7 @@ void cameraCntrl( void )
 			accum.__.B1 = cam.__.B2 ;
 			accum.__.B0 = cam.__.B1 ;
 			yaw_servo = ( accum._.W0 + 0x80 ) ;	
-			pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, yaw_servo)) ;
+			udb_pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, yaw_servo)) ;
 			flags._.servos_set = 1; 
 		}
 	}
@@ -181,7 +181,7 @@ void cameraCntrl( void )
 		// 0x80 deals with rounding error (128)
 		delta_pitch_servo = ( accum._.W0 + 0x80 ) - pitch_servo;
 		pitch_servo = pitch_servo + (delta_pitch_servo >> 3);
-		pwOut[CAMERA_PITCH_OUTPUT_CHANNEL] = pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_PITCH_CHANNEL_REVERSED, pitch_servo)) ;
+		udb_pwOut[CAMERA_PITCH_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_PITCH_CHANNEL_REVERSED, pitch_servo)) ;
 		
 		// Code for driving roll servo left here for future use
 		//cam.WW = __builtin_mulss((rollServoLimit(roll - roll_offset_centred)), roll_servo_ratio) ;
@@ -190,7 +190,7 @@ void cameraCntrl( void )
 		// // 0x80 deals with rounding error (128)
 		//delta_roll_servo = ( accum._.W0 + 0x80 ) - roll_servo;
 		//roll_servo = roll_servo + (delta_roll_servo >> 3);
-		//pwOut[CAMERA_ROLL_OUTPUT_CHANNEL] = pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_ROLL_CHANNEL_REVERSED, roll_servo)) ;
+		//udb_pwOut[CAMERA_ROLL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_ROLL_CHANNEL_REVERSED, roll_servo)) ;
 		
 		// Calculate signal to send to yaw servo
 		cam.WW = __builtin_mulss((yawServoLimit(yaw - yaw_offset_centred)), yaw_servo_ratio) ; 
@@ -199,7 +199,7 @@ void cameraCntrl( void )
 		// 0x80 deals with rounding error (128)
 		delta_yaw_servo = ( accum._.W0 + 0x80 ) - yaw_servo;
 		yaw_servo = yaw_servo + (delta_yaw_servo >> 3);	
-		pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, yaw_servo)) ;
+		udb_pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, yaw_servo)) ;
 	}
 #endif
 }

@@ -1,6 +1,6 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
+#include "libUDB.h"
 #include "defines.h"
+#include "definesRmat.h"
 
 //	main program for testing the IMU.
 //	Select device options:
@@ -21,22 +21,21 @@ _FICD( 0xC003 ) ;		// normal use of debugging port
 void init_all(void)
 {
 	TRISFbits.TRISF0 = 0 ;
-	init_capture() ; 	// initialize capture module
-	init_pwm() ;		//  set up the PWM
-	init_ADC() ;		//  initialze the AD
-	init_GPS2() ;    	//  set up communications to the GPS
-	init_clock() ; 		//  turn on the clock
+	udb_init() ;
+	init_servoOut() ;
 	init_T3()  ;		//  enable the T3 internally triggered interrupt
 	init_states() ;
-	init_USART1() ;
 	init_behavior() ;
-	init_I2C() ;
+	
+#if (NORADIO == 1)
+	udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] = udb_pwTrim[MODE_SWITCH_INPUT_CHANNEL] = 4000 ;
+#endif
+	
 	return ;
 }
 
 int main (void)
 {	//	Initialize all modules and turn on the interrupts.
-	defaultCorcon = CORCON;
 	init_all() 		;   // initialize interrupt handlers
 	SRbits.IPL = 0 ;	// turn on all interrupt priorities
 	

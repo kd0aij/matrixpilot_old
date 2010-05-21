@@ -1,7 +1,4 @@
-#include "p30f4011.h"
-#include "defines.h"
-#include "definesRmat.h"
-#include "magnetometerOptions.h"
+#include "libUDB_internal.h"
 
 const unsigned char enableMagRead[] =        { 0x3C , 0x00 , 0x10 , 0x20 , 0x00 } ;
 const unsigned char enableMagCalibration[] = { 0x3C , 0x00 , 0x11 , 0x20 , 0x01 } ;
@@ -21,8 +18,8 @@ void I2C_stopWriteMagData(void) ;
 
 void I2C_idle(void) ;
 
-int magFieldBody[3] ;  // magnetic field in the body frame of reference 
-int magOffset[3] = { 0 , 0 , 0 } ;  // magnetic offset in the body frame of reference
+int udb_magFieldBody[3] ;  // magnetic field in the body frame of reference 
+int udb_magOffset[3] = { 0 , 0 , 0 } ;  // magnetic offset in the body frame of reference
 int magGain[3] = { RMAX , RMAX , RMAX } ; // magnetometer calibration gains
 int rawMagCalib[3] = { 0 , 0 , 0 } ;
 unsigned char magreg[6] ;  // magnetometer read-write buffer
@@ -38,7 +35,7 @@ fractional declinationVector[2] ;
 
 #define I2C_NORMAL ((( I2CCON & 0b0000000000011111 ) == 0) && ( (I2CSTAT & 0b0100010011000001) == 0 ))
 
-void init_I2C(void)
+void udb_init_I2C(void)
 {
 #if ( MAG_YAW_DRIFT == 1 )
 	flags._.first_mag_reading = 1 ;
@@ -268,15 +265,16 @@ void I2C_doneReadMagData(void)
 
 	if ( magMessage == 7 )
 	{
-		magFieldBody[0] = MAG_X_SIGN((__builtin_mulsu((magFieldRaw[MAG_X_AXIS]), magGain[MAG_X_AXIS] ))>>14)-(magOffset[0]>>1) ;
-		magFieldBody[1] = MAG_Y_SIGN((__builtin_mulsu((magFieldRaw[MAG_Y_AXIS]), magGain[MAG_Y_AXIS] ))>>14)-(magOffset[1]>>1) ;
-		magFieldBody[2] = MAG_Z_SIGN((__builtin_mulsu((magFieldRaw[MAG_Z_AXIS]), magGain[MAG_Z_AXIS] ))>>14)-(magOffset[2]>>1) ;
+		udb_magFieldBody[0] = MAG_X_SIGN((__builtin_mulsu((magFieldRaw[MAG_X_AXIS]), magGain[MAG_X_AXIS] ))>>14)-(udb_magOffset[0]>>1) ;
+		udb_magFieldBody[1] = MAG_Y_SIGN((__builtin_mulsu((magFieldRaw[MAG_Y_AXIS]), magGain[MAG_Y_AXIS] ))>>14)-(udb_magOffset[1]>>1) ;
+		udb_magFieldBody[2] = MAG_Z_SIGN((__builtin_mulsu((magFieldRaw[MAG_Z_AXIS]), magGain[MAG_Z_AXIS] ))>>14)-(udb_magOffset[2]>>1) ;
 		I2C_state = &I2C_idle ;
-		if ( ( abs(magFieldBody[0]) < MAGNETICMAXIMUM ) &&
-			 ( abs(magFieldBody[1]) < MAGNETICMAXIMUM ) &&
-			 ( abs(magFieldBody[2]) < MAGNETICMAXIMUM ) )
+		if ( ( abs(udb_magFieldBody[0]) < MAGNETICMAXIMUM ) &&
+			 ( abs(udb_magFieldBody[1]) < MAGNETICMAXIMUM ) &&
+			 ( abs(udb_magFieldBody[2]) < MAGNETICMAXIMUM ) )
 		{
-			flags._.mag_drift_req = 1 ;
+			//flags._.mag_drift_req = 1 ;
+			udb_magnetometer_callback_data_available();
 		}
 		else
 		{

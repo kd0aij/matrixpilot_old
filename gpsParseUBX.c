@@ -1,5 +1,4 @@
-
-#include "p30f4011.h"
+#include "libUDB.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -360,25 +359,6 @@ void gps_startup_sequence(int gpscount)
 		gpsoutbin2( disable_SBAS_length, disable_SBAS );
 	else if (gpscount == 70)
 		gpsoutbin2( config_NAV5_length, config_NAV5 );
-	
-	return ;
-}
-
-
-void init_GPS2(void)
-{
-//	Initialize the USART that communicates with the GPS
-	U2MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
-	U2STA  = 0b0000010100010000 ;
-
-	U2BRG =  25 ;
-
-	U2MODE = 0b1010000000000000 ;
-	U2STA  = 0b0000010100010000 ;
-
-	IFS1bits.U2RXIF = 0 ; // clear the interrupt
-	IPC6bits.U2RXIP = 4 ; // priority 4
-	IEC1bits.U2RXIE = 1 ; // turn on the interrupt
 	
 	return ;
 }

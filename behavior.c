@@ -1,6 +1,6 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
+#include "libUDB.h"
 #include "defines.h"
+#include "definesRmat.h"
 
 int current_orientation ;
 union bfbts_word desired_behavior ;
@@ -156,7 +156,7 @@ void triggerActionSetValue( boolean newValue )
 {
 	if ( TRIGGER_TYPE == TRIGGER_TYPE_SERVO )
 	{
-		pwOut[TRIGGER_OUTPUT_CHANNEL] = (newValue) ? TRIGGER_SERVO_HIGH : TRIGGER_SERVO_LOW ;
+		udb_pwOut[TRIGGER_OUTPUT_CHANNEL] = (newValue) ? TRIGGER_SERVO_HIGH : TRIGGER_SERVO_LOW ;
 	}
 	else if ( TRIGGER_TYPE == TRIGGER_TYPE_DIGITAL )
 	{

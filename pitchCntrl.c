@@ -1,6 +1,6 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
+#include "libUDB.h"
 #include "defines.h"
+#include "definesRmat.h"
 
 //	If the state machine selects pitch feedback, compute it from the pitch gyro and accelerometer.
 
@@ -75,7 +75,7 @@ void normalPitchCntrl(void)
 		if ( RUDDER_OUTPUT_CHANNEL != CHANNEL_UNUSED && RUDDER_INPUT_CHANNEL != CHANNEL_UNUSED ) {
 			pitchAccum.WW = __builtin_mulss( rmat6 , rudderElevMixGain ) << 1 ;
 			pitchAccum.WW = __builtin_mulss( pitchAccum._.W1 ,
-				REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, pwTrim[RUDDER_INPUT_CHANNEL] - pwOut[RUDDER_OUTPUT_CHANNEL]) ) << 3 ;
+				REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, udb_pwTrim[RUDDER_INPUT_CHANNEL] - udb_pwOut[RUDDER_OUTPUT_CHANNEL]) ) << 3 ;
 			navElevMix += pitchAccum._.W1 ;
 		}
 		
@@ -88,7 +88,7 @@ void normalPitchCntrl(void)
 					- __builtin_mulss( rmat6 , omegagyro[2] )) << 1 ;
 	pitchrate = pitchAccum._.W1 ;
 	
-	if ( !flags._.radio_on && flags._.GPS_steering )
+	if ( !udb_radio_on && flags._.GPS_steering )
 	{
 		rtlkick = RTLKICK ;
 	}
@@ -124,7 +124,7 @@ void hoverPitchCntrl(void)
 						- __builtin_mulss( rmat[6] , omegagyro[1] )) << 1 ;
 		pitchrate = pitchAccum._.W1 ;
 		
-		int elevInput = ( flags._.radio_on == 1 ) ? REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, pwIn[ELEVATOR_INPUT_CHANNEL] - pwTrim[ELEVATOR_INPUT_CHANNEL]) : 0 ;
+		int elevInput = ( udb_radio_on == 1 ) ? REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, udb_pwIn[ELEVATOR_INPUT_CHANNEL] - udb_pwTrim[ELEVATOR_INPUT_CHANNEL]) : 0 ;
 		int manualPitchOffset = elevInput * (int)(RMAX/600);
 		
 		long pitchToWP ;

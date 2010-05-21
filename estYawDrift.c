@@ -1,7 +1,5 @@
-#include "p30f4011.h"
+#include "libUDB.h"
 #include "defines.h"
-#include <dsp.h>
-#include "optionsRmat.h"
 #include "definesRmat.h"
 
 //	Compute actual and desired courses.
@@ -24,6 +22,13 @@ int air_speed_magnitude = 0;
 #define GPSTAU 3.0
 
 #define GPSFILT (4.0/GPSTAU)*RMAX
+
+
+void udb_magnetometer_callback_data_available( void )
+{
+	flags._.mag_drift_req = 1 ;
+	return ;
+}
 
 
 void estYawDrift(void)

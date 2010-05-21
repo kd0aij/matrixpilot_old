@@ -1,4 +1,4 @@
-#include "p30f4011.h"
+#include "libUDB.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -24,14 +24,6 @@ signed char actual_dir , desired_dir ;
 extern void (* msg_parse ) ( unsigned char inchar ) ;
 
 
-void gpsoutchar2 ( unsigned char outchar ) // output one character to the GPS
-{
-	//bin_out(outchar);
-	while ( ! U2STAbits.TRMT ) { }
-	U2TXREG = outchar ;
-	return ;
-}
-
 void gpsoutline2(char message[]) // output one NMEA line to the GPS
 {
 	int index ;
@@ -39,7 +31,7 @@ void gpsoutline2(char message[]) // output one NMEA line to the GPS
 	index = 0 ;
 	while  (  (outchar = message[index++])  ) 
 	{
-		gpsoutchar2( outchar ) ;
+		udb_gps_send_char(outchar) ;
 	}
 }
 
@@ -48,31 +40,16 @@ void gpsoutbin2(int length , const unsigned char msg[] )  // output a binary mes
 	int index = 0 ;
 	while ( index < length )
 	{
-		gpsoutchar2( msg[index] ) ;
+		udb_gps_send_char( msg[index] ) ;
 		index++;
 	}
 	return ;
 }
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
+void udb_gps_callback_received_char(char rxchar)
 {
-	interrupt_save_extended_state ;
-	
-	indicate_loading_inter ;
-	
-	unsigned char rxchar ;
-	
-	if ( U2STAbits.FERR ) { init_GPS2(); }
-	if ( U2STAbits.OERR ) { init_GPS2(); }
-	IFS1bits.U2RXIF = 0 ; // clear the interrupt
-	while ( U2STAbits.URXDA )
-	{
-		rxchar = U2RXREG ;
-		//bin_out ( rxchar ) ; // binary out to the debugging USART	
-		(* msg_parse) ( rxchar ) ; // parse the input byte
-	}
-	
-	interrupt_restore_extended_state ;
+	//bin_out ( rxchar ) ; // binary out to the debugging USART	
+	(* msg_parse) ( rxchar ) ; // parse the input byte
 	return ;
 }
 

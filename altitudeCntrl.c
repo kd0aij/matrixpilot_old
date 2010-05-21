@@ -1,7 +1,6 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
+#include "libUDB.h"
 #include "defines.h"
-#include "options.h"
+#include "definesRmat.h"
 
 union longww throttleFiltered = { 0 } ;
 
@@ -56,16 +55,16 @@ void normalAltitudeCntrl(void)
 	int throttleIn ;
 	int throttleInOffset ;
 	
-	if ( flags._.radio_on == 1 )
+	if ( udb_radio_on == 1 )
 	{
-		throttleIn = pwIn[THROTTLE_INPUT_CHANNEL] ;
+		throttleIn = udb_pwIn[THROTTLE_INPUT_CHANNEL] ;
 		// keep the In and Trim throttle values within 2000-4000 to account for
 		// Spektrum receivers using failsafe values below 2000.
-		throttleInOffset = pulsesat( pwIn[THROTTLE_INPUT_CHANNEL] ) - pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] ) ;
+		throttleInOffset = udb_servo_pulsesat( udb_pwIn[THROTTLE_INPUT_CHANNEL] ) - udb_servo_pulsesat( udb_pwTrim[THROTTLE_INPUT_CHANNEL] ) ;
 	}
 	else
 	{
-		throttleIn = pwTrim[THROTTLE_INPUT_CHANNEL] ;
+		throttleIn = udb_pwTrim[THROTTLE_INPUT_CHANNEL] ;
 		throttleInOffset = 0 ;
 	}
 	
@@ -83,7 +82,7 @@ void normalAltitudeCntrl(void)
 			if (desiredHeight < HEIGHT_TARGET_MIN) desiredHeight = HEIGHT_TARGET_MIN ;
 		}
 		
-		if ( throttleInOffset < DEADBAND && flags._.radio_on )
+		if ( throttleInOffset < DEADBAND && udb_radio_on )
 		{
 			pitchAltitudeAdjust = 0 ;
 			throttleAccum.WW  = 0 ;
@@ -123,13 +122,13 @@ void normalAltitudeCntrl(void)
 		{
 			pitchAltitudeAdjust = 0 ;
 			
-			throttleFiltered.WW += (((long)(pwTrim[THROTTLE_INPUT_CHANNEL] - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
+			throttleFiltered.WW += (((long)(udb_pwTrim[THROTTLE_INPUT_CHANNEL] - throttleFiltered._.W1 ))<<THROTTLEFILTSHIFT ) ;
 			altitude_control = throttleFiltered._.W1 - throttleIn ;
 		}
 		else
 		{
 			// Servo reversing is handled in servoMix.c
-			int throttleOut = pulsesat( pwTrim[THROTTLE_INPUT_CHANNEL] + throttleAccum.WW ) ;
+			int throttleOut = udb_servo_pulsesat( udb_pwTrim[THROTTLE_INPUT_CHANNEL] + throttleAccum.WW ) ;
 			throttleFiltered.WW += (((long)( throttleOut - throttleFiltered._.W1 )) << THROTTLEFILTSHIFT ) ;
 			altitude_control = throttleFiltered._.W1 - throttleIn ;
 		}
@@ -173,7 +172,7 @@ void manualThrottle( int throttleIn )
 // gives manual throttle control back to the pilot.
 void hoverAltitudeCntrl(void)
 {
-	int throttleIn = ( flags._.radio_on == 1 ) ? pwIn[THROTTLE_INPUT_CHANNEL] : pwTrim[THROTTLE_INPUT_CHANNEL] ;
+	int throttleIn = ( udb_radio_on == 1 ) ? udb_pwIn[THROTTLE_INPUT_CHANNEL] : udb_pwTrim[THROTTLE_INPUT_CHANNEL] ;
 	
 	throttleFiltered.WW += (((long)( throttleIn - throttleFiltered._.W1 )) << THROTTLEFILTSHIFT ) ;
 	

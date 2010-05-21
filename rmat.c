@@ -1,4 +1,6 @@
-
+#include "libUDB.h"
+#include "defines.h"
+#include "definesRmat.h"
 
 //		These are the routines for maintaining a direction cosine matrix
 //		that can be used to transform vectors between the earth and plane
@@ -8,17 +10,11 @@
 //		the so-called orthogonality conditions, which impose 6 constraints on
 //		the 9 elements of the matrix.
 
-
-#include "p30f4011.h"
-#include "defines.h"
-#include "definesRmat.h"
-#include "magnetometerOptions.h"
-
-
 //	All numbers are stored in 2.14 format.
 //	Vector and matrix libraries work in 1.15 format.
 //	This combination allows values of matrix elements between -2 and +2.
 //	Multiplication produces results scaled by 1/2.
+
 
 #define GGAIN SCALEGYRO*6*(RMAX*0.025)		//	integration multiplier for gyros 15mv/degree/sec
 fractional ggain = GGAIN ;
@@ -119,22 +115,22 @@ void read_gyros()
 {
 	int gx , gy , gz ;
 #ifdef VREF
-	vref_adj = (vref.offset>>1) - (vref.value>>1) ;
+	vref_adj = (udb_vref.offset>>1) - (udb_vref.value>>1) ;
 #else
 	vref_adj = 0 ;
 #endif
 
-	gx = omegagyro[0] = XSIGN ((xrate.value>>1) - (xrate.offset>>1) + vref_adj) ;
-	gy = omegagyro[1] = YSIGN ((yrate.value>>1) - (yrate.offset>>1) + vref_adj) ;
-	gz = omegagyro[2] = ZSIGN ((zrate.value>>1) - (zrate.offset>>1) + vref_adj) ;
+	gx = omegagyro[0] = XSIGN ((udb_xrate.value>>1) - (udb_xrate.offset>>1) + vref_adj) ;
+	gy = omegagyro[1] = YSIGN ((udb_yrate.value>>1) - (udb_yrate.offset>>1) + vref_adj) ;
+	gz = omegagyro[2] = ZSIGN ((udb_zrate.value>>1) - (udb_zrate.offset>>1) + vref_adj) ;
 	return ;
 }
 
 void read_accel()
 {
-	gplane[0] =   ( xaccel.value>>1 ) - ( xaccel.offset>>1 ) ;
-	gplane[1] =   ( yaccel.value>>1 ) - ( yaccel.offset>>1 ) ;
-	gplane[2] =   ( zaccel.value>>1 ) - ( zaccel.offset>>1 ) ;
+	gplane[0] =   ( udb_xaccel.value>>1 ) - ( udb_xaccel.offset>>1 ) ;
+	gplane[1] =   ( udb_yaccel.value>>1 ) - ( udb_yaccel.offset>>1 ) ;
+	gplane[2] =   ( udb_zaccel.value>>1 ) - ( udb_zaccel.offset>>1 ) ;
 	return ;
 }
 
@@ -273,8 +269,8 @@ void yaw_drift()
 
 fractional magFieldEarth[3] ;
 
-extern fractional magFieldBody[3] ;
-extern fractional magOffset[3] ;
+extern fractional udb_magFieldBody[3] ;
+extern fractional udb_magOffset[3] ;
 
 fractional magFieldEarthPrevious[3] ;
 fractional magFieldBodyPrevious[3] ;
@@ -291,8 +287,8 @@ void align_rmat_to_mag(void)
 	struct relative2D initialBodyField ;
 	int costheta ;
 	int sintheta ;
-	initialBodyField.x = magFieldBody[0] ;
-	initialBodyField.y = magFieldBody[1] ;
+	initialBodyField.x = udb_magFieldBody[0] ;
+	initialBodyField.y = udb_magFieldBody[1] ;
 	theta = rect_to_polar( &initialBodyField ) -64 - DECLINATIONANGLE ;
 	costheta = cosine(theta) ;
 	sintheta = sine(theta) ;
@@ -318,14 +314,14 @@ void mag_drift()
 			align_rmat_to_mag() ;
 		}
 
-		magFieldEarth[0] = VectorDotProduct( 3 , &rmat[0] , magFieldBody )<<1 ;
-		magFieldEarth[1] = VectorDotProduct( 3 , &rmat[3] , magFieldBody )<<1 ;
-		magFieldEarth[2] = VectorDotProduct( 3 , &rmat[6] , magFieldBody )<<1 ;
+		magFieldEarth[0] = VectorDotProduct( 3 , &rmat[0] , udb_magFieldBody )<<1 ;
+		magFieldEarth[1] = VectorDotProduct( 3 , &rmat[3] , udb_magFieldBody )<<1 ;
+		magFieldEarth[2] = VectorDotProduct( 3 , &rmat[6] , udb_magFieldBody )<<1 ;
 
 		mag_error = 100*VectorDotProduct( 2 , magFieldEarth , declinationVector ) ;
 		VectorScale( 3 , errorYawplane , &rmat[6] , mag_error ) ;
 
-		VectorAdd( 3 , offsetSum , magFieldBody , magFieldBodyPrevious ) ;
+		VectorAdd( 3 , offsetSum , udb_magFieldBody , magFieldBodyPrevious ) ;
 		for ( vector_index = 0 ; vector_index < 3 ; vector_index++ )
 		{
 			offsetSum[vector_index] >>= 1 ;
@@ -351,7 +347,7 @@ void mag_drift()
 
 		if ( flags._.first_mag_reading == 0 )
 		{
-			VectorAdd ( 3 , magOffset , magOffset , offsetSum ) ;
+			VectorAdd ( 3 , udb_magOffset , udb_magOffset , offsetSum ) ;
 		}
 		else
 		{
@@ -359,7 +355,7 @@ void mag_drift()
 		}
 
 		VectorCopy ( 3 , magFieldEarthPrevious , magFieldEarth ) ;
-		VectorCopy ( 3 , magFieldBodyPrevious , magFieldBody ) ;
+		VectorCopy ( 3 , magFieldBodyPrevious , udb_magFieldBody ) ;
 		VectorCopy ( 9 , rmatPrevious , rmat ) ;
 
 		setDSPLibInUse(false) ;

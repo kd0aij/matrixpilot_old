@@ -1,7 +1,6 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
+#include "libUDB.h"
 #include "defines.h"
-#include "magnetometerOptions.h"
+#include "definesRmat.h"
 
 void startS(void) ;
 void calibrateS(void) ;
@@ -25,28 +24,21 @@ void init_states(void)
 	return ;
 }
 
-void state_machine(void)
+void udb_background(void)
 {
 	//	Configure the GPS for binary if there is a request to do so.
 	//	Determine whether the radio is on.
 	
-#if (NORADIO == 1)
-	pulsesselin = 100 ;
-#endif
-	
-	if ( pulsesselin > 10 )
+	if ( udb_radio_on )
 	{
-		flags._.radio_on = 1 ;
-		LED_GREEN = LED_ON ; // indicate radio on
-		
 		//	Select manual, automatic, or come home, based on pulse width of the switch input channel as defined in options.h.
-		if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH )
+		if ( udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH )
 		{
 			flags._.man_req = 0 ;
 			flags._.auto_req = 0 ;
 			flags._.home_req = 1 ;
 		}
-		else if ( pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_LOW )
+		else if ( udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_LOW )
 		{
 			flags._.man_req = 0 ;
 			flags._.auto_req = 1 ;
@@ -61,15 +53,10 @@ void state_machine(void)
 	}
 	else
 	{
-		flags._.radio_on = 0 ;
-		LED_GREEN = LED_OFF ; // indicate radio off
-		
 		flags._.man_req = 0 ;
 		flags._.auto_req = 0 ;
 		flags._.home_req = 1 ;
 	}
-	
-	pulsesselin = 0 ;
 	
 	//	Update the nav capable flag. If the GPS has a lock, gps_data_age will be small.
 	//	For now, nav_capable will always be 0 when the Airframe type is AIRFRAME_HELI.
@@ -117,9 +104,7 @@ void ent_acquiringS()
 	LED_RED = LED_OFF ;
 #endif
 	
-	int i;
-	for (i=1; i <= NUM_INPUTS; i++)
-		pwTrim[i] = pwIn[i] ;
+	udb_servo_record_trims();
 	
 	return ;
 }
@@ -210,10 +195,10 @@ void startS(void)
 
 void calibrateS(void)
 {
-	if ( flags._.radio_on )
+	if ( udb_radio_on )
 	{
 #if ( LED_RED_MAG_CHECK == 0 )
-		LED_RED_DO_TOGGLE ;
+		udb_led_toggle(LED_RED) ;
 #endif
 		
 		calib_timer--;
@@ -236,7 +221,7 @@ void acquiringS(void)
 		
 	if ( flags._.nav_capable && ( ( MAG_YAW_DRIFT == 0 ) || ( magMessage == 7 ) ) )
 	{
-		if ( flags._.radio_on )
+		if ( udb_radio_on )
 		{
 			if (standby_timer == NUM_WAGGLES+1)
 				waggle = WAGGLE_SIZE ;
@@ -268,7 +253,7 @@ void acquiringS(void)
 
 void manualS(void) 
 {
-	if ( flags._.radio_on )
+	if ( udb_radio_on )
 	{
 		if ( flags._.home_req & flags._.nav_capable )
 			ent_waypointS() ;
@@ -288,7 +273,7 @@ void manualS(void)
 
 void stabilizedS(void) 
 {
-	if ( flags._.radio_on )
+	if ( udb_radio_on )
 	{
 		if ( flags._.home_req & flags._.nav_capable )
 			ent_waypointS() ;
@@ -306,10 +291,10 @@ void stabilizedS(void)
 void waypointS(void)
 {
 #if ( LED_RED_MAG_CHECK == 0 )
-	LED_RED_DO_TOGGLE ;
+	udb_led_toggle(LED_RED) ;
 #endif
 	
-	if (flags._.radio_on )
+	if (udb_radio_on )
 	{
 		if ( flags._.man_req )
 			ent_manualS() ;
@@ -325,7 +310,7 @@ void waypointS(void)
 
 void returnS(void)
 {
-	if ( flags._.radio_on )
+	if ( udb_radio_on )
 	{
 		if ( flags._.man_req )
 			ent_manualS() ;

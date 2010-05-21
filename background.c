@@ -1,11 +1,14 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
-#include "defines.h"
+#include "libUDB_internal.h"
+
+#define CPU_LOAD_PERCENT	400   // = (100 / (8192 * 2)) * (256**2)
+
+
 
 unsigned int cpu_timer = 0 ;
 boolean skip_timer_reset = 1 ; 
 
-void init_clock(void)	/* initialize timer 1 and LEDs */
+
+void udb_init_clock(void)	/* initialize timer 1 and LEDs */
 {
 	TRISF = 0b1111111111101100 ;
 
@@ -32,6 +35,7 @@ void init_clock(void)	/* initialize timer 1 and LEDs */
 	return ;
 }
 
+
 void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void) 
 // excute whatever needs to run in the background, once every 0.5 seconds
 {
@@ -55,11 +59,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 		skip_timer_reset = 1;
 	}
 
-	//	run the state machine 
-	state_machine() ;
+	udb_background() ;
 	
 	IFS0bits.T1IF = 0 ;			// clear the interrupt
 	
 	// interrupt_restore_extended_state ;
 	return ;
+}
+
+
+int  udb_cpu_load(void)
+{
+	return (__builtin_muluu(cpu_timer, CPU_LOAD_PERCENT) >> 16) ;
 }

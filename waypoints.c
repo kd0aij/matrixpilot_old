@@ -1,6 +1,9 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
+#include "libUDB.h"
 #include "defines.h"
+#include "definesRmat.h"
+
+#include "waypoints.h"
+
 
 struct waypoint3D GPSlocation 		  = { 0 , 0 , 0 } ;
 struct waypoint3D GPSvelocity 		  = { 0 , 0 , 0 } ;
@@ -10,8 +13,6 @@ struct relative2D vector_to_waypoint  = { 0 , 0 } ;
 struct relative2D vector_to_steer     = { 0,  0 } ;
 
 signed char calculated_heading ; //calculated heading allows for wind velocity
-		
-#include "waypoints.h"
 
 #define NUMBER_POINTS (( sizeof waypoints ) / sizeof ( struct waypointDef ))
 #define NUMBER_RTL_POINTS (( sizeof rtlWaypoints ) / sizeof ( struct waypointDef ))

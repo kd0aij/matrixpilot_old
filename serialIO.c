@@ -1,4 +1,4 @@
-#include "p30f4011.h"
+#include "libUDB.h"
 #include "defines.h"
 #include "definesRmat.h"
 #include <stdio.h>
@@ -20,41 +20,16 @@ int sb_index = 0 ;
 int end_index = 0 ;
 
 
-////////////////////////////////////////////////////////////////////////////////
-// 
-// Initialization
-//
 
-void init_USART1(void)
-{	
-//	debugging/telemetry USART, runs at 19200 baud
-	U1MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
-	U1STA  = 0b0000010100010000 ;
-
-//Baud Rate = FCY / (16*(BRG+1))
+void init_serial()
+{
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
 	// For the Remzibi OSD, the 'extra' serial port is set to 9600 baud
-	U1BRG =  25 ; // 9600 baud
+	udb_serial_set_rate(UDB_BAUD_9600) ;
 #else
-	// Otherwise, the baud rate is set as specified below
-//	U1BRG =  51 ; // 4800 baud
-//	U1BRG =  25 ; // 9600 baud
-	U1BRG =  12 ; // 19200 baud
+	// Otherwise, the baud rate is set to 19200
+	udb_serial_set_rate(UDB_BAUD_19200) ;
 #endif
-
-	U1MODEbits.UARTEN = 1 ; // turn on uart
-	U1MODEbits.ALTIO = 1 ; // alternate pins
-	
-	U1STAbits.UTXEN = 1 ; // turn on transmitter
-
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
-	IPC2bits.U1RXIP = 3 ; // priority 3
-	IEC0bits.U1RXIE = 1 ; // turn on the interrupt
-
-	IFS0bits.U1TXIF = 0 ; // clear the interrupt 
- 	IPC2bits.U1TXIP = 4 ; // priority 4 
- 	IEC0bits.U1TXIE = 1 ; // turn on the interrupt
-	
 	return ;
 }
 
@@ -64,20 +39,9 @@ void init_USART1(void)
 // Receive Serial Commands
 //
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
+void udb_serial_callback_received_char(char rxchar)
 {
-	// interrupt_save_extended_state ;
-	
-	indicate_loading_inter ;
-	
-	char rxchar = U1RXREG ;
-	if ( U1STAbits.FERR ) {  init_USART1(); }
-	else if ( U1STAbits.OERR ) {  init_USART1(); }
-	
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
 	(* sio_parse) ( rxchar ) ; // parse the input byte
-
-	// interrupt_restore_extended_state ;
 	return ;
 }
 
@@ -139,7 +103,7 @@ void serial_output( char* format, ... )
 	
 	if (sb_index == 0)
 	{
-		IFS0bits.U1TXIF = 1 ; // trigger the TX interrupt
+		udb_serial_start_sending();
 	}
 	
 	va_end(arglist);
@@ -148,18 +112,13 @@ void serial_output( char* format, ... )
 }
 
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
+char udb_serial_callback_sent_char(void)
 {
-	interrupt_save_extended_state ;
+	char txchar = serial_buffer[ sb_index++ ] ;
 	
-	indicate_loading_inter ;
-	
-	unsigned char txchar ;
-	IFS0bits.U1TXIF = 0 ; // clear the interrupt 
-	txchar = serial_buffer[ sb_index++ ] ;
 	if ( txchar )
 	{
-		U1TXREG = txchar ;
+		return txchar ;
 	}
 	else
 	{
@@ -167,8 +126,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 		end_index = 0 ;
 	}
 	
-	interrupt_restore_extended_state ;
-	return ;
+	return 0;
 }
 
 
@@ -213,9 +171,9 @@ void serial_output_4hz( void )
 		mode = 1 ;
 	else if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 1)
 		mode = 2 ;
-	else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && flags._.radio_on == 1)
+	else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_radio_on == 1)
 		mode = 3 ;
-	else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && flags._.radio_on == 0)
+	else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_radio_on == 0)
 		mode = 0 ;
 	else
 		mode = 99 ; // Unknown
@@ -251,7 +209,7 @@ void serial_output_4hz( void )
 	if (++skip < 4)
 	{
 		serial_output("+++THH:%i,RLL:%li,PCH:%li,STT:%i,***\r\n",
-			(int)((pwOut[THROTTLE_OUTPUT_CHANNEL] - pwTrim[THROTTLE_OUTPUT_CHANNEL])/20),
+			(int)((udb_pwOut[THROTTLE_OUTPUT_CHANNEL] - udb_pwTrim[THROTTLE_OUTPUT_CHANNEL])/20),
 			earth_roll, earth_pitch,
 			mode
 		) ;
@@ -263,7 +221,7 @@ void serial_output_4hz( void )
 			lat_gps.WW / 10 , long_gps.WW / 10 , (float)(sog_gps.BB / 100.0), (float)(climb_gps.BB / 100.0),
 			(alt_sl_gps.WW - alt_origin.WW) / 100, desiredHeight, (float)(cog_gps.BB / 100.0), desired_dir_waypoint_deg,
 			waypointIndex, tofinish_line, (float)(voltage_milis.BB / 100.0), 
-			(int)((pwOut[THROTTLE_OUTPUT_CHANNEL] - pwTrim[THROTTLE_OUTPUT_CHANNEL])/20),
+			(int)((udb_pwOut[THROTTLE_OUTPUT_CHANNEL] - udb_pwTrim[THROTTLE_OUTPUT_CHANNEL])/20),
 			earth_roll, earth_pitch,
 			mode
 		) ;
@@ -320,20 +278,17 @@ void serial_output_4hz( void )
 				ALT_HOLD_PITCH_MIN, ALT_HOLD_PITCH_MAX, ALT_HOLD_PITCH_HIGH) ;
 			break ;
 		default:
-			// convert cpu_timer into cpu load percentage in the high word of accum
-			accum.WW = __builtin_muluu( cpu_timer ,CPU_LOAD_PERCENT );
-
 			// F2 below means "Format Revision 2: and is used by a Telemetry parser to invoke the right pattern matching
 			// If you change this output format, then change F2 to F3 or F4, etc - to mark a new revision of format.
 			// F2 is a compromise between easy reading of raw data in a file and not droppping chars in transmission.
 			serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
 				"as%i:wvx%i:wvy%i:wvz%i:\r\n",
-				tow, flags._.radio_on, flags._.nav_capable, flags._.GPS_steering,
+				tow, udb_radio_on, flags._.nav_capable, flags._.GPS_steering,
 				lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
 				rmat[0] , rmat[1] , rmat[2] ,
 				rmat[3] , rmat[4] , rmat[5] ,
 				rmat[6] , rmat[7] , rmat[8] ,
-				(unsigned int)cog_gps.BB, sog_gps.BB, accum._.W1, voltage_milis.BB,
+				(unsigned int)cog_gps.BB, sog_gps.BB, udb_cpu_load(), voltage_milis.BB,
 				air_speed_magnitude, estimatedWind[0], estimatedWind[1],estimatedWind[2]) ;
 			return ;
 	}
@@ -355,10 +310,10 @@ void serial_output_4hz( void )
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_MAGNETOMETER )
 
 extern void rxMagnetometer(void) ;
-extern int magFieldBody[3] ;
+extern int udb_magFieldBody[3] ;
 extern unsigned char magreg[6] ;
 extern int magFieldEarth[3] ;
-extern int magOffset[3] ;
+extern int udb_magOffset[3] ;
 extern int magGain[3] ;
 extern int offsetDelta[3] ;
 extern int rawMagCalib[3] ;
@@ -385,8 +340,8 @@ void serial_output_4hz( void )
 void serial_output_4hz( void )
 {
 	serial_output("MagOffset: %i, %i, %i\r\nMagBody: %i, %i, %i\r\nMagEarth: %i, %i, %i\r\nMagGain: %i, %i, %i\r\nCalib: %i, %i, %i\r\nMagMessage: %i\r\nTotalMsg: %i\r\nI2CCON: %X, I2CSTAT: %X, I2ERROR: %X\r\n\r\n" ,
-		magOffset[0]>>OFFSETSHIFT , magOffset[1]>>OFFSETSHIFT , magOffset[2]>>OFFSETSHIFT ,
-		magFieldBody[0] , magFieldBody[1] , magFieldBody[2] ,
+		udb_magOffset[0]>>OFFSETSHIFT , udb_magOffset[1]>>OFFSETSHIFT , udb_magOffset[2]>>OFFSETSHIFT ,
+		udb_magFieldBody[0] , udb_magFieldBody[1] , udb_magFieldBody[2] ,
 		magFieldEarth[0] , magFieldEarth[1] , magFieldEarth[2] ,
 		magGain[0] , magGain[1] , magGain[2] ,
 		rawMagCalib[0] , rawMagCalib[1] , rawMagCalib[2] ,

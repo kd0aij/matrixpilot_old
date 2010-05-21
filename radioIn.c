@@ -1,6 +1,4 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
-#include "defines.h"
+#include "libUDB_internal.h"
 
 //	Measure the pulse widths of the servo channel inputs from the radio.
 //	The dsPIC makes this rather easy to do using its capture feature.
@@ -10,7 +8,13 @@
 //	The pulse width inputs can be directly converted to units of pulse width outputs to control
 //	the servos by simply dividing by 2.
 
-void init_capture(void)
+boolean udb_radio_on = 0;
+int failSafePulses = 0 ;
+
+unsigned int rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
+
+
+void udb_init_capture(void)
 {
 	T2CON = 0b1000000000000000  ;	// turn on timer 2 with no prescaler
 	TRISD = 0b1111111111111111 ;	// make the d port input, to enable IC1 and IC2
@@ -19,13 +23,7 @@ void init_capture(void)
 	
 	int i;
 	for (i=0; i <= NUM_INPUTS; i++)
-		pwIn[i] = pwTrim[i] = 3000;
-	
-	pwIn[THROTTLE_INPUT_CHANNEL] = pwTrim[THROTTLE_INPUT_CHANNEL] = 0 ;
-	
-#if (NORADIO == 1)
-		pwIn[MODE_SWITCH_INPUT_CHANNEL] = pwTrim[MODE_SWITCH_INPUT_CHANNEL] = 4000 ;
-#endif
+		udb_pwIn[i] = udb_pwTrim[i] = 0 ;
 	
 	IPC0bits.IC1IP = IPC1bits.IC2IP = IPC4bits.IC7IP = IPC4bits.IC8IP = 6 ; // priority 6
 	IFS0bits.IC1IF = IFS0bits.IC2IF = IFS1bits.IC7IF = IFS1bits.IC8IF = 0 ; // clear the interrupt
@@ -47,7 +45,16 @@ void init_capture(void)
 	return ;
 }
 
-extern int failSafePulses ;
+
+void udb_servo_record_trims(void)
+{
+	int i;
+	for (i=0; i <= NUM_INPUTS; i++)
+		udb_pwTrim[i] = udb_pwIn[i] ;
+	
+	return ;
+}
+
 
 // Input Channel 1
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
@@ -66,18 +73,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 	}
 	else
 	{
-		pwIn[1] = ((time - rise[1]) >> 1 ) ;
+		udb_pwIn[1] = ((time - rise[1]) >> 1 ) ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 1 )
-		if ( (pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
+		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
 		{
-			pulsesselin++ ;
 			failSafePulses++ ;
 		}
 		else
 		{
-			pulsesselin = failSafePulses = 0 ;
-			flags._.radio_on = 0 ;
+			failSafePulses = 0 ;
+			udb_radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -87,6 +93,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 
 	return ;
 }
+
 
 // Input Channel 2
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
@@ -105,18 +112,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 	}
 	else
 	{
-		pwIn[2] = ((time - rise[2]) >> 1 ) ;
+		udb_pwIn[2] = ((time - rise[2]) >> 1 ) ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 2 )
-		if ( (pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
+		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
 		{
-			pulsesselin++ ;
 			failSafePulses++ ;
 		}
 		else
 		{
-			pulsesselin = failSafePulses = 0 ;
-			flags._.radio_on = 0 ;
+			failSafePulses = 0 ;
+			udb_radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -126,6 +132,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 	
 	return ;
 }
+
 
 // Input Channel 3
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
@@ -144,18 +151,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 	}
 	else
 	{
-		pwIn[3] = ((time - rise[3]) >> 1 ) ;
+		udb_pwIn[3] = ((time - rise[3]) >> 1 ) ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 3 )
-		if ( (pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
+		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
 		{
-			pulsesselin++ ;
 			failSafePulses++ ;
 		}
 		else
 		{
-			pulsesselin = failSafePulses = 0 ;
-			flags._.radio_on = 0 ;
+			failSafePulses = 0 ;
+			udb_radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -165,6 +171,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 	
 	return ;
 }
+
 
 // Input Channel 4
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
@@ -183,18 +190,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	}
 	else
 	{
-		pwIn[4] = ((time - rise[4]) >> 1 );
+		udb_pwIn[4] = ((time - rise[4]) >> 1 );
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 4 )
-		if ( (pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
+		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
 		{
-			pulsesselin++ ;
 			failSafePulses++ ;
 		}
 		else
 		{
-			pulsesselin = failSafePulses = 0 ;
-			flags._.radio_on = 0 ;
+			failSafePulses = 0 ;
+			udb_radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -204,6 +210,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	
 	return ;
 }
+
 
 // Input Channel 5 (Pin RE8)
 void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
@@ -219,18 +226,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 	}
 	else
 	{
-		pwIn[5] = ((t - rise[5]) >> 1 ) ;
+		udb_pwIn[5] = ((t - rise[5]) >> 1 ) ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 5 )
-		if ( (pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
+		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
 		{
-			pulsesselin++ ;
 			failSafePulses++ ;
 		}
 		else
 		{
-			pulsesselin = failSafePulses = 0 ;
-			flags._.radio_on = 0 ;
+			failSafePulses = 0 ;
+			udb_radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif

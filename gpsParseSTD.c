@@ -1,6 +1,6 @@
-#include "p30f4011.h"
-#include "definesRmat.h"
+#include "libUDB.h"
 #include "defines.h"
+#include "definesRmat.h"
 
 
 #if ( GPS_TYPE == GPS_STD )
@@ -110,29 +110,11 @@ void gps_startup_sequence(int gpscount)
 		gpsoutbin2( mode_length , mode ) ;
 	else if (gpscount == 8)
 		// Switch to 19200 baud
-		U2BRG = 12 ;
+		udb_gps_set_rate(UDB_BAUD_19200);
 	
 	return ;
 }
 
-
-void init_GPS2(void)
-{
-//	Initialize the USART that communicates with the GPS
-	U2MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
-	U2STA  = 0b0000010100010000 ;
-
-	U2BRG =  51 ;
-
-	U2MODE = 0b1010000000000000 ;
-	U2STA  = 0b0000010100010000 ;
-
-	IFS1bits.U2RXIF = 0 ; // clear the interrupt
-	IPC6bits.U2RXIP = 4 ; // priority 4
-	IEC1bits.U2RXIE = 1 ; // turn on the interrupt
-
-	return ;
-}
 
 int bin_count = 0 ;
 const char convert[] = "0123456789ABCDEF" ;
