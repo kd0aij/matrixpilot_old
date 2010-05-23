@@ -8,9 +8,6 @@
 _FOSC( CSW_FSCM_OFF & HS ) ; 	// external high speed crystal
 _FWDT( WDT_OFF ) ;				// no watchdog timer
 _FBORPOR( 	PBOR_OFF & // brown out detection off
-			//PBOR_ON & // brown out detection on
-			//BORV_27 & // brown out triggered at 2.7V
-			//PWRT_64 & // powerup timer at 64ms
 			MCLR_EN &  // enable MCLR
 			RST_PWMPIN & // pwm pins as pwm
 			PWMxH_ACT_HI & // PWMH is active high
@@ -22,7 +19,7 @@ void init_all(void)
 {
 	TRISFbits.TRISF0 = 0 ;
 	udb_init() ;
-	init_servoOut() ;
+	init_servoPrepare() ;
 	init_T3()  ;		//  enable the T3 internally triggered interrupt
 	init_states() ;
 	init_behavior() ;

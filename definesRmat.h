@@ -20,14 +20,10 @@
 #define CENTRIFSAT ((long) (GRAVITYM*RADPERSEC)/(GRAVITY*((long long)32)))
 // saturation limit for the centrifugal adjustment to avoid numeric overflow
 
-#define RMAX15 0b0110000000000000	//	1.5 in 2.14 format
-
 
 struct ww { int W0 ; int W1 ; } ;
 union longww { long  WW ; struct ww _ ; } ;
 
-void init_ADC( void ) ;
-void init_pwm( void ) ;
 void imu(void) ;
 
 extern int firstsamp ; // used on startup to detect first A/D sample

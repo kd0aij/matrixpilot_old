@@ -5,7 +5,7 @@
 
 // libUDB.h defines the API for accessing the UDB hardware through libUDB
 //
-// libUDB requires an options.h file be included that defines the following constants:
+// libUDB requires an options.h file be provided that defines at least the following constants:
 // 
 // #define NUM_INPUTS
 // #define NUM_OUTPUTS

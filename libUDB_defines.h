@@ -60,7 +60,7 @@ struct ADchannel {
 #define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
 #define FILTERSHIFT 3
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
-#define GRAVITY ((long long)5280.0/SCALEACCEL)  // gravity in AtoD/2 units
+#define GRAVITY ((long)(5280.0/SCALEACCEL))  // gravity in AtoD/2 units
 
 
 extern boolean needSaveExtendedState ;

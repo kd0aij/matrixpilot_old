@@ -1,16 +1,11 @@
 #include "libUDB.h"
 
-
 void gps_startup_sequence(int gpscount) ;
 boolean gps_nav_valid(void) ;
 
 void init_T3(void) ;
-void init_servoOut(void) ;
 void init_states(void) ;
 void init_behavior( void ) ;
-
-int cosine ( signed char angle ) ;
-int sine ( signed char angle ) ;
 
 void setup_origin_2D_location(void) ;
 void navigate(void) ;

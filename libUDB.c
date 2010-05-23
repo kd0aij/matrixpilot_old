@@ -7,7 +7,7 @@ int defaultCorcon = 0 ;
 
 void udb_init()
 {
-	defaultCorcon = CORCON;
+	defaultCorcon = CORCON ;
 	
 	udb_init_ADC() ;
 	udb_init_clock() ;
