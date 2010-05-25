@@ -26,9 +26,6 @@ union longww { long  WW ; struct ww _ ; } ;
 
 void imu(void) ;
 
-extern int firstsamp ; // used on startup to detect first A/D sample
-extern int calibcount ; // number of PWM pulses before control is turned on
-
 struct relative2D { int x ; int y ; } ;
 
 struct bbbb { unsigned char B0 ; unsigned char B1 ; unsigned char B2 ; unsigned char B3 ; } ;
@@ -38,7 +35,6 @@ union intbb { int BB ; struct bb _ ; } ;
 union longbbbb { long WW ; struct ww _ ; struct bbbb __ ; } ;
 
 void set_gps2(void) ;
-void init_T3(void) ;
 
 int cosine ( signed char angle ) ;
 int sine ( signed char angle ) ;
@@ -51,9 +47,6 @@ extern fractional rmat[] ;
 extern fractional omega[] ;
 extern fractional omegaAccum[] ;
 extern fractional omegagyro[] ;
-
-extern unsigned char  	lat_cir ;
-extern int				cos_lat ;
 
 extern union longbbbb lat_origin , long_origin , alt_origin ;
 extern union longbbbb x_origin , y_origin , z_origin ;
@@ -77,6 +70,6 @@ struct flag_bits {
 
 extern union fbts_int { struct flag_bits _ ; int WW ; } flags ;
 
-extern signed char	desired_dir , actual_dir ;
+extern signed char	desired_dir ;
 
 

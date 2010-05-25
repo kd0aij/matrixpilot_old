@@ -3,11 +3,6 @@
 //	routines to drive the PWM pins for the servos,
 //	assumes the use of the 16MHz crystal.
 
-#define SERVOCENTER 3000
-#define SERVORANGE (int) (SERVOSAT*1000)
-#define SERVOMAX SERVOCENTER + SERVORANGE
-#define SERVOMIN SERVOCENTER - SERVORANGE
-
 int udb_pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 
 int twentyHertzCounter = 0 ;
@@ -56,6 +51,12 @@ void udb_init_pwm( void )	// initialize the PWM
 	//  the PWM interrupt is turned on within the A/D interrupt processing
 	
 	return ;
+}
+
+
+void udb_set_action_state(boolean newValue)
+{
+	LATEbits.LATE4 = newValue ;
 }
 
 

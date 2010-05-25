@@ -1,18 +1,13 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
 #include "waypoints.h"
 
 
-struct waypoint3D GPSlocation 		  = { 0 , 0 , 0 } ;
-struct waypoint3D GPSvelocity 		  = { 0 , 0 , 0 } ;
 struct waypoint3D view_location       = { 0 , 0 , 0 } ; 
-struct relative2D velocity_thru_air   = { 0 , 0 } ;
 struct relative2D vector_to_waypoint  = { 0 , 0 } ;
 struct relative2D vector_to_steer     = { 0,  0 } ;
-
-signed char calculated_heading ; //calculated heading allows for wind velocity
 
 #define NUMBER_POINTS (( sizeof waypoints ) / sizeof ( struct waypointDef ))
 #define NUMBER_RTL_POINTS (( sizeof rtlWaypoints ) / sizeof ( struct waypointDef ))
@@ -119,7 +114,7 @@ void init_waypoints ( int waypointSetIndex )
 	set_camera_view(current_waypoint.viewpoint) ;
 	setBehavior(current_waypoint.flags) ;
 	
-	// IFS0bits.T3IF = 1 ;			// trigger navigation immediately
+	// udb_background_trigger() ;			// trigger navigation immediately
 	
 	return ;
 }

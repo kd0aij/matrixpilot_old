@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 #include <stdio.h>
@@ -237,7 +237,7 @@ void serial_output_4hz( void )
 int telemetry_counter = 6 ;
 int skip = 0 ;
 
-extern int waypointIndex, air_speed_magnitude ;
+extern int waypointIndex ;
 
 void serial_output_4hz( void )
 {

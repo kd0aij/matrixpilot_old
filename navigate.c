@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -14,13 +14,26 @@ const int yawkprud = YAWKP_RUDDER*RMAX ;
 
 
 int height = 0 ;
-union longww heightlong = { 0 } ;
-
-//signed char GPS_pitch = 0 ;
 
 struct relative2D vector_to_origin ;
 
 extern signed char desired_dir_waypoint ;
+
+
+void dcm_callback_location_updated(void)
+{
+	navigate() ;
+	processwaypoints() ;
+	
+//	Ideally, navigate should take less than one second. For MatrixPilot, navigation takes only
+//	a few milliseconds.
+	
+//	If you rewrite navigation to perform some rather ambitious calculations, perhaps using floating
+//	point, matrix inversions, Kalman filters, etc., you will not cause a stack overflow if you
+//	take more than 1 second, the interrupt handler will simply skip some of the navigation passes.
+	
+	return ;
+}
 
 
 void navigate( void )
@@ -53,8 +66,7 @@ void navigate( void )
 	vector_to_origin.y = - accum_nav._.W0 ;
 	GPSlocation.y = accum_nav._.W0 ;
 	
-	heightlong.WW = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
-	height = heightlong._.W0 ;
+	height = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
 	GPSlocation.z = height ;
 	
 	//	multiply the longitude delta by the cosine of the latitude

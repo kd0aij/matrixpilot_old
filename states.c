@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -24,7 +24,7 @@ void init_states(void)
 	return ;
 }
 
-void udb_background(void)
+void udb_background_callback_periodic(void)
 {
 	//	Configure the GPS for binary if there is a request to do so.
 	//	Determine whether the radio is on.

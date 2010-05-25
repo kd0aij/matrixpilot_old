@@ -23,7 +23,9 @@ void udb_init(void);
 
 // Run Background Tasks
 extern unsigned int cpu_timer;
-void udb_background(void);								// Callback
+void udb_background_callback_periodic(void);			// Callback
+void udb_background_callback_triggered(void);			// Callback
+void udb_background_trigger(void);
 int  udb_cpu_load(void);
 
 
@@ -36,6 +38,7 @@ extern boolean udb_radio_on;
 int  udb_servo_pulsesat(long pw);
 void udb_servo_record_trims(void);
 void udb_servo_callback_prepare_outputs(void);			// Callback
+void udb_set_action_state(boolean newValue);
 
 
 // Accelerometer and Gyroscope Values

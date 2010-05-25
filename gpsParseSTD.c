@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -240,7 +240,7 @@ void msg_MSG41 ( unsigned char gpschar )
 	}
 	else
 	{
-		IFS0bits.T3IF = 1 ;  // parsing is complete, schedule navigation
+		udb_background_trigger() ;  // parsing is complete, schedule navigation
 		if ( gpschar == 0xB0 )
 		{
 			msg_parse = &msg_B0 ;

@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -20,7 +20,6 @@ void init_all(void)
 	TRISFbits.TRISF0 = 0 ;
 	udb_init() ;
 	init_servoPrepare() ;
-	init_T3()  ;		//  enable the T3 internally triggered interrupt
 	init_states() ;
 	init_behavior() ;
 	

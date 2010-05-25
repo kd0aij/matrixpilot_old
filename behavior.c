@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -162,7 +162,7 @@ void triggerActionSetValue( boolean newValue )
 	{
 		if ( NUM_OUTPUTS < 6 )
 		{
-			LATEbits.LATE4 = newValue ;
+			udb_set_action_state(newValue) ;
 		}
 	}
 	

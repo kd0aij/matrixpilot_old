@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -9,8 +9,6 @@
 
 //	The origin is recorded as the location of the plane during power up of the control.
 
-extern int estimatedWind[3];
-
 fractional rmat1filt = 0 ;
 fractional rmat4filt = RMAX ;
 
@@ -18,6 +16,8 @@ int velocity_magnitude = 0 ;
 int forward_acceleration = 0 ;
 int velocity_previous = 0 ;
 int air_speed_magnitude = 0;
+
+signed char calculated_heading ; //calculated heading allows for wind velocity
 
 #define GPSTAU 3.0
 

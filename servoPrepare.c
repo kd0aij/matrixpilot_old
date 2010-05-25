@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -16,7 +16,6 @@ void manualPassthrough( void ) ;
 
 void init_servoPrepare( void )	// initialize the PWM
 {
-	firstsamp = 1 ;		// flag for the first sample
 	calibcount = 400 ;	// wait 400 PWM pulses before turning on the control (10 seconds)
 	gpscount = 1000 ;	// wait 25 seconds for GPS to initialize
 

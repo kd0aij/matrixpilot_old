@@ -1,4 +1,4 @@
-#include "libUDB.h"
+#include "libDCM.h"
 #include "defines.h"
 #include "definesRmat.h"
 
@@ -617,7 +617,7 @@ void msg_SOL( unsigned char gpschar )
 		// was zero to start with. either way, the byte we just received is the first checksum byte.
 		//gpsoutchar2(0x0A);
 		checksum._.B1 = gpschar;
-		IFS0bits.T3IF = 1 ;  // parsing is complete, schedule navigation
+		udb_background_trigger() ;  // parsing is complete, schedule navigation
 		msg_parse = &msg_CS1 ;
 	}
 	return ;

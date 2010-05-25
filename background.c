@@ -32,6 +32,13 @@ void udb_init_clock(void)	/* initialize timer 1 and LEDs */
 	// Timer 5 will be turned on in interrupt routines and turned off in main()
 	T5CONbits.TON = 0 ;		// turn off timer 5
 	timer_5_on = 0;
+	
+	//	The T3 interrupt is used to trigger background tasks such as
+	//	navigation processing after binary data is received from the GPS.
+	IPC1bits.T3IP = 2 ;		// priority 2
+	IFS0bits.T3IF = 0 ;		// clear the interrupt
+	IEC0bits.T3IE = 1 ;		// enable the interrupt
+	
 	return ;
 }
 
@@ -59,11 +66,34 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 		skip_timer_reset = 1;
 	}
 
-	udb_background() ;
+	udb_background_callback_periodic() ;
 	
 	IFS0bits.T1IF = 0 ;			// clear the interrupt
 	
 	// interrupt_restore_extended_state ;
+	return ;
+}
+
+
+void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void) 
+//  process T3 interrupt
+{
+	// interrupt_save_extended_state ;
+	
+	indicate_loading_inter ;
+	
+	udb_background_callback_triggered() ;
+	
+	IFS0bits.T3IF = 0 ;			// clear the interrupt
+	
+	// interrupt_restore_extended_state ;
+	return ;
+}
+
+
+void udb_background_trigger(void)
+{
+	IFS0bits.T3IF = 1 ;  // trigger the interrupt
 	return ;
 }
 
