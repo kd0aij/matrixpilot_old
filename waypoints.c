@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 #include "waypoints.h"
 
@@ -8,6 +7,11 @@
 struct waypoint3D view_location       = { 0 , 0 , 0 } ; 
 struct relative2D vector_to_waypoint  = { 0 , 0 } ;
 struct relative2D vector_to_steer     = { 0,  0 } ;
+
+union longbbbb lat_origin , long_origin , alt_origin ;
+union longbbbb x_origin , y_origin , z_origin ;
+signed char desired_dir ;
+
 
 #define NUMBER_POINTS (( sizeof waypoints ) / sizeof ( struct waypointDef ))
 #define NUMBER_RTL_POINTS (( sizeof rtlWaypoints ) / sizeof ( struct waypointDef ))

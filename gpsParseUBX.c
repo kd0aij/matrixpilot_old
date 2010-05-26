@@ -1,6 +1,5 @@
-#include "libDCM.h"
+#include "libDCM_internal.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 
 #if ( GPS_TYPE == GPS_UBX_2HZ || GPS_TYPE == GPS_UBX_4HZ )
@@ -39,7 +38,7 @@ void msg_MSGU( unsigned char inchar ) ;
 void msg_ACK_CLASS( unsigned char inchar );
 void msg_ACK_ID( unsigned char inchar );
 
-void bin_out( char outchar );
+// void bin_out( char outchar );
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
 	const char bin_mode[]  = "$PUBX,41,1,0003,0003,9600,0*14\r\n" ; // turn on UBX + NMEA, 9600 baud
@@ -197,18 +196,18 @@ const unsigned char enable_NAV_DOP[] = {0xB5, 0x62, 				// Header
 										};
 #endif
 
-const unsigned char disable_SBAS[] =   {0xB5, 0x62, 				// Header
+const unsigned char enable_SBAS[] =   {0xB5, 0x62, 				// Header
 										0x06, 0x16, 				// ID
 										0x08, 0x00, 				// Payload length
-										0x00, 						// Disable SBAS
+										0x01, 						// Disable SBAS
+										0x03, 						// 
 										0x01, 						// 
-										0x01, 						// 
 										0x00, 						// 
 										0x00, 						// 
 										0x00, 						// 
 										0x00, 						// 
 										0x00, 						// 
-										0x26, 0x97 					// Checksum
+										0x29, 0xAD 					// Checksum
 										};
 
 const unsigned char config_NAV5[] =    {0xB5, 0x62, 				// Header
@@ -242,7 +241,7 @@ const unsigned int  enable_NAV_POSLLH_length = 16 ;
 const unsigned int  enable_NAV_VELNED_length = 16 ;
 const unsigned int  enable_NAV_DOP_length = 16 ;
 const unsigned int  enable_UBX_only_length = 28;
-const unsigned int  disable_SBAS_length = 16;
+const unsigned int  enable_SBAS_length = 16;
 const unsigned int  config_NAV5_length = 44;
 
 void (* msg_parse ) ( unsigned char inchar ) = &msg_B3 ;
@@ -356,7 +355,7 @@ void gps_startup_sequence(int gpscount)
 #endif
 	
 	else if (gpscount == 80)
-		gpsoutbin2( disable_SBAS_length, disable_SBAS );
+		gpsoutbin2( enable_SBAS_length, enable_SBAS );
 	else if (gpscount == 70)
 		gpsoutbin2( config_NAV5_length, config_NAV5 );
 	
@@ -374,6 +373,7 @@ int bin_count = 0 ;
 const char convert[] = "0123456789ABCDEF" ;
 const char endchar = 0xB5 ;
 
+/*
 void bin_out( char outchar )
 //	Used for debugging purposes, converts to HEX and outputs to the debugging USART
 //	Only the first 5 bytes following a B3 are displayed.
@@ -393,7 +393,7 @@ void bin_out( char outchar )
 	}
 	return ;
 }
-
+*/
 
 int store_index = 0 ;
 

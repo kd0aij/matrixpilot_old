@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 union longww throttleFiltered = { 0 } ;
 

@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 int current_orientation ;
 union bfbts_word desired_behavior ;
@@ -101,6 +100,8 @@ void updateBehavior(void)
 	{
 		desired_behavior.W = current_orientation ;
 	}
+	
+	dcm_enable_yaw_drift_correction(current_orientation == F_HOVER) ;
 	
 	return ;
 }

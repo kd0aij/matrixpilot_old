@@ -31,7 +31,7 @@ extern struct relative2D togoal ;
 extern struct relative2D vector_to_waypoint;
 extern struct relative2D vector_to_steer ;
 
-extern struct waypoint3D camera_view ;
+extern struct relative3D camera_view ;
 struct waypointparameters { int x ; int y ; int cosphi ; int sinphi ; signed char phi ; int height ; int fromHeight; int legDist; } ;
 
 extern int pitch_control, roll_control, yaw_control, altitude_control ;
@@ -92,6 +92,22 @@ extern int pitchAltitudeAdjust ;
 #define WAGGLE_SIZE 300
 
 
+struct flag_bits {
+			unsigned int unused					: 8 ;
+			unsigned int save_origin   			: 1 ;
+			unsigned int GPS_steering			: 1 ;
+			unsigned int pitch_feedback			: 1 ;
+			unsigned int altitude_hold_throttle	: 1 ;
+			unsigned int altitude_hold_pitch	: 1 ;
+			unsigned int man_req				: 1 ;
+			unsigned int auto_req				: 1 ;
+			unsigned int home_req				: 1 ;
+			} ;
+			
+union fbts_int { struct flag_bits _ ; int WW ; } ;
+extern union fbts_int flags ;
+
+
 struct behavior_flag_bits {
 			unsigned int takeoff		: 1 ;				// unimplemented
 			unsigned int inverted		: 1 ;	// fly iverted
@@ -133,8 +149,6 @@ extern union bfbts_word desired_behavior ;
 #define TRIGGER_TOGGLE					16
 #define TRIGGER_REPEATING				32
 
-
-#define WIND_NAV_AIR_SPEED_MIN			200		// Minimum airspeed in cm/sec for wind navigation to apply
 
 #define CAM_VIEW_LAUNCH					{ 0, 0, 0 }
 

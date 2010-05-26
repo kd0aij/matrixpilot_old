@@ -1,6 +1,5 @@
-#include "libDCM.h"
+#include "libDCM_internal.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 //	math libraray
 

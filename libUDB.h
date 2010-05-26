@@ -19,6 +19,8 @@
 
 // Initialize the UDB
 void udb_init(void);
+void udb_run(void);
+void udb_setDSPLibInUse(boolean inUse);
 
 
 // Run Background Tasks

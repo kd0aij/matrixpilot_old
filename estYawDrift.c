@@ -1,6 +1,5 @@
-#include "libDCM.h"
+#include "libDCM_internal.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 //	Compute actual and desired courses.
 //	Actual course is simply the scaled GPS course over ground information.
@@ -17,6 +16,8 @@ int forward_acceleration = 0 ;
 int velocity_previous = 0 ;
 int air_speed_magnitude = 0;
 
+boolean skipYawDrift = false ;
+
 signed char calculated_heading ; //calculated heading allows for wind velocity
 
 #define GPSTAU 3.0
@@ -26,7 +27,14 @@ signed char calculated_heading ; //calculated heading allows for wind velocity
 
 void udb_magnetometer_callback_data_available( void )
 {
-	flags._.mag_drift_req = 1 ;
+	dcm_flags._.mag_drift_req = 1 ;
+	return ;
+}
+
+
+void dcm_enable_yaw_drift_correction(boolean enabled)
+{
+	skipYawDrift = !enabled;
 	return ;
 }
 
@@ -89,7 +97,7 @@ void estYawDrift(void)
 #endif
 	
 	// Don't update Yaw Drift while hovering, since that doesn't work right yet
-	if ( gps_nav_valid() && current_orientation != F_HOVER )
+	if ( gps_nav_valid() && !skipYawDrift )
 	{
 		if ((estimatedWind[0] == 0) && (estimatedWind[1] == 0) || air_speed_magnitude < WIND_NAV_AIR_SPEED_MIN   )
 		{
@@ -108,6 +116,6 @@ void estYawDrift(void)
 		dirovergndHGPS[1] = dirovergndHRmat[1] ;
 	}
 	dirovergndHGPS[2] = 0 ;
-	flags._.yaw_req = 1 ;
+	dcm_flags._.yaw_req = 1 ;
 	return ;
 }

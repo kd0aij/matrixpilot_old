@@ -1,6 +1,5 @@
-#include "libDCM.h"
+#include "libDCM_internal.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 
 #if ( GPS_TYPE == GPS_STD )
@@ -120,6 +119,7 @@ int bin_count = 0 ;
 const char convert[] = "0123456789ABCDEF" ;
 const char endchar = 0xB3 ;
 
+/*
 void bin_out( char outchar )
 //	Used for debugging purposes, converts to HEX and outputs to the debugging USART
 //	Only the first 5 bytes following a B3 are displayed.
@@ -139,6 +139,8 @@ void bin_out( char outchar )
 	}
 	return ;
 }
+*/
+
 
 int store_index = 0 ;
 

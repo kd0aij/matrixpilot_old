@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 // servo throw can be more than 3 turns - 1080 degrees - so use integers rather than char
 const int tan_pitch_in_stabilized_mode = CAM_TAN_PITCH_IN_STABILIZED_MODE ;
@@ -26,7 +25,7 @@ int pitch_servo = 0;
 int roll_servo  = 0;
 int yaw_servo   = 0;
 
-struct waypoint3D camera_view = { 0 , 20, 0 };
+struct relative3D camera_view = { 0 , 20, 0 };
 
 
 int pitchServoLimit(int angle)
@@ -77,27 +76,23 @@ void cameraCntrl( void )
 	
 	if ( flags._.GPS_steering == 0 && flags._.pitch_feedback == 0 )
 	{
-		//if ( ! flags._.servos_set)
-		{
-			// set camera to default position once, and leave there
-			// Pitch Servo
-			cam.WW = __builtin_mulss((pitchServoLimit( - pitch_offset_centred)), pitch_servo_ratio) ;
-			accum.__.B1 = cam.__.B2 ;
-			accum.__.B0 = cam.__.B1 ;
-			pitch_servo = ( accum._.W0 + 0x80 );
-			udb_pwOut[CAMERA_PITCH_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_PITCH_CHANNEL_REVERSED, pitch_servo)) ;
-			
-			// Roll Servo
-			// Not implemented
-			
-			// Yaw Servo
-			cam.WW = __builtin_mulss((yawServoLimit( - yaw_offset_centred)), yaw_servo_ratio) ; 
-			accum.__.B1 = cam.__.B2 ;
-			accum.__.B0 = cam.__.B1 ;
-			yaw_servo = ( accum._.W0 + 0x80 ) ;	
-			udb_pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, yaw_servo)) ;
-			flags._.servos_set = 1; 
-		}
+		// set camera to default position once, and leave there
+		// Pitch Servo
+		cam.WW = __builtin_mulss((pitchServoLimit( - pitch_offset_centred)), pitch_servo_ratio) ;
+		accum.__.B1 = cam.__.B2 ;
+		accum.__.B0 = cam.__.B1 ;
+		pitch_servo = ( accum._.W0 + 0x80 );
+		udb_pwOut[CAMERA_PITCH_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_PITCH_CHANNEL_REVERSED, pitch_servo)) ;
+		
+		// Roll Servo
+		// Not implemented
+		
+		// Yaw Servo
+		cam.WW = __builtin_mulss((yawServoLimit( - yaw_offset_centred)), yaw_servo_ratio) ; 
+		accum.__.B1 = cam.__.B2 ;
+		accum.__.B0 = cam.__.B1 ;
+		yaw_servo = ( accum._.W0 + 0x80 ) ;	
+		udb_pwOut[CAMERA_YAW_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + REVERSE_IF_NEEDED(CAMERA_YAW_CHANNEL_REVERSED, yaw_servo)) ;
 	}
 	else
 	{
@@ -154,12 +149,12 @@ void cameraCntrl( void )
 		cam_vector_ground[1] =   camera_view.y ;
 		cam_vector_ground[2] = - camera_view.z ; 
 		// Rotate camera vector from ground reference into plane reference
-		setDSPLibInUse(true) ;
+		udb_setDSPLibInUse(true) ;
 		MatrixTranspose(3, 3, rmat_transpose, rmat ) ;
 		// It does not matter that the result of this operation is not the expected magnitude
 		// because the code only uses the ratios of X,Y,Z relative to each other to calculate angles.
 		MatrixMultiply( 3 , 3 , 1 , cam_vector_plane , rmat_transpose , cam_vector_ground ) ;
-		setDSPLibInUse(false) ;
+		udb_setDSPLibInUse(false) ;
 		
 		// Yaw 
 		matrix_accum.x =   cam_vector_plane[0] ;

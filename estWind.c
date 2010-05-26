@@ -1,6 +1,5 @@
-#include "libDCM.h"
+#include "libDCM_internal.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 int groundVelocityHistory[3] = { 0 , 0 , 0 } ;
 int fuselageDirectionHistory[3] = { 0 , 0 , 0 } ;
@@ -15,8 +14,7 @@ void estimateWind( void )
 {
 #if ( WIND_ESTIMATION == 1 )
 
-	// Don't update wind estimation while hovering, since it doesn't work right yet
-	if ( current_orientation == F_HOVER ) return ;
+	if ( skipYawDrift ) return ;
 	
 	int index ;
 	int groundVelocity[3] ;

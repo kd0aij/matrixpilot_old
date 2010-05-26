@@ -10,3 +10,93 @@ void udb_init_I2C(void) ;
 void udb_init_GPS2(void) ;
 void udb_init_USART1(void) ;
 void udb_init_pwm(void) ;
+
+
+extern boolean needSaveExtendedState ;
+extern boolean timer_5_on ;
+extern int defaultCorcon ;
+extern unsigned int cpu_timer ;
+
+//#define indicate_loading_main		//LATEbits.LATE4 = 0
+//#define indicate_loading_inter	//LATEbits.LATE4 = 1
+
+// Empirical results show that reading and writing to the
+// "Timer On" function loses clock cycles in the timer. 
+// So the software makes a test using a parallel variable
+// called timer_5_on.
+#define indicate_loading_inter		if ( timer_5_on == 0 )	\
+									{						\
+										T5CONbits.TON = 1 ;	\
+										timer_5_on = 1 ;	\
+									}
+
+#define indicate_loading_main		if ( timer_5_on == 1 )	\
+									{						\
+										T5CONbits.TON = 0 ;	\
+										timer_5_on = 0 ;	\
+									}
+
+
+// When ISRs fire during dsp math calls, state is not preserved properly, so we
+// have to help preserve extra register state on entry and exit from ISRs.
+// In addition, the dsp math calls change and restore CORCON internally, so
+// if we fire an ISR in the middle of a dsp math call, CORCON can be set to
+// an unexpected value, so we also restore CORCON to the application default,
+// which we save in main().  We keep track of whether or not we're running dsp
+// calls in needSaveExtendedState var, and only perform these actions if so.
+#define interrupt_save_extended_state \
+	{ \
+		if (needSaveExtendedState) { \
+			__asm__("push CORCON"); \
+			__asm__("push SR"); \
+			__asm__("push MODCON"); \
+			__asm__("push XBREV"); \
+			__asm__("push ACCAL"); \
+			__asm__("push ACCAH"); \
+			__asm__("push ACCAU"); \
+			__asm__("push ACCBL"); \
+			__asm__("push ACCBH"); \
+			__asm__("push ACCBU"); \
+			__asm__("push RCOUNT"); \
+			__asm__("push DCOUNT"); \
+			__asm__("push DOSTARTL"); \
+			__asm__("push DOSTARTH"); \
+			__asm__("push DOENDL"); \
+			__asm__("push DOENDH"); \
+			int asmDoRestoreExtendedState = 1; \
+			__asm__("push %0" : "+r"(asmDoRestoreExtendedState)); \
+			CORCON = defaultCorcon; \
+			needSaveExtendedState = 0; \
+		} \
+		else \
+		{ \
+			int asmDoRestoreExtendedState = 0; \
+			__asm__("push %0" : "+r"(asmDoRestoreExtendedState)); \
+		} \
+	}
+
+#define interrupt_restore_extended_state \
+	{ \
+		int asmDoRestoreExtendedState; \
+		__asm__("pop %0" : "+r"(asmDoRestoreExtendedState)); \
+		if (asmDoRestoreExtendedState) { \
+			__asm__("pop DOENDH"); \
+			__asm__("pop DOENDL"); \
+			__asm__("pop DOSTARTH"); \
+			__asm__("pop DOSTARTL"); \
+			__asm__("pop DCOUNT"); \
+			__asm__("pop RCOUNT"); \
+			__asm__("pop ACCBU"); \
+			__asm__("pop ACCBH"); \
+			__asm__("pop ACCBL"); \
+			__asm__("pop ACCAU"); \
+			__asm__("pop ACCAH"); \
+			__asm__("pop ACCAL"); \
+			__asm__("pop XBREV"); \
+			__asm__("pop MODCON"); \
+			__asm__("pop SR"); \
+			__asm__("pop CORCON"); \
+			needSaveExtendedState = 1; \
+		} \
+	}
+

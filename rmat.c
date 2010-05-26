@@ -1,6 +1,5 @@
-#include "libDCM.h"
+#include "libDCM_internal.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 //		These are the routines for maintaining a direction cosine matrix
 //		that can be used to transform vectors between the earth and plane
@@ -81,6 +80,7 @@ fractional errorTotal[] = { 0 , 0 , 0 } ;
 //	measure of error in orthogonality, used for debugging purposes:
 fractional error = 0 ;
 
+
 //	Implement the cross product. *dest = *src1X*src2 ;
 void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
 {
@@ -97,15 +97,6 @@ void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
 	crossaccum.WW -= __builtin_mulss( src1[1] , src2[0] ) ;
 	crossaccum.WW *= 4 ;
 	dest[2] = crossaccum._.W1 ;
-	return ;
-}
-
-// the compiler does not respect the resource used by the Microchip math
-// library, so interrupts need to save and restore extended state, and
-// reset CORCON if firing in the middle of a math lib call.
-void setDSPLibInUse(boolean inUse)
-{
-	needSaveExtendedState = inUse ;
 	return ;
 }
 
@@ -178,7 +169,7 @@ void rupdate(void)
 //	on the direction cosine matrix, based on the gyro vector and correction.
 //	It uses vector and matrix routines furnished by Microchip.
 {
-	setDSPLibInUse(true) ;
+	udb_setDSPLibInUse(true) ;
 	VectorAdd( 3 , omegaAccum , omegagyro , omegacorrI ) ;
 	VectorAdd( 3 , omega , omegaAccum , omegacorrP ) ;
 	//	scale by the integration factor:
@@ -194,7 +185,7 @@ void rupdate(void)
 	MatrixMultiply( 3 , 3 , 3 , rbuff , rmat , rup ) ;
 	//	multiply by 2 and copy back from rbuff to rmat:
 	MatrixAdd( 3 , 3 , rmat , rbuff , rbuff ) ; 
-	setDSPLibInUse(false) ;
+	udb_setDSPLibInUse(false) ;
 	return ;
 }
 
@@ -208,7 +199,7 @@ void normalize(void)
 {
 	fractional norm ; // actual magnitude
 	fractional renorm ;	// renormalization factor
-	setDSPLibInUse(true) ;
+	udb_setDSPLibInUse(true) ;
 	//	compute -1/2 of the dot product between rows 1 and 2
 	error =  - VectorDotProduct( 3 , &rmat[0] , &rmat[3] ) ; // note, 1/2 is built into 2.14
 	//	scale rows 1 and 2 by the error
@@ -237,15 +228,15 @@ void normalize(void)
 	renorm = RMAX15 - norm ;
 	VectorScale( 3 , &rbuff[6] , &rbuff[6] , renorm ) ;
 	VectorAdd( 3 , &rmat[6] , &rbuff[6] , &rbuff[6] ) ;
-	setDSPLibInUse(false) ;
+	udb_setDSPLibInUse(false) ;
 	return ;
 }
 
 void roll_pitch_drift()
 {
-	setDSPLibInUse(true) ;
+	udb_setDSPLibInUse(true) ;
 	VectorCross( errorRP , gplane , &rmat[6] ) ;
-	setDSPLibInUse(false) ;
+	udb_setDSPLibInUse(false) ;
 	return ;
 }
 
@@ -254,17 +245,17 @@ void yaw_drift()
 	//	although yaw correction is done in horizontal plane,
 	//	this is done in 3 dimensions, just in case we change our minds later
 	//	form the horizontal direction over ground based on rmat
-	if (flags._.yaw_req )
+	if (dcm_flags._.yaw_req )
 	{
-		setDSPLibInUse(true) ;
+		udb_setDSPLibInUse(true) ;
 		//	vector cross product to get the rotation error in ground frame
 		VectorCross( errorYawground , dirovergndHRmat , dirovergndHGPS ) ;
 		//	convert to plane frame:
 		//	*** Note: this accomplishes multiplication rmat transpose times errorYawground!!
 		MatrixMultiply( 1 , 3 , 3 , errorYawplane , errorYawground , rmat ) ;
-		setDSPLibInUse(false) ;
+		udb_setDSPLibInUse(false) ;
 
-		flags._.yaw_req = 0 ;
+		dcm_flags._.yaw_req = 0 ;
 	}
 	return ;
 }
@@ -307,11 +298,11 @@ void mag_drift()
 	fractional rmatTransposeMagField[3] ;
 	fractional offsetSum[3] ;
 	fractional deltaMagField[3] ;
-	if ( flags._.mag_drift_req )
+	if ( dcm_flags._.mag_drift_req )
 	{
-		setDSPLibInUse(true) ;
+		udb_setDSPLibInUse(true) ;
 
-		if ( flags._.first_mag_reading == 1 )
+		if ( dcm_flags._.first_mag_reading == 1 )
 		{
 			align_rmat_to_mag() ;
 		}
@@ -347,21 +338,21 @@ void mag_drift()
 			offsetDelta[vector_index] = adjustment ;
 		}
 
-		if ( flags._.first_mag_reading == 0 )
+		if ( dcm_flags._.first_mag_reading == 0 )
 		{
 			VectorAdd ( 3 , udb_magOffset , udb_magOffset , offsetSum ) ;
 		}
 		else
 		{
-			flags._.first_mag_reading = 0 ;
+			dcm_flags._.first_mag_reading = 0 ;
 		}
 
 		VectorCopy ( 3 , magFieldEarthPrevious , magFieldEarth ) ;
 		VectorCopy ( 3 , magFieldBodyPrevious , udb_magFieldBody ) ;
 		VectorCopy ( 9 , rmatPrevious , rmat ) ;
 
-		setDSPLibInUse(false) ;
-		flags._.mag_drift_req = 0 ;
+		udb_setDSPLibInUse(false) ;
+		dcm_flags._.mag_drift_req = 0 ;
 	}
 	return ;
 }
@@ -370,7 +361,7 @@ void PI_feedback(void)
 {
 	fractional errorRPScaled[3] ;
 	
-	setDSPLibInUse(true) ;
+	udb_setDSPLibInUse(true) ;
 	
 	VectorAdd( 3 , errorTotal , errorRP , errorYawplane ) ;
 
@@ -378,7 +369,7 @@ void PI_feedback(void)
 	VectorScale( 3 , errorRPScaled , errorRP , KPROLLPITCH ) ;
 	VectorAdd( 3 , omegacorrP , omegacorrP , errorRPScaled ) ;
 
-	setDSPLibInUse(false) ;
+	udb_setDSPLibInUse(false) ;
 	
 	CorrectionIntegral[0].WW += ( __builtin_mulss( errorRP[0] , KIROLLPITCH )>>3) ;
 	CorrectionIntegral[1].WW += ( __builtin_mulss( errorRP[1] , KIROLLPITCH )>>3) ;
@@ -414,7 +405,7 @@ void output_matrix(void)
 }
 */
 
-void imu(void)
+void dcm_run_imu_step(void)
 //	Read the gyros and accelerometers, 
 //	update the matrix, renormalize it, 
 //	adjust for roll and pitch drift,

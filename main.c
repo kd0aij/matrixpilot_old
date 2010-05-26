@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 //	main program for testing the IMU.
 //	Select device options:
@@ -15,30 +14,17 @@ _FBORPOR( 	PBOR_OFF & // brown out detection off
 _FGS( CODE_PROT_OFF ) ; // no protection
 _FICD( 0xC003 ) ;		// normal use of debugging port
 
-void init_all(void)
+
+int main (void)
 {
-	TRISFbits.TRISF0 = 0 ;
 	udb_init() ;
 	init_servoPrepare() ;
 	init_states() ;
 	init_behavior() ;
 	
-#if (NORADIO == 1)
-	udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] = udb_pwTrim[MODE_SWITCH_INPUT_CHANNEL] = 4000 ;
-#endif
+	udb_run() ;
+	// This never returns.
 	
-	return ;
-}
-
-int main (void)
-{	//	Initialize all modules and turn on the interrupts.
-	init_all() 		;   // initialize interrupt handlers
-	SRbits.IPL = 0 ;	// turn on all interrupt priorities
-	
-	while (1)			//  nothing else to do...entirely interrupt driven
-	{
-		indicate_loading_main ;
-	}
 	return 0 ;
 }
 	

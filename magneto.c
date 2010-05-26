@@ -38,7 +38,7 @@ fractional declinationVector[2] ;
 void udb_init_I2C(void)
 {
 #if ( MAG_YAW_DRIFT == 1 )
-	flags._.first_mag_reading = 1 ;
+	dcm_flags._.first_mag_reading = 1 ;
 	declinationVector[0] = cosine(DECLINATIONANGLE) ;
 	declinationVector[1] = sine(DECLINATIONANGLE) ;
 
@@ -273,7 +273,7 @@ void I2C_doneReadMagData(void)
 			 ( abs(udb_magFieldBody[1]) < MAGNETICMAXIMUM ) &&
 			 ( abs(udb_magFieldBody[2]) < MAGNETICMAXIMUM ) )
 		{
-			//flags._.mag_drift_req = 1 ;
+			//dcm_flags._.mag_drift_req = 1 ;
 			udb_magnetometer_callback_data_available();
 		}
 		else

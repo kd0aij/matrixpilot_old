@@ -1,14 +1,14 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 //	routines to drive the PWM pins for the servos,
 //	assumes the use of the 16MHz crystal.
 
 int gpscount ; // counter to initialize GPS
 int calibcount ; // number of PWM pulses before control is turned on
-int fourHertzCounter = 0 ;
-int startTelemetry = 0 ;
+
+char fourHertzCounter = 0 ;
+boolean startTelemetry = 0 ;
 
 
 void manualPassthrough( void ) ;
@@ -24,11 +24,15 @@ void init_servoPrepare( void )	// initialize the PWM
 		if (i != THROTTLE_OUTPUT_CHANNEL)
 			udb_pwOut[i] = 3000 ;
 	
+#if (NORADIO == 1)
+	udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] = udb_pwTrim[MODE_SWITCH_INPUT_CHANNEL] = 4000 ;
+#endif
+	
 	return ;
 }
 
 
-void udb_servo_callback_prepare_outputs(void)
+void dcm_servo_callback_prepare_outputs(void)
 {
 	// This is a simple counter to do stuff at 4hz
 	fourHertzCounter++ ;
@@ -37,7 +41,6 @@ void udb_servo_callback_prepare_outputs(void)
 		if ( startTelemetry )
 		{
 			serial_output_4hz() ;
-			rxMagnetometer() ;
 		}
 		fourHertzCounter = 0 ;
 	}
@@ -47,7 +50,6 @@ void udb_servo_callback_prepare_outputs(void)
 		// case 0 is when the control is up and running
 			
 		case 0: {
-			imu() ;
 			updateBehavior() ;
 			rollCntrl() ;
 			yawCntrl() ;
@@ -63,7 +65,7 @@ void udb_servo_callback_prepare_outputs(void)
 			
 		case 1: {
 			// almost ready to turn the control on, save the input offsets
-			udb_a2d_record_offsets() ;
+			dcm_calibrate() ;
 			manualPassthrough() ;	// Allow manual control while starting up
 			startTelemetry = 1 ;
 			break ;

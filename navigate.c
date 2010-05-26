@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 //	Compute actual and desired courses.
 //	Actual course is simply the scaled GPS course over ground information.
@@ -77,8 +76,6 @@ void navigate( void )
 	
 	//	convert to polar to produce
 	bearing_to_origin = rect_to_polar( &vector_to_origin ) ;
-	
-	estimateWind() ;
 	
 	return ;
 }

@@ -1,6 +1,7 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
+
+union fbts_int flags ;
 
 void startS(void) ;
 void calibrateS(void) ;
@@ -62,7 +63,7 @@ void udb_background_callback_periodic(void)
 	//	For now, nav_capable will always be 0 when the Airframe type is AIRFRAME_HELI.
 #if (AIRFRAME_TYPE != AIRFRAME_HELI)
 	if (gps_data_age < GPS_DATA_MAX_AGE) gps_data_age++ ;
-	flags._.nav_capable = (gps_data_age < GPS_DATA_MAX_AGE) ;
+	dcm_flags._.nav_capable = (gps_data_age < GPS_DATA_MAX_AGE) ;
 #endif
 	
 	//	Execute the activities for the current state.
@@ -219,7 +220,7 @@ void acquiringS(void)
 	return;
 #endif
 		
-	if ( flags._.nav_capable && ( ( MAG_YAW_DRIFT == 0 ) || ( magMessage == 7 ) ) )
+	if ( dcm_flags._.nav_capable && ( ( MAG_YAW_DRIFT == 0 ) || ( magMessage == 7 ) ) )
 	{
 		if ( udb_radio_on )
 		{
@@ -255,14 +256,14 @@ void manualS(void)
 {
 	if ( udb_radio_on )
 	{
-		if ( flags._.home_req & flags._.nav_capable )
+		if ( flags._.home_req & dcm_flags._.nav_capable )
 			ent_waypointS() ;
 		else if ( flags._.auto_req )
 			ent_stabilizedS() ;
 	}
 	else
 	{
-		if ( flags._.nav_capable )
+		if ( dcm_flags._.nav_capable )
 			ent_returnS() ;
 		else
 			ent_stabilizedS() ;
@@ -275,14 +276,14 @@ void stabilizedS(void)
 {
 	if ( udb_radio_on )
 	{
-		if ( flags._.home_req & flags._.nav_capable )
+		if ( flags._.home_req & dcm_flags._.nav_capable )
 			ent_waypointS() ;
 		else if ( flags._.man_req )
 			ent_manualS() ;
 	}
 	else
 	{
-		if ( flags._.nav_capable )
+		if ( dcm_flags._.nav_capable )
 			ent_returnS() ;
 	}
 	return ;
@@ -316,7 +317,7 @@ void returnS(void)
 			ent_manualS() ;
 		else if ( flags._.auto_req )
 			ent_stabilizedS() ;
-		else if ( flags._.home_req & flags._.nav_capable )
+		else if ( flags._.home_req & dcm_flags._.nav_capable )
 			ent_waypointS() ;
 	}		
 	return ;

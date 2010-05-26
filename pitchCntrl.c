@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 //	If the state machine selects pitch feedback, compute it from the pitch gyro and accelerometer.
 

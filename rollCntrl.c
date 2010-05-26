@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 const int yawkdail = YAWKD_AILERON*SCALEGYRO*RMAX ;
 

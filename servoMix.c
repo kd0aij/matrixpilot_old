@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 //	Perform control based on the airframe type.
 //	Use the radio to determine the baseline pulse widths if the radio is on.

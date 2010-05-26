@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 
 #define HOVERYOFFSET ((long)(HOVER_YAW_OFFSET*(RMAX/57.3)))
 

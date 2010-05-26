@@ -1,6 +1,5 @@
 #include "libDCM.h"
 #include "defines.h"
-#include "definesRmat.h"
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -285,7 +284,7 @@ void serial_output_4hz( void )
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )
 			serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
 				"as%i:wvx%i:wvy%i:wvz%i:\r\n",
-				tow, udb_radio_on, flags._.nav_capable, flags._.GPS_steering,
+				tow, udb_radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
 				lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
 				rmat[0] , rmat[1] , rmat[2] ,
 				rmat[3] , rmat[4] , rmat[5] ,
@@ -296,7 +295,7 @@ void serial_output_4hz( void )
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 			serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
 				"as%i:wvx%i:wvy%i:wvz%i:ma%i:mb%i:mc%i:svs%i:hd%i:\r\n",
-				tow, flags._.radio_on, flags._.nav_capable, flags._.GPS_steering,
+				tow, flags._.radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
 				lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
 				rmat[0] , rmat[1] , rmat[2] ,
 				rmat[3] , rmat[4] , rmat[5] ,

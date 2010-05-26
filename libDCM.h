@@ -1,17 +1,39 @@
 #include "libUDB.h"
 #include "libDCM_defines.h"
 
-// Functions
-void dcm_callback_location_updated(void) ;		// Callback
 
+// libDCM.h defines the API for accessing the location and orientation information
+// from the DCM algorithm and GPS.
+// 
+// Requires libUDB
+
+
+// Functions
+void dcm_callback_location_updated(void) ;					// Callback
+void dcm_enable_yaw_drift_correction(boolean enabled) ;		// Allows disabling yaw drift estimation
+void dcm_calibrate(void) ;
+
+// Is our gps data good enough for navigation?
 boolean gps_nav_valid(void) ;
-void estimateWind(void) ;
-void rxMagnetometer(void) ;
+
+
+// Rotation utility functions
+int cosine ( signed char angle ) ;
+int sine ( signed char angle ) ;
+signed char rect_to_polar ( struct relative2D *xy ) ;
+void rotate( struct relative2D *xy , signed char angle ) ;
 
 
 // Vars
+extern union dcm_fbts_byte { struct dcm_flag_bits _ ; char b ; } dcm_flags ;
+
+// Outside of libDCM, these should be treated as read-only
+extern fractional rmat[] ;
+extern fractional omegaAccum[] ;
+extern fractional omegagyro[] ;
+
 extern struct waypoint3D GPSlocation ;
-extern struct velocity3D GPSvelocity ;
+extern struct relative3D GPSvelocity ;
 extern struct relative2D velocity_thru_air ; // derived horizontal velocity relative to air in cm/sec
 extern int    estimatedWind[3] ;			// wind velocity vectors in cm / sec
 
@@ -31,10 +53,3 @@ extern int gps_data_age ;
 extern int velocity_magnitude ;
 extern int forward_acceleration  ;
 extern int air_speed_magnitude;
-
-
-
-
-// Internal
-extern signed char	actual_dir ;
-extern int velocity_previous  ;
