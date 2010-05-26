@@ -32,7 +32,7 @@ extern fractional rmat[] ;
 extern fractional omegaAccum[] ;
 extern fractional omegagyro[] ;
 
-extern struct waypoint3D GPSlocation ;
+extern struct relative3D GPSlocation ;
 extern struct relative3D GPSvelocity ;
 extern struct relative2D velocity_thru_air ; // derived horizontal velocity relative to air in cm/sec
 extern int    estimatedWind[3] ;			// wind velocity vectors in cm / sec

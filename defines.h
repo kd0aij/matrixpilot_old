@@ -1,5 +1,8 @@
 #include "libUDB.h"
 
+struct relWaypointDef { struct relative3D loc ; int flags ; struct relative3D viewpoint ; } ;
+struct waypointDef { struct absolute3D loc ; int flags ; struct absolute3D viewpoint ; } ;
+
 void gps_startup_sequence(int gpscount) ;
 
 void init_states(void) ;

@@ -4,7 +4,7 @@
 #include "waypoints.h"
 
 
-struct waypoint3D view_location       = { 0 , 0 , 0 } ; 
+struct relative3D view_location       = { 0 , 0 , 0 } ; 
 struct relative2D vector_to_waypoint  = { 0 , 0 } ;
 struct relative2D vector_to_steer     = { 0,  0 } ;
 
@@ -36,34 +36,53 @@ int numPointsInCurrentSet = NUMBER_POINTS ;
 // waypoint location through unchanged.
 // For an absolute waypoint, wp_to_relative() converts the waypoint's
 // location from absolute to relative.
-struct waypointDef wp_to_relative(struct waypointDef wp)
+struct relWaypointDef wp_to_relative(struct waypointDef wp)
 {
+	struct relWaypointDef rel ;
+	
 	if ( wp.flags & F_ABSOLUTE )
 	{
 		union longww accum_nav ;
 		
-		wp.loc.y = (wp.loc.y - lat_origin.WW)/90 ; // in meters
+		rel.loc.y = (wp.loc.y - lat_origin.WW)/90 ; // in meters
 		
 		accum_nav.WW = ((wp.loc.x - long_origin.WW)/90) ; // in meters
 		accum_nav.WW = ((__builtin_mulss ( cos_lat , accum_nav._.W0 )<<2)) ;
-		wp.loc.x = accum_nav._.W1 ;
-
-		wp.viewpoint.y = (wp.viewpoint.y - lat_origin.WW)/90 ; // in meters
+		rel.loc.x = accum_nav._.W1 ;
+		
+		rel.loc.z = wp.loc.z ;
+		
+		rel.viewpoint.y = (wp.viewpoint.y - lat_origin.WW)/90 ; // in meters
 		
 		accum_nav.WW = ((wp.viewpoint.x - long_origin.WW)/90) ; // in meters
 		accum_nav.WW = ((__builtin_mulss ( cos_lat , accum_nav._.W0 )<<2)) ;
-		wp.viewpoint.x = accum_nav._.W1 ;
-
-		wp.flags -= F_ABSOLUTE ;
+		rel.viewpoint.x = accum_nav._.W1 ;
+		
+		rel.viewpoint.z = wp.viewpoint.z ;
+		
+		rel.flags = wp.flags - F_ABSOLUTE ;
 	}
-	return wp;
+	else
+	{
+		rel.loc.x = wp.loc.x ;
+		rel.loc.y = wp.loc.y ;
+		rel.loc.z = wp.loc.z ;
+		
+		rel.viewpoint.x = wp.viewpoint.x ;
+		rel.viewpoint.y = wp.viewpoint.y ;
+		rel.viewpoint.z = wp.viewpoint.z ;
+		
+		rel.flags = wp.flags ;
+	}
+	
+	return rel;
 }
 
 
 void setup_origin_2D_location( void )
 {
 #if ( USE_FIXED_ORIGIN == 1 )
-		struct waypoint2D origin = FIXED_ORIGIN_LOCATION ;
+		struct absolute2D origin = FIXED_ORIGIN_LOCATION ;
 		lat_origin.WW = origin.y ;
 		long_origin.WW = origin.x ;
 #else
@@ -73,7 +92,7 @@ void setup_origin_2D_location( void )
 }
 
 
-void set_goal( struct waypoint3D fromPoint , struct waypoint3D toPoint )
+void set_goal( struct relative3D fromPoint , struct relative3D toPoint )
 {
 	struct relative2D courseLeg ;
 	goal.x = toPoint.x ;
@@ -90,7 +109,7 @@ void set_goal( struct waypoint3D fromPoint , struct waypoint3D toPoint )
 }
 
 
-void set_camera_view( struct waypoint3D current_view )
+void set_camera_view( struct relative3D current_view )
 {
 	view_location.x = current_view.x ;
 	view_location.y = current_view.y ;
@@ -113,7 +132,7 @@ void init_waypoints ( int waypointSetIndex )
     }
 	
 	waypointIndex = 0 ;
-	struct waypointDef current_waypoint = wp_to_relative(currentWaypointSet[0]) ;
+	struct relWaypointDef current_waypoint = wp_to_relative(currentWaypointSet[0]) ;
 	set_goal( GPSlocation , current_waypoint.loc ) ;
 	set_camera_view(current_waypoint.viewpoint) ;
 	setBehavior(current_waypoint.flags) ;
@@ -222,15 +241,15 @@ void next_waypoint ( void )
 	{
 		if (numPointsInCurrentSet > 1)
 		{
-			struct waypointDef previous_waypoint = wp_to_relative( currentWaypointSet[numPointsInCurrentSet-1] ) ;
-			struct waypointDef current_waypoint  = wp_to_relative( currentWaypointSet[0] ) ;
+			struct relWaypointDef previous_waypoint = wp_to_relative( currentWaypointSet[numPointsInCurrentSet-1] ) ;
+			struct relWaypointDef current_waypoint  = wp_to_relative( currentWaypointSet[0] ) ;
 			set_goal( previous_waypoint.loc, current_waypoint.loc ) ;
 			set_camera_view( current_waypoint.viewpoint ) ;
 
 		}
 		else
 		{
-			struct waypointDef current_waypoint = wp_to_relative( currentWaypointSet[0] ) ;
+			struct relWaypointDef current_waypoint = wp_to_relative( currentWaypointSet[0] ) ;
 			set_goal( GPSlocation, current_waypoint.loc ) ;
 			set_camera_view( current_waypoint.viewpoint ) ;
 		}
@@ -238,8 +257,8 @@ void next_waypoint ( void )
 	}
 	else
 	{
-		struct waypointDef previous_waypoint = wp_to_relative( currentWaypointSet[waypointIndex-1] ) ;
-		struct waypointDef current_waypoint = wp_to_relative( currentWaypointSet[waypointIndex] ) ;
+		struct relWaypointDef previous_waypoint = wp_to_relative( currentWaypointSet[waypointIndex-1] ) ;
+		struct relWaypointDef current_waypoint = wp_to_relative( currentWaypointSet[waypointIndex] ) ;
 		set_goal( previous_waypoint.loc, current_waypoint.loc ) ;
 		set_camera_view( current_waypoint.viewpoint ) ;
 		setBehavior( current_waypoint.flags ) ;

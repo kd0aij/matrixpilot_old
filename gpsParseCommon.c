@@ -2,7 +2,7 @@
 #include "defines.h"
 
 
-struct waypoint3D GPSlocation 		  = { 0 , 0 , 0 } ;
+struct relative3D GPSlocation 		  = { 0 , 0 , 0 } ;
 struct relative3D GPSvelocity 		  = { 0 , 0 , 0 } ;
 struct relative2D velocity_thru_air   = { 0 , 0 } ;
 

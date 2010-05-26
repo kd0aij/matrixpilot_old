@@ -14,9 +14,7 @@ union longww { long  WW ; struct ww _ ; } ;
 struct relative2D { int x ; int y ; } ;
 struct absolute2D { long x ; long y ; } ;
 struct relative3D { int x ; int y ; int z ; } ;
-
-struct waypoint3D { long x ; long y ; int z ; } ;
-struct waypointDef { struct waypoint3D loc ; int flags ; struct waypoint3D viewpoint ; } ;
+struct absolute3D { long x ; long y ; int z ; } ;
 
 struct dcm_flag_bits {
 			unsigned int unused					: 4 ;
