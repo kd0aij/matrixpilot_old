@@ -15,7 +15,7 @@ union intbb    xvg , yvg , zvg ;						// gps x, y, z velocity
 unsigned char  mode1 , mode2 , svs ;					// gps mode1, mode2, and number of satellites
 
 unsigned char  	lat_cir ;
-int				cos_lat ;
+int				cos_lat = 0 ;
 
 signed char actual_dir ;
 int gps_data_age ;

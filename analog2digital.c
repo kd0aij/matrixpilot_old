@@ -45,7 +45,7 @@ void udb_a2d_record_offsets(void)
 	udb_xrate.offset = udb_xrate.value ;
 	udb_yaccel.offset = udb_yaccel.value ;
 	udb_yrate.offset = udb_yrate.value ;
-	udb_zaccel.offset = udb_zaccel.value - 2*GRAVITY ; // GRAVITY is measured in A-D/2 units
+	udb_zaccel.offset = udb_zaccel.value - ((int)(2*GRAVITY)) ; // GRAVITY is measured in A-D/2 units
 	udb_zrate.offset = udb_zrate.value ;
 #ifdef VREF
 	udb_vref.offset = udb_vref.value ;

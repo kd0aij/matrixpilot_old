@@ -49,9 +49,11 @@ fractional omega[] = { 0 , 0 , 0 } ;
 fractional omegacorrP[] = { 0 , 0 , 0 } ;
 fractional omegacorrI[] = { 0 , 0 , 0 } ;
 
+//  acceleration, as measured in GPS earth coordinate system
+fractional accelEarth[] = { 0 , 0 , 0 } ;
+
 //	correction vector integrators ;
 union longww CorrectionIntegral[] =  { { 0 } , { 0 } ,  { 0 } } ;
-
 
 //	accumulator for computing adjusted omega:
 fractional omegaAccum[] = { 0 , 0 , 0 } ;
@@ -75,7 +77,6 @@ fractional rbuff[] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 } ;
 fractional errorRP[] = { 0 , 0 , 0 } ;
 fractional errorYawground[] = { 0 , 0 , 0 } ;
 fractional errorYawplane[]  = { 0 , 0 , 0 } ;
-fractional errorTotal[] = { 0 , 0 , 0 } ;
 
 //	measure of error in orthogonality, used for debugging purposes:
 fractional error = 0 ;
@@ -121,9 +122,146 @@ void read_gyros()
 
 void read_accel()
 {
+	udb_setDSPLibInUse(true) ;
+	
 	gplane[0] =   ( udb_xaccel.value>>1 ) - ( udb_xaccel.offset>>1 ) ;
 	gplane[1] =   ( udb_yaccel.value>>1 ) - ( udb_yaccel.offset>>1 ) ;
 	gplane[2] =   ( udb_zaccel.value>>1 ) - ( udb_zaccel.offset>>1 ) ;
+	
+	accelEarth[0] =  VectorDotProduct( 3 , &rmat[0] , gplane )<<1;
+	accelEarth[1] = - VectorDotProduct( 3 , &rmat[3] , gplane )<<1;
+	accelEarth[2] = -((int)GRAVITY) + (VectorDotProduct( 3 , &rmat[6] , gplane )<<1);
+	
+	udb_setDSPLibInUse(false) ;
+	
+	return ;
+}
+
+#define ACCEL2DELTAV ((.025*GRAVITYM*4.0*RMAX)/GRAVITY)
+#define VELOCITY2LOCATION (0.025*.01*4.0*RMAX)
+
+#define VELTAU 5.0
+
+#define TIMESTEP 0.025
+#define MAX16 (4.0*RMAX)
+
+#define KPVELREAL (2.0/VELTAU)
+#define KIVELREAL (1.0/(VELTAU*VELTAU))
+
+#define KPVELOCITY (TIMESTEP*MAX16*16.0*KPVELREAL)
+#define KIVELOCITY (TIMESTEP*TIMESTEP*MAX16*256.0*KIVELREAL)
+
+#define KPLOCATION (TIMESTEP*MAX16*8.0*KPVELREAL)
+#define KILOCATION (TIMESTEP*TIMESTEP*MAX16*128.0*KIVELREAL)
+
+//      velocity, as estimated by the IMU
+union longww IMUvelocityx =  { 0 }  ;
+union longww IMUvelocityy =  { 0 }  ;
+union longww IMUvelocityz =  { 0 }  ;
+
+//      velocity error in the IMU feedback loop 
+fractional velocityErrorBody[] = { 0 , 0 , 0 } ;
+fractional locationErrorEarth[] = { 0 , 0 , 0 } ;
+
+//      IMU velocity correction vectors:
+int velocityCorrP[] = { 0 , 0 , 0 } ;
+int velocityCorrI[] = { 0 , 0 , 0 } ;
+
+//      location, as estimated by the IMU
+union longww IMUlocationx =  { 0 }  ;
+union longww IMUlocationy =  { 0 }  ;
+union longww IMUlocationz =  { 0 }  ;
+
+
+//      IMU location correction vectors:
+int locationCorrP[] = { 0 , 0 , 0 } ;
+int locationCorrI[] = { 0 , 0 , 0 } ;
+
+//      correction velocity vector integrators ;
+union longww velocityCorrectionIntegral[] =  { { 0 } , { 0 } ,  { 0 } } ;
+
+//      correction position vector integrators ;
+union longww locationCorrectionIntegral[] =  { { 0 } , { 0 } ,  { 0 } } ;
+
+void dead_reckon()
+{
+	union longww accumulator ;
+	fractional velocityErrorEarth[3] ;
+	fractional CorrTotal[3] ;
+	
+	CorrTotal[0] = (velocityCorrP[0] + velocityCorrI[0]) ;
+	CorrTotal[1] = (velocityCorrP[1] + velocityCorrI[1]) ;
+	CorrTotal[2] = (velocityCorrP[2] + velocityCorrI[2]) ;
+	
+	udb_setDSPLibInUse(true) ;
+	
+	accumulator.WW = __builtin_mulss( ((int)(ACCEL2DELTAV)) ,  accelEarth[0] ) ;
+	IMUvelocityx.WW += accumulator.WW
+		+ (((long)VectorDotProduct( 3 , CorrTotal , &rmat[0] ))<<12 ) ; // Dotgain = 1/2
+	
+	accumulator.WW = __builtin_mulss( ((int)(ACCEL2DELTAV)) ,  accelEarth[1] ) ;
+	IMUvelocityy.WW += accumulator.WW
+		+ (((long)VectorDotProduct( 3 , CorrTotal , &rmat[3] ))<<12 ) ; // Dotgain = 1/2
+	
+	accumulator.WW = __builtin_mulss( ((int)(ACCEL2DELTAV)) ,  accelEarth[2] ) ;
+	IMUvelocityz.WW += accumulator.WW 
+		+ (((long)VectorDotProduct( 3 , CorrTotal , &rmat[6] ))<<12 ) ; // Dotgain = 1/2
+	
+	if ( gps_nav_valid() && ( cos_lat != 0)  )  // started up and running
+	{
+		velocityErrorEarth[0] = (GPSvelocity.x - IMUvelocityx._.W1) ;
+		velocityErrorEarth[1] = (GPSvelocity.y - IMUvelocityy._.W1) ;
+		velocityErrorEarth[2] = (GPSvelocity.z - IMUvelocityz._.W1) ;
+	}
+	else if ( cos_lat == 0 )  // waiting to start up
+	{
+		velocityErrorEarth[0] = ( - IMUvelocityx._.W1) ;
+		velocityErrorEarth[1] = ( - IMUvelocityy._.W1) ;
+		velocityErrorEarth[2] = ( - IMUvelocityz._.W1) ;
+	}
+	else  // running, but GPS is lost, so go dead reckoning for a while
+	{
+		velocityErrorEarth[0] = 0 ;
+		velocityErrorEarth[1] = 0 ;
+		velocityErrorEarth[2] = 0 ;
+	}
+	
+	MatrixMultiply( 1 , 3 , 3 , velocityErrorBody , velocityErrorEarth , rmat ) ;
+	
+	udb_setDSPLibInUse(false) ;
+	
+	CorrTotal[0] = (locationCorrP[0] + locationCorrI[0]) ;
+	CorrTotal[1] = (locationCorrP[1] + locationCorrI[1]) ;
+	CorrTotal[2] = (locationCorrP[2] + locationCorrI[2]) ;
+	
+	accumulator.WW = __builtin_mulss( ((int)(VELOCITY2LOCATION)) ,  IMUvelocityx._.W1 ) ;
+	IMUlocationx.WW += accumulator.WW + (((long)CorrTotal[0] )<<8)  ;
+	
+	accumulator.WW = __builtin_mulss( ((int)(VELOCITY2LOCATION)) ,  IMUvelocityy._.W1 ) ;
+	IMUlocationy.WW += accumulator.WW + (((long)CorrTotal[1] )<<8)  ;
+	
+	accumulator.WW = __builtin_mulss( ((int)(VELOCITY2LOCATION)) ,  IMUvelocityz._.W1 ) ;
+	IMUlocationz.WW += accumulator.WW + (((long)CorrTotal[2] )<<8)  ;
+	
+	if ( gps_nav_valid() && ( cos_lat != 0)  )  // started up and running
+	{
+		locationErrorEarth[0] = ((((long)(GPSlocation.x))<<16) - IMUlocationx.WW)>>12 ;
+		locationErrorEarth[1] = ((((long)(GPSlocation.y))<<16) - IMUlocationy.WW)>>12 ;
+		locationErrorEarth[2] = ((((long)(GPSlocation.z))<<16) - IMUlocationz.WW)>>12 ;
+	}
+	else if ( cos_lat == 0 )  // waiting to start up
+	{
+		locationErrorEarth[0] = ( - IMUlocationx.WW)>>12 ;
+		locationErrorEarth[1] = ( - IMUlocationy.WW)>>12 ;
+		locationErrorEarth[2] = ( - IMUlocationz.WW)>>12 ;
+	}
+	else  // running, but GPS is lost, so go dead reckoning for a while
+	{
+		locationErrorEarth[0] = 0 ;
+		locationErrorEarth[1] = 0 ;
+		locationErrorEarth[2] = 0 ;
+	}
+	
 	return ;
 }
 
@@ -173,7 +311,7 @@ void rupdate(void)
 	VectorAdd( 3 , omegaAccum , omegagyro , omegacorrI ) ;
 	VectorAdd( 3 , omega , omegaAccum , omegacorrP ) ;
 	//	scale by the integration factor:
-	VectorScale( 3 , theta , omega , ggain ) ;
+	VectorScale( 3 , theta , omega , ggain ) ;	// Scalegain of 2
 	//	construct the off-diagonal elements of the update matrix:
 	rup[1] = -theta[2] ;
 	rup[2] =  theta[1] ;
@@ -214,7 +352,7 @@ void normalize(void)
 
 	//	Use a Taylor's expansion for 1/sqrt(X*X) to avoid division in the renormalization
 	//	rescale row1
-	norm = VectorPower( 3 , &rbuff[0] ) ;
+	norm = VectorPower( 3 , &rbuff[0] ) ; // Scalegain of 0.5
 	renorm = RMAX15 - norm ;
 	VectorScale( 3 , &rbuff[0] , &rbuff[0] , renorm ) ;
 	VectorAdd( 3 , &rmat[0] , &rbuff[0] , &rbuff[0] ) ;
@@ -311,8 +449,8 @@ void mag_drift()
 		magFieldEarth[1] = VectorDotProduct( 3 , &rmat[3] , udb_magFieldBody )<<1 ;
 		magFieldEarth[2] = VectorDotProduct( 3 , &rmat[6] , udb_magFieldBody )<<1 ;
 
-		mag_error = 100*VectorDotProduct( 2 , magFieldEarth , declinationVector ) ;
-		VectorScale( 3 , errorYawplane , &rmat[6] , mag_error ) ;
+		mag_error = 100*VectorDotProduct( 2 , magFieldEarth , declinationVector ) ; // Dotgain = 1/2
+		VectorScale( 3 , errorYawplane , &rmat[6] , mag_error ) ; // Scalegain = 1/2
 
 		VectorAdd( 3 , offsetSum , udb_magFieldBody , magFieldBodyPrevious ) ;
 		for ( vector_index = 0 ; vector_index < 3 ; vector_index++ )
@@ -357,18 +495,20 @@ void mag_drift()
 	return ;
 }
 
+
 void PI_feedback(void)
 {
 	fractional errorRPScaled[3] ;
 	
 	udb_setDSPLibInUse(true) ;
 	
-	VectorAdd( 3 , errorTotal , errorRP , errorYawplane ) ;
-
-	VectorScale( 3 , omegacorrP , errorYawplane , KPYAW ) ;
-	VectorScale( 3 , errorRPScaled , errorRP , KPROLLPITCH ) ;
+	VectorScale( 3 , omegacorrP , errorYawplane , KPYAW ) ; // Scale gain = 2
+	VectorScale( 3 , errorRPScaled , errorRP , KPROLLPITCH ) ; // Scale gain = 2
 	VectorAdd( 3 , omegacorrP , omegacorrP , errorRPScaled ) ;
 
+	VectorScale( 3 , velocityCorrP , velocityErrorBody , ((int)(KPVELOCITY)) ) ; // scales by 2
+	VectorScale( 3 , locationCorrP , locationErrorEarth , ((int)(KPLOCATION)) ) ; // scales by 2
+	
 	udb_setDSPLibInUse(false) ;
 	
 	CorrectionIntegral[0].WW += ( __builtin_mulss( errorRP[0] , KIROLLPITCH )>>3) ;
@@ -379,10 +519,26 @@ void PI_feedback(void)
 	CorrectionIntegral[1].WW += ( __builtin_mulss( errorYawplane[1] , KIYAW )>>3) ;
 	CorrectionIntegral[2].WW += ( __builtin_mulss( errorYawplane[2] , KIYAW )>>3) ;
 
+	velocityCorrectionIntegral[0].WW += ( __builtin_mulss( velocityErrorBody[0] , ((int)(KIVELOCITY)) )) ;
+	velocityCorrectionIntegral[1].WW += ( __builtin_mulss( velocityErrorBody[1] , ((int)(KIVELOCITY)) )) ;
+	velocityCorrectionIntegral[2].WW += ( __builtin_mulss( velocityErrorBody[2] , ((int)(KIVELOCITY)) )) ;
+
+	locationCorrectionIntegral[0].WW += ( __builtin_mulss( locationErrorEarth[0] , ((int)(KILOCATION)) )) ;
+	locationCorrectionIntegral[1].WW += ( __builtin_mulss( locationErrorEarth[1] , ((int)(KILOCATION)) )) ;
+	locationCorrectionIntegral[2].WW += ( __builtin_mulss( locationErrorEarth[2] , ((int)(KILOCATION)) )) ;
+
 	omegacorrI[0] = CorrectionIntegral[0]._.W1>>3 ;
 	omegacorrI[1] = CorrectionIntegral[1]._.W1>>3 ;
 	omegacorrI[2] = CorrectionIntegral[2]._.W1>>3 ;
 	
+	velocityCorrI[0] = (velocityCorrectionIntegral[0]._.W1)>>3 ;
+	velocityCorrI[1] = (velocityCorrectionIntegral[1]._.W1)>>3 ;
+	velocityCorrI[2] = (velocityCorrectionIntegral[2]._.W1)>>3 ;
+
+	locationCorrI[0] = (locationCorrectionIntegral[0]._.W1)>>3 ;
+	locationCorrI[1] = (locationCorrectionIntegral[1]._.W1)>>3 ;
+	locationCorrI[2] = (locationCorrectionIntegral[2]._.W1)>>3 ;
+
 	return ;
 }
 
@@ -400,6 +556,20 @@ void output_matrix(void)
 	PDC2 = 3000 + accum._.W1 ;
 	accum.WW = __builtin_mulss( rmat[4] , 4000 ) ;
 	PDC3 = 3000 + accum._.W1 ;
+	return ;
+}
+*/
+
+/*
+void output_IMUvelocity(void)
+{
+//	PDC1 = pulsesat( IMUvelocityx._.W1 + waggle + 3000 ) ;
+//	PDC2 = pulsesat( IMUvelocityy._.W1 + waggle + 3000 ) ;
+//	PDC3 = pulsesat( IMUvelocityz._.W1 + waggle + 3000 ) ;
+
+//	PDC1 = pulsesat( accelEarth[0] + 3000 ) ;
+//	PDC2 = pulsesat( accelEarth[1] + 3000 ) ;
+//	PDC3 = pulsesat( accelEarth[2] + 3000 ) ;
 
 	return ;
 }
@@ -413,6 +583,7 @@ void dcm_run_imu_step(void)
 {
 	read_gyros() ;
 	read_accel() ;
+	dead_reckon() ;
 	adj_accel() ;
 	rupdate() ;
 	normalize() ;
@@ -427,7 +598,6 @@ void dcm_run_imu_step(void)
 	}
 
 	PI_feedback() ;
-//	output_matrix() ;
 	
 	return ;
 }
