@@ -1,5 +1,7 @@
 #include "libUDB_internal.h"
 
+#if (BOARD_TYPE != UDB_2_BOARD)
+
 //	routines to drive the PWM pins for the servos,
 //	assumes the use of the 16MHz crystal.
 
@@ -197,3 +199,5 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 	interrupt_restore_extended_state ;
 	return;
 }
+
+#endif

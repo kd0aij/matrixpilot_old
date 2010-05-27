@@ -563,9 +563,9 @@ void output_matrix(void)
 /*
 void output_IMUvelocity(void)
 {
-//	PDC1 = pulsesat( IMUvelocityx._.W1 + waggle + 3000 ) ;
-//	PDC2 = pulsesat( IMUvelocityy._.W1 + waggle + 3000 ) ;
-//	PDC3 = pulsesat( IMUvelocityz._.W1 + waggle + 3000 ) ;
+	PDC1 = pulsesat( IMUvelocityx._.W1 + 3000 ) ;
+	PDC2 = pulsesat( IMUvelocityy._.W1 + 3000 ) ;
+	PDC3 = pulsesat( IMUvelocityz._.W1 + 3000 ) ;
 
 //	PDC1 = pulsesat( accelEarth[0] + 3000 ) ;
 //	PDC2 = pulsesat( accelEarth[1] + 3000 ) ;

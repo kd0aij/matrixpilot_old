@@ -27,6 +27,33 @@
 #endif
 
 
+#if (BOARD_TYPE == UDB_2_BOARD)
+#define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
+_FOSCSEL(FNOSC_FRCPLL) ;  // fast RC plus PLL \
+_FOSC( FCKSM_CSECMD & OSCIOFNC_ON & POSCMD_NONE ) ; \
+_FWDT( WDT_OFF ) ;				// no watchdog timer \
+_FBORPOR( 	PBOR_OFF & // brown out detection off \
+			MCLR_EN &  // enable MCLR \
+			RST_PWMPIN & // pwm pins as pwm \
+			PWMxH_ACT_HI & // PWMH is active high \
+			PWMxL_ACT_HI ) ; // PMWL is active high \
+_FGS( CODE_PROT_OFF ) ; // no protection \
+_FICD( JTAGEN_OFF & ICS_PGD2 ) ;
+
+#else
+#define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
+_FOSC( CSW_FSCM_OFF & HS ) ; 	// external high speed crystal \
+_FWDT( WDT_OFF ) ;				// no watchdog timer \
+_FBORPOR( 	PBOR_OFF & // brown out detection off \
+			MCLR_EN &  // enable MCLR \
+			RST_PWMPIN & // pwm pins as pwm \
+			PWMxH_ACT_HI & // PWMH is active high \
+			PWMxL_ACT_HI ) ; // PMWL is active high \
+_FGS( CODE_PROT_OFF ) ; // no protection \
+_FICD( 0xC003 ) ;		// normal use of debugging port
+#endif
+
+
 // Types
 typedef char boolean;
 #define true	1
