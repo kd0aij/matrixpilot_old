@@ -10,13 +10,6 @@ int udb_pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 int twentyHertzCounter = 0 ;
 
 
-void init_leds( void )
-{
-	_TRISE1 = _TRISE2 = _TRISE3 = _TRISE4 = 0 ;
-	LATEbits.LATE1 = LATEbits.LATE2 = LATEbits.LATE3 = LATEbits.LATE4 = 1 ;
-	return ;
-}
-
 void udb_init_pwm( void )	// initialize the PWM
 {
 	OC1CONbits.OCM = 

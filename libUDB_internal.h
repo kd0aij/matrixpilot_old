@@ -3,6 +3,7 @@
 extern int twentyHertzCounter ;
 extern int failSafePulses ;
 
+void udb_init_leds(void) ;
 void udb_init_ADC(void) ;
 void udb_init_clock(void) ;
 void udb_init_capture(void) ;

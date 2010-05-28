@@ -9,7 +9,7 @@ void udb_init(void)
 {
 	defaultCorcon = CORCON ;
 	
-	TRISFbits.TRISF0 = 0 ; //what is this doing?
+	udb_init_leds() ;
 	udb_init_ADC() ;
 	udb_init_clock() ;
 	udb_init_capture() ;
@@ -25,10 +25,27 @@ void udb_init(void)
 
 void udb_run(void)
 {
-	while (1)			//  nothing else to do...entirely interrupt driven
+	//  nothing else to do...entirely interrupt driven
+	while (1)
 	{
+		// pause cpu counting timer while not in an ISR
 		indicate_loading_main ;
 	}
+	return ;
+}
+
+
+void udb_init_leds( void )
+{
+	
+#if (BOARD_TYPE == UDB_2_BOARD)
+	_TRISE1 = _TRISE2 = _TRISE3 = _TRISE4 = 0 ;
+	// LATEbits.LATE1 = LATEbits.LATE2 = LATEbits.LATE3 = LATEbits.LATE4 = 1 ;
+	
+#else
+	TRISFbits.TRISF0 = 0 ;
+#endif
+	
 	return ;
 }
 
