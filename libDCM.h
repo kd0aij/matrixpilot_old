@@ -39,6 +39,7 @@ extern int    estimatedWind[3] ;			// wind velocity vectors in cm / sec
 
 extern union longww IMUvelocityx , IMUvelocityy , IMUvelocityz ;
 extern union longww IMUlocationx , IMUlocationy , IMUlocationz ;
+#define IMUheight IMUlocationz._.W1
 
 extern union longbbbb lat_gps , long_gps , alt_sl_gps , tow ;
 extern union intbb    sog_gps , cog_gps , climb_gps, week_no ;

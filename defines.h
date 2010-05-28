@@ -44,7 +44,6 @@ extern union longbbbb x_origin , y_origin , z_origin ;
 
 extern signed char	desired_dir ;
 extern signed char  bearing_to_origin ;
-extern int height ;
 
 
 extern int tofinish_line ;

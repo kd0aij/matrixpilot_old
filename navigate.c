@@ -12,8 +12,6 @@ const int yawkpail = YAWKP_AILERON*RMAX ;
 const int yawkprud = YAWKP_RUDDER*RMAX ;
 
 
-int height = 0 ;
-
 struct relative2D vector_to_origin ;
 
 extern signed char desired_dir_waypoint ;
@@ -65,8 +63,7 @@ void navigate( void )
 	vector_to_origin.y = - accum_nav._.W0 ;
 	GPSlocation.y = accum_nav._.W0 ;
 	
-	height = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
-	GPSlocation.z = height ;
+	GPSlocation.z = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
 	
 	//	multiply the longitude delta by the cosine of the latitude
 	accum_nav.WW = ((long_gps.WW - long_origin.WW)/90) ; // in meters
