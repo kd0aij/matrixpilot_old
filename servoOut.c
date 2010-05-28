@@ -16,7 +16,7 @@ void setupOutputs( void ) ;
 
 void udb_init_pwm( void )	// initialize the PWM
 {
-	PDC1 = PDC2 = PDC3 = 3000 ;
+	PDC1 = PDC2 = PDC3 = 0 ;
 	
 	int i;
 	for (i=0; i <= NUM_OUTPUTS; i++)

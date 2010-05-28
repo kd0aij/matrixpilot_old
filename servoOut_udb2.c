@@ -20,8 +20,10 @@ void udb_init_pwm( void )	// initialize the PWM
 	OC6CONbits.OCM = 
 	OC7CONbits.OCM = 
 	OC8CONbits.OCM = 0 ;  // disable
+	
 	OC1R = OC2R = OC3R = OC4R = OC5R = OC6R = OC7R = OC8R = 0 ;  // no first pulse
-	OC1RS = OC2RS = OC3RS = OC4RS = OC5RS = OC6RS = OC7RS = OC8RS = 3000 ; // initial pulse
+	OC1RS = OC2RS = OC3RS = OC4RS = OC5RS = OC6RS = OC7RS = OC8RS = 0 ; // initial pulse
+	
 	OC1CONbits.OCM = 
 	OC2CONbits.OCM = 
 	OC3CONbits.OCM = 
