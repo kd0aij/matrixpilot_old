@@ -8,8 +8,6 @@ void gps_startup_sequence(int gpscount) ;
 void init_states(void) ;
 void init_behavior( void ) ;
 
-void setup_origin_2D_location(void) ;
-void navigate(void) ;
 int determine_navigation_deflection(char navType);
 
 void yawCntrl(void) ;
@@ -39,7 +37,6 @@ struct waypointparameters { int x ; int y ; int cosphi ; int sinphi ; signed cha
 extern int pitch_control, roll_control, yaw_control, altitude_control ;
 
 extern signed char	desired_dir ;
-extern signed char  bearing_to_origin ;
 
 
 extern int tofinish_line ;
