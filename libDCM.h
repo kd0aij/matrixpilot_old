@@ -9,9 +9,12 @@
 
 
 // Functions
-void dcm_callback_location_updated(void) ;					// Callback
-void dcm_enable_yaw_drift_correction(boolean enabled) ;		// Allows disabling yaw drift estimation
 void dcm_calibrate(void) ;
+void dcm_set_origin_location(long o_long, long o_lat, long o_alt) ;
+
+void dcm_callback_location_updated(void) ;					// Callback
+
+void dcm_enable_yaw_drift_correction(boolean enabled) ;		// Allows disabling yaw drift estimation
 
 // Is our gps data good enough for navigation?
 boolean gps_nav_valid(void) ;
@@ -47,6 +50,8 @@ extern unsigned char  hdop ;
 extern union longbbbb xpg , ypg , zpg ;
 extern union intbb    xvg , yvg , zvg ;
 extern unsigned char  mode1 , mode2 , svs, hdop ;
+
+extern union longbbbb lat_origin , long_origin , alt_origin ;
 
 extern unsigned char  	lat_cir ;
 extern int				cos_lat ;

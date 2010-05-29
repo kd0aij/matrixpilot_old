@@ -8,8 +8,6 @@ struct relative3D view_location       = { 0 , 0 , 0 } ;
 struct relative2D vector_to_waypoint  = { 0 , 0 } ;
 struct relative2D vector_to_steer     = { 0,  0 } ;
 
-union longbbbb lat_origin , long_origin , alt_origin ;
-union longbbbb x_origin , y_origin , z_origin ;
 signed char desired_dir ;
 
 
@@ -75,19 +73,6 @@ struct relWaypointDef wp_to_relative(struct waypointDef wp)
 	}
 	
 	return rel;
-}
-
-
-void setup_origin_2D_location( void )
-{
-#if ( USE_FIXED_ORIGIN == 1 )
-		struct absolute2D origin = FIXED_ORIGIN_LOCATION ;
-		lat_origin.WW = origin.y ;
-		long_origin.WW = origin.x ;
-#else
-		lat_origin.WW = lat_gps.WW ;
-		long_origin.WW = long_gps.WW ;
-#endif
 }
 
 

@@ -11,15 +11,30 @@
 const int yawkpail = YAWKP_AILERON*RMAX ;
 const int yawkprud = YAWKP_RUDDER*RMAX ;
 
-
-struct relative2D vector_to_origin ;
-
 extern signed char desired_dir_waypoint ;
+
+
+void setup_origin(void)
+{
+#if ( USE_FIXED_ORIGIN == 1 )
+		struct absolute2D origin = FIXED_ORIGIN_LOCATION ;
+		dcm_set_origin_location(origin.x, origin.y, alt_sl_gps.WW) ;
+#else
+		dcm_set_origin_location(long_gps.WW, lat_gps.WW, alt_sl_gps.WW) ;
+#endif
+}
 
 
 void dcm_callback_location_updated(void)
 {
-	navigate() ;
+	if ( flags._.save_origin )
+	{
+		//	capture origin information during power up. much of this is not actually used for anything,
+		//	but is saved in case you decide to extend this code.
+		flags._.save_origin = 0 ;
+		setup_origin() ;
+	}
+	
 	processwaypoints() ;
 	
 //	Ideally, navigate should take less than one second. For MatrixPilot, navigation takes only
@@ -28,51 +43,6 @@ void dcm_callback_location_updated(void)
 //	If you rewrite navigation to perform some rather ambitious calculations, perhaps using floating
 //	point, matrix inversions, Kalman filters, etc., you will not cause a stack overflow if you
 //	take more than 1 second, the interrupt handler will simply skip some of the navigation passes.
-	
-	return ;
-}
-
-
-void navigate( void )
-{
-	union longbbbb accum_nav ;
-	union longww accum_velocity ;
-	
-	if ( flags._.save_origin )
-	{
-		//	capture origin information during power up. much of this is not actually used for anything,
-		//	but is saved in case you decide to extend this code.
-		flags._.save_origin = 0 ;
-		setup_origin_2D_location() ;
-		alt_origin = alt_sl_gps ;
-		x_origin = xpg ;
-		y_origin = ypg ;
-		z_origin = zpg ;
-		//	scale the latitude from GPS units to gentleNAV units
-		accum_nav.WW = __builtin_mulss( LONGDEG_2_BYTECIR , lat_origin._.W1 ) ;
-		lat_cir = accum_nav.__.B2 ;
-		//	estimate the cosine of the latitude, which is used later computing desired course
-		cos_lat = cosine ( lat_cir ) ;
-	}
-	
-	//	Subtract the origin latitude, longitude, and altitude from present lat, long, alt.
-	//	Then flip the sign.
-	//	(Yes, it would have been simpler to subtract present from the origin!)
-	
-	accum_nav.WW = ((lat_gps.WW - lat_origin.WW)/90) ; // in meters, range is about 20 miles
-	vector_to_origin.y = - accum_nav._.W0 ;
-	GPSlocation.y = accum_nav._.W0 ;
-	
-	GPSlocation.z = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
-	
-	//	multiply the longitude delta by the cosine of the latitude
-	accum_nav.WW = ((long_gps.WW - long_origin.WW)/90) ; // in meters
-	accum_nav.WW = ((__builtin_mulss ( cos_lat , accum_nav._.W0 )<<2)) ;
-	vector_to_origin.x = - accum_nav._.W1 ;
-	GPSlocation.x = accum_nav._.W1 ;
-	
-	//	convert to polar to produce
-	bearing_to_origin = rect_to_polar( &vector_to_origin ) ;
 	
 	return ;
 }

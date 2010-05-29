@@ -29,7 +29,6 @@ void processwaypoints(void) ;
 void init_waypoints( int waypointSetIndex ) ;
 
 
-extern struct relative2D vector_to_origin ;
 extern struct relative2D togoal ;
 extern struct relative2D vector_to_waypoint;
 extern struct relative2D vector_to_steer ;
@@ -38,9 +37,6 @@ extern struct relative3D camera_view ;
 struct waypointparameters { int x ; int y ; int cosphi ; int sinphi ; signed char phi ; int height ; int fromHeight; int legDist; } ;
 
 extern int pitch_control, roll_control, yaw_control, altitude_control ;
-
-extern union longbbbb lat_origin , long_origin , alt_origin ;
-extern union longbbbb x_origin , y_origin , z_origin ;
 
 extern signed char	desired_dir ;
 extern signed char  bearing_to_origin ;
