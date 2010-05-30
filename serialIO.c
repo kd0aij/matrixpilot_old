@@ -59,51 +59,6 @@ void init_USART1(void)
 }
 
 
-#if ( OPEN_LOG == 1 )
-
-void init_OpenLog(int gpscount)
-{
-	// This is code to do basic initialisation of the OpenLog uSD dataloggers available from SparkFun.
-	// http://www.sparkfun.com/commerce/product_info.php?products_id=9530
-	// This code requires the OpenLog to have slightly modified firmware to allow it run at 19200. See the
-	// Dev Board wiki for details.
-	
-	// use the gpscount initialisation timer to space the commands out a bit
-	// otherwise OpenLog seems to choke a bit, as its uart is unbuffered until
-	// it starts writing to a file.
-
-	
-	// Send a CTRL-Z to flush any outstanding data to the card. the OpenLog has a pair of 512 byte bufffers
-	// which it commits to disk alternately as they fill up. So there can be anywhere up to 511 bytes sitting
-	// in buffers at any given time. CTRL-Z forces these to be written to disk. This means you can use a soft
-	// restart of the UDB (using the reset button) to flush any remaining data at the end of a flight. We may
-	// expand this to include a specific "flush" button later on, depending on how many people have a need.
-	
-	if (gpscount == 920)
-	{
-		serial_output("%c\r\n", 26) ;
-	}
-	
-	// Create a log file if it doesn't exist already. If it already exists the OpenLog will return an error
-	// which we can't see, and don't care about anyway. There is work in progress to allow the OpenLog to 
-	// generate unique incrementally named logfiles on command, but the firmware isn't quite there yet. So
-	// everything gets appended into the one file for the moment, it's up to the user to manage the contents.
-	if (gpscount == 910)
-	{
-		serial_output("new UDBlog.txt\r\n") ;
-	}
-	
-	// Start appending data to the file. After this command OpenLog will write everything it receives to the 
-	// log file, until such time as it receives a CTRL-Z (ascii 26)
-	if (gpscount == 900)
-	{
-		serial_output("append UDBlog.txt\r\n") ;
-	}
-}
-
-#endif
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // 
 // Receive Serial Commands
@@ -319,12 +274,13 @@ void serial_output_4hz( void )
 }
 
 
-#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )
+#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB || SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 
 int telemetry_counter = 6 ;
 int skip = 0 ;
 
 extern int waypointIndex, air_speed_magnitude ;
+extern int magFieldEarth[3] ;
 
 void serial_output_4hz( void )
 {
@@ -371,6 +327,8 @@ void serial_output_4hz( void )
 			// F2 below means "Format Revision 2: and is used by a Telemetry parser to invoke the right pattern matching
 			// If you change this output format, then change F2 to F3 or F4, etc - to mark a new revision of format.
 			// F2 is a compromise between easy reading of raw data in a file and not droppping chars in transmission.
+
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )
 			serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
 				"as%i:wvx%i:wvy%i:wvz%i:\r\n",
 				tow, flags._.radio_on, flags._.nav_capable, flags._.GPS_steering,
@@ -380,6 +338,20 @@ void serial_output_4hz( void )
 				rmat[6] , rmat[7] , rmat[8] ,
 				(unsigned int)cog_gps.BB, sog_gps.BB, accum._.W1, voltage_milis.BB,
 				air_speed_magnitude, estimatedWind[0], estimatedWind[1],estimatedWind[2]) ;
+
+#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
+			serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
+				"as%i:wvx%i:wvy%i:wvz%i:ma%i:mb%i:mc%i:svs%i:hd%i:\r\n",
+				tow, flags._.radio_on, flags._.nav_capable, flags._.GPS_steering,
+				lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
+				rmat[0] , rmat[1] , rmat[2] ,
+				rmat[3] , rmat[4] , rmat[5] ,
+				rmat[6] , rmat[7] , rmat[8] ,
+				(unsigned int)cog_gps.BB, sog_gps.BB, accum._.W1, voltage_milis.BB,
+				air_speed_magnitude, estimatedWind[0], estimatedWind[1],estimatedWind[2], 
+				magFieldEarth[0],magFieldEarth[1],magFieldEarth[2],
+				svs, hdop ) ;
+#endif
 			return ;
 	}
 	telemetry_counter-- ;
@@ -394,6 +366,50 @@ void serial_output_4hz( void )
 	// TODO: Output interesting information for OSD.
 	// But first we'll have to implement a buffer for passthrough characters to avoid
 	// output corruption, or generate NMEA ourselves here.
+	return ;
+}
+
+#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_MAGNETOMETER )
+
+extern void rxMagnetometer(void) ;
+extern int magFieldBody[3] ;
+extern unsigned char magreg[6] ;
+extern int magFieldEarth[3] ;
+extern int magOffset[3] ;
+extern int magGain[3] ;
+extern int offsetDelta[3] ;
+extern int rawMagCalib[3] ;
+extern int magMessage ;
+
+extern union longww HHIntegral ;
+
+#define OFFSETSHIFT 1
+
+extern int I2ERROR ;
+extern int I2messages ;
+extern int I2interrupts ;
+/*
+void serial_output_4hz( void )
+{
+	serial_output("MagMessage: %i\r\nI2CCON: %X, I2CSTAT: %X, I2ERROR: %X\r\nMessages: %i\r\nInterrupts: %i\r\n\r\n" ,
+		magMessage ,
+		I2CCON , I2CSTAT , I2ERROR ,
+		I2messages, I2interrupts ) ;
+	return ;
+}
+*/
+
+void serial_output_4hz( void )
+{
+	serial_output("MagOffset: %i, %i, %i\r\nMagBody: %i, %i, %i\r\nMagEarth: %i, %i, %i\r\nMagGain: %i, %i, %i\r\nCalib: %i, %i, %i\r\nMagMessage: %i\r\nTotalMsg: %i\r\nI2CCON: %X, I2CSTAT: %X, I2ERROR: %X\r\n\r\n" ,
+		magOffset[0]>>OFFSETSHIFT , magOffset[1]>>OFFSETSHIFT , magOffset[2]>>OFFSETSHIFT ,
+		magFieldBody[0] , magFieldBody[1] , magFieldBody[2] ,
+		magFieldEarth[0] , magFieldEarth[1] , magFieldEarth[2] ,
+		magGain[0] , magGain[1] , magGain[2] ,
+		rawMagCalib[0] , rawMagCalib[1] , rawMagCalib[2] ,
+		magMessage ,
+		I2messages ,
+		I2CCON , I2CSTAT , I2ERROR ) ;
 	return ;
 }
 

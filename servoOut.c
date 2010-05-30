@@ -130,7 +130,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		xrate.offset = xrate.value ;
 		yaccel.offset = yaccel.value ;
 		yrate.offset = yrate.value ;
-		zaccel.offset = zaccel.value - 2*GRAVITY ; // GRAVITY is measured in A-D/2 units
+		zaccel.offset = zaccel.value - ((int)(2*GRAVITY)) ; // GRAVITY is measured in A-D/2 units
 		zrate.offset = zrate.value ;
 #ifdef VREF
 		vref.offset = vref.value ;
@@ -154,10 +154,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	
 	// count down the startup counter to 0
 	gps_startup_sequence(gpscount) ;
-
-#if ( OPEN_LOG == 1 )
-	init_OpenLog(gpscount);
-#endif
 
 	if ( gpscount > 0 ) gpscount-- ;
 	

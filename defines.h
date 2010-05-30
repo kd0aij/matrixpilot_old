@@ -38,7 +38,6 @@ void estimateWind(void) ;
 void rxMagnetometer(void) ;
 
 void state_machine(void) ;
-void filterInputs(void) ;
 
 void yawCntrl(void) ;
 void rollCntrl(void) ;
@@ -65,6 +64,10 @@ struct waypointDef { struct waypoint3D loc ; int flags ; struct waypoint3D viewp
 
 extern struct waypoint3D GPSlocation ;
 extern struct waypoint3D GPSvelocity ;
+extern union longww IMUvelocityx , IMUvelocityy , IMUvelocityz   ;
+extern union longww IMUlocationx , IMUlocationy , IMUlocationz   ;
+#define IMUheight IMUlocationz._.W1 
+
 extern struct relative2D velocity_thru_air ; // derived horizontal velocity relative to air in cm/sec
 extern struct relative2D vector_to_origin ;
 extern struct relative2D togoal ;
@@ -73,8 +76,6 @@ extern struct relative2D vector_to_steer ;
 extern int    estimatedWind[3] ;			// wind velocity vectors in cm / sec
 
 extern struct waypoint3D camera_view ;
-extern union longww IMUlocationx , IMUlocationy , IMUlocationz   ;
-extern struct waypoint3D IMUvelocity ;
 struct waypointparameters { int x ; int y ; int cosphi ; int sinphi ; signed char phi ; int height ; int fromHeight; int legDist; } ;
 
 
@@ -89,7 +90,6 @@ extern struct ADchannel xaccel, yaccel , zaccel ;	// x, y, and z accelerometer c
 extern struct ADchannel xrate , yrate, zrate ; 		// x, y, and z gyro channels
 extern struct ADchannel vref ;						// reference voltage
 
-extern int dutycycle ;	// used to compute PWM duty cycle
 extern int firstsamp ;	// used on startup to detect first A/D sample
 extern int calibcount ;	// number of PWM pulses before control is turned on
 
@@ -98,7 +98,7 @@ extern union intbb    sog_gps , cog_gps , climb_gps, week_no ;
 extern unsigned char  hdop ;
 extern union longbbbb xpg , ypg , zpg ;
 extern union intbb    xvg , yvg , zvg ;
-extern unsigned char  mode1 , mode2 , svs ;
+extern unsigned char  mode1 , mode2 , svs , hdop;
 
 extern unsigned char  	lat_cir ;
 extern int				cos_lat ;
@@ -132,6 +132,7 @@ extern boolean timer_5_on ;
 
 extern int defaultCorcon ;
 extern unsigned int cpu_timer ;
+extern int magMessage ;
 
 //#define indicate_loading_main		//LATEbits.LATE4 = 0
 //#define indicate_loading_inter	//LATEbits.LATE4 = 1
@@ -264,6 +265,8 @@ extern unsigned int cpu_timer ;
 #define SERIAL_UDB			3	// Pete's efficient UAV Dev Board format
 #define SERIAL_OSD_REMZIBI	4	// Output data formatted to use as input to a Remzibi OSD (only works with GPS_UBX)
 #define SERIAL_OSD_IF		5	// Output data formatted to use as input to a IF OSD (only works with GPS_UBX)
+#define SERIAL_MAGNETOMETER	6	// Debugging the magnetometer
+#define SERIAL_UDB_EXTRA	7	// Extra Telemetry beyond that provided by SERIAL_UDB for higher bandwidth connections
 
 // GPS Type
 #define GPS_STD				1
