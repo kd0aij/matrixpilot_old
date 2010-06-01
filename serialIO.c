@@ -129,7 +129,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 	indicate_loading_inter ;
 	
 	IFS0bits.U1TXIF = 0 ; // clear the interrupt 
-	unsigned char txchar = udb_serial_callback_sent_char() ;
+	unsigned char txchar = udb_serial_callback_get_char_to_send() ;
 	
 	if ( txchar )
 	{

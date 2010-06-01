@@ -111,7 +111,7 @@ void serial_output( char* format, ... )
 }
 
 
-char udb_serial_callback_sent_char(void)
+char udb_serial_callback_get_char_to_send(void)
 {
 	char txchar = serial_buffer[ sb_index++ ] ;
 	
