@@ -24,7 +24,6 @@ int progress_to_goal = 0 ;
 int crosstrack = 0 ;
 signed char desired_dir_waypoint = 0 ;
 signed char desired_bearing_over_ground  = 0 ;
-signed char bearing_to_origin    = 0 ;
 
 
 struct waypointDef *currentWaypointSet = (struct waypointDef*)waypoints ;
