@@ -6,6 +6,7 @@ char dcm_fourHertzCounter = 0 ;
 boolean dcm_has_calibrated = false ;
 
 
+// Called at 40Hz
 void udb_servo_callback_prepare_outputs(void)
 {
 	// This is a simple counter to do stuff at 4hz
@@ -47,6 +48,23 @@ void dcm_set_origin_location(long o_long, long o_lat, long o_alt)
 	lat_cir = accum_nav.__.B2 ;
 	//	estimate the cosine of the latitude, which is used later computing desired course
 	cos_lat = cosine ( lat_cir ) ;
+	
+	return ;
+}
+
+
+struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute)
+{
+	struct relative3D rel ;
+	union longww accum_nav ;
+	
+	rel.z = absolute.z ;
+	
+	rel.y = (absolute.y - lat_origin.WW)/90 ; // in meters
+	
+	accum_nav.WW = ((absolute.x - long_origin.WW)/90) ; // in meters
+	accum_nav.WW = ((__builtin_mulss ( cos_lat , accum_nav._.W0 )<<2)) ;
+	rel.x = accum_nav._.W1 ;
 	
 	return ;
 }

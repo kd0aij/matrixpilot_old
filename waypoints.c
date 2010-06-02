@@ -39,21 +39,8 @@ struct relWaypointDef wp_to_relative(struct waypointDef wp)
 	{
 		union longww accum_nav ;
 		
-		rel.loc.y = (wp.loc.y - lat_origin.WW)/90 ; // in meters
-		
-		accum_nav.WW = ((wp.loc.x - long_origin.WW)/90) ; // in meters
-		accum_nav.WW = ((__builtin_mulss ( cos_lat , accum_nav._.W0 )<<2)) ;
-		rel.loc.x = accum_nav._.W1 ;
-		
-		rel.loc.z = wp.loc.z ;
-		
-		rel.viewpoint.y = (wp.viewpoint.y - lat_origin.WW)/90 ; // in meters
-		
-		accum_nav.WW = ((wp.viewpoint.x - long_origin.WW)/90) ; // in meters
-		accum_nav.WW = ((__builtin_mulss ( cos_lat , accum_nav._.W0 )<<2)) ;
-		rel.viewpoint.x = accum_nav._.W1 ;
-		
-		rel.viewpoint.z = wp.viewpoint.z ;
+		rel.loc = dcm_absolute_to_relative(wp.loc) ;
+		rel.viewpoint = dcm_absolute_to_relative(wp.viewpoint) ;
 		
 		rel.flags = wp.flags - F_ABSOLUTE ;
 	}

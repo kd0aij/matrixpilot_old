@@ -25,7 +25,7 @@ void setup_origin(void)
 }
 
 
-void dcm_callback_location_updated(void)
+void dcm_callback_gps_location_updated(void)
 {
 	if ( flags._.save_origin )
 	{

@@ -3,6 +3,9 @@
 #include "magnetometerOptions.h"
 #include <dsp.h>
 
+#ifndef LIB_UDB_H
+#define LIB_UDB_H
+
 ////////////////////////////////////////////////////////////////////////////////
 // libUDB.h defines the API for accessing the UDB hardware through libUDB
 //
@@ -163,3 +166,5 @@ char udb_serial_callback_get_char_to_send(void);		// Callback
 
 // Implement this cal;back to handle receiving a character from the serial port
 void udb_serial_callback_received_char(char rxchar);	// Callback
+
+#endif

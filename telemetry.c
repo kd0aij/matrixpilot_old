@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "libDCM_internal.h"
+
 
 union intbb voltage_milis = {0} ;
 union intbb voltage_temp ;

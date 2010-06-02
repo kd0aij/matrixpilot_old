@@ -14,3 +14,15 @@ extern boolean skipYawDrift ;
 extern fractional dirovergndHRmat[] ;
 extern fractional dirovergndHGPS[] ;
 extern fractional omega[] ;
+
+extern union longbbbb tow ;
+extern union intbb    sog_gps , cog_gps , climb_gps, week_no ;
+extern unsigned char  hdop ;
+extern union longbbbb xpg , ypg , zpg ;
+extern union intbb    xvg , yvg , zvg ;
+extern unsigned char  mode1 , mode2 , svs, hdop ;
+
+extern int forward_acceleration  ;
+
+extern unsigned char  	lat_cir ;
+extern int				cos_lat ;

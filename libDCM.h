@@ -1,6 +1,8 @@
 #include "libUDB.h"
 #include "libDCM_defines.h"
 
+#ifndef LIB_DCM_H
+#define LIB_DCM_H
 
 // libDCM.h defines the API for accessing the location and orientation information
 // from the DCM algorithm and GPS.
@@ -12,9 +14,20 @@
 void dcm_calibrate(void) ;
 void dcm_set_origin_location(long o_long, long o_lat, long o_alt) ;
 
-void dcm_callback_location_updated(void) ;					// Callback
+// Called once each time the GPS reports a new location.
+// After dead reckoning is complete, this callback may go away.
+void dcm_callback_gps_location_updated(void) ;				// Callback
 
-void dcm_enable_yaw_drift_correction(boolean enabled) ;		// Allows disabling yaw drift estimation
+// Allows disabling yaw drift estimation.
+// Starts off enabled.  Call this to disable and to then re-enable.
+void dcm_enable_yaw_drift_correction(boolean enabled) ;
+
+// Implement this callback to prepare the pwOut values.
+// It is called at 40Hz (once every 25ms).
+void dcm_servo_callback_prepare_outputs(void) ;				// Callback
+
+// Convert an absolute location to relative
+struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute) ;
 
 // Is our gps data good enough for navigation?
 boolean gps_nav_valid(void) ;
@@ -30,7 +43,7 @@ void rotate( struct relative2D *xy , signed char angle ) ;
 // Vars
 extern union dcm_fbts_byte { struct dcm_flag_bits _ ; char b ; } dcm_flags ;
 
-// Outside of libDCM, these should be treated as read-only
+// Outside of libDCM, these should all be treated as read-only
 extern fractional rmat[] ;
 extern fractional omegaAccum[] ;
 extern fractional omegagyro[] ;
@@ -40,25 +53,17 @@ extern struct relative3D GPSvelocity ;
 extern struct relative2D velocity_thru_air ; // derived horizontal velocity relative to air in cm/sec
 extern int    estimatedWind[3] ;			// wind velocity vectors in cm / sec
 
-extern union longww IMUvelocityx , IMUvelocityy , IMUvelocityz ;
 extern union longww IMUlocationx , IMUlocationy , IMUlocationz ;
+extern union longww IMUvelocityx , IMUvelocityy , IMUvelocityz ;
 #define IMUheight IMUlocationz._.W1
 
-extern union longbbbb lat_gps , long_gps , alt_sl_gps , tow ;
-extern union intbb    sog_gps , cog_gps , climb_gps, week_no ;
-extern unsigned char  hdop ;
-extern union longbbbb xpg , ypg , zpg ;
-extern union intbb    xvg , yvg , zvg ;
-extern unsigned char  mode1 , mode2 , svs, hdop ;
-
-extern union longbbbb lat_origin , long_origin , alt_origin ;
-
-extern unsigned char  	lat_cir ;
-extern int				cos_lat ;
-
-extern signed char  calculated_heading ; // takes into account wind velocity
+extern signed char calculated_heading ; // takes into account wind velocity
 extern int gps_data_age ;
 
 extern int velocity_magnitude ;
-extern int forward_acceleration  ;
 extern int air_speed_magnitude;
+
+extern union longbbbb lat_gps , long_gps , alt_sl_gps ;
+extern union longbbbb lat_origin , long_origin , alt_origin ;
+
+#endif

@@ -79,7 +79,7 @@ void udb_background_callback_triggered(void)
 		
 		GPSlocation.z = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
 	
-		dcm_callback_location_updated() ;
+		dcm_callback_gps_location_updated() ;
 		estimateWind() ;
 	}
 	else
