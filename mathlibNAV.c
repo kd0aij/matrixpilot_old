@@ -3,6 +3,9 @@
 
 //	math libraray
 
+#define RADIANTOCIRCULAR 10430 
+
+
 //	sine table for angles from zero to pi/2 with an increment of pi/128 radian.
 //  sine values are multiplied by 2**14
 const int sintab[] =	
@@ -13,6 +16,7 @@ const int sintab[] =
 		13842,	14053,	14256,	14449,	14635,	14811,	14978,	15137,	15286,	15426,	
 		15557,	15679,	15791,	15893,	15986,	16069,	16143,	16207,	16261,	16305,	
 		16340,	16364,	16379,	16384}	;
+
 
 int sine ( signed char angle )
 //	returns (2**14)*sine(angle), angle measured in units of pi/128 ratians
@@ -44,10 +48,55 @@ int sine ( signed char angle )
 	}
 }
 
+
+signed char arcsine ( int y )
+// returns the inverse sine of y
+// y is in Q2.14 format, 16384 is maximum value
+// returned angle is a byte circular
+{
+       signed char angle = 32 ;
+       signed char doubleangle = 64 ;
+       signed char step = 32 ;
+       signed char sign ;
+       if ( y > 0 )
+       {
+               sign = 1 ;
+       }
+       else
+       {
+               sign = - 1 ;
+               y = - y ;
+       }
+       if ( y == 16384 )
+       {
+               return sign*64 ;
+       }
+       while ( step > 0 )
+       {
+               angle = doubleangle>>1 ;
+               if ( y == sine( angle ) )
+               {
+                       return sign*angle ;
+               }
+               else if ( y >  (( sine( angle )+ sine( angle - 1 ))>>1 ) )
+               {
+                       doubleangle += step ;
+               }
+               else
+               {
+                       doubleangle -= step ;
+               }
+               step = step>>1 ;
+       }
+       return sign*(doubleangle>>1) ;
+}
+
+
 int cosine ( signed char angle )
 {
 	return ( sine ( angle+64 ) ) ;
 }
+
 
 void rotate( struct relative2D *xy , signed char angle )
 {
@@ -65,6 +114,7 @@ void rotate( struct relative2D *xy , signed char angle )
 	xy->y = newy ;
 	return ;	
 }
+
 
 signed char rect_to_polar ( struct relative2D *xy )
 {
@@ -110,7 +160,6 @@ signed char rect_to_polar ( struct relative2D *xy )
 	return (-theta ) ;
 }
 
-#define RADIANTOCIRCULAR 10430 
 
 int rect_to_polar16 ( struct relative2D *xy )
 {
