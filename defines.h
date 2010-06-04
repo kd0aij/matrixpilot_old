@@ -28,9 +28,6 @@ void init_waypoints( int waypointSetIndex ) ;
 
 
 extern struct relative2D togoal ;
-extern struct relative2D vector_to_waypoint;
-extern struct relative2D vector_to_steer ;
-
 extern struct relative3D camera_view ;
 struct waypointparameters { int x ; int y ; int cosphi ; int sinphi ; signed char phi ; int height ; int fromHeight; int legDist; } ;
 
