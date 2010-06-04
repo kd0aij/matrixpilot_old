@@ -565,9 +565,9 @@ void output_matrix(void)
 //	PDC1 = 3000 + accum._.W1 ;
 //	accum.WW = __builtin_mulss( rmat[7] , 4000 ) ;
 	accum.WW = __builtin_mulss( rmat[3] , 4000 ) ;
-	PDC2 = 3000 + accum._.W1 ;
+	PDC2 = pulsesat( 3000 + accum._.W1 + waggle ) ;
 	accum.WW = __builtin_mulss( rmat[4] , 4000 ) ;
-	PDC3 = 3000 + accum._.W1 ;
+	PDC3 = pulsesat( 3000 + accum._.W1 + waggle ) ;
 	return ;
 }
 */
@@ -608,6 +608,8 @@ void imu(void)
 	}
 
 	PI_feedback() ;
+	processwaypoints() ;
+//	output_matrix() ;
 	return ;
 }
 
