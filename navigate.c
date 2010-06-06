@@ -35,8 +35,6 @@ void dcm_callback_gps_location_updated(void)
 		setup_origin() ;
 	}
 	
-	processwaypoints() ;
-	
 //	Ideally, navigate should take less than one second. For MatrixPilot, navigation takes only
 //	a few milliseconds.
 	

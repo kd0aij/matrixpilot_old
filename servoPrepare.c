@@ -50,6 +50,7 @@ void dcm_servo_callback_prepare_outputs(void)
 		// case 0 is when the control is up and running
 			
 		case 0: {
+			processwaypoints() ;
 			updateBehavior() ;
 			rollCntrl() ;
 			yawCntrl() ;
