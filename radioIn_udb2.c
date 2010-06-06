@@ -21,29 +21,51 @@ unsigned int rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
 
 void udb_init_capture(void)
 {
-	T2CON = 0b1000000000000000  ;	// turn on timer 2 with no prescaler
-	
 	int i;
 	for (i=0; i <= NUM_INPUTS; i++)
 		udb_pwIn[i] = udb_pwTrim[i] = 0 ;
 	
-	IC1CON = IC2CON = IC7CON = IC8CON =
-	IC1CON = IC2CON = IC7CON = IC8CON = 0b0010000010000001 ;
+	//	configure the capture pins
 	
-	IPC0bits.IC1IP = IPC1bits.IC2IP = IPC4bits.IC7IP = IPC4bits.IC8IP =
-	IPC0bits.IC1IP = IPC1bits.IC2IP = IPC4bits.IC7IP = IPC4bits.IC8IP = 6 ; // priority 6
+	IC1CONbits.ICTMR = 1 ;  // use timer 2
+	IC1CONbits.ICM = 1 ; // capture every edge
 	
-	IFS0bits.IC1IF = IFS0bits.IC2IF = IFS1bits.IC7IF = IFS1bits.IC8IF =
-	IFS0bits.IC1IF = IFS0bits.IC2IF = IFS1bits.IC7IF = IFS1bits.IC8IF = 0 ; // clear the interrupt
+	IC8CON = IC7CON = IC6CON = IC5CON = IC4CON = IC3CON = IC2CON = IC1CON ;
 	
-	if (NUM_INPUTS > 0) IEC1bits.IC7IE = 1 ; // turn on interrupt for input 1
-	if (NUM_INPUTS > 1) IEC1bits.IC8IE = 1 ; // turn on interrupt for input 2
-	if (NUM_INPUTS > 2) IEC0bits.IC2IE = 1 ; // turn on interrupt for input 3
-	if (NUM_INPUTS > 3) IEC0bits.IC1IE = 1 ; // turn on interrupt for input 4
-	if (NUM_INPUTS > 4) IEC0bits.IC1IE = 1 ; // turn on interrupt for input 5
-	if (NUM_INPUTS > 5) IEC0bits.IC1IE = 1 ; // turn on interrupt for input 6
-	if (NUM_INPUTS > 6) IEC0bits.IC1IE = 1 ; // turn on interrupt for input 7
-	if (NUM_INPUTS > 7) IEC0bits.IC1IE = 1 ; // turn on interrupt for input 8
+	_TRISD8 = _TRISD9 = _TRISD10 = _TRISD11 = _TRISD12 = _TRISD13 = _TRISD14 = _TRISD15 = 1 ;
+	
+	//	set the interrupt priorities to 6
+	
+	IPC0bits.IC1IP = 
+	IPC1bits.IC2IP = 
+	IPC9bits.IC3IP = 
+	IPC9bits.IC4IP = 
+	IPC9bits.IC5IP = 
+	IPC10bits.IC6IP = 
+	IPC5bits.IC7IP = 
+	IPC5bits.IC8IP = 6 ; 
+	
+	//	clear the interrupts:
+	
+	IFS0bits.IC1IF = 
+	IFS0bits.IC2IF = 
+	IFS2bits.IC3IF = 
+	IFS2bits.IC4IF = 
+	IFS2bits.IC5IF = 
+	IFS2bits.IC6IF = 
+	IFS1bits.IC7IF = 
+	IFS1bits.IC8IF = 0 ;
+	
+	//	enable the interrupts:
+	
+	if (NUM_INPUTS > 0) IEC0bits.IC1IE = 1 ;
+	if (NUM_INPUTS > 1) IEC0bits.IC2IE = 1 ; 
+	if (NUM_INPUTS > 2) IEC2bits.IC3IE = 1 ; 
+	if (NUM_INPUTS > 3) IEC2bits.IC4IE = 1 ; 
+	if (NUM_INPUTS > 4) IEC2bits.IC5IE = 1 ; 
+	if (NUM_INPUTS > 5) IEC2bits.IC6IE = 1 ; 
+	if (NUM_INPUTS > 6) IEC1bits.IC7IE = 1 ; 
+	if (NUM_INPUTS > 7) IEC1bits.IC8IE = 1 ;
 	
 	return ;
 }
@@ -60,17 +82,17 @@ void udb_servo_record_trims(void)
 
 
 // Input Channel 1
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 {
 	unsigned int time ;	
-	IFS1bits.IC7IF = 0 ; // clear the interrupt
-	while ( IC7CONbits.ICBNE )
+	IFS0bits.IC1IF = 0 ; // clear the interrupt
+	while ( IC1CONbits.ICBNE )
 	{
-		time = IC7BUF ;
+		time = IC1BUF ;
 	}
 	
 #if ( NORADIO == 0 )
-	if (PORTBbits.RB4)
+	if (PORTDbits.RD8)
 	{
 		 rise[1] = time ;
 	}
@@ -99,17 +121,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 
 
 // Input Channel 2
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 {
 	unsigned int time ;
-	IFS1bits.IC8IF = 0 ; // clear the interrupt
-	while ( IC8CONbits.ICBNE )
+	IFS0bits.IC2IF = 0 ; // clear the interrupt
+	while ( IC2CONbits.ICBNE )
 	{
-		time = IC8BUF ;
+		time = IC2BUF ;
 	}
 	
 #if ( NORADIO == 0 )
-	if (PORTBbits.RB5)
+	if (PORTDbits.RD9)
 	{
 		 rise[2] = time ;
 	}
@@ -138,17 +160,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 
 
 // Input Channel 3
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC3Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC2IF = 0 ; // clear the interrupt
-	while ( IC2CONbits.ICBNE )
+	IFS2bits.IC3IF = 0 ; // clear the interrupt
+	while ( IC3CONbits.ICBNE )
 	{
-		time = IC2BUF ;
+		time = IC3BUF ;
 	}
 	
 #if ( NORADIO == 0 )
-	if (PORTDbits.RD1)
+	if (PORTDbits.RD10)
 	{
 		 rise[3] = time ;
 	}
@@ -177,17 +199,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 
 
 // Input Channel 4
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC4Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC1IF =  0 ; // clear the interrupt
-	while ( IC1CONbits.ICBNE )
+	IFS2bits.IC4IF =  0 ; // clear the interrupt
+	while ( IC4CONbits.ICBNE )
 	{
-		time = IC1BUF ;
+		time = IC4BUF ;
 	}
 	
 #if ( NORADIO == 0 )
-	if (PORTDbits.RD0)
+	if (PORTDbits.RD11)
 	{
 		 rise[4] = time ;
 	}
@@ -216,17 +238,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 
 
 // Input Channel 5
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC5Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC1IF =  0 ; // clear the interrupt
-	while ( IC1CONbits.ICBNE )
+	IFS2bits.IC5IF =  0 ; // clear the interrupt
+	while ( IC5CONbits.ICBNE )
 	{
-		time = IC1BUF ;
+		time = IC5BUF ;
 	}
 	
 #if ( NORADIO == 0 )
-	if (PORTDbits.RD0)
+	if (PORTDbits.RD12)
 	{
 		 rise[5] = time ;
 	}
@@ -255,17 +277,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 
 
 // Input Channel 6
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC6Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC1IF =  0 ; // clear the interrupt
-	while ( IC1CONbits.ICBNE )
+	IFS2bits.IC6IF =  0 ; // clear the interrupt
+	while ( IC6CONbits.ICBNE )
 	{
-		time = IC1BUF ;
+		time = IC6BUF ;
 	}
 	
 #if ( NORADIO == 0 )
-	if (PORTDbits.RD0)
+	if (PORTDbits.RD13)
 	{
 		 rise[6] = time ;
 	}
@@ -294,17 +316,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 
 
 // Input Channel 7
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC1IF =  0 ; // clear the interrupt
-	while ( IC1CONbits.ICBNE )
+	IFS1bits.IC7IF =  0 ; // clear the interrupt
+	while ( IC7CONbits.ICBNE )
 	{
-		time = IC1BUF ;
+		time = IC7BUF ;
 	}
 	
 #if ( NORADIO == 0 )
-	if (PORTDbits.RD0)
+	if (PORTDbits.RD14)
 	{
 		 rise[7] = time ;
 	}
@@ -333,17 +355,17 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 
 
 // Input Channel 8
-void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC1IF =  0 ; // clear the interrupt
-	while ( IC1CONbits.ICBNE )
+	IFS1bits.IC8IF =  0 ; // clear the interrupt
+	while ( IC8CONbits.ICBNE )
 	{
-		time = IC1BUF ;
+		time = IC8BUF ;
 	}
 	
 #if ( NORADIO == 0 )
-	if (PORTDbits.RD0)
+	if (PORTDbits.RD15)
 	{
 		 rise[8] = time ;
 	}
