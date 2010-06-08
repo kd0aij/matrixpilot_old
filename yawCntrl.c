@@ -36,7 +36,7 @@ void normalYawCntrl(void)
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
 #endif 
-	if ( RUDDER_NAVIGATION && flags._.GPS_steering )
+	if ( RUDDER_NAVIGATION && flags._.GPS_steering && ( desired_behavior._.takeoff == 0))
 	{
 		yawNavDeflection = determine_navigation_deflection( 'y' ) ;
 		
