@@ -72,9 +72,16 @@ void normalAltitudeCntrl(void)
 	{
 		if ( THROTTLE_CHANNEL_REVERSED ) throttleInOffset = - throttleInOffset ;
 		
-		if ( flags._.GPS_steering == 1 )
+		if ( flags._.GPS_steering )
 		{
-			desiredHeight = goal.fromHeight + (((goal.height - goal.fromHeight) * (long)progress_to_goal)>>12)  ;
+			if ( desired_behavior._.takeoff )
+			{
+				desiredHeight = goal.height ;
+			}
+			else
+			{
+				desiredHeight = goal.fromHeight + (((goal.height - goal.fromHeight) * (long)progress_to_goal)>>12)  ;
+			}
 		}
 		else
 		{

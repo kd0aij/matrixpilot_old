@@ -35,7 +35,7 @@ void normalYawCntrl(void)
 #ifdef TestGains
 	flags._.GPS_steering = 1 ;
 #endif 
-	if ( RUDDER_NAVIGATION && flags._.GPS_steering )
+	if ( RUDDER_NAVIGATION && flags._.GPS_steering && !desired_behavior._.takeoff )
 	{
 		yawNavDeflection = determine_navigation_deflection( 'y' ) ;
 		
@@ -51,7 +51,14 @@ void normalYawCntrl(void)
 	
 	if ( YAW_STABILIZATION_RUDDER && flags._.pitch_feedback )
 	{
-		gyroYawFeedback.WW = __builtin_mulss( yawkdrud , omegaAccum[2] ) ;
+		if ( RUDDER_NAVIGATION && flags._.GPS_steering && !desired_behavior._.takeoff )
+		{
+			gyroYawFeedback.WW = __builtin_mulss( yawkdrud, omegaAccum[2] ) ;
+		}
+		else
+		{
+			gyroYawFeedback.WW = __builtin_mulss( yawkdrud, omegagyro[2] ) ;
+		}
 	}
 	else
 	{
