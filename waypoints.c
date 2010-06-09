@@ -151,6 +151,10 @@ void compute_waypoint ( void )
 
 	
 #if ( USE_CROSSTRACKING == 1 )
+#define CTDEADBAND 8
+#define CTMARGIN 16
+#define CTGAIN 4
+// note: CTGAIN*(CTMARGIN-CTDEADBAND) should equal 32
 	
 	// project the goal vector perpendicular to the desired direction vector
 	// to get the crosstrack error
@@ -162,7 +166,34 @@ void compute_waypoint ( void )
 	
 	// crosstrack is measured in meters
 	// angles are measured as an 8 bit signed character, so 90 degrees is 64 binary.
-	
+
+	if ( abs(crosstrack) < ((int)(CTDEADBAND)))
+	{
+		desired_bearing_over_ground = goal.phi ;
+	}
+	else if ( abs(crosstrack) < ((int)(CTMARGIN)))
+	{
+		if ( crosstrack > 0 )
+		{
+			desired_bearing_over_ground = goal.phi + ( crosstrack - CTDEADBAND ) * CTGAIN ;
+		}
+		else
+		{
+			desired_bearing_over_ground = goal.phi + ( crosstrack + CTDEADBAND ) * CTGAIN ;
+		}
+	}
+	else
+	{
+		if ( crosstrack > 0 )
+		{
+			desired_bearing_over_ground = goal.phi + 32 ; // 45 degrees maximum
+		}
+		else
+		{
+			desired_bearing_over_ground = goal.phi - 32 ; // 45 degrees maximum
+		}
+	}
+/*
 	if ( crosstrack > 32 )  // more than 32 meters to the right, steer 45 degrees to the left
 	{
 		desired_bearing_over_ground = goal.phi + 32 ; // 45 degrees maximum
@@ -175,6 +206,7 @@ void compute_waypoint ( void )
 	{
 		desired_bearing_over_ground = goal.phi + crosstrack ;
 	}
+*/
 
 	if ((estimatedWind[0] == 0) && (estimatedWind[1] == 0) || air_speed_magnitude < WIND_NAV_AIR_SPEED_MIN   )
 		// clause keeps ground testing results same as in the past. Small and changing GPS speed on the ground,
