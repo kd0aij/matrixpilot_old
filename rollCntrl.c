@@ -75,13 +75,13 @@ void normalRollCntrl(void)
 	
 	if ( YAW_STABILIZATION_AILERON && flags._.pitch_feedback )
 	{
-		if ( AILERON_NAVIGATION && flags._.GPS_steering && !desired_behavior._.takeoff )
+		if ( flags._.GPS_steering && desired_behavior._.takeoff )
 		{
-			gyroYawFeedback.WW = __builtin_mulss( yawkdail, omegaAccum2 ) ;
+			gyroYawFeedback.WW = __builtin_mulss( yawkdail, omegagyro2 ) ;
 		}
 		else
 		{
-			gyroYawFeedback.WW = __builtin_mulss( yawkdail, omegagyro2 ) ;
+			gyroYawFeedback.WW = __builtin_mulss( yawkdail, omegaAccum2 ) ;
 		}
 	}
 	else

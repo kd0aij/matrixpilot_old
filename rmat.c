@@ -275,7 +275,7 @@ int omegaSOG ( int omega , unsigned int speed  )
 	{
 		return RMAX ;
 	}
-	else if ( working._.W1 < - CENTRIFSAT )
+	else if ( ((int)working._.W1) < ((int)-CENTRIFSAT) )
 	{
 		return - RMAX ;
 	}
