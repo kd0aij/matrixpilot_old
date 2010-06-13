@@ -287,7 +287,7 @@ int omegaSOG ( int omega , unsigned int speed  )
 	{
 		return RMAX ;
 	}
-	else if ( working._.W1 < - CENTRIFSAT )
+	else if ( ((int)working._.W1) < ((int)-CENTRIFSAT) )
 	{
 		return - RMAX ;
 	}
@@ -303,13 +303,8 @@ int omegaSOG ( int omega , unsigned int speed  )
 void adj_accel()
 {
 	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , (unsigned int) sog_gps.BB ) ;
-//	gplane[1]=gplane[1] ;
-	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , (unsigned int) sog_gps.BB ) ;
-	
-//	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , (unsigned int) velocity_magnitude ) ;
-	gplane[1]=gplane[1]+ ACCELSCALE*forward_acceleration ;
-//	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , (unsigned int) velocity_magnitude ) ;
-	
+	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , (unsigned int) sog_gps.BB ) ;	
+	gplane[1]=gplane[1]+ ((int)(ACCELSCALE))*forward_acceleration ;	
 	return ;
 }
 
