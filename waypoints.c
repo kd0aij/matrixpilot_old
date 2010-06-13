@@ -155,43 +155,16 @@ void compute_waypoint ( void )
 #define CTMARGIN 16
 #define CTGAIN 4
 #define MAXCROSSANGLE 32
-#define CTVELGAIN (8.0 * (( RMAX / 100.0) * 4.0 ))
-#define CTPOSGAIN (2.0)
 // note: CTGAIN*(CTMARGIN-CTDEADBAND) should equal 32
-	
-	// project the goal vector perpendicular to the desired direction vector
-	// to get the crosstrack error
-	
+
 	temporary.WW = ( __builtin_mulss( togoal.y , goal.cosphi )
 				   - __builtin_mulss( togoal.x , goal.sinphi ))<<2 ;
 	
-	crosstrack = ((int)(CTPOSGAIN))*temporary._.W1 ;
-
-	temporary.WW = 	( __builtin_mulss( -IMUvelocityy._.W1 , goal.cosphi )
-			   - __builtin_mulss( -IMUvelocityx._.W1 , goal.sinphi ))<<2 ;
-
-	temporary.WW = __builtin_mulss( temporary._.W1 , ((int)(CTVELGAIN))) ;
-
-	crosstrack += temporary._.W1 ;
-
-	if ( abs( crosstrack ) <= ((int)(MAXCROSSANGLE)) )
-	{
-			desired_bearing_over_ground = goal.phi + crosstrack;
-	}
-	else if ( crosstrack > ((int)(MAXCROSSANGLE)) )
-	{
-			desired_bearing_over_ground = goal.phi + ((int)(MAXCROSSANGLE));	
-	}
-	else if ( crosstrack <  - ((int)(MAXCROSSANGLE))  )
-	{
-			desired_bearing_over_ground = goal.phi - ((int)(MAXCROSSANGLE));	
-	}
-
-	
-	
+	crosstrack = temporary._.W1 ;
+		
 	// crosstrack is measured in meters
 	// angles are measured as an 8 bit signed character, so 90 degrees is 64 binary.
-/*
+
 	if ( abs(crosstrack) < ((int)(CTDEADBAND)))
 	{
 		desired_bearing_over_ground = goal.phi ;
@@ -218,7 +191,6 @@ void compute_waypoint ( void )
 			desired_bearing_over_ground = goal.phi - 32 ; // 45 degrees maximum
 		}
 	}
-*/
 /*
 	if ( crosstrack > 32 )  // more than 32 meters to the right, steer 45 degrees to the left
 	{
