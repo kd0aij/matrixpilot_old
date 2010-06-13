@@ -81,7 +81,7 @@ int determine_navigation_deflection(char navType)
 	desiredX = -cosine( desired_dir ) ;
 	desiredY = sine( desired_dir ) ;
 #endif
-	if ( desired_behavior._.takeoff )
+	if ( desired_behavior._.directGPS )
 	{
 		actualX = -cosine( actual_dir ) ;
 		actualY = sine ( actual_dir ) ;

@@ -52,7 +52,7 @@ void normalYawCntrl(void)
 	
 	if ( YAW_STABILIZATION_RUDDER && flags._.pitch_feedback )
 	{
-		if ( flags._.GPS_steering && desired_behavior._.takeoff  )
+		if ( flags._.GPS_steering && desired_behavior._.directGPS  )
 		{
 			gyroYawFeedback.WW = __builtin_mulss( yawkdrud, omegagyro[2] ) ;
 		}

@@ -151,9 +151,9 @@ void compute_waypoint ( void )
 
 	
 #if ( USE_CROSSTRACKING == 1 )
-#define CTDEADBAND 8
+#define CTDEADBAND 0
 #define CTMARGIN 16
-#define CTGAIN 4
+#define CTGAIN 2
 #define MAXCROSSANGLE 32
 // note: CTGAIN*(CTMARGIN-CTDEADBAND) should equal 32
 
@@ -173,11 +173,11 @@ void compute_waypoint ( void )
 	{
 		if ( crosstrack > 0 )
 		{
-			desired_bearing_over_ground = goal.phi + ( crosstrack - CTDEADBAND ) * CTGAIN ;
+			desired_bearing_over_ground = goal.phi + ( crosstrack - ((int)(CTDEADBAND) )) * ((int) (CTGAIN)) ;
 		}
 		else
 		{
-			desired_bearing_over_ground = goal.phi + ( crosstrack + CTDEADBAND ) * CTGAIN ;
+			desired_bearing_over_ground = goal.phi + ( crosstrack + ((int)(CTDEADBAND) )) * ((int) (CTGAIN)) ;
 		}
 	}
 	else

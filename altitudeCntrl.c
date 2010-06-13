@@ -76,7 +76,7 @@ void normalAltitudeCntrl(void)
 		
 		if ( flags._.GPS_steering )
 		{
-			if ( desired_behavior._.takeoff )
+			if ( desired_behavior._.climbout )
 			{
 				desiredHeight = goal.height ;
 			}
