@@ -322,18 +322,10 @@ void processwaypoints(void)
 		compute_waypoint() ;
 		compute_camera_view() ;
 		
-		if ( desired_behavior._.altitude  ||  desired_behavior._.takeoff   )
-		{
-			if ( desired_behavior._.altitude )
-			{
-				if ( abs(IMUheight - goal.height) < ((int) HEIGHT_MARGIN ))
-					next_waypoint() ;
-			}
-			else
-			{
-				if ( IMUheight - goal.height + ((int) HEIGHT_MARGIN	) >0 )
-					next_waypoint() ;
-			}
+		if ( desired_behavior._.altitude )
+		{	
+			if ( abs(IMUheight - goal.height) < ((int) HEIGHT_MARGIN ))
+				next_waypoint() ;
 		}
 		else
 		{
