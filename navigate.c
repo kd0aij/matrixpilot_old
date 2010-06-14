@@ -81,16 +81,8 @@ int determine_navigation_deflection(char navType)
 	desiredX = -cosine( desired_dir ) ;
 	desiredY = sine( desired_dir ) ;
 #endif
-	if ( desired_behavior._.directGPS )
-	{
-		actualX = -cosine( actual_dir ) ;
-		actualY = sine ( actual_dir ) ;
-	}
-	else
-	{
-		actualX = (navType == 'h') ? rmat[2] : rmat[1] ;
-		actualY = (navType == 'h') ? rmat[5] : rmat[4] ;
-	}
+	actualX = (navType == 'h') ? rmat[2] : rmat[1] ;
+	actualY = (navType == 'h') ? rmat[5] : rmat[4] ;
 	dotprod.WW = __builtin_mulss( actualX , desiredX ) + __builtin_mulss( actualY , desiredY ) ;
 	crossprod.WW = __builtin_mulss( actualX , desiredY ) - __builtin_mulss( actualY , desiredX ) ;
 	crossprod.WW = crossprod.WW<<2 ;

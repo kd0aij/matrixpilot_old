@@ -191,20 +191,6 @@ void compute_waypoint ( void )
 			desired_bearing_over_ground = goal.phi - 32 ; // 45 degrees maximum
 		}
 	}
-/*
-	if ( crosstrack > 32 )  // more than 32 meters to the right, steer 45 degrees to the left
-	{
-		desired_bearing_over_ground = goal.phi + 32 ; // 45 degrees maximum
-	}
-	else if ( crosstrack < -32 ) // more than 32 meters to the left, steer 45 degrees to the right
-	{
-		desired_bearing_over_ground = goal.phi - 32 ; // -45 degress minimum
-	}
-	else  // within 32 meters of the desired track, steer in proportion to the cross track error
-	{
-		desired_bearing_over_ground = goal.phi + crosstrack ;
-	}
-*/
 
 	if ((estimatedWind[0] == 0) && (estimatedWind[1] == 0) || air_speed_magnitude < WIND_NAV_AIR_SPEED_MIN   )
 		// clause keeps ground testing results same as in the past. Small and changing GPS speed on the ground,

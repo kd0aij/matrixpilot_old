@@ -330,8 +330,7 @@ struct behavior_flag_bits {
 			unsigned int absolute		: 1 ;	// absolute waypoint
 			unsigned int altitude		: 1 ;	// climb/descend to goal altitude
 			unsigned int climbout		: 1 ;   // no linear interpolation on altitude control
-			unsigned int directGPS		: 1 ;   // use GPS directly instead of DCM for navigation
-			unsigned int unused			: 4 ;
+			unsigned int unused			: 5 ;
 			} ;
 
 #define F_NORMAL						0
@@ -346,7 +345,6 @@ struct behavior_flag_bits {
 #define F_ABSOLUTE						256
 #define F_ALTITUDE_GOAL					512
 #define F_CLIMBOUT						1024
-#define F_DIRECTGPS						2048
 
 union bfbts_word { struct behavior_flag_bits _ ; int W ; };
 
