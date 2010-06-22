@@ -26,6 +26,20 @@ union dcm_fbts_byte dcm_flags ;
 char dcm_fourHertzCounter = 0 ;
 boolean dcm_has_calibrated = false ;
 
+#if ( HILSIM == 1 )
+unsigned char SIMservoOutputs[] = {	0xFF, 0xEE,		//sync
+									0x03, 0x04,		//S1
+									0x05, 0x06,		//S2
+									0x07, 0x08,		//S3
+									0x09, 0x0A,		//S4
+									0x0B, 0x0C,		//S5
+									0x0D, 0x0E,		//S6
+									0x0F, 0x10		//checksum
+									};
+
+void send_HILSIM_outputs( void ) ;
+#endif
+
 
 // Called at 40Hz
 void udb_servo_callback_prepare_outputs(void)
@@ -43,6 +57,10 @@ void udb_servo_callback_prepare_outputs(void)
 	}
 	
 	dcm_servo_callback_prepare_outputs() ;
+	
+#if ( HILSIM == 1)
+	send_HILSIM_outputs() ;
+#endif
 	
 	return ;
 }
@@ -89,3 +107,37 @@ struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute)
 	
 	return ;
 }
+
+
+#if ( HILSIM == 1 )
+void send_HILSIM_outputs( void )
+{
+	// Setup outputs for HILSIM
+	int i ;
+	unsigned char CK_A = 0 ;
+	unsigned char CK_B = 0 ;
+	int temp ;
+	
+	for (i=1; i<=NUM_OUTPUTS; i++)
+	{
+		temp = udb_pwOut[i] ;
+		SIMservoOutputs[2*i] = temp >> 8 ;
+		SIMservoOutputs[(2*i)+1] = temp & 0xFF ;
+	}
+	
+	for (i=2; i<14; i++)
+	{
+		CK_A += SIMservoOutputs[i] ;
+		CK_B += CK_A ;
+	}
+	
+	SIMservoOutputs[14] = CK_A ;
+	SIMservoOutputs[15] = CK_B ;
+	
+	// Send HILSIM outputs
+	for (i=0; i<16; i++)
+	{
+		udb_gps_send_char(SIMservoOutputs[i]) ;	
+	}
+}
+#endif

@@ -69,12 +69,14 @@
 #define ALTITUDEHOLD_WAYPOINT				AH_FULL
 
 // Inverted flight
-// Set this to 1 to enable stabilization of inverted flight.
-#define STABILIZE_INVERTED_FLIGHT			0
+// Set these to 1 to enable stabilization of inverted flight in stabilized and/or waypoint modes.
+#define INVERTED_FLIGHT_STABILIZED_MODE		0
+#define INVERTED_FLIGHT_WAYPOINT_MODE		0
 
 // Hovering
-// Set this to 1 to enable stabilization of hovering.
-#define STABILIZE_HOVERING					0
+// Set these to 1 to enable stabilization of hovering in stabilized and/or waypoint modes.
+#define HOVERING_STABILIZED_MODE			0
+#define HOVERING_WAYPOINT_MODE				0
 
 // Wind Estimation and Navigation
 // Set this to 1 to use automatic wind estimation and navigation. 
@@ -393,6 +395,11 @@
 #define ALT_HOLD_PITCH_MAX					15.0
 #define ALT_HOLD_PITCH_HIGH					 0.0
 
+// Use ALT_HOLD_PITCH_LAND in conjunction with the F_LAND waypoint qualifier.
+// The throttle will be turned off for an F_LAND waypoint.
+// The pitch goal during landing, in degrees, will be set to ALT_HOLD_PITCH_LAND.
+#define ALT_HOLD_PITCH_LAND					 0.0
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Return To Launch Pitch Down in degrees, a real number.
@@ -401,6 +408,22 @@
 // set it to zero if you do not want to use this feature.
 // This only takes effect when entering RTL mode, which only happens when the plane loses the transmitter signal.
 #define RTL_PITCH_DOWN						0.0
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Dead reckoning
+//
+// Use DEADRECKONING to select the dead reckoning option.
+// DEADRECKONING 0 selects the GPS to perform navigation, at the GPS update rate.
+// DEADRECKONING 1 selects the dead reckoning computations to perform navigation, at 40 Hz.
+#define DEADRECKONING 1
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Hardware In the Loop Simulation
+// !!! EXPERIMENTAL !!!
+//
+#define HILSIM 								0
 
 
 ////////////////////////////////////////////////////////////////////////////////

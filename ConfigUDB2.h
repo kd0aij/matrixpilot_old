@@ -56,6 +56,6 @@
 #define HW_SWITCH_3			0
 
 // BAUD Rates
-#define UDB_BAUD_4800	51 //?
-#define UDB_BAUD_9600	25 //?
-#define UDB_BAUD_19200	12 //?
+#define UDB_BAUD_4800	415
+#define UDB_BAUD_9600	207
+#define UDB_BAUD_19200	103

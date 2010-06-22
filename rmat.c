@@ -135,19 +135,32 @@ void read_gyros()
 	vref_adj = 0 ;
 #endif
 
+#if (HILSIM == 1)
+	gx = omegagyro[0] = q_sim.BB;
+	gy = omegagyro[1] = p_sim.BB;
+	gz = omegagyro[2] = r_sim.BB;  
+#else
 	gx = omegagyro[0] = XSIGN ((udb_xrate.value>>1) - (udb_xrate.offset>>1) + vref_adj) ;
 	gy = omegagyro[1] = YSIGN ((udb_yrate.value>>1) - (udb_yrate.offset>>1) + vref_adj) ;
 	gz = omegagyro[2] = ZSIGN ((udb_zrate.value>>1) - (udb_zrate.offset>>1) + vref_adj) ;
+#endif
+	
 	return ;
 }
 
 void read_accel()
 {
-	udb_setDSPLibInUse(true) ;
-	
+#if (HILSIM == 1)
+	gplane[0] = v_dot_sim.BB;
+	gplane[1] = u_dot_sim.BB; 
+	gplane[2] = w_dot_sim.BB;
+#else
 	gplane[0] =   ( udb_xaccel.value>>1 ) - ( udb_xaccel.offset>>1 ) ;
 	gplane[1] =   ( udb_yaccel.value>>1 ) - ( udb_yaccel.offset>>1 ) ;
 	gplane[2] =   ( udb_zaccel.value>>1 ) - ( udb_zaccel.offset>>1 ) ;
+#endif
+	
+	udb_setDSPLibInUse(true) ;
 	
 	accelEarth[0] =  VectorDotProduct( 3 , &rmat[0] , gplane )<<1;
 	accelEarth[1] = - VectorDotProduct( 3 , &rmat[3] , gplane )<<1;
@@ -312,12 +325,8 @@ int omegaSOG ( int omega , unsigned int speed  )
 void adj_accel()
 {
 	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , (unsigned int) sog_gps.BB ) ;
-//	gplane[1]=gplane[1] ;
 	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , (unsigned int) sog_gps.BB ) ;
-	
-//	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , (unsigned int) velocity_magnitude ) ;
-	gplane[1]=gplane[1]+ ACCELSCALE*forward_acceleration ;
-//	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , (unsigned int) velocity_magnitude ) ;
+	gplane[1]=gplane[1]+ ((int)(ACCELSCALE))*forward_acceleration ;
 	
 	return ;
 }
@@ -406,14 +415,21 @@ void yaw_drift()
 	//	form the horizontal direction over ground based on rmat
 	if (dcm_flags._.yaw_req )
 	{
-		udb_setDSPLibInUse(true) ;
-		//	vector cross product to get the rotation error in ground frame
-		VectorCross( errorYawground , dirovergndHRmat , dirovergndHGPS ) ;
-		//	convert to plane frame:
-		//	*** Note: this accomplishes multiplication rmat transpose times errorYawground!!
-		MatrixMultiply( 1 , 3 , 3 , errorYawplane , errorYawground , rmat ) ;
-		udb_setDSPLibInUse(false) ;
-
+		if ( velocity_magnitude > GPS_SPEED_MIN )
+		{
+			udb_setDSPLibInUse(true) ;
+			//	vector cross product to get the rotation error in ground frame
+			VectorCross( errorYawground , dirovergndHRmat , dirovergndHGPS ) ;
+			//	convert to plane frame:
+			//	*** Note: this accomplishes multiplication rmat transpose times errorYawground!!
+			MatrixMultiply( 1 , 3 , 3 , errorYawplane , errorYawground , rmat ) ;
+			udb_setDSPLibInUse(false) ;
+		}
+		else
+		{
+			errorYawplane[0] = errorYawplane[1] = errorYawplane[2] = 0 ;
+		}
+		
 		dcm_flags._.yaw_req = 0 ;
 	}
 	return ;
@@ -605,7 +621,9 @@ void dcm_run_imu_step(void)
 	read_gyros() ;
 	read_accel() ;
 	dead_reckon() ;
+#if (HILSIM != 1)
 	adj_accel() ;
+#endif
 	rupdate() ;
 	normalize() ;
 	roll_pitch_drift() ;

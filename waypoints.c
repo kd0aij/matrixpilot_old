@@ -130,9 +130,15 @@ void init_waypoints ( int waypointSetIndex )
 
 void compute_camera_view (void)
 {
+#if ( DEADRECKONING == 1 )
 	camera_view.x = view_location.x - IMUlocationx._.W1 ;
 	camera_view.y = view_location.y - IMUlocationy._.W1 ;
 	camera_view.z = view_location.z - IMUlocationz._.W1 ;
+#else
+	camera_view.x = view_location.x - GPSlocation.x ;
+	camera_view.y = view_location.y - GPSlocation.y ;
+	camera_view.z = view_location.z - GPSlocation.z ;
+#endif
 }
 
 
@@ -142,8 +148,13 @@ void compute_waypoint ( void )
 	union longww crossWind ;
 	// compute the goal vector from present position to waypoint target in meters:
 	
+#if ( DEADRECKONING == 1 )
 	togoal.x =  goal.x  - IMUlocationx._.W1  ;
 	togoal.y =  goal.y  - IMUlocationy._.W1  ;
+#else
+	togoal.x =  goal.x  - GPSlocation.x  ;
+	togoal.y =  goal.y  - GPSlocation.y  ;
+#endif
 	
 	// project the goal vector onto the direction vector between waypoints
 	// to get the distance to the "finish" line:
@@ -158,6 +169,10 @@ void compute_waypoint ( void )
 	
 	
 #if ( USE_CROSSTRACKING == 1 )
+#define CTDEADBAND 0
+#define CTMARGIN 16
+#define CTGAIN 2
+// note: CTGAIN*(CTMARGIN-CTDEADBAND) should equal 32
 	
 	// project the goal vector perpendicular to the desired direction vector
 	// to get the crosstrack error
@@ -170,19 +185,33 @@ void compute_waypoint ( void )
 	// crosstrack is measured in meters
 	// angles are measured as an 8 bit signed character, so 90 degrees is 64 binary.
 	
-	if ( crosstrack > 32 )  // more than 32 meters to the right, steer 45 degrees to the left
+	if ( abs(crosstrack) < ((int)(CTDEADBAND)))
 	{
-		desired_bearing_over_ground = goal.phi + 32 ; // 45 degrees maximum
+		desired_bearing_over_ground = goal.phi ;
 	}
-	else if ( crosstrack < -32 ) // more than 32 meters to the left, steer 45 degrees to the right
+	else if ( abs(crosstrack) < ((int)(CTMARGIN)))
 	{
-		desired_bearing_over_ground = goal.phi - 32 ; // -45 degress minimum
+		if ( crosstrack > 0 )
+		{
+			desired_bearing_over_ground = goal.phi + ( crosstrack - ((int)(CTDEADBAND)) ) * ((int)(CTGAIN)) ;
+		}
+		else
+		{
+			desired_bearing_over_ground = goal.phi + ( crosstrack + ((int)(CTDEADBAND)) ) * ((int)(CTGAIN)) ;
+		}
 	}
-	else  // within 32 meters of the desired track, steer in proportion to the cross track error
+	else
 	{
-		desired_bearing_over_ground = goal.phi + crosstrack ;
+		if ( crosstrack > 0 )
+		{
+			desired_bearing_over_ground = goal.phi + 32 ; // 45 degrees maximum
+		}
+		else
+		{
+			desired_bearing_over_ground = goal.phi - 32 ; // 45 degrees maximum
+		}
 	}
-
+	
 	if ((estimatedWind[0] == 0 && estimatedWind[1] == 0) || air_speed_magnitude < WIND_NAV_AIR_SPEED_MIN)
 		// last clause keeps ground testing results same as in the past. Small and changing GPS speed on the ground,
 		// combined with small wind_estimation will change calculated heading 4 times / second with result
@@ -277,8 +306,10 @@ void next_waypoint ( void )
 		setBehavior( current_waypoint.flags ) ;
 	}
 	
-//	compute_waypoint() ;
-//	compute_camera_view() ;
+#if	( DEADRECKONING == 0 )
+	compute_waypoint() ;
+	compute_camera_view() ;
+#endif
 	
 	return ;
 }
@@ -301,14 +332,14 @@ void processwaypoints(void)
 		
 		if ( desired_behavior._.altitude || desired_behavior._.takeoff )
 		{
-			if ( desired_behavior._.altitude )
+			if ( desired_behavior._.takeoff )
 			{
-				if ( abs(IMUheight - goal.height) < ((int) HEIGHT_MARGIN ))
+				if ( IMUheight - goal.height + ((int) HEIGHT_MARGIN) >0 )
 					next_waypoint() ;
 			}
 			else
 			{
-				if ( IMUheight - goal.height + ((int) HEIGHT_MARGIN) >0 )
+				if ( abs(IMUheight - goal.height) < ((int) HEIGHT_MARGIN ))
 					next_waypoint() ;
 			}
 		}

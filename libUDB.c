@@ -63,7 +63,7 @@ void udb_init_leds( void )
 	_TRISE1 = _TRISE2 = _TRISE3 = _TRISE4 = 0 ;
 	// LATEbits.LATE1 = LATEbits.LATE2 = LATEbits.LATE3 = LATEbits.LATE4 = 1 ;
 	
-#else
+#elif (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD)
 	TRISFbits.TRISF0 = 0 ;
 #endif
 	

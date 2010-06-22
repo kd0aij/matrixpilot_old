@@ -35,7 +35,7 @@ void hoverYawCntrl(void) ;
 
 void yawCntrl(void)
 {
-	if ( STABILIZE_HOVERING && current_orientation == F_HOVER )
+	if ( canStabilizeHover() && current_orientation == F_HOVER )
 	{
 		hoverYawCntrl() ;
 	}
@@ -60,7 +60,7 @@ void normalYawCntrl(void)
 	{
 		yawNavDeflection = determine_navigation_deflection( 'y' ) ;
 		
-		if ( STABILIZE_INVERTED_FLIGHT && current_orientation == F_INVERTED )
+		if ( canStabilizeInverted() && current_orientation == F_INVERTED )
 		{
 			yawNavDeflection = -yawNavDeflection ;
 		}
@@ -72,14 +72,7 @@ void normalYawCntrl(void)
 	
 	if ( YAW_STABILIZATION_RUDDER && flags._.pitch_feedback )
 	{
-		if ( flags._.GPS_steering && desired_behavior._.takeoff )
-		{
-			gyroYawFeedback.WW = __builtin_mulss( yawkdrud, omegagyro[2] ) ;
-		}
-		else
-		{
-			gyroYawFeedback.WW = __builtin_mulss( yawkdrud, omegaAccum[2] ) ;
-		}
+		gyroYawFeedback.WW = __builtin_mulss( yawkdrud, omegaAccum[2] ) ;
 	}
 	else
 	{

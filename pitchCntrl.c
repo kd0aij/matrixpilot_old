@@ -48,7 +48,7 @@ void hoverPitchCntrl(void) ;
 
 void pitchCntrl(void)
 {
-	if ( STABILIZE_HOVERING && desired_behavior._.hover )
+	if ( canStabilizeHover() && desired_behavior._.hover )
 	{
 		hoverPitchCntrl() ;
 	}
@@ -75,7 +75,7 @@ void normalPitchCntrl(void)
 	fractional rmat7 ;
 	fractional rmat8 ;
 	
-	if ( !STABILIZE_INVERTED_FLIGHT || current_orientation != F_INVERTED )
+	if ( !canStabilizeInverted() || current_orientation != F_INVERTED )
 	{
 		rmat6 = rmat[6] ;
 		rmat7 = rmat[7] ;

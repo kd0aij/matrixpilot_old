@@ -36,7 +36,7 @@ void hoverRollCntrl(void) ;
 
 void rollCntrl(void)
 {
-	if ( STABILIZE_HOVERING && current_orientation == F_HOVER )
+	if ( canStabilizeHover() && current_orientation == F_HOVER )
 	{
 		hoverRollCntrl() ;
 	}
@@ -57,19 +57,16 @@ void normalRollCntrl(void)
 	
 	fractional rmat6 ;
 	fractional omegaAccum2 ;
-	fractional omegagyro2 ;
 	
-	if ( !STABILIZE_INVERTED_FLIGHT || !desired_behavior._.inverted )
+	if ( !canStabilizeInverted() || !desired_behavior._.inverted )
 	{
 		rmat6 = rmat[6] ;
 		omegaAccum2 = omegaAccum[2] ;
-		omegagyro2 = omegagyro[2] ;
 	}
 	else
 	{
 		rmat6 = -rmat[6] ;
 		omegaAccum2 = -omegaAccum[2] ;
-		omegagyro2 = -omegagyro[2] ;
 	}
 	
 #ifdef TestGains
@@ -96,14 +93,7 @@ void normalRollCntrl(void)
 	
 	if ( YAW_STABILIZATION_AILERON && flags._.pitch_feedback )
 	{
-		if ( flags._.GPS_steering && desired_behavior._.takeoff )
-		{
-			gyroYawFeedback.WW = __builtin_mulss( yawkdail, omegagyro2 ) ;
-		}
-		else
-		{
-			gyroYawFeedback.WW = __builtin_mulss( yawkdail, omegaAccum2 ) ;
-		}
+		gyroYawFeedback.WW = __builtin_mulss( yawkdail, omegaAccum2 ) ;
 	}
 	else
 	{

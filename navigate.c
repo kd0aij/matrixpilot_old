@@ -43,6 +43,8 @@ void setup_origin(void)
 #else
 		dcm_set_origin_location(long_gps.WW, lat_gps.WW, alt_sl_gps.WW) ;
 #endif
+		
+		flags._.f13_print_req = 1 ; // Flag telemetry output that the origin can now be printed.
 }
 
 
@@ -55,6 +57,10 @@ void dcm_callback_gps_location_updated(void)
 		flags._.save_origin = 0 ;
 		setup_origin() ;
 	}
+	
+#if ( DEADRECKONING == 0 )
+	processwaypoints() ;
+#endif
 	
 //	Ideally, navigate should take less than one second. For MatrixPilot, navigation takes only
 //	a few milliseconds.

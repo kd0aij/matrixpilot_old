@@ -47,6 +47,8 @@ void serial_output_4hz(void) ;
 void processwaypoints(void) ;
 void init_waypoints( int waypointSetIndex ) ;
 
+boolean canStabilizeInverted(void) ;
+boolean canStabilizeHover(void) ;
 
 extern struct relative2D togoal ;
 extern struct relative3D camera_view ;
@@ -106,7 +108,7 @@ extern int pitchAltitudeAdjust ;
 
 
 struct flag_bits {
-			unsigned int unused					: 8 ;
+			unsigned int unused					: 7 ;
 			unsigned int save_origin   			: 1 ;
 			unsigned int GPS_steering			: 1 ;
 			unsigned int pitch_feedback			: 1 ;
@@ -115,6 +117,7 @@ struct flag_bits {
 			unsigned int man_req				: 1 ;
 			unsigned int auto_req				: 1 ;
 			unsigned int home_req				: 1 ;
+			unsigned int f13_print_req			: 1 ;
 			} ;
 			
 union fbts_int { struct flag_bits _ ; int WW ; } ;
