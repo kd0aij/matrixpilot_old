@@ -74,7 +74,7 @@ void normalRollCntrl(void)
 #endif
 	if ( AILERON_NAVIGATION && flags._.GPS_steering && !desired_behavior._.takeoff )
 	{
-		rollAccum._.W1 = determine_navigation_deflection( 'r' ) ;
+		rollAccum._.W1 = determine_navigation_deflection( 'a' ) ;
 	}
 	
 #ifdef TestGains

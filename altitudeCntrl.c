@@ -121,12 +121,12 @@ void normalAltitudeCntrl(void)
 			heightError._.W1 = - desiredHeight ;
 			heightError.WW += IMUlocationz.WW ;
 			heightError.WW = heightError.WW >> 13 ;
-			if ( heightError._.W0 < (desiredHeight - (int)(HEIGHT_MARGIN*8.0)) )
+			if ( heightError._.W0 < ( - (int)(HEIGHT_MARGIN*8.0)) )
 			{
 				throttleAccum.WW = (int)(MAXTHROTTLE) ;
 				pitchAltitudeAdjust = (int)(PITCHATMAX) ;
 			}
-			else if (  heightError._.W0 > (desiredHeight + (int)(HEIGHT_MARGIN*8.0)) )
+			else if (  heightError._.W0 > (int)(HEIGHT_MARGIN*8.0) )
 			{
 				throttleAccum.WW = 0 ;
 				pitchAltitudeAdjust = (int)( PITCHATZERO ) ;

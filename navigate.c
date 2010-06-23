@@ -84,8 +84,30 @@ int determine_navigation_deflection(char navType)
 	int desiredY ;
 	int actualX ;
 	int actualY ;
+	int yawkp ;
 	
-	int yawkp = (navType == 'y') ? yawkprud : yawkpail ;
+	if (navType == 'y')
+	{
+		yawkp = yawkprud ;
+		actualX = rmat[1] ;
+		actualY = rmat[4] ;
+	}
+	else if (navType == 'a')
+	{
+		yawkp = yawkpail ;
+		actualX = rmat[1] ;
+		actualY = rmat[4] ;
+	}
+	else if (navType == 'h')
+	{
+		yawkp = yawkpail ;
+		actualX = rmat[2] ;
+		actualY = rmat[5] ;
+	}
+	else
+	{
+		return 0 ;
+	}
 	
 #ifdef TestGains
 	desiredX = -cosine ( (navType == 'y') ? 0 : 64 ) ;
@@ -94,8 +116,7 @@ int determine_navigation_deflection(char navType)
 	desiredX = -cosine( desired_dir ) ;
 	desiredY = sine( desired_dir ) ;
 #endif
-	actualX = (navType == 'h') ? rmat[2] : rmat[1] ;
-	actualY = (navType == 'h') ? rmat[5] : rmat[4] ;
+	
 	dotprod.WW = __builtin_mulss( actualX , desiredX ) + __builtin_mulss( actualY , desiredY ) ;
 	crossprod.WW = __builtin_mulss( actualX , desiredY ) - __builtin_mulss( actualY , desiredX ) ;
 	crossprod.WW = crossprod.WW<<2 ;
