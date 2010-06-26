@@ -79,7 +79,12 @@ void normalYawCntrl(void)
 		gyroYawFeedback.WW = 0 ;
 	}
 	
-	yaw_control = (long)yawNavDeflection - (long)gyroYawFeedback._.W1 ;
+	int ail_rud_mix = MANUAL_AILERON_RUDDER_MIX *
+		REVERSE_IF_NEEDED(AILERON_CHANNEL_REVERSED, udb_pwIn[AILERON_INPUT_CHANNEL] - udb_pwTrim[AILERON_INPUT_CHANNEL]) ;
+	
+	if ( canStabilizeInverted() && current_orientation == F_INVERTED ) ail_rud_mix = -ail_rud_mix ;
+	
+	yaw_control = (long)yawNavDeflection - (long)gyroYawFeedback._.W1 + ail_rud_mix ;
 	// Servo reversing is handled in servoMix.c
 	
 	return ;
