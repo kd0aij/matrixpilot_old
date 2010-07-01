@@ -34,11 +34,11 @@
 #define ROLL_STABILIZATION					1
 #define PITCH_STABILIZATION					1
 #define YAW_STABILIZATION_RUDDER			1
-#define YAW_STABILIZATION_AILERON			0
+#define YAW_STABILIZATION_AILERON			1
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
-#define AILERON_NAVIGATION					0
+#define AILERON_NAVIGATION					1
 #define RUDDER_NAVIGATION					1
 
 // Altitude Hold
@@ -47,7 +47,7 @@
 
 // Inverted flight
 // Set this to 1 to enable stabilization of inverted flight.
-#define STABILIZE_INVERTED_FLIGHT			0
+#define STABILIZE_INVERTED_FLIGHT			1
 
 // Hovering
 // Set this to 1 to enable stabilization of hovering.
@@ -60,7 +60,7 @@
 // Racing Mode
 // Setting this to 1 will keep the plane at full throttle while in waypoint mode
 // Racing performance can be improved by disabling CROSSTRACKING in waypoints.h
-#define RACING_MODE							0
+#define RACING_MODE							1
 
 // Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
 // receiver. (Totally autonomous.)  This is just meant for debugging.  It is not recommended that
@@ -164,7 +164,7 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN					1500
+#define FAILSAFE_INPUT_MIN					2150
 #define FAILSAFE_INPUT_MAX					4500
 
 
@@ -194,10 +194,10 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in reponse to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP								0.025
-#define ROLLKD								0.0125
-#define YAWKP_AILERON						0.100
-#define YAWKD_AILERON						0.2
+#define ROLLKP								0.3
+#define ROLLKD								0.125
+#define YAWKP_AILERON						0.120
+#define YAWKD_AILERON						0.15
 #define AILERON_BOOST						1.0
 
 // Elevator/Pitch Control Gains
@@ -206,22 +206,22 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
-#define PITCHGAIN							0.030
-#define PITCHKD								0.0125
-#define RUDDER_ELEV_MIX						0.5
-#define ROLL_ELEV_MIX						0.1
-#define ELEVATOR_BOOST						0.5
+#define PITCHGAIN							0.2
+#define PITCHKD								0.15
+#define RUDDER_ELEV_MIX						0.2
+#define ROLL_ELEV_MIX						0.2
+#define ELEVATOR_BOOST						0.8
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
 // Use this to add extra "up" elevator while the plane is inverted, to avoid losing altitude.
-#define INVERTED_NEUTRAL_PITCH	 			8.0
+#define INVERTED_NEUTRAL_PITCH	 		   12.0
 
 // Rudder/Yaw Control Gains
 // YAWKP_RUDDER is the proportional feedback gain for rudder navigation
 // YAWKD_RUDDER is the yaw gyro feedback gain for the rudder in reponse to yaw rotation
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER						0.0225
-#define YAWKD_RUDDER						0.025
+#define YAWKP_RUDDER						0.30
+#define YAWKD_RUDDER						0.30
 #define RUDDER_BOOST						1.0
 
 // Gains for Hovering
@@ -253,20 +253,20 @@
 // These settings are only used when USE_ALTITUDEHOLD is enabled above.
 
 // Min and Max target heights in meters.  These only apply to stabilized mode.
-#define HEIGHT_TARGET_MIN					500.0
-#define HEIGHT_TARGET_MAX					700.0
+#define HEIGHT_TARGET_MIN					100.0
+#define HEIGHT_TARGET_MAX					500.0
 
 // The range of altitude within which to linearly vary the throttle
 // and pitch to maintain altitude.  A bigger value makes altitude hold
 // smoother, and is suggested for very fast planes.
-#define HEIGHT_MARGIN					50
+#define HEIGHT_MARGIN						 50
 
 // Use ALT_HOLD_THROTTLE_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_THROTTLE_MAX and ALT_HOLD_THROTTLE_MIN
 // when within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
-#define ALT_HOLD_THROTTLE_MIN				0.5
+#define ALT_HOLD_THROTTLE_MIN				0.8
 #define ALT_HOLD_THROTTLE_MAX				1.0
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
@@ -274,9 +274,9 @@
 // within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
-#define ALT_HOLD_PITCH_MIN					 -5.0
-#define ALT_HOLD_PITCH_MAX					5.0
-#define ALT_HOLD_PITCH_HIGH					 -5.0
+#define ALT_HOLD_PITCH_MIN					 -10.0
+#define ALT_HOLD_PITCH_MAX				      10.0
+#define ALT_HOLD_PITCH_HIGH					 -10.0
 
 
 ////////////////////////////////////////////////////////////////////////////////

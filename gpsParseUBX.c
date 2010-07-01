@@ -35,7 +35,7 @@ void msg_SOL( unsigned char inchar ) ;
 void msg_VELNED( unsigned char inchar ) ;
 void msg_CS1( unsigned char inchar ) ;
 
-#ifdef HILSIM
+#if ( HILSIM == 1 )
 	void msg_BODYRATES( unsigned char inchar ) ;
 #endif
 
@@ -548,11 +548,15 @@ void msg_PL1 ( unsigned char gpschar )
 		msg_parse = &msg_VELNED ;
 				}
 				break ;
+
+#if ( HILSIM == 1 )
 	case 0xAB : {	// NAV-BODYRATES message - THIS IS NOT AN OFFICIAL UBX MESSAGE
 					// WE ARE FAKING THIS FOR HIL SIMULATION
 		msg_parse = &msg_BODYRATES ;
 				}
 				break ;
+#endif
+
 	default : { 	// some other NAV class message
 		msg_parse = &msg_MSGU ;
 			  }
@@ -668,24 +672,26 @@ void msg_VELNED( unsigned char gpschar )
 	return ;
 }
 
+#if ( HILSIM == 1 )
 void msg_BODYRATES( unsigned char gpschar )
 {
 	if ( payloadlength.BB > 0 )
 	{
 		*msg_BODYRATES_parse[store_index++] = gpschar ;
-		CK_A += gpschar;
-		CK_B += CK_A;
+		CK_A += gpschar ;
+		CK_B += CK_A ;
 		payloadlength.BB-- ;
 	}
 	else
 	{
 		// If the payload length is zero, we have received the entire payload, or the payload length
 		// was zero to start with. either way, the byte we just received is the first checksum byte.
-		checksum._.B1 = gpschar;
+		checksum._.B1 = gpschar ;
 		msg_parse = &msg_CS1 ;
 	}
 	return ;
 }
+#endif
 
 void msg_ACK_CLASS ( unsigned char gpschar )
 {
@@ -731,13 +737,13 @@ void msg_CS1 ( unsigned char gpschar )
 	checksum._.B0 = gpschar;
 	if((checksum._.B1 == CK_A) && (checksum._.B0 == CK_B))
 	{
-		#if (HILSIM == 1)
+#if (HILSIM == 1)
 		if(msg_id == 0xAB)
 		{
 			//If we got the correct checksum for bodyrates, commit that data immediately
 			commit_bodyrate_data();
 		}
-		#endif
+#endif
 	}	
 	else
 	{
@@ -777,15 +783,18 @@ void commit_gps_data(void)
 	
 	return ;
 }
+
 #if (HILSIM == 1)
 void commit_bodyrate_data(void)
 {
-	u_dot_sim = u_dot_sim_;
-	v_dot_sim = v_dot_sim_; 
-	w_dot_sim = w_dot_sim_; 
-	p_sim = p_sim_;
-	q_sim = q_sim_;
-	r_sim = r_sim_; 
+	u_dot_sim = u_dot_sim_ ;
+	v_dot_sim = v_dot_sim_ ;
+	w_dot_sim = w_dot_sim_ ;
+	p_sim = p_sim_ ;
+	q_sim = q_sim_ ;
+	r_sim = r_sim_ ;
+	
+	return ;
 }
 #endif
 

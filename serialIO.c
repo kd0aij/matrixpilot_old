@@ -326,7 +326,6 @@ void serial_output_4hz( void )
 
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )
 
-int telemetry_counter = 5 ;
 int skip = 0 ;
 
 extern int waypointIndex ;
