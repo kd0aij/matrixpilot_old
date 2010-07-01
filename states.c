@@ -240,7 +240,7 @@ void acquiringS(void)
 	ent_manualS();
 	return;
 #endif
-		
+	
 	if ( dcm_flags._.nav_capable && ( ( MAG_YAW_DRIFT == 0 ) || ( magMessage == 7 ) ) )
 	{
 		if ( udb_radio_on )

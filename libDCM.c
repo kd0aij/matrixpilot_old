@@ -26,6 +26,7 @@ union dcm_fbts_byte dcm_flags ;
 char dcm_fourHertzCounter = 0 ;
 boolean dcm_has_calibrated = false ;
 
+
 #if ( HILSIM == 1 )
 unsigned char SIMservoOutputs[] = {	0xFF, 0xEE,		//sync
 									0x03, 0x04,		//S1
@@ -116,13 +117,13 @@ void send_HILSIM_outputs( void )
 	int i ;
 	unsigned char CK_A = 0 ;
 	unsigned char CK_B = 0 ;
-	int temp ;
+	union intbb TempBB ;
 	
 	for (i=1; i<=NUM_OUTPUTS; i++)
 	{
-		temp = udb_pwOut[i] ;
-		SIMservoOutputs[2*i] = temp >> 8 ;
-		SIMservoOutputs[(2*i)+1] = temp & 0xFF ;
+		TempBB.BB = udb_pwOut[i] ;
+		SIMservoOutputs[2*i] = TempBB._.B1 ;
+		SIMservoOutputs[(2*i)+1] = TempBB._.B0 ;
 	}
 	
 	for (i=2; i<14; i++)

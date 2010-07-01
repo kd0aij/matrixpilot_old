@@ -34,6 +34,7 @@ struct ADchannel udb_xaccel, udb_yaccel , udb_zaccel ; // x, y, and z accelerome
 struct ADchannel udb_xrate , udb_yrate, udb_zrate ;  // x, y, and z gyro channels
 struct ADchannel udb_vref ; // reference voltage
 
+// FIXME: move this into a new udb_flags bitfield, along with radio_on
 int firstsamp ; // used on startup to detect first A/D sample
 
 

@@ -368,6 +368,9 @@ void gps_startup_sequence(int gpscount)
 		gpsoutline2( (char*)disable_GSA );
 	else if (gpscount == 170)
 		gpsoutline2( (char*)disable_GLL );
+#elif (HILSIM == 1)
+	if (gpscount == 190)
+		udb_gps_set_rate(UDB_BAUD_19200);
 #else
 	if (gpscount == 190);
 		// do nothing
@@ -817,7 +820,9 @@ void commit_gps_data(void)
 	return ;
 }
 
+
 #if (HILSIM == 1)
+
 void commit_bodyrate_data( void )
 {
 	u_dot_sim = u_dot_sim_ ;
@@ -826,9 +831,12 @@ void commit_bodyrate_data( void )
 	p_sim = p_sim_ ;
 	q_sim = q_sim_ ;
 	r_sim = r_sim_ ;
+	
 	return ;
 }
+
 #endif
+
 
 #endif
 
