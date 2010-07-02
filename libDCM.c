@@ -35,8 +35,12 @@ unsigned char SIMservoOutputs[] = {	0xFF, 0xEE,		//sync
 									0x09, 0x0A,		//S4
 									0x0B, 0x0C,		//S5
 									0x0D, 0x0E,		//S6
-									0x0F, 0x10		//checksum
+									0x0F, 0x10,		//S7
+									0x11, 0x12,		//S8
+									0x13, 0x14		//checksum
 									};
+
+#define HILSIM_NUM_SERVOS 8
 
 void send_HILSIM_outputs( void ) ;
 #endif
@@ -111,6 +115,7 @@ struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute)
 
 
 #if ( HILSIM == 1 )
+
 void send_HILSIM_outputs( void )
 {
 	// Setup outputs for HILSIM
@@ -126,19 +131,19 @@ void send_HILSIM_outputs( void )
 		SIMservoOutputs[(2*i)+1] = TempBB._.B0 ;
 	}
 	
-	for (i=2; i<14; i++)
+	for (i=2; i<HILSIM_NUM_SERVOS*2+2; i++)
 	{
 		CK_A += SIMservoOutputs[i] ;
 		CK_B += CK_A ;
 	}
-	
-	SIMservoOutputs[14] = CK_A ;
-	SIMservoOutputs[15] = CK_B ;
+	SIMservoOutputs[i] = CK_A ;
+	SIMservoOutputs[i+1] = CK_B ;
 	
 	// Send HILSIM outputs
-	for (i=0; i<16; i++)
+	for (i=0; i<HILSIM_NUM_SERVOS*2+4; i++)
 	{
 		udb_gps_send_char(SIMservoOutputs[i]) ;	
 	}
 }
+
 #endif
