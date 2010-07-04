@@ -124,6 +124,13 @@ void udb_servo_callback_prepare_outputs(void);			// Callback
 // lights, etc.
 void udb_set_action_state(boolean newValue);
 
+// Baud Rate Generator -- See section 19.3.1 of datasheet.
+// The data sheet says to use (16*rate), but we seem to need to use (32*rate).
+// U1BRG = (Fcy/(32*BaudRate))-1
+// U1BRG = (32000000/(32*9600))-1
+// U1BRG = 103
+#define UDB_BAUD(x)		((int)(FREQOSC / ((long)32 * x) - 1))
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Raw Accelerometer and Gyroscope(rate) Values
@@ -160,8 +167,7 @@ void udb_magnetometer_callback_data_available(void);	// Callback
 ////////////////////////////////////////////////////////////////////////////////
 // GPS IO
 
-// Set the GPS serial data rate.  Use the UDB_BAUD_* constants defined in the Config*.h
-// files.
+// Set the GPS serial data rate.
 void udb_gps_set_rate(int rate);
 
 // Send one char to the GPS

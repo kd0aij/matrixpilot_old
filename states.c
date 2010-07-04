@@ -118,6 +118,10 @@ void ent_acquiringS()
 	flags._.pitch_feedback = 0 ;
 	flags._.altitude_hold_throttle = 0 ;
 	flags._.altitude_hold_pitch = 0 ;
+	
+	// almost ready to turn the control on, save the trims
+	udb_servo_record_trims();
+	
 	waggle = WAGGLE_SIZE ;
 	throttleFiltered._.W1 = 0 ;
 	stateS = &acquiringS ;
@@ -125,8 +129,6 @@ void ent_acquiringS()
 #if ( LED_RED_MAG_CHECK == 0 )
 	LED_RED = LED_OFF ;
 #endif
-	
-	udb_servo_record_trims();
 	
 	return ;
 }

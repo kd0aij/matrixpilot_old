@@ -19,6 +19,8 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#define FREQOSC 8000000
+
 #define	ADCON2CONFIG 0b0000010000011000 ; // AVDD ref, scana ch0, int every 7, 16word, usa A only
 
 #define	xrateBUFF	ADCBUF2
@@ -52,8 +54,3 @@
 #define HW_SWITCH_1			(PORTDbits.RD3 == 0)
 #define HW_SWITCH_2			(PORTDbits.RD2 == 0)
 #define HW_SWITCH_3			(PORTFbits.RF6 == 0)
-
-// BAUD Rates
-#define UDB_BAUD_4800	51
-#define UDB_BAUD_9600	25
-#define UDB_BAUD_19200	12

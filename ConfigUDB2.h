@@ -21,6 +21,8 @@
 
 // used for the UDB2
 
+#define FREQOSC 32000000
+
 #define	ADCON2CONFIG 0b0010010000011000 ; //?
 
 #define	xrateBUFF	ADCBUF1 //?
@@ -54,8 +56,3 @@
 #define HW_SWITCH_1			0
 #define HW_SWITCH_2			0
 #define HW_SWITCH_3			0
-
-// BAUD Rates
-#define UDB_BAUD_4800	415
-#define UDB_BAUD_9600	207
-#define UDB_BAUD_19200	103

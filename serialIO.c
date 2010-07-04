@@ -21,18 +21,19 @@
 
 #include "libUDB_internal.h"
 
+#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 // GPS
 
-void udb_init_GPS2(void)
+void udb_init_GPS(void)
 {
 	//	Initialize the USART that communicates with the GPS
 	U2MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
 	U2STA  = 0b0000010100010000 ;
 	
-	U2BRG =  UDB_BAUD_9600 ;
+	U2BRG =  UDB_BAUD(9600) ;
 	
 	U2MODE = 0b1010000000000000 ; // turn on
 	U2STA  = 0b0000010100010000 ;
@@ -47,7 +48,7 @@ void udb_init_GPS2(void)
 
 void udb_gps_set_rate(int rate)
 {
-	U2BRG = rate ;
+	U2BRG = UDB_BAUD(rate) ;
 	return ;
 }
 
@@ -58,8 +59,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
-	if ( U2STAbits.FERR ) { udb_init_GPS2(); }
-	if ( U2STAbits.OERR ) { udb_init_GPS2(); }
+	if ( U2STAbits.FERR ) { udb_init_GPS(); }
+	if ( U2STAbits.OERR ) { udb_init_GPS(); }
 	IFS1bits.U2RXIF = 0 ; // clear the interrupt
 	while ( U2STAbits.URXDA )
 	{
@@ -86,13 +87,13 @@ void udb_gps_send_char ( char outchar ) // output one character to the GPS
 //
 // Serial
 
-void udb_init_USART1(void)
+void udb_init_USART(void)
 {	
 	//	debugging/telemetry USART, runs at 19200 baud
 	U1MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
 	U1STA  = 0b0000010100010000 ;
 	
-	U1BRG =  UDB_BAUD_9600 ;
+	U1BRG =  UDB_BAUD(9600) ;
 	
 	U1MODEbits.UARTEN = 1 ; // turn on uart
 	U1MODEbits.ALTIO = 1 ; // use alternate pins
@@ -113,7 +114,7 @@ void udb_init_USART1(void)
 
 void udb_serial_set_rate(int rate)
 {
-	U1BRG = rate ;
+	U1BRG = UDB_BAUD(rate) ;
 	return ;
 }
 
@@ -132,8 +133,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 	indicate_loading_inter ;
 	
 	char rxchar = U1RXREG ;
-	if ( U1STAbits.FERR ) {  udb_init_USART1(); }
-	else if ( U1STAbits.OERR ) {  udb_init_USART1(); }
+	if ( U1STAbits.FERR ) {  udb_init_USART(); }
+	else if ( U1STAbits.OERR ) {  udb_init_USART(); }
 	
 	IFS0bits.U1RXIF = 0 ; // clear the interrupt
 	udb_serial_callback_received_char(rxchar) ;
@@ -160,3 +161,5 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 	interrupt_restore_extended_state ;
 	return ;
 }
+
+#endif

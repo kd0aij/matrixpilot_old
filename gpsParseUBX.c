@@ -369,8 +369,8 @@ void gps_startup_sequence(int gpscount)
 	else if (gpscount == 170)
 		gpsoutline2( (char*)disable_GLL );
 #elif (HILSIM == 1)
-	if (gpscount == 190)
-		udb_gps_set_rate(UDB_BAUD_19200);
+	if (gpscount == 980)
+		udb_gps_set_rate(19200);
 #else
 	if (gpscount == 190);
 		// do nothing

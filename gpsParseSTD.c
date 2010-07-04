@@ -130,7 +130,7 @@ void gps_startup_sequence(int gpscount)
 		gpsoutbin2( mode_length , mode ) ;
 	else if (gpscount == 8)
 		// Switch to 19200 baud
-		udb_gps_set_rate(UDB_BAUD_19200);
+		udb_gps_set_rate(19200);
 	
 	return ;
 }

@@ -35,8 +35,8 @@ void udb_init(void)
 	udb_init_clock() ;
 	udb_init_capture() ;
 	udb_init_I2C() ;
-	udb_init_GPS2() ;
-	udb_init_USART1() ;
+	udb_init_GPS() ;
+	udb_init_USART() ;
 	udb_init_pwm() ;
 	SRbits.IPL = 0 ;	// turn on all interrupt priorities
 	
