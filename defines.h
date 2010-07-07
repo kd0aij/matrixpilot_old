@@ -42,7 +42,7 @@ void updateBehavior(void) ;
 void updateTriggerAction(void) ;
 
 void serial_output( char* format, ... ) ;
-void serial_output_4hz(void) ;
+void serial_output_8hz(void) ;
 
 void processwaypoints(void) ;
 void init_waypoints( int waypointSetIndex ) ;
@@ -50,7 +50,6 @@ void init_waypoints( int waypointSetIndex ) ;
 boolean canStabilizeInverted(void) ;
 boolean canStabilizeHover(void) ;
 
-extern struct relative2D togoal ;
 extern struct relative3D camera_view ;
 struct waypointparameters { int x ; int y ; int cosphi ; int sinphi ; signed char phi ; int height ; int fromHeight; int legDist; } ;
 
@@ -101,7 +100,7 @@ extern int pitchAltitudeAdjust ;
 #define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)		((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))
 
 
-#define CALIB_PAUSE 20
+#define CALIB_PAUSE 21
 #define STANDBY_PAUSE 48 // pause for 16 seconds of runs through the state machine
 #define NUM_WAGGLES 4 // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
 #define WAGGLE_SIZE 300

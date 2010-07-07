@@ -34,7 +34,7 @@
 int udb_pwIn[MAX_INPUTS+1] ;	// pulse widths of radio inputs
 int udb_pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
 
-boolean udb_radio_on = 0;
+boolean udb_flags._.radio_on = 0;
 int failSafePulses = 0 ;
 
 unsigned int rise[MAX_INPUTS+1] ;	// rising edge clock capture for radio inputs
@@ -129,7 +129,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 		else
 		{
 			failSafePulses = 0 ;
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -168,7 +168,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 		else
 		{
 			failSafePulses = 0 ;
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -207,7 +207,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC3Interrupt(void)
 		else
 		{
 			failSafePulses = 0 ;
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -246,7 +246,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC4Interrupt(void)
 		else
 		{
 			failSafePulses = 0 ;
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -285,7 +285,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC5Interrupt(void)
 		else
 		{
 			failSafePulses = 0 ;
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -324,7 +324,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC6Interrupt(void)
 		else
 		{
 			failSafePulses = 0 ;
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -363,7 +363,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 		else
 		{
 			failSafePulses = 0 ;
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif
@@ -402,7 +402,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 		else
 		{
 			failSafePulses = 0 ;
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 #endif

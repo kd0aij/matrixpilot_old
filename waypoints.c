@@ -80,16 +80,20 @@ struct relWaypointDef wp_to_relative(struct waypointDef wp)
 void set_goal( struct relative3D fromPoint , struct relative3D toPoint )
 {
 	struct relative2D courseLeg ;
+	
 	goal.x = toPoint.x ;
 	goal.y = toPoint.y ;
 	goal.height = toPoint.z ;
 	goal.fromHeight = fromPoint.z ;
+	
 	courseLeg.x = toPoint.x - fromPoint.x ;
 	courseLeg.y = toPoint.y - fromPoint.y ;
+	
 	goal.phi = rect_to_polar ( &courseLeg ) ;
 	goal.legDist = courseLeg.x ;
 	goal.cosphi = cosine( goal.phi ) ;
 	goal.sinphi = sine( goal.phi ) ;
+	
 	return ;
 }
 
@@ -246,11 +250,11 @@ void compute_waypoint ( void )
 		// that ailerons start moving 4 times / second on the ground. This clause prevents this happening when not flying.
 		// Once flying, the GPS speed settles down to a larger figure, resulting in a smooth calculated heading.
 	{
-		desired_dir_waypoint = rect_to_polar ( & togoal ) ;
+		desired_dir_waypoint = rect_to_polar( &togoal ) ;
 	}
 	else
 	{
-		desired_bearing_over_ground = rect_to_polar( &togoal) ;
+		desired_bearing_over_ground = rect_to_polar( &togoal ) ;
 		
 		// account for the cross wind:
 		// compute the wind component that is perpendicular to the desired bearing:
@@ -287,7 +291,6 @@ void next_waypoint ( void )
 			struct relWaypointDef current_waypoint  = wp_to_relative( currentWaypointSet[0] ) ;
 			set_goal( previous_waypoint.loc, current_waypoint.loc ) ;
 			set_camera_view( current_waypoint.viewpoint ) ;
-
 		}
 		else
 		{

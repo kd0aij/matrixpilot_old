@@ -87,6 +87,13 @@ struct ADchannel {
 };  // variables for processing an AD channel
 
 
+struct udb_flag_bits {
+			unsigned int unused					: 6 ;
+			unsigned int firstsamp				: 1 ;
+			unsigned int radio_on				: 1 ;
+			} ;
+
+
 // LED states
 #define LED_ON		0
 #define LED_OFF		1

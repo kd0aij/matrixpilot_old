@@ -51,7 +51,7 @@ void udb_background_callback_periodic(void)
 	//	Configure the GPS for binary if there is a request to do so.
 	//	Determine whether the radio is on.
 	
-	if ( udb_radio_on )
+	if ( udb_flags._.radio_on )
 	{
 		//	Select manual, automatic, or come home, based on pulse width of the switch input channel as defined in options.h.
 		if ( udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH )
@@ -219,7 +219,7 @@ void startS(void)
 
 void calibrateS(void)
 {
-	if ( udb_radio_on )
+	if ( udb_flags._.radio_on )
 	{
 #if ( LED_RED_MAG_CHECK == 0 )
 		udb_led_toggle(LED_RED) ;
@@ -245,7 +245,7 @@ void acquiringS(void)
 	
 	if ( dcm_flags._.nav_capable && ( ( MAG_YAW_DRIFT == 0 ) || ( magMessage == 7 ) ) )
 	{
-		if ( udb_radio_on )
+		if ( udb_flags._.radio_on )
 		{
 			if (standby_timer == NUM_WAGGLES+1)
 				waggle = WAGGLE_SIZE ;
@@ -277,7 +277,7 @@ void acquiringS(void)
 
 void manualS(void) 
 {
-	if ( udb_radio_on )
+	if ( udb_flags._.radio_on )
 	{
 		if ( flags._.home_req & dcm_flags._.nav_capable )
 			ent_waypointS() ;
@@ -297,7 +297,7 @@ void manualS(void)
 
 void stabilizedS(void) 
 {
-	if ( udb_radio_on )
+	if ( udb_flags._.radio_on )
 	{
 		if ( flags._.home_req & dcm_flags._.nav_capable )
 			ent_waypointS() ;
@@ -318,7 +318,7 @@ void waypointS(void)
 	udb_led_toggle(LED_RED) ;
 #endif
 	
-	if (udb_radio_on )
+	if ( udb_flags._.radio_on )
 	{
 		if ( flags._.man_req )
 			ent_manualS() ;
@@ -334,7 +334,7 @@ void waypointS(void)
 
 void returnS(void)
 {
-	if ( udb_radio_on )
+	if ( udb_flags._.radio_on )
 	{
 		if ( flags._.man_req )
 			ent_manualS() ;

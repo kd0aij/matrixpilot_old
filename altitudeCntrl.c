@@ -77,7 +77,7 @@ void normalAltitudeCntrl(void)
 	int throttleInOffset ;
 	union longww heightError ;
 	
-	if ( udb_radio_on == 1 )
+	if ( udb_flags._.radio_on == 1 )
 	{
 		throttleIn = udb_pwIn[THROTTLE_INPUT_CHANNEL] ;
 		// keep the In and Trim throttle values within 2000-4000 to account for
@@ -111,7 +111,7 @@ void normalAltitudeCntrl(void)
 			if (desiredHeight < (int)( HEIGHT_TARGET_MIN )) desiredHeight = (int)( HEIGHT_TARGET_MIN ) ;
 		}
 		
-		if ( throttleInOffset < (int)( DEADBAND ) && udb_radio_on )
+		if ( throttleInOffset < (int)( DEADBAND ) && udb_flags._.radio_on )
 		{
 			pitchAltitudeAdjust = 0 ;
 			throttleAccum.WW  = 0 ;
@@ -205,7 +205,7 @@ void manualThrottle( int throttleIn )
 // gives manual throttle control back to the pilot.
 void hoverAltitudeCntrl(void)
 {
-	int throttleIn = ( udb_radio_on == 1 ) ? udb_pwIn[THROTTLE_INPUT_CHANNEL] : udb_pwTrim[THROTTLE_INPUT_CHANNEL] ;
+	int throttleIn = ( udb_flags._.radio_on == 1 ) ? udb_pwIn[THROTTLE_INPUT_CHANNEL] : udb_pwTrim[THROTTLE_INPUT_CHANNEL] ;
 	
 	throttleFiltered.WW += (((long)( throttleIn - throttleFiltered._.W1 )) << THROTTLEFILTSHIFT ) ;
 	

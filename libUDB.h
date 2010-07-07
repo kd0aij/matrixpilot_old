@@ -103,9 +103,9 @@ extern int udb_pwTrim[MAX_INPUTS+1];	// initial pulse widths for trimming
 // Each channel should be set to a value between 2000 and 4000.
 extern int udb_pwOut[MAX_OUTPUTS+1];	// pulse widths for servo outputs
 
-// This read-only value tells you whether the receiver is currently receiving
-// values from the transmitter.
-extern boolean udb_radio_on;
+// This read-only value holds flags that tell you, among other things,
+// whether the receiver is currently receiving values from the transmitter.
+extern union udb_fbts_byte { struct udb_flag_bits _ ; char B ; } udb_flags ;
 
 // This takes a servo out value, and clips it to be within
 // 3000-1000*SERVOSAT and 3000+1000*SERVOSAT (2000-4000 by default).

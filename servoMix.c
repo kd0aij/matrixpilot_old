@@ -41,14 +41,14 @@ void servoMix( void )
 	
 	// If radio is off, use udb_pwTrim values instead of the udb_pwIn values
 	for (temp = 1; temp <= NUM_INPUTS; temp++)
-		if (udb_radio_on)
+		if (udb_flags._.radio_on)
 			pwManual[temp] = udb_pwIn[temp];
 		else
 			pwManual[temp] = udb_pwTrim[temp];
 	
 	
 	// Apply boosts if in a stabilized mode
-	if (udb_radio_on && flags._.pitch_feedback)
+	if (udb_flags._.radio_on && flags._.pitch_feedback)
 	{
 		pwManual[AILERON_INPUT_CHANNEL] += ((pwManual[AILERON_INPUT_CHANNEL] - udb_pwTrim[AILERON_INPUT_CHANNEL]) * aileronbgain) >> 3 ;
 		pwManual[ELEVATOR_INPUT_CHANNEL] += ((pwManual[ELEVATOR_INPUT_CHANNEL] - udb_pwTrim[ELEVATOR_INPUT_CHANNEL]) * elevatorbgain) >> 3 ;

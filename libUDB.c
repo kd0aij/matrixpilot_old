@@ -21,6 +21,8 @@
 
 #include "libUDB_internal.h"
 
+union udb_fbts_byte udb_flags ;
+
 boolean timer_5_on = 0 ;
 boolean needSaveExtendedState = 0 ;
 int defaultCorcon = 0 ;
@@ -29,6 +31,8 @@ int defaultCorcon = 0 ;
 void udb_init(void)
 {
 	defaultCorcon = CORCON ;
+	
+	udb_flags.B = 0 ;
 	
 	udb_init_leds() ;
 	udb_init_ADC() ;
@@ -52,7 +56,7 @@ void udb_run(void)
 		// pause cpu counting timer while not in an ISR
 		indicate_loading_main ;
 	}
-	return ;
+	// Never returns
 }
 
 
@@ -61,7 +65,6 @@ void udb_init_leds( void )
 	
 #if (BOARD_TYPE == UDB_2_BOARD)
 	_TRISE1 = _TRISE2 = _TRISE3 = _TRISE4 = 0 ;
-	// LATEbits.LATE1 = LATEbits.LATE2 = LATEbits.LATE3 = LATEbits.LATE4 = 1 ;
 	
 #elif (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD)
 	TRISFbits.TRISF0 = 0 ;

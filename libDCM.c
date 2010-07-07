@@ -46,6 +46,15 @@ void send_HILSIM_outputs( void ) ;
 #endif
 
 
+void dcm_init( void )
+{
+	dcm_flags.B = 0 ;
+	dcm_flags._.first_mag_reading = 1 ;
+	
+	return ;
+}
+
+
 // Called at 40Hz
 void udb_servo_callback_prepare_outputs(void)
 {

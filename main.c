@@ -31,6 +31,7 @@ UDB_INCLUDE_CHIP_CONFIG_OPTIONS
 int main (void)
 {
 	udb_init() ;
+	dcm_init() ;
 	init_servoPrepare() ;
 	init_states() ;
 	init_behavior() ;

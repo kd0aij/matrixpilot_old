@@ -154,7 +154,7 @@ char udb_serial_callback_get_char_to_send(void)
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_DEBUG )
 
-void serial_output_4hz( void )
+void serial_output_8hz( void )
 {
 	serial_output("lat: %li, long: %li, alt: %li\r\nrmat: %i, %i, %i, %i, %i, %i, %i, %i, %i\r\n" ,
 		lat_gps.WW , long_gps.WW , alt_sl_gps.WW ,
@@ -173,7 +173,7 @@ int skip = 0 ;
 extern int desiredHeight, waypointIndex ;
 extern signed char desired_dir_waypoint ;
 
-void serial_output_4hz( void )
+void serial_output_8hz( void )
 {
 	unsigned int mode ;
 	struct relative2D matrix_accum ;
@@ -192,9 +192,9 @@ void serial_output_4hz( void )
 		mode = 1 ;
 	else if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 1)
 		mode = 2 ;
-	else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_radio_on == 1)
+	else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 1)
 		mode = 3 ;
-	else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_radio_on == 0)
+	else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 0)
 		mode = 0 ;
 	else
 		mode = 99 ; // Unknown
@@ -227,15 +227,7 @@ void serial_output_4hz( void )
 	// The Ardupilot GroundStation protocol is mostly documented here:
 	//    http://diydrones.com/profiles/blogs/ardupilot-telemetry-protocol
 	
-	if (++skip < 4)
-	{
-		serial_output("+++THH:%i,RLL:%li,PCH:%li,STT:%i,***\r\n",
-			(int)((udb_pwOut[THROTTLE_OUTPUT_CHANNEL] - udb_pwTrim[THROTTLE_OUTPUT_CHANNEL])/20),
-			earth_roll, earth_pitch,
-			mode
-		) ;
-	}
-	else
+	if (++skip == 8)
 	{
 		serial_output("!!!LAT:%li,LON:%li,SPD:%.2f,CRT:%.2f,ALT:%li,ALH:%i,CRS:%.2f,BER:%i,WPN:%i,DST:%i,BTV:%.2f***\r\n"
 					  "+++THH:%i,RLL:%li,PCH:%li,STT:%i,***\r\n",
@@ -247,6 +239,14 @@ void serial_output_4hz( void )
 			mode
 		) ;
 		skip = 0 ;
+	}
+	else if (skip % 2 == 0)
+	{
+		serial_output("+++THH:%i,RLL:%li,PCH:%li,STT:%i,***\r\n",
+			(int)((udb_pwOut[THROTTLE_OUTPUT_CHANNEL] - udb_pwTrim[THROTTLE_OUTPUT_CHANNEL])/20),
+			earth_roll, earth_pitch,
+			mode
+		) ;
 	}
 	
 	return ;
@@ -266,7 +266,7 @@ char print_choice = 0 ;
 
 extern int waypointIndex ;
 
-void serial_output_4hz( void )
+void serial_output_8hz( void )
 {
 	union longbbbb accum ;
 	
@@ -276,18 +276,19 @@ void serial_output_4hz( void )
 	// Saves CPU and XBee power.
 	if (++skip < 4) return ;
 	skip = 0 ;
+	
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 	// SERIAL_UDB_EXTRA expected to be used with the OpenLog which can take greater transfer speeds than Xbee
-	// F2: SERIAL_UDB_EXTRA format is printed out every other time, so frequency ends up the same as for SERIAL_UDB
-	if (++skip < 2) return ;
+	// F2: SERIAL_UDB_EXTRA format is printed out every other time, although it is being called at 8Hz, this
+	//		version will output four F2 lines every second (4Hz updates)
 #endif
 
 	switch (telemetry_counter)
 	{
 		// The first lines of telemetry contain info about the compile-time settings from the options.h file
 		case 6:
-			serial_output("F11:WIND_EST=%i:GPS_TYPE=%i:\r\n",
-				WIND_ESTIMATION,GPS_TYPE);
+			serial_output("F11:WIND_EST=%i:GPS_TYPE=%i:DR=%i:BOARD_TYPE=%i:AIRFRAME=%i:\r\n",
+				WIND_ESTIMATION, GPS_TYPE, DEADRECKONING, BOARD_TYPE, AIRFRAME_TYPE);
 			break;
 		case 5:
 			serial_output("F4:R_STAB=%i:P_STAB=%i:Y_STAB_R=%i:Y_STAB_A=%i:AIL_NAV=%i:RUD_NAV=%i:AH_STAB=%i:AH_WP=%i:RACE=%i:\r\n",
@@ -312,23 +313,13 @@ void serial_output_4hz( void )
 				ALT_HOLD_PITCH_MIN, ALT_HOLD_PITCH_MAX, ALT_HOLD_PITCH_HIGH) ;
 			break ;
 		default:
-			if (flags._.f13_print_req == 1)
-			{
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
-				if (print_choice == 0) return ;
-#endif
-				serial_output("F13:week%i:origN%li:origE%li:origA%li:\r\n", week_no, lat_origin.WW, long_origin.WW, alt_origin) ;
-				flags._.f13_print_req = 0 ;
-				return ;
-			}
-			
 			// F2 below means "Format Revision 2: and is used by a Telemetry parser to invoke the right pattern matching
 			// F2 is a compromise between easy reading of raw data in a file and not droppping chars in transmission.
 			
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )
 			serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
 				"as%i:wvx%i:wvy%i:wvz%i:\r\n",
-				tow, udb_radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
+				tow, udb_flags._.radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
 				lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
 				rmat[0] , rmat[1] , rmat[2] ,
 				rmat[3] , rmat[4] , rmat[5] ,
@@ -341,7 +332,7 @@ void serial_output_4hz( void )
 			{
 				serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
 					"as%i:wvx%i:wvy%i:wvz%i:ma%i:mb%i:mc%i:svs%i:hd%i:",
-					tow, udb_radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
+					tow, udb_flags._.radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
 					lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
 					rmat[0] , rmat[1] , rmat[2] ,
 					rmat[3] , rmat[4] , rmat[5] ,
@@ -363,10 +354,20 @@ void serial_output_4hz( void )
 					serial_output("p%ii%i:",i,pwIn_save[i]);
 				for (i= 1; i <= MAX_OUTPUTS; i++)
 					serial_output("p%io%i:",i,pwOut_save[i]);
-				serial_output("lex%i:ley%i:lez%i:\r\n", locationErrorEarth[0] , locationErrorEarth[1] , locationErrorEarth[2] );
+				serial_output("lex%i:ley%i:lez%i:fgs:%X:\r\n", locationErrorEarth[0] , locationErrorEarth[1] , locationErrorEarth[2], flags.WW );
 				print_choice = 0 ;
 			}
 #endif
+			if (flags._.f13_print_req == 1)
+			{
+				// The F13 line of telemetry is printed when origin has been captured and inbetween F2 lines in SERIAL_UDB_EXTRA
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
+				if (print_choice == 0) return ;
+#endif
+				serial_output("F13:week%i:origN%li:origE%li:origA%li:\r\n", week_no, lat_origin.WW, long_origin.WW, alt_origin) ;
+				flags._.f13_print_req = 0 ;
+			}
+			
 			return ;
 	}
 	telemetry_counter-- ;
@@ -376,7 +377,7 @@ void serial_output_4hz( void )
 
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
 
-void serial_output_4hz( void )
+void serial_output_8hz( void )
 {
 	// TODO: Output interesting information for OSD.
 	// But first we'll have to implement a buffer for passthrough characters to avoid
@@ -385,6 +386,8 @@ void serial_output_4hz( void )
 }
 
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_MAGNETOMETER )
+
+int skip = 0 ;
 
 extern void rxMagnetometer(void) ;
 extern int udb_magFieldBody[3] ;
@@ -404,7 +407,7 @@ extern int I2ERROR ;
 extern int I2messages ;
 extern int I2interrupts ;
 /*
-void serial_output_4hz( void )
+void serial_output_8hz( void )
 {
 	serial_output("MagMessage: %i\r\nI2CCON: %X, I2CSTAT: %X, I2ERROR: %X\r\nMessages: %i\r\nInterrupts: %i\r\n\r\n" ,
 		magMessage ,
@@ -414,24 +417,28 @@ void serial_output_4hz( void )
 }
 */
 
-void serial_output_4hz( void )
+void serial_output_8hz( void )
 {
-	serial_output("MagOffset: %i, %i, %i\r\nMagBody: %i, %i, %i\r\nMagEarth: %i, %i, %i\r\nMagGain: %i, %i, %i\r\nCalib: %i, %i, %i\r\nMagMessage: %i\r\nTotalMsg: %i\r\nI2CCON: %X, I2CSTAT: %X, I2ERROR: %X\r\n\r\n" ,
-		udb_magOffset[0]>>OFFSETSHIFT , udb_magOffset[1]>>OFFSETSHIFT , udb_magOffset[2]>>OFFSETSHIFT ,
-		udb_magFieldBody[0] , udb_magFieldBody[1] , udb_magFieldBody[2] ,
-		magFieldEarth[0] , magFieldEarth[1] , magFieldEarth[2] ,
-		magGain[0] , magGain[1] , magGain[2] ,
-		rawMagCalib[0] , rawMagCalib[1] , rawMagCalib[2] ,
-		magMessage ,
-		I2messages ,
-		I2CCON , I2CSTAT , I2ERROR ) ;
+	if (++skip == 2)
+	{
+		serial_output("MagOffset: %i, %i, %i\r\nMagBody: %i, %i, %i\r\nMagEarth: %i, %i, %i\r\nMagGain: %i, %i, %i\r\nCalib: %i, %i, %i\r\nMagMessage: %i\r\nTotalMsg: %i\r\nI2CCON: %X, I2CSTAT: %X, I2ERROR: %X\r\n\r\n" ,
+			udb_magOffset[0]>>OFFSETSHIFT , udb_magOffset[1]>>OFFSETSHIFT , udb_magOffset[2]>>OFFSETSHIFT ,
+			udb_magFieldBody[0] , udb_magFieldBody[1] , udb_magFieldBody[2] ,
+			magFieldEarth[0] , magFieldEarth[1] , magFieldEarth[2] ,
+			magGain[0] , magGain[1] , magGain[2] ,
+			rawMagCalib[0] , rawMagCalib[1] , rawMagCalib[2] ,
+			magMessage ,
+			I2messages ,
+			I2CCON , I2CSTAT , I2ERROR ) ;
+		skip = 0;
+	}
 	return ;
 }
 
 
 #else // If SERIAL_OUTPUT_FORMAT is set to SERIAL_NONE, or is not set
 
-void serial_output_4hz( void )
+void serial_output_8hz( void )
 {
 	return ;
 }

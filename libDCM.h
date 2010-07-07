@@ -32,6 +32,7 @@
 
 
 // Functions
+void dcm_init( void ) ;
 void dcm_calibrate(void) ;
 void dcm_set_origin_location(long o_long, long o_lat, long o_alt) ;
 
@@ -63,7 +64,7 @@ void rotate( struct relative2D *xy , signed char angle ) ;
 
 
 // Vars
-extern union dcm_fbts_byte { struct dcm_flag_bits _ ; char b ; } dcm_flags ;
+extern union dcm_fbts_byte { struct dcm_flag_bits _ ; char B ; } dcm_flags ;
 
 // Outside of libDCM, these should all be treated as read-only
 extern fractional rmat[] ;

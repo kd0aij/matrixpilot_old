@@ -28,7 +28,7 @@
 int gpscount ; // counter to initialize GPS
 int calibcount ; // number of PWM pulses before control is turned on
 
-char fourHertzCounter = 0 ;
+char eightHertzCounter = 0 ;
 boolean startTelemetry = 0 ;
 
 
@@ -59,15 +59,15 @@ void init_servoPrepare( void )	// initialize the PWM
 
 void dcm_servo_callback_prepare_outputs(void)
 {
-	// This is a simple counter to do stuff at 4hz
-	fourHertzCounter++ ;
-	if ( fourHertzCounter >= 10 )
+	// This is a simple counter to do stuff at 8hz
+	eightHertzCounter++ ;
+	if ( eightHertzCounter >= 5 )
 	{
 		if ( startTelemetry )
 		{
-			serial_output_4hz() ;
+			serial_output_8hz() ;
 		}
-		fourHertzCounter = 0 ;
+		eightHertzCounter = 0 ;
 	}
 	
 	

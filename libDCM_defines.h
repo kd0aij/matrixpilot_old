@@ -39,8 +39,8 @@ struct waypoint3D { long x ; long y ; int z ; } ;
 
 struct dcm_flag_bits {
 			unsigned int unused					: 4 ;
-			unsigned int mag_drift_req			: 1 ;
 			unsigned int first_mag_reading		: 1 ;
+			unsigned int mag_drift_req			: 1 ;
 			unsigned int yaw_req				: 1 ;
 			unsigned int nav_capable			: 1 ;
 			} ;

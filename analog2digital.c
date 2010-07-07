@@ -34,9 +34,6 @@ struct ADchannel udb_xaccel, udb_yaccel , udb_zaccel ; // x, y, and z accelerome
 struct ADchannel udb_xrate , udb_yrate, udb_zrate ;  // x, y, and z gyro channels
 struct ADchannel udb_vref ; // reference voltage
 
-// FIXME: move this into a new udb_flags bitfield, along with radio_on
-int firstsamp ; // used on startup to detect first A/D sample
-
 
 void udb_init_ADC( void )
 {
@@ -50,7 +47,7 @@ void udb_init_ADC( void )
 	ADPCFG = 0b1111111000110000 ; // analog inputs on 8 7 6 3 2 1 0
 	ADCSSL = 0b0000000111001111 ; 
 	
-	firstsamp = 1 ;
+	udb_flags._.firstsamp = 1 ;
 	
 	IFS0bits.ADIF = 0 ; 	// clear the AD interrupt
 	IPC2bits.ADIP = 5 ;     // priority 5
@@ -91,9 +88,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADCInterrupt(void)
 	udb_xaccel.input =   xaccelBUFF ;
 	udb_yaccel.input =   yaccelBUFF ;
 	udb_zaccel.input =   zaccelBUFF ;
-	if ( firstsamp )	// use the first sample to initialize the filters
+	if ( udb_flags._.firstsamp )	// use the first sample to initialize the filters
 	{
-		firstsamp = 0 ;
+		udb_flags._.firstsamp = 0 ;
 		udb_xaccel.value = udb_xaccel.input ;
 		udb_yaccel.value = udb_yaccel.input ;
 		udb_zaccel.value = udb_zaccel.input ;

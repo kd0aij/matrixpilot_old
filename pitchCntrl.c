@@ -108,7 +108,7 @@ void normalPitchCntrl(void)
 					- __builtin_mulss( rmat6 , omegagyro[2] )) << 1 ;
 	pitchrate = pitchAccum._.W1 ;
 	
-	if ( !udb_radio_on && flags._.GPS_steering )
+	if ( !udb_flags._.radio_on && flags._.GPS_steering )
 	{
 		rtlkick = RTLKICK ;
 	}
@@ -144,7 +144,7 @@ void hoverPitchCntrl(void)
 						- __builtin_mulss( rmat[6] , omegagyro[1] )) << 1 ;
 		pitchrate = pitchAccum._.W1 ;
 		
-		int elevInput = ( udb_radio_on == 1 ) ? REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, udb_pwIn[ELEVATOR_INPUT_CHANNEL] - udb_pwTrim[ELEVATOR_INPUT_CHANNEL]) : 0 ;
+		int elevInput = ( udb_flags._.radio_on == 1 ) ? REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, udb_pwIn[ELEVATOR_INPUT_CHANNEL] - udb_pwTrim[ELEVATOR_INPUT_CHANNEL]) : 0 ;
 		int manualPitchOffset = elevInput * (int)(RMAX/600);
 		
 		long pitchToWP ;

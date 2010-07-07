@@ -59,7 +59,6 @@ fractional declinationVector[2] ;
 void udb_init_I2C(void)
 {
 #if ( MAG_YAW_DRIFT == 1 )
-	dcm_flags._.first_mag_reading = 1 ;
 	declinationVector[0] = cosine(DECLINATIONANGLE) ;
 	declinationVector[1] = sine(DECLINATIONANGLE) ;
 
@@ -98,7 +97,7 @@ void rxMagnetometer(void)  // service the magnetometer
 	{
 		I2C_state = &I2C_idle ; // disable response to any interrupts
 		_RF2 = _RF3 = 1 ; // pull SDA and SCL high
-		init_I2C() ; // turn the I2C back on
+		udb_init_I2C() ; // turn the I2C back on
 		magMessage = 0 ; // start over again
 		return ;
 	}
@@ -276,6 +275,8 @@ void I2C_stopReadMagData(void)
 	return ;
 }
 
+int previousMagFieldRaw[3] = { 0 , 0 , 0 } ;
+
 void I2C_doneReadMagData(void)
 {
 	int vectorIndex ;
@@ -283,6 +284,18 @@ void I2C_doneReadMagData(void)
 	magFieldRaw[0] = (magreg[0]<<8)+magreg[1] ; 
 	magFieldRaw[1] = (magreg[2]<<8)+magreg[3] ; 
 	magFieldRaw[2] = (magreg[4]<<8)+magreg[5] ;
+
+	// check to see if Magnetometer is stuck in the single reading mode:
+	if ( (magMessage == 7) && ( magFieldRaw[0] == previousMagFieldRaw[0] )
+		&& ( magFieldRaw[1] == previousMagFieldRaw[1] )
+		&& ( magFieldRaw[2] == previousMagFieldRaw[2] ) )
+	{
+		I2C_state = &I2C_idle ;
+		magMessage = 0 ;
+	}
+	previousMagFieldRaw[0] = magFieldRaw[0] ;
+	previousMagFieldRaw[1] = magFieldRaw[1] ;
+	previousMagFieldRaw[2] = magFieldRaw[2] ;
 
 	if ( magMessage == 7 )
 	{

@@ -44,7 +44,7 @@ void udb_init_pwm( void )	// initialize the PWM
 		udb_pwOut[i] = 0;
 	
 #if (NORADIO == 1)
-	udb_radio_on = 1 ;
+	udb_flags._.radio_on = 1 ;
 #endif
 	
 	TRISE = 0b1111111111000000 ;
@@ -107,12 +107,12 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	{
 		if ( failSafePulses == 0 )
 		{
-			udb_radio_on = 0 ;
+			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
 		else if ( failSafePulses >= 2 )
 		{
-			udb_radio_on = 1 ;
+			udb_flags._.radio_on = 1 ;
 			LED_GREEN = LED_ON ;
 		}
 		twentyHertzCounter = 0 ;
