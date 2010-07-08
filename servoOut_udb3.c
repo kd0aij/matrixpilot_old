@@ -21,7 +21,7 @@
 
 #include "libUDB_internal.h"
 
-#if (BOARD_TYPE == UDB_2_BOARD)
+#if (BOARD_TYPE == UDB3_BOARD)
 
 //	routines to drive the PWM pins for the servos,
 //	assumes the use of the 16MHz crystal.

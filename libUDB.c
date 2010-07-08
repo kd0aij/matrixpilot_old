@@ -63,7 +63,7 @@ void udb_run(void)
 void udb_init_leds( void )
 {
 	
-#if (BOARD_TYPE == UDB_2_BOARD)
+#if (BOARD_TYPE == UDB3_BOARD)
 	_TRISE1 = _TRISE2 = _TRISE3 = _TRISE4 = 0 ;
 	
 #elif (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD)

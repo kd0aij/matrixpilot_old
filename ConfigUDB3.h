@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-// used for the UDB2
+// used for the UDB3
 
 #define FREQOSC 32000000
 
@@ -52,7 +52,7 @@
 #define LED_3				LATEbits.LATE3
 #define LED_4				LATEbits.LATE4
 
-// There are no hardware toggle switches on the UDB2, so use values of 0
+// There are no hardware toggle switches on the UDB3, so use values of 0
 #define HW_SWITCH_1			0
 #define HW_SWITCH_2			0
 #define HW_SWITCH_3			0

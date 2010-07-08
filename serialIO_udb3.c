@@ -21,7 +21,7 @@
 
 #include "libUDB_internal.h"
 
-#if (BOARD_TYPE == UDB_2_BOARD)
+#if (BOARD_TYPE == UDB3_BOARD)
 
 ////////////////////////////////////////////////////////////////////////////////
 //

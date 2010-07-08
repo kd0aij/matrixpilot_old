@@ -26,7 +26,8 @@
 #define RED_BOARD		1
 #define GREEN_BOARD		2
 #define RED_GREEN_BOARD	3	// Test board for Inversense Gyros
-#define UDB_2_BOARD		4
+#define RED_RUSTY_BOARD	4	// Red board with Rusty's IXZ-500_RAD2a patch board
+#define UDB3_BOARD		5
 
 
 // Include the necessary files for the current board type
@@ -42,13 +43,17 @@
 #include "p30f4011.h"
 #include "ConfigIXZ500.h"
 
-#elif (BOARD_TYPE == UDB_2_BOARD)
+#elif (BOARD_TYPE == RED_RUSTY_BOARD)
+#include "p30f4011.h"
+#include "ConfigIXZ500RAD2a.h"
+
+#elif (BOARD_TYPE == UDB3_BOARD)
 #include "p33fj256gp710a.h"
-#include "ConfigUDB2.h"
+#include "ConfigUDB3.h"
 #endif
 
 
-#if (BOARD_TYPE == UDB_2_BOARD)
+#if (BOARD_TYPE == UDB3_BOARD)
 #define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
 _FOSCSEL(FNOSC_FRCPLL) ;  // fast RC plus PLL \
 _FOSC( FCKSM_CSECMD & OSCIOFNC_ON & POSCMD_NONE ) ; \
