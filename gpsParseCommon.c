@@ -90,16 +90,17 @@ void udb_background_callback_triggered(void)
 	{
 		gps_data_age = 0 ;
 		
-		accum_nav.WW = ((lat_origin.WW - lat_gps.WW)/90) ; // in meters, range is about 20 miles
+		accum_nav.WW = ((lat_gps.WW - lat_origin.WW)/90) ; // in meters, range is about 20 miles
 		GPSlocation.y = accum_nav._.W0 ;
 		
 		//	multiply the longitude delta by the cosine of the latitude
-		accum_nav.WW = ((long_origin.WW - long_gps.WW)/90) ; // in meters
+		accum_nav.WW = ((long_gps.WW - long_origin.WW)/90) ; // in meters
 		accum_nav.WW = ((__builtin_mulss ( cos_lat , accum_nav._.W0 )<<2)) ;
 		GPSlocation.x = accum_nav._.W1 ;
 		
-		GPSlocation.z = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
-	
+		accum_nav.WW = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
+		GPSlocation.z = accum_nav._.W0 ;
+		
 		dcm_callback_gps_location_updated() ;
 		estimateWind() ;
 	}

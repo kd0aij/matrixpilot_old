@@ -50,7 +50,7 @@ void udb_init(void)
 
 void udb_run(void)
 {
-	//  nothing else to do...entirely interrupt driven
+	//  nothing else to do... entirely interrupt driven
 	while (1)
 	{
 		// pause cpu counting timer while not in an ISR

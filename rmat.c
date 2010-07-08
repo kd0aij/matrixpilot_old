@@ -135,7 +135,7 @@ void read_gyros()
 	vref_adj = 0 ;
 #endif
 
-#if (HILSIM == 1)
+#if ( HILSIM == 1 )
 	gx = omegagyro[0] = q_sim.BB;
 	gy = omegagyro[1] = p_sim.BB;
 	gz = omegagyro[2] = r_sim.BB;  
@@ -150,7 +150,7 @@ void read_gyros()
 
 void read_accel()
 {
-#if (HILSIM == 1)
+#if ( HILSIM == 1 )
 	gplane[0] = v_dot_sim.BB;
 	gplane[1] = u_dot_sim.BB; 
 	gplane[2] = w_dot_sim.BB;
@@ -621,7 +621,7 @@ void dcm_run_imu_step(void)
 	read_gyros() ;
 	read_accel() ;
 	dead_reckon() ;
-#if (HILSIM != 1)
+#if ( HILSIM != 1 )
 	adj_accel() ;
 #endif
 	rupdate() ;

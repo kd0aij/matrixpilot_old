@@ -35,7 +35,7 @@ void estimateWind( void )
 {
 #if ( WIND_ESTIMATION == 1 )
 
-	if ( skipYawDrift ) return ;
+	if ( dcm_flags._.skip_yaw_drift ) return ;
 	
 	int index ;
 	int groundVelocity[3] ;
@@ -130,7 +130,6 @@ void estimateWind( void )
 			groundVelocityHistory[index] = groundVelocity[index] ;
 			fuselageDirectionHistory[index] = fuselageDirection[index] ;
 		}
-
 	}	
 #endif
 	return ;	

@@ -37,8 +37,6 @@ int forward_acceleration = 0 ;
 int velocity_previous = 0 ;
 int air_speed_magnitude = 0;
 
-boolean skipYawDrift = false ;
-
 signed char calculated_heading ; //calculated heading allows for wind velocity
 
 #define GPSTAU 3.0
@@ -55,7 +53,7 @@ void udb_magnetometer_callback_data_available( void )
 
 void dcm_enable_yaw_drift_correction(boolean enabled)
 {
-	skipYawDrift = !enabled;
+	dcm_flags._.skip_yaw_drift = !enabled;
 	return ;
 }
 
@@ -118,7 +116,7 @@ void estYawDrift(void)
 #endif
 	
 	// Don't update Yaw Drift while hovering, since that doesn't work right yet
-	if ( gps_nav_valid() && !skipYawDrift )
+	if ( gps_nav_valid() && !dcm_flags._.skip_yaw_drift )
 	{
 		if ((estimatedWind[0] == 0) && (estimatedWind[1] == 0) || air_speed_magnitude < WIND_NAV_AIR_SPEED_MIN   )
 		{

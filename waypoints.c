@@ -34,7 +34,6 @@ struct relative2D togoal = { 0 , 0 } ;
 struct relative3D view_location = { 0 , 0 , 0 } ; 
 int tofinish_line  = 0 ;
 int progress_to_goal = 0 ;
-int crosstrack = 0 ;
 signed char desired_dir_waypoint = 0 ;
 signed char desired_bearing_over_ground  = 0 ;
 signed char desired_dir = 0;
@@ -53,8 +52,6 @@ struct relWaypointDef wp_to_relative(struct waypointDef wp)
 	
 	if ( wp.flags & F_ABSOLUTE )
 	{
-		union longww accum_nav ;
-		
 		rel.loc = dcm_absolute_to_relative(wp.loc) ;
 		rel.viewpoint = dcm_absolute_to_relative(wp.viewpoint) ;
 		
@@ -153,11 +150,11 @@ void compute_waypoint ( void )
 	// compute the goal vector from present position to waypoint target in meters:
 	
 #if ( DEADRECKONING == 1 )
-	togoal.x =  goal.x  - IMUlocationx._.W1  ;
-	togoal.y =  goal.y  - IMUlocationy._.W1  ;
+	togoal.x = goal.x - IMUlocationx._.W1 ;
+	togoal.y = goal.y - IMUlocationy._.W1 ;
 #else
-	togoal.x =  goal.x  - GPSlocation.x  ;
-	togoal.y =  goal.y  - GPSlocation.y  ;
+	togoal.x = goal.x - GPSlocation.x ;
+	togoal.y = goal.y - GPSlocation.y ;
 #endif
 	
 	// project the goal vector onto the direction vector between waypoints
@@ -184,7 +181,7 @@ void compute_waypoint ( void )
 	temporary.WW = ( __builtin_mulss( togoal.y , goal.cosphi )
 				   - __builtin_mulss( togoal.x , goal.sinphi ))<<2 ;
 	
-	crosstrack = temporary._.W1 ;
+	int crosstrack = temporary._.W1 ;
 	
 	// crosstrack is measured in meters
 	// angles are measured as an 8 bit signed character, so 90 degrees is 64 binary.

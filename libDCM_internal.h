@@ -30,7 +30,6 @@ void rxMagnetometer(void) ;		// This should be called every 250ms
 
 extern signed char	actual_dir ;
 extern int velocity_previous  ;
-extern boolean skipYawDrift ;
 
 extern fractional dirovergndHRmat[] ;
 extern fractional dirovergndHGPS[] ;

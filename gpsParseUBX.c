@@ -224,7 +224,7 @@ const unsigned char enable_NAV_DOP[] = {0xB5, 0x62, 				// Header
 const unsigned char enable_SBAS[] =    {0xB5, 0x62, 				// Header
 										0x06, 0x16, 				// ID
 										0x08, 0x00, 				// Payload length
-										0x01, 						// Disable SBAS
+										0x01, 						// Enable SBAS
 										0x03, 						// 
 										0x01, 						// 
 										0x00, 						// 
@@ -772,7 +772,7 @@ void msg_CS1 ( unsigned char gpschar )
 			//correct checksum, do nothing
 		}
 		
-#if (HILSIM == 1)
+#if ( HILSIM == 1 )
 		else if(msg_id == 0xAB)
 		{
 			//If we got the correct checksum for bodyrates, commit that data immediately
@@ -821,7 +821,7 @@ void commit_gps_data(void)
 }
 
 
-#if (HILSIM == 1)
+#if ( HILSIM == 1 )
 
 void commit_bodyrate_data( void )
 {
