@@ -63,11 +63,12 @@ void udb_run(void)
 void udb_init_leds( void )
 {
 	
-#if (BOARD_TYPE == UDB3_BOARD)
-	_TRISE1 = _TRISE2 = _TRISE3 = _TRISE4 = 0 ;
-	
-#elif (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD)
+#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
 	TRISFbits.TRISF0 = 0 ;
+	
+#elif (BOARD_TYPE == UDB3_BOARD)
+	_TRISE1 = _TRISE2 = _TRISE3 = _TRISE4 = 0 ;
+	_LATE1 = _LATE2 = _LATE3 = _LATE4 = LED_OFF ;
 #endif
 	
 	return ;

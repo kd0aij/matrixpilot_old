@@ -56,7 +56,13 @@ void udb_init_clock(void)	/* initialize timer 1 and LEDs */
 	
 	//	The T3 interrupt is used to trigger background tasks such as
 	//	navigation processing after binary data is received from the GPS.
+
+#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
 	IPC1bits.T3IP = 2 ;		// priority 2
+#elif (BOARD_TYPE == UDB3_BOARD)
+	IPC2bits.T3IP = 2 ;		// priority 2
+#endif
+
 	IFS0bits.T3IF = 0 ;		// clear the interrupt
 	IEC0bits.T3IE = 1 ;		// enable the interrupt
 	

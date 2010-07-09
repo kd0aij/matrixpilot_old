@@ -19,12 +19,16 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+//	routines to drive the PWM pins for the servos,
+//	assumes the use of the 16MHz crystal.
+
+
 #include "libUDB_internal.h"
 
 #if (BOARD_TYPE == UDB3_BOARD)
 
-//	routines to drive the PWM pins for the servos,
-//	assumes the use of the 16MHz crystal.
+
+#define TMR7_PERIOD 50000  //  25 milliseconds
 
 int udb_pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 
@@ -33,6 +37,14 @@ int twentyHertzCounter = 0 ;
 
 void udb_init_pwm( void )	// initialize the PWM
 {
+	int i;
+	for (i=0; i <= NUM_OUTPUTS; i++)
+		udb_pwOut[i] = 0;
+	
+#if (NORADIO == 1)
+	udb_flags._.radio_on = 1 ;
+#endif
+	
 	OC1CONbits.OCM = 
 	OC2CONbits.OCM = 
 	OC3CONbits.OCM = 
@@ -53,32 +65,15 @@ void udb_init_pwm( void )	// initialize the PWM
 	OC6CONbits.OCM = 
 	OC7CONbits.OCM = 
 	OC8CONbits.OCM = 6 ;  // enable
-	
-	int i;
-	for (i=0; i <= NUM_OUTPUTS; i++)
-		udb_pwOut[i] = 0;
-	
-#if (NORADIO == 1)
-	udb_flags._.radio_on = 1 ;
-#endif
-	
-	PTPER = 25000 ;			// 25 millisecond period at 16 Mz clock, prescale = 4	
-	PTCONbits.PTCKPS = 1;	// prescaler = 4
 
-	PWMCON1bits.PMOD1 = 1 ; // independent PWM mode
-	PWMCON1bits.PMOD2 = 1 ;
-	PWMCON1bits.PMOD3 = 1 ;
-	PWMCON1bits.PEN1L = 0 ; // low pins used as digital I/O
-	PWMCON1bits.PEN2L = 0 ;
-	PWMCON1bits.PEN3L = 0 ;
-	
-	PTCONbits.PTEN = 1; 	// turn on the PWM 
-	IFS2bits.PWMIF = 0 ; 	// clear the PWM interrupt
-	IPC9bits.PWMIP = 3 ;    // priority 3
-	
-	//  note: at this point the PWM is running, so there are pulses going out,
-	//	but the PWM interrupt is still off, so no interrupts are coming in yet to compute pulses.
-	//  the PWM interrupt is turned on within the A/D interrupt processing
+	TMR7 = 0 ; 				// initialize timer
+	PR7 = TMR7_PERIOD ;		// set period register
+	T7CONbits.TCKPS = 1 ;	// prescaler = 8 option
+	T7CONbits.TCS = 0 ;		// use the internal clock
+	_T2IP = 4 ;		//
+	_T2IF = 0 ;		// clear the interrupt
+	_T2IE = 1 ;		// enable the interrupt
+	T7CONbits.TON = 1 ;		// turn on timer 7
 	
 	return ;
 }
@@ -98,7 +93,7 @@ int udb_servo_pulsesat ( long pw ) // saturation logic to maintain pulse width w
 }
 
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
+void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void) 
 {
 	// interrupt_save_extended_state ;
 	
@@ -138,7 +133,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	OC7RS = udb_pwOut[7] ;
 	OC8RS = udb_pwOut[8] ;
 	
-	IFS2bits.PWMIF = 0 ; /* clear the interrupt */
+	_T2IF = 0 ;		// clear the interrupt
 	
 	// interrupt_restore_extended_state ;
 	return ;

@@ -21,12 +21,13 @@
 
 #include "libUDB_internal.h"
 
-#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
+#if (BOARD_TYPE == UDB3_BOARD)
 
 const unsigned char enableMagRead[] =        { 0x3C , 0x00 , 0x10 , 0x20 , 0x00 } ;
 const unsigned char enableMagCalibration[] = { 0x3C , 0x00 , 0x11 , 0x20 , 0x01 } ;
 const unsigned char resetMagnetometer[]    = { 0x3C , 0x00 , 0x10 , 0x20 , 0x02 } ;
 
+/*
 void I2C_readMagData(void) ;
 void I2C_writeMagCommand(void) ;
 
@@ -40,6 +41,7 @@ void I2C_WriteMagData(void) ;
 void I2C_stopWriteMagData(void) ;
 
 void I2C_idle(void) ;
+*/
 
 int udb_magFieldBody[3] ;  // magnetic field in the body frame of reference 
 int udb_magOffset[3] = { 0 , 0 , 0 } ;  // magnetic offset in the body frame of reference
@@ -50,7 +52,7 @@ unsigned char magreg[6] ;  // magnetometer read-write buffer
 int I2ERROR = 0 ;
 int I2interrupts = 0 ;
 
-void (* I2C_state ) ( void ) = &I2C_idle ;
+//void (* I2C_state ) ( void ) = &I2C_idle ;
 
 #define I2CBRGVAL 35 // 100 Khz
 
@@ -60,6 +62,7 @@ fractional declinationVector[2] ;
 
 void udb_init_I2C(void)
 {
+	/*
 #if ( MAG_YAW_DRIFT == 1 )
 	declinationVector[0] = cosine(DECLINATIONANGLE) ;
 	declinationVector[1] = sine(DECLINATIONANGLE) ;
@@ -72,6 +75,7 @@ void udb_init_I2C(void)
 	IFS0bits.MI2CIF = 0 ; // clear the I2C master interrupt
 	IEC0bits.MI2CIE = 1 ; // enable the interrupt
 #endif
+	*/
 	return ;
 }
 
@@ -82,9 +86,9 @@ int I2messages = 0 ;
 
 void rxMagnetometer(void)  // service the magnetometer
 {
-#if ( MAG_YAW_DRIFT == 1 )
+	/*
 	int magregIndex ;
-	
+#if ( MAG_YAW_DRIFT == 1 )
 	I2messages++ ;
 #if ( LED_RED_MAG_CHECK == 1 )
 	if ( magMessage == 7 )
@@ -174,19 +178,23 @@ void rxMagnetometer(void)  // service the magnetometer
 		}
 	}
 #endif
+	*/
 	return ;
 }
 
 #if ( MAG_YAW_DRIFT == 1 )
 void __attribute__((__interrupt__,__no_auto_psv__)) _MI2CInterrupt(void)
 {
+	/*
     indicate_loading_inter ;
 	IFS0bits.MI2CIF = 0 ; // clear the interrupt
 	(* I2C_state) () ; // execute the service routine
 	return ;
+	*/
 }
 #endif
 
+/*
 void I2C_writeMagCommand(void)
 {
 	I2C_state = &I2C_WriteMagData ;
@@ -342,5 +350,6 @@ void I2C_idle(void)
 {
 	return ;
 }
+*/
 
 #endif

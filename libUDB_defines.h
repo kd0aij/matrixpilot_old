@@ -117,8 +117,13 @@ struct udb_flag_bits {
 
 
 // LED states
+#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
 #define LED_ON		0
 #define LED_OFF		1
+#elif (BOARD_TYPE == UDB3_BOARD)
+#define LED_ON		1
+#define LED_OFF		0
+#endif
 
 
 // Channel numbers on the board, mapped to positions in the pulse width arrays.

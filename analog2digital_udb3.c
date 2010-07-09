@@ -21,7 +21,7 @@
 
 #include "libUDB_internal.h"
 
-#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
+#if (BOARD_TYPE == UDB3_BOARD)
 
 //	Analog to digital processing.
 //	Sampling and conversion is done automatically, so that all that needs to be done during 
@@ -39,6 +39,7 @@ struct ADchannel udb_vref ; // reference voltage
 
 void udb_init_ADC( void )
 {
+	/*
 	TRISB =  0b0000000111111111 ; // all inputs
 	ADCON1 = 0b0010001111100100 ; // signed fractional , auto convert , seq, auto samp
 //	ADCON2 = 0b0000010000011000 ; // supply ref, scana ch0, int every 7, 16word, usa A only
@@ -55,6 +56,7 @@ void udb_init_ADC( void )
 	IPC2bits.ADIP = 5 ;     // priority 5
 	IEC0bits.ADIE = 1 ;     // enable the interrupt
 	ADCON1bits.ADON = 1 ;	// turn on the A to D
+	*/
 	return ;
 }
 
@@ -74,7 +76,7 @@ void udb_a2d_record_offsets(void)
 	return ;
 }
 
-
+/*
 void __attribute__((__interrupt__,__no_auto_psv__)) _ADCInterrupt(void)
 {
 	interrupt_save_extended_state ;
@@ -123,5 +125,5 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADCInterrupt(void)
 	interrupt_restore_extended_state ;
 	return ;
 }
-
+*/
 #endif

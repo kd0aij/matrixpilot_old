@@ -185,7 +185,7 @@ void udb_serial_set_rate(int rate)
 
 void udb_serial_start_sending(void)
 {
-	IFS0bits.U2RXIF = 1 ; // fire the tx interrupt
+	IFS1bits.U2RXIF = 1 ; // fire the tx interrupt
 	return ;
 }
 
