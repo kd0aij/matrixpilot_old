@@ -119,7 +119,7 @@ struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute)
 	accum_nav.WW = ((__builtin_mulss ( cos_lat , accum_nav._.W0 )<<2)) ;
 	rel.x = accum_nav._.W1 ;
 	
-	return ;
+	return rel ;
 }
 
 
@@ -153,6 +153,8 @@ void send_HILSIM_outputs( void )
 	{
 		udb_gps_send_char(SIMservoOutputs[i]) ;	
 	}
+	
+	return ;
 }
 
 #endif

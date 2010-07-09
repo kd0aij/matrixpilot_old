@@ -28,6 +28,7 @@ void gps_startup_sequence(int gpscount) ;
 
 void init_states(void) ;
 void init_behavior( void ) ;
+void init_servoPrepare( void ) ;
 
 int determine_navigation_deflection(char navType);
 
@@ -36,7 +37,7 @@ void rollCntrl(void) ;
 void pitchCntrl(void) ;
 void altitudeCntrl(void) ;
 void cameraCntrl(void) ;
-void mixServos(void) ;
+void servoMix(void) ;
 void setBehavior(int newBehavior) ;
 void updateBehavior(void) ;
 void updateTriggerAction(void) ;

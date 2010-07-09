@@ -472,7 +472,7 @@ void mag_drift()
 	int vector_index ;
 	fractional rmatTransposeMagField[3] ;
 	fractional offsetSum[3] ;
-	fractional deltaMagField[3] ;
+	
 	if ( dcm_flags._.mag_drift_req )
 	{
 		udb_setDSPLibInUse(true) ;

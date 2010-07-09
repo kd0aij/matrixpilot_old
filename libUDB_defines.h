@@ -54,29 +54,46 @@
 
 
 #if (BOARD_TYPE == UDB3_BOARD)
+// fast RC plus PLL
+// no watchdog timer
+// brown out detection off
+// enable MCLR
+// pwm pins as pwm
+// PWMH is active high
+// PMWL is active high
+// no protection
 #define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
-_FOSCSEL(FNOSC_FRCPLL) ;  // fast RC plus PLL \
-_FOSC( FCKSM_CSECMD & OSCIOFNC_ON & POSCMD_NONE ) ; \
-_FWDT( WDT_OFF ) ;				// no watchdog timer \
-_FBORPOR( 	PBOR_OFF & // brown out detection off \
-			MCLR_EN &  // enable MCLR \
-			RST_PWMPIN & // pwm pins as pwm \
-			PWMxH_ACT_HI & // PWMH is active high \
-			PWMxL_ACT_HI ) ; // PMWL is active high \
-_FGS( CODE_PROT_OFF ) ; // no protection \
+_FOSCSEL(FNOSC_FRCPLL) ; \
+_FOSC( FCKSM_CSECMD & OSCIOFNC_ON & POSCMD_NONE ) ;	\
+_FWDT( WDT_OFF ) ; \
+_FBORPOR( 	PBOR_OFF & \
+			MCLR_EN & \
+			RST_PWMPIN & \
+			PWMxH_ACT_HI & \
+			PWMxL_ACT_HI ) ; \
+_FGS( CODE_PROT_OFF ) ; \
 _FICD( JTAGEN_OFF & ICS_PGD2 ) ;
 
 #else
+// external high speed crystal
+// no watchdog timer
+// brown out detection off
+// enable MCLR
+// pwm pins as pwm
+// PWMH is active high
+// PMWL is active high
+// no protection
+// normal use of debugging port
 #define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
-_FOSC( CSW_FSCM_OFF & HS ) ; 	// external high speed crystal \
-_FWDT( WDT_OFF ) ;				// no watchdog timer \
-_FBORPOR( 	PBOR_OFF & // brown out detection off \
-			MCLR_EN &  // enable MCLR \
-			RST_PWMPIN & // pwm pins as pwm \
-			PWMxH_ACT_HI & // PWMH is active high \
-			PWMxL_ACT_HI ) ; // PMWL is active high \
-_FGS( CODE_PROT_OFF ) ; // no protection \
-_FICD( 0xC003 ) ;		// normal use of debugging port
+_FOSC( CSW_FSCM_OFF & HS ) ; \
+_FWDT( WDT_OFF ) ; \
+_FBORPOR( 	PBOR_OFF & \
+			MCLR_EN & \
+			RST_PWMPIN & \
+			PWMxH_ACT_HI & \
+			PWMxL_ACT_HI ) ; \
+_FGS( CODE_PROT_OFF ) ; \
+_FICD( 0xC003 ) ;
 #endif
 
 

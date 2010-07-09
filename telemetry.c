@@ -21,10 +21,11 @@
 
 #include "libDCM.h"
 #include "defines.h"
+#include "libDCM_internal.h"
+
+#define _ADDED_C_LIB 1 // Needed to get vsnprintf()
 #include <stdio.h>
 #include <stdarg.h>
-
-#include "libDCM_internal.h"
 
 
 union intbb voltage_milis = {0} ;
@@ -110,7 +111,6 @@ void sio_voltage_high( unsigned char inchar )
 void serial_output( char* format, ... )
 {
 	va_list arglist ;
-	unsigned char txchar ;
 	
 	va_start(arglist, format) ;
 	

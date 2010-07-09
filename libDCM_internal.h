@@ -24,6 +24,11 @@
 void estYawDrift(void) ;
 void estimateWind(void) ;
 
+void commit_gps_data(void) ;
+
+void gpsoutline2(char message[]) ;
+void gpsoutbin2(int length , const unsigned char msg[] ) ;
+
 void dcm_run_imu_step(void) ;	// This needs to be run every 25ms
 void rxMagnetometer(void) ;		// This should be called every 250ms
 
