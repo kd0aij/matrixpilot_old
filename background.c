@@ -21,8 +21,14 @@
 
 #include "libUDB_internal.h"
 
+#if (BOARD_IS_CLASSIC_UDB == 1)
+#define tmr1_period 		0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
 #define CPU_LOAD_PERCENT	400   // = (100 / (8192 * 2)) * (256**2)
 
+#elif (BOARD_TYPE == UDB3_BOARD)
+#define tmr1_period 		0x8000 // sets time period for timer 1 interrupt to 0.5 seconds
+#define CPU_LOAD_PERCENT	1600
+#endif
 
 
 unsigned int cpu_timer = 0 ;
@@ -57,7 +63,7 @@ void udb_init_clock(void)	/* initialize timer 1 and LEDs */
 	//	The T3 interrupt is used to trigger background tasks such as
 	//	navigation processing after binary data is received from the GPS.
 
-#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
+#if (BOARD_IS_CLASSIC_UDB == 1)
 	IPC1bits.T3IP = 2 ;		// priority 2
 #elif (BOARD_TYPE == UDB3_BOARD)
 	IPC2bits.T3IP = 2 ;		// priority 2
@@ -92,7 +98,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 		timer_5_on = 1;
 		skip_timer_reset = 1;
 	}
-
+	
 	udb_background_callback_periodic() ;
 	
 	IFS0bits.T1IF = 0 ;			// clear the interrupt

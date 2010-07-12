@@ -39,6 +39,10 @@ extern boolean timer_5_on ;
 extern int defaultCorcon ;
 extern unsigned int cpu_timer ;
 
+#if (BOARD_TYPE == UDB3_BOARD)
+#define TMR2_PERIOD 50000  //  25 milliseconds
+#endif
+
 //#define indicate_loading_main		//LATEbits.LATE4 = 0
 //#define indicate_loading_inter	//LATEbits.LATE4 = 1
 

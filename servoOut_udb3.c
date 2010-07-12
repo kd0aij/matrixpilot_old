@@ -27,9 +27,6 @@
 
 #if (BOARD_TYPE == UDB3_BOARD)
 
-
-#define TMR7_PERIOD 50000  //  25 milliseconds
-
 int udb_pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 
 int twentyHertzCounter = 0 ;
@@ -66,14 +63,14 @@ void udb_init_pwm( void )	// initialize the PWM
 	OC7CONbits.OCM = 
 	OC8CONbits.OCM = 6 ;  // enable
 
-	TMR7 = 0 ; 				// initialize timer
-	PR7 = TMR7_PERIOD ;		// set period register
-	T7CONbits.TCKPS = 1 ;	// prescaler = 8 option
-	T7CONbits.TCS = 0 ;		// use the internal clock
-	_T2IP = 4 ;		//
-	_T2IF = 0 ;		// clear the interrupt
-	_T2IE = 1 ;		// enable the interrupt
-	T7CONbits.TON = 1 ;		// turn on timer 7
+	TMR2 = 0 ; 				// initialize timer
+	PR2 = TMR2_PERIOD ;		// set period register
+	T2CONbits.TCKPS = 1 ;	// prescaler = 8 option
+	T2CONbits.TCS = 0 ;		// use the internal clock
+	_T2IP = 3 ;				//
+	_T2IF = 0 ;				// clear the interrupt
+	_T2IE = 1 ;				// enable the interrupt
+	T2CONbits.TON = 1 ;		// turn on timer 2
 	
 	return ;
 }
@@ -93,7 +90,7 @@ int udb_servo_pulsesat ( long pw ) // saturation logic to maintain pulse width w
 }
 
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void) 
+void __attribute__((__interrupt__,__no_auto_psv__)) _T2Interrupt(void) 
 {
 	// interrupt_save_extended_state ;
 	

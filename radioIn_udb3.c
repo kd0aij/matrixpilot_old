@@ -46,8 +46,7 @@ void udb_init_capture(void)
 		udb_pwIn[i] = udb_pwTrim[i] = 0 ;
 	
 	//	configure the capture pins
-	
-	IC1CONbits.ICTMR = 1 ;  // use timer 2
+	IC1CONbits.ICTMR = 1 ;  // use timer 2 (setup in servoOut_udb3.c)
 	IC1CONbits.ICM = 1 ; // capture every edge
 	
 	IC8CON = IC7CON = IC6CON = IC5CON = IC4CON = IC3CON = IC2CON = IC1CON ;
@@ -118,7 +117,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	}
 	else
 	{
-		udb_pwIn[1] = ((time - rise[1]) >> 1 ) ;
+		int temp = time - rise[1] ;
+		if (time < rise[1]) temp += TMR2_PERIOD ;
+		udb_pwIn[1] = temp ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 1 )
 		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
@@ -157,7 +158,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 	}
 	else
 	{
-		udb_pwIn[2] = ((time - rise[2]) >> 1 ) ;
+		int temp = time - rise[2] ;
+		if (time < rise[2]) temp += TMR2_PERIOD ;
+		udb_pwIn[2] = temp ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 2 )
 		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
@@ -196,7 +199,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC3Interrupt(void)
 	}
 	else
 	{
-		udb_pwIn[3] = ((time - rise[3]) >> 1 ) ;
+		int temp = time - rise[3] ;
+		if (time < rise[3]) temp += TMR2_PERIOD ;
+		udb_pwIn[3] = temp ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 3 )
 		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
@@ -235,7 +240,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC4Interrupt(void)
 	}
 	else
 	{
-		udb_pwIn[4] = ((time - rise[4]) >> 1 );
+		int temp = time - rise[4] ;
+		if (time < rise[4]) temp += TMR2_PERIOD ;
+		udb_pwIn[4] = temp ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 4 )
 		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
@@ -274,7 +281,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC5Interrupt(void)
 	}
 	else
 	{
-		udb_pwIn[5] = ((time - rise[5]) >> 1 );
+		int temp = time - rise[5] ;
+		if (time < rise[5]) temp += TMR2_PERIOD ;
+		udb_pwIn[5] = temp ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 5 )
 		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
@@ -313,7 +322,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC6Interrupt(void)
 	}
 	else
 	{
-		udb_pwIn[6] = ((time - rise[6]) >> 1 );
+		int temp = time - rise[6] ;
+		if (time < rise[6]) temp += TMR2_PERIOD ;
+		udb_pwIn[6] = temp ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 6 )
 		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
@@ -352,7 +363,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 	}
 	else
 	{
-		udb_pwIn[7] = ((time - rise[7]) >> 1 );
+		int temp = time - rise[7] ;
+		if (time < rise[7]) temp += TMR2_PERIOD ;
+		udb_pwIn[7] = temp ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 7 )
 		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )
@@ -391,7 +404,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 	}
 	else
 	{
-		udb_pwIn[8] = ((time - rise[8]) >> 1 );
+		int temp = time - rise[8] ;
+		if (time < rise[8]) temp += TMR2_PERIOD ;
+		udb_pwIn[8] = temp ;
 		
 #if ( FAILSAFE_INPUT_CHANNEL == 8 )
 		if ( (udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN) && (udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) )

@@ -32,6 +32,11 @@ void udb_init(void)
 {
 	defaultCorcon = CORCON ;
 	
+#if (BOARD_TYPE == UDB3_BOARD)
+	CLKDIVbits.PLLPRE = 1 ;
+	PLLFBDbits.PLLDIV = 50 ; // FOSC = 32 MHz (FRC = 7.37MHz, N1=3, N2=4, M = 52)
+#endif
+
 	udb_flags.B = 0 ;
 	
 	udb_init_leds() ;
@@ -63,7 +68,7 @@ void udb_run(void)
 void udb_init_leds( void )
 {
 	
-#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
+#if (BOARD_IS_CLASSIC_UDB == 1)
 	TRISFbits.TRISF0 = 0 ;
 	
 #elif (BOARD_TYPE == UDB3_BOARD)

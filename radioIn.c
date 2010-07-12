@@ -21,7 +21,7 @@
 
 #include "libUDB_internal.h"
 
-#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
+#if (BOARD_IS_CLASSIC_UDB == 1)
 
 //	Measure the pulse widths of the servo channel inputs from the radio.
 //	The dsPIC makes this rather easy to do using its capture feature.

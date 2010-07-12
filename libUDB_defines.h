@@ -53,28 +53,14 @@
 #endif
 
 
-#if (BOARD_TYPE == UDB3_BOARD)
-// fast RC plus PLL
-// no watchdog timer
-// brown out detection off
-// enable MCLR
-// pwm pins as pwm
-// PWMH is active high
-// PMWL is active high
-// no protection
-#define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
-_FOSCSEL(FNOSC_FRCPLL) ; \
-_FOSC( FCKSM_CSECMD & OSCIOFNC_ON & POSCMD_NONE ) ;	\
-_FWDT( WDT_OFF ) ; \
-_FBORPOR( 	PBOR_OFF & \
-			MCLR_EN & \
-			RST_PWMPIN & \
-			PWMxH_ACT_HI & \
-			PWMxL_ACT_HI ) ; \
-_FGS( CODE_PROT_OFF ) ; \
-_FICD( JTAGEN_OFF & ICS_PGD2 ) ;
-
+#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
+#define BOARD_IS_CLASSIC_UDB		1
 #else
+#define BOARD_IS_CLASSIC_UDB		0
+#endif
+
+
+#if (BOARD_IS_CLASSIC_UDB)
 // external high speed crystal
 // no watchdog timer
 // brown out detection off
@@ -94,6 +80,13 @@ _FBORPOR( 	PBOR_OFF & \
 			PWMxL_ACT_HI ) ; \
 _FGS( CODE_PROT_OFF ) ; \
 _FICD( 0xC003 ) ;
+
+#elif (BOARD_TYPE == UDB3_BOARD)
+// fast RC plus PLL
+#define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
+_FOSCSEL(FNOSC_FRCPLL) ; \
+_FOSC( FCKSM_CSECMD & OSCIOFNC_ON & POSCMD_NONE ) ;	\
+_FICD( JTAGEN_OFF & ICS_PGD2 ) ;
 #endif
 
 
@@ -117,13 +110,8 @@ struct udb_flag_bits {
 
 
 // LED states
-#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == RED_GREEN_BOARD || BOARD_TYPE == RED_RUSTY_BOARD)
 #define LED_ON		0
 #define LED_OFF		1
-#elif (BOARD_TYPE == UDB3_BOARD)
-#define LED_ON		1
-#define LED_OFF		0
-#endif
 
 
 // Channel numbers on the board, mapped to positions in the pulse width arrays.
@@ -139,7 +127,6 @@ struct udb_flag_bits {
 
 
 // Constants
-#define tmr1_period 0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
 #define FILTERSHIFT 3
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
 #define GRAVITY ((long)(5280.0/SCALEACCEL))  // gravity in AtoD/2 units
