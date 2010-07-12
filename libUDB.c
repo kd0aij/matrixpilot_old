@@ -21,6 +21,33 @@
 
 #include "libUDB_internal.h"
 
+#if (BOARD_IS_CLASSIC_UDB)
+_FOSC( CSW_FSCM_OFF & HS ) ;		// external high speed crystal
+_FWDT( WDT_OFF ) ;					// no watchdog timer
+_FBORPOR( 	PBOR_OFF &				// brown out detection off
+			MCLR_EN &				// enable MCLR
+			RST_PWMPIN &			// pwm pins as pwm
+			PWMxH_ACT_HI &			// PWMH is active high
+			PWMxL_ACT_HI ) ;		// PMWL is active high
+_FGS( CODE_PROT_OFF ) ;				// no protection
+_FICD( 0xC003 ) ;					// normal use of debugging port
+
+#elif (BOARD_TYPE == UDB3_BOARD)
+_FOSCSEL(FNOSC_FRCPLL) ;			// fast RC plus PLL
+_FOSC(	FCKSM_CSECMD &
+		OSCIOFNC_ON &
+		POSCMD_NONE ) ;
+_FWDT(	FWDTEN_OFF &
+		WINDIS_OFF ) ;
+_FGS(	GSS_OFF &
+		GCP_OFF &
+		GWRP_OFF ) ;
+_FPOR(	FPWRT_PWR1 ) ;
+_FICD(	JTAGEN_OFF &
+		ICS_PGD2 ) ;
+#endif
+
+
 union udb_fbts_byte udb_flags ;
 
 boolean timer_5_on = 0 ;

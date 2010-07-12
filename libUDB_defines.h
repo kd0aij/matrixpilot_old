@@ -60,36 +60,6 @@
 #endif
 
 
-#if (BOARD_IS_CLASSIC_UDB)
-// external high speed crystal
-// no watchdog timer
-// brown out detection off
-// enable MCLR
-// pwm pins as pwm
-// PWMH is active high
-// PMWL is active high
-// no protection
-// normal use of debugging port
-#define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
-_FOSC( CSW_FSCM_OFF & HS ) ; \
-_FWDT( WDT_OFF ) ; \
-_FBORPOR( 	PBOR_OFF & \
-			MCLR_EN & \
-			RST_PWMPIN & \
-			PWMxH_ACT_HI & \
-			PWMxL_ACT_HI ) ; \
-_FGS( CODE_PROT_OFF ) ; \
-_FICD( 0xC003 ) ;
-
-#elif (BOARD_TYPE == UDB3_BOARD)
-// fast RC plus PLL
-#define UDB_INCLUDE_CHIP_CONFIG_OPTIONS \
-_FOSCSEL(FNOSC_FRCPLL) ; \
-_FOSC( FCKSM_CSECMD & OSCIOFNC_ON & POSCMD_NONE ) ;	\
-_FICD( JTAGEN_OFF & ICS_PGD2 ) ;
-#endif
-
-
 // Types
 typedef char boolean;
 #define true	1
