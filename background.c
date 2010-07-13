@@ -25,7 +25,7 @@
 #define tmr1_period 		0x2000 // sets time period for timer 1 interrupt to 0.5 seconds
 #define CPU_LOAD_PERCENT	400   // = (100 / (8192 * 2)) * (256**2)
 
-#elif (BOARD_TYPE == UDB3_BOARD)
+#elif (BOARD_TYPE == UDB4_BOARD)
 #define tmr1_period 		0x8000 // sets time period for timer 1 interrupt to 0.5 seconds
 #define CPU_LOAD_PERCENT	1600
 #endif

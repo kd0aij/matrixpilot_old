@@ -26,7 +26,7 @@
 
 #include "libUDB_internal.h"
 
-#if (BOARD_TYPE == UDB3_BOARD)
+#if (BOARD_TYPE == UDB4_BOARD)
 
 int udb_pwOut[MAX_OUTPUTS+1] ;	// pulse widths for servo outputs
 

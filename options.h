@@ -29,7 +29,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Set Up Board Type (Set to RED_BOARD, GREEN_BOARD, RED_GREEN_BOARD, RUSTYS_BOARD, or UDB3_BOARD)
+// Set Up Board Type (Set to RED_BOARD, GREEN_BOARD, RED_GREEN_BOARD, RUSTYS_BOARD, or UDB4_BOARD)
 #define BOARD_TYPE 							RED_BOARD
 
 
