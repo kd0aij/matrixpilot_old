@@ -121,27 +121,11 @@ void udb_init_ADC( void )
 	AD2CON2bits.SMPI = 5 ;		// 6 samples
 //	AD2CON4bits.DMABL = 1 ;		// double buffering
 	
-	IFS1bits.AD2IF = 0 ;		// clear the AD interrupt
-	IPC5bits.AD2IP = 5 ;		// priority 5
-	IEC1bits.AD2IE = 1 ;		// enable the interrupt
+	_AD2IF = 0 ;		// clear the AD interrupt
+	_AD2IP = 5 ;		// priority 5
+	_AD2IE = 1 ;		// enable the interrupt
 	AD2CON1bits.ADON = 1 ;		// turn on the A to D
 	
-	return ;
-}
-
-
-void udb_a2d_record_offsets(void)
-{
-	// almost ready to turn the control on, save the input offsets
-	udb_xaccel.offset = udb_xaccel.value ;
-	udb_xrate.offset = udb_xrate.value ;
-	udb_yaccel.offset = udb_yaccel.value ;
-	udb_yrate.offset = udb_yrate.value ;
-	udb_zaccel.offset = udb_zaccel.value - ((int)(2*GRAVITY)) ; // GRAVITY is measured in A-D/2 units
-	udb_zrate.offset = udb_zrate.value ;
-#ifdef VREF
-	udb_vref.offset = udb_vref.value ;
-#endif
 	return ;
 }
 
@@ -154,10 +138,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADC2Interrupt(void)
 	
 	indicate_loading_inter ;
 	
-	IFS1bits.AD2IF = 0 ; 	// clear the AD interrupt
+	_AD2IF = 0 ; 	// clear the AD interrupt
 	
 	switch ( sampcount ) {
-		case 1 :
+		case yrateBUFF :
 			udb_yrate.input = ADC2SAMPLE ;
 			if ( udb_flags._.firstsamp )
 			{
@@ -169,7 +153,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADC2Interrupt(void)
 			}
 			break;
 			
-		case 2 :
+		case zrateBUFF :
 			udb_zrate.input = ADC2SAMPLE ;
 			if ( udb_flags._.firstsamp )
 			{
@@ -181,7 +165,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADC2Interrupt(void)
 			}
 			break;
 			
-		case 3 :
+		case xrateBUFF :
 			udb_xrate.input = ADC2SAMPLE ;
 			if ( udb_flags._.firstsamp )
 			{
@@ -193,7 +177,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADC2Interrupt(void)
 			}
 			break;
 			
-		case 4 :
+		case zaccelBUFF :
 			udb_zaccel.input = ADC2SAMPLE ;
 			if ( udb_flags._.firstsamp )
 			{
@@ -205,7 +189,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADC2Interrupt(void)
 			}
 			break;
 			
-		case 5 :
+		case xaccelBUFF :
 			udb_xaccel.input = -ADC2SAMPLE ;
 			if ( udb_flags._.firstsamp )
 			{
@@ -217,7 +201,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADC2Interrupt(void)
 			}
 			break;
 			
-		case 6 :
+		case yaccelBUFF :
 			udb_yaccel.input = -ADC2SAMPLE ;
 			if ( udb_flags._.firstsamp )
 			{

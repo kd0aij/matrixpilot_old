@@ -64,12 +64,12 @@ void udb_init_GPS(void)
 	U1STAbits.OERR = 0;		//Bit1 *Read Only Bit*
 	U1STAbits.URXDA = 0;	//Bit0 *Read Only Bit*
 
-	IPC2bits.U1RXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
+	_U1RXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
 
-	IFS0bits.U1TXIF = 0;	// Clear the Transmit Interrupt Flag
-	IEC0bits.U1TXIE = 0;	// Disable Transmit Interrupts
-	IFS0bits.U1RXIF = 0;	// Clear the Recieve Interrupt Flag
-	IEC0bits.U1RXIE = 1;	// Enable Recieve Interrupts
+	_U1TXIF = 0;	// Clear the Transmit Interrupt Flag
+	_U1TXIE = 0;	// Disable Transmit Interrupts
+	_U1RXIF = 0;	// Clear the Recieve Interrupt Flag
+	_U1RXIE = 1;	// Enable Recieve Interrupts
 
 	U1MODEbits.UARTEN = 1;	// And turn the peripheral on
 
@@ -97,7 +97,7 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U1RXInterrupt(void)
 //	else if ( U1STAbits.OERR )
 //		udb_init_GPS();
 	
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
+	_U1RXIF = 0 ; // clear the interrupt
 	
 	while ( U1STAbits.URXDA )
 	{
@@ -160,13 +160,13 @@ void udb_init_USART(void)
 	U2STAbits.OERR = 0;		//Bit1 *Read Only Bit*
 	U2STAbits.URXDA = 0;	//Bit0 *Read Only Bit*
 
-	IPC7bits.U2TXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
-	IPC7bits.U2RXIP = 3;	// Mid Range Interrupt Priority level, no urgent reason
+	_U2TXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
+	_U2RXIP = 3;	// Mid Range Interrupt Priority level, no urgent reason
 
-	IFS1bits.U2TXIF = 0;	// Clear the Transmit Interrupt Flag
-	IEC1bits.U2TXIE = 1;	// Enable Transmit Interrupts
-	IFS1bits.U2RXIF = 0;	// Clear the Recieve Interrupt Flag
-	IEC1bits.U2RXIE = 1;	// Enable Recieve Interrupts
+	_U2TXIF = 0;	// Clear the Transmit Interrupt Flag
+	_U2TXIE = 1;	// Enable Transmit Interrupts
+	_U2RXIF = 0;	// Clear the Recieve Interrupt Flag
+	_U2RXIE = 1;	// Enable Recieve Interrupts
 
 	U2MODEbits.UARTEN = 1;	// And turn the peripheral on
 
@@ -185,7 +185,7 @@ void udb_serial_set_rate(int rate)
 
 void udb_serial_start_sending(void)
 {
-	IFS1bits.U2RXIF = 1 ; // fire the tx interrupt
+	_U2RXIF = 1 ; // fire the tx interrupt
 	return ;
 }
 
@@ -201,7 +201,7 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U2RXInterrupt(void)
 //	else if ( U2STAbits.OERR )
 //		udb_init_UART();
 	
-	IFS1bits.U2RXIF = 0 ; // clear the interrupt
+	_U2RXIF = 0 ; // clear the interrupt
 	
 	while ( U2STAbits.URXDA )
 	{
@@ -220,7 +220,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2TXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
-	IFS1bits.U2TXIF = 0 ; // clear the interrupt 
+	_U2TXIF = 0 ; // clear the interrupt 
 	unsigned char txchar = udb_serial_callback_get_char_to_send() ;
 	
 	if ( txchar )

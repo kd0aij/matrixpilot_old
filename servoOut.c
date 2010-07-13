@@ -48,25 +48,25 @@ void udb_init_pwm( void )	// initialize the PWM
 #endif
 	
 	TRISE = 0b1111111111000000 ;
-	PTPER = 25000 ;			// 25 millisecond period at 16 Mz clock, prescale = 4	
-	PTCONbits.PTCKPS = 1;	// prescaler = 4
+	PTPER = 25000 ;	// 25 millisecond period at 16 Mz clock, prescale = 4	
+	_PTCKPS = 1;	// prescaler = 4
 
-	PWMCON1bits.PMOD1 = 1 ; // independent PWM mode
-	PWMCON1bits.PMOD2 = 1 ;
-	PWMCON1bits.PMOD3 = 1 ;
-	PWMCON1bits.PEN1L = 0 ; // low pins used as digital I/O
-	PWMCON1bits.PEN2L = 0 ;
-	PWMCON1bits.PEN3L = 0 ;
+	_PMOD1 = 1 ;	// independent PWM mode
+	_PMOD2 = 1 ;
+	_PMOD3 = 1 ;
+	_PEN1L = 0 ; 	// low pins used as digital I/O
+	_PEN2L = 0 ;
+	_PEN3L = 0 ;
 	
-	PTCONbits.PTEN = 1; 	// turn on the PWM 
-	IFS2bits.PWMIF = 0 ; 	// clear the PWM interrupt
-	IPC9bits.PWMIP = 3 ;    // priority 3
+	_PTEN = 1; 		// turn on the PWM 
+	_PWMIF = 0 ; 	// clear the PWM interrupt
+	_PWMIP = 3 ;    // priority 3
 	
 	if (NUM_OUTPUTS > 3)
 	{
 		T4CON = 0b1000000000000000  ;	// turn on timer 4 with no prescaler
-		IPC5bits.T4IP = 7 ;				// priority 7
-		IEC1bits.T4IE = 0 ;				// disable timer 4 interrupt for now (enable for each set of pulses)
+		_T4IP = 7 ;						// priority 7
+		_T4IE = 0 ;						// disable timer 4 interrupt for now (enable for each set of pulses)
 	}
 	
 	//  note: at this point the PWM is running, so there are pulses going out,
@@ -79,15 +79,7 @@ void udb_init_pwm( void )	// initialize the PWM
 
 void udb_set_action_state(boolean newValue)
 {
-	LATEbits.LATE4 = newValue ;
-}
-
-
-int udb_servo_pulsesat ( long pw ) // saturation logic to maintain pulse width within bounds
-{
-	if ( pw > SERVOMAX ) pw = SERVOMAX ;
-	if ( pw < SERVOMIN ) pw = SERVOMIN ;
-	return (int)pw ;
+	_LATE4 = newValue ;
 }
 
 
@@ -123,7 +115,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	udb_servo_callback_prepare_outputs() ;
 	setupOutputs() ;
 	
-	IFS2bits.PWMIF = 0 ; /* clear the interrupt */
+	_PWMIF = 0 ; /* clear the interrupt */
 	
 	// interrupt_restore_extended_state ;
 	return ;
@@ -142,16 +134,16 @@ void setupOutputs( void )
 		if ( udb_pwOut[4] > 0 )
 		{
 			PR4 = (udb_pwOut[4] << 1) ;	// set timer to the pulse width
-			LATEbits.LATE0 = 1 ;	// start the pulse by setting the E0 pin high (output 4)
+			_LATE0 = 1 ;	// start the pulse by setting the E0 pin high (output 4)
 		}
 		else
 		{
 			PR4 = 100 ;				// set timer to a short wait
-			LATEbits.LATE0 = 0 ;	// skip the pulse by setting the E0 pin low (output 4)
+			_LATE0 = 0 ;	// skip the pulse by setting the E0 pin low (output 4)
 		}	
 		TMR4 = 0 ;				// start timer at 0
-		IFS1bits.T4IF = 0 ;		// clear the interrupt
-		IEC1bits.T4IE = 1 ;		// enable timer 4 interrupt
+		_T4IF = 0 ;		// clear the interrupt
+		_T4IE = 1 ;		// enable timer 4 interrupt
 	}
 	
 	return;
@@ -165,57 +157,57 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 	
 	switch ( outputNum ) {
 		case 4:
-			LATEbits.LATE0 = 0 ;		// end the pulse by setting the E0 pin low (output 4)
+			_LATE0 = 0 ;		// end the pulse by setting the E0 pin low (output 4)
 			if (NUM_OUTPUTS > 4)
 			{
 				outputNum = 5 ;
 				if ( udb_pwOut[5] > 0 )
 				{
 					PR4 = (udb_pwOut[5] << 1) ;	// set timer to the pulse width
-					LATEbits.LATE2 = 1 ;	// start the pulse by setting the E2 pin high (output 5)
+					_LATE2 = 1 ;	// start the pulse by setting the E2 pin high (output 5)
 				}
 				else
 				{
 					PR4 = 100 ;				// set timer to the pulse width
-					LATEbits.LATE2 = 0 ;	// skip the pulse by setting the E2 pin low (output 5)
+					_LATE2 = 0 ;	// skip the pulse by setting the E2 pin low (output 5)
 				}	
 				TMR4 = 0 ;				// start timer at 0
 			}
 			else
 			{
-				IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
+				_T4IE = 0 ;		// disable timer 4 interrupt
 			}
 			break ;
 		
 		case 5:
-			LATEbits.LATE2 = 0 ;		// end the pulse by setting the E2 pin low (output 5)
+			_LATE2 = 0 ;		// end the pulse by setting the E2 pin low (output 5)
 			if (NUM_OUTPUTS > 5)
 			{
 				outputNum = 6 ;
 				if ( udb_pwOut[6] > 0 )
 				{
 					PR4 = (udb_pwOut[6] << 1) ;	// set timer to the pulse width
-					LATEbits.LATE4 = 1 ;	// start the pulse by setting the E4 pin high (output 6)
+					_LATE4 = 1 ;	// start the pulse by setting the E4 pin high (output 6)
 				}
 				else
 				{
 					PR4 = 100 ;				// set timer to the pulse width
-					LATEbits.LATE4 = 0 ;	// start the pulse by setting the E4 pin high (output 6)
+					_LATE4 = 0 ;	// start the pulse by setting the E4 pin high (output 6)
 				}
 				TMR4 = 0 ;				// start timer at 0
 			}
 			else
 			{
-				IEC1bits.T4IE = 0 ;		// disable timer 4 interrupt
+				_T4IE = 0 ;		// disable timer 4 interrupt
 			}
 			break ;
 		case 6:
-			LATEbits.LATE4 = 0 ;		// end the pulse by setting the E4 pin low (output 6)
-			IEC1bits.T4IE = 0 ;			// disable timer 4 interrupt
+			_LATE4 = 0 ;		// end the pulse by setting the E4 pin low (output 6)
+			_T4IE = 0 ;			// disable timer 4 interrupt
 			break ;
 	}
 	
-	IFS1bits.T4IF = 0 ;					// clear the interrupt
+	_T4IF = 0 ;					// clear the interrupt
 	
 	interrupt_restore_extended_state ;
 	return;

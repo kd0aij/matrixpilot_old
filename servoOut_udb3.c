@@ -79,15 +79,7 @@ void udb_init_pwm( void )	// initialize the PWM
 
 void udb_set_action_state(boolean newValue)
 {
-	LATEbits.LATE4 = newValue ;
-}
-
-
-int udb_servo_pulsesat ( long pw ) // saturation logic to maintain pulse width within bounds
-{
-	if ( pw > SERVOMAX ) pw = SERVOMAX ;
-	if ( pw < SERVOMIN ) pw = SERVOMIN ;
-	return (int)pw ;
+	_LATE4 = newValue ;
 }
 
 

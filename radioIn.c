@@ -43,39 +43,29 @@ void udb_init_capture(void)
 {
 	T2CON = 0b1000000000000000  ;	// turn on timer 2 with no prescaler
 	TRISD = 0b1111111111111111 ;	// make the d port input, to enable IC1 and IC2
-	TRISFbits.TRISF6 = 1 ;			// make F6 an input to enable the 3rd switch
+	_TRISF6 = 1 ;			// make F6 an input to enable the 3rd switch
 	IC1CON = IC2CON = IC7CON = IC8CON = 0b0010000010000001 ;
 	
 	int i;
 	for (i=0; i <= NUM_INPUTS; i++)
 		udb_pwIn[i] = udb_pwTrim[i] = 0 ;
 	
-	IPC0bits.IC1IP = IPC1bits.IC2IP = IPC4bits.IC7IP = IPC4bits.IC8IP = 6 ; // priority 6
-	IFS0bits.IC1IF = IFS0bits.IC2IF = IFS1bits.IC7IF = IFS1bits.IC8IF = 0 ; // clear the interrupt
+	_IC1IP = _IC2IP = _IC7IP = _IC8IP = 6 ; // priority 6
+	_IC1IF = _IC2IF = _IC7IF = _IC8IF = 0 ; // clear the interrupt
 	
-	if (NUM_INPUTS > 0) IEC1bits.IC7IE = 1 ; // turn on interrupt for input 1
-	if (NUM_INPUTS > 1) IEC1bits.IC8IE = 1 ; // turn on interrupt for input 2
-	if (NUM_INPUTS > 2) IEC0bits.IC2IE = 1 ; // turn on interrupt for input 3
-	if (NUM_INPUTS > 3) IEC0bits.IC1IE = 1 ; // turn on interrupt for input 4
+	if (NUM_INPUTS > 0) _IC7IE = 1 ; // turn on interrupt for input 1
+	if (NUM_INPUTS > 1) _IC8IE = 1 ; // turn on interrupt for input 2
+	if (NUM_INPUTS > 2) _IC2IE = 1 ; // turn on interrupt for input 3
+	if (NUM_INPUTS > 3) _IC1IE = 1 ; // turn on interrupt for input 4
 	
 	if (NUM_INPUTS > 4)
 	{
-		TRISEbits.TRISE8 = 1 ;	 // set E8 to be an input pin
-		INTCON2bits.INT0EP = 0;  // Set up the 5th input channel to start out reading low-to-high edges
-		IPC0bits.INT0IP = 7 ; // priority 7
-		IFS0bits.INT0IF = 0 ; // clear the interrupt
-		IEC0bits.INT0IE = 1 ; // turn on the interrupt
+		_TRISE8 = 1 ;	 // set E8 to be an input pin
+		_INT0EP = 0;  // Set up the 5th input channel to start out reading low-to-high edges
+		_INT0IP = 7 ; // priority 7
+		_INT0IF = 0 ; // clear the interrupt
+		_INT0IE = 1 ; // turn on the interrupt
 	}
-	
-	return ;
-}
-
-
-void udb_servo_record_trims(void)
-{
-	int i;
-	for (i=0; i <= NUM_INPUTS; i++)
-		udb_pwTrim[i] = udb_pwIn[i] ;
 	
 	return ;
 }
@@ -85,7 +75,7 @@ void udb_servo_record_trims(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 {
 	unsigned int time ;	
-	IFS1bits.IC7IF = 0 ; // clear the interrupt
+	_IC7IF = 0 ; // clear the interrupt
 	while ( IC7CONbits.ICBNE )
 	{
 		time = IC7BUF ;
@@ -124,7 +114,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 {
 	unsigned int time ;
-	IFS1bits.IC8IF = 0 ; // clear the interrupt
+	_IC8IF = 0 ; // clear the interrupt
 	while ( IC8CONbits.ICBNE )
 	{
 		time = IC8BUF ;
@@ -163,7 +153,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC2IF = 0 ; // clear the interrupt
+	_IC2IF = 0 ; // clear the interrupt
 	while ( IC2CONbits.ICBNE )
 	{
 		time = IC2BUF ;
@@ -202,7 +192,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC1IF =  0 ; // clear the interrupt
+	_IC1IF =  0 ; // clear the interrupt
 	while ( IC1CONbits.ICBNE )
 	{
 		time = IC1BUF ;
@@ -247,7 +237,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 	if (PORTEbits.RE8)
 	{
 		rise[5] = t ;
-		INTCON2bits.INT0EP = 1 ;	// Set up the interrupt to read high-to-low edges
+		_INT0EP = 1 ;	// Set up the interrupt to read high-to-low edges
 	}
 	else
 	{
@@ -265,11 +255,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _INT0Interrupt(void)
 			LED_GREEN = LED_OFF ;
 		}
 #endif
-		INTCON2bits.INT0EP = 0 ;	// Set up the interrupt to read low-to-high edges
+		_INT0EP = 0 ;	// Set up the interrupt to read low-to-high edges
 	}
 #endif
 	
-	IFS0bits.INT0IF = 0 ; 		// clear the interrupt
+	_INT0IF = 0 ; 		// clear the interrupt
 	
 	return;
 }

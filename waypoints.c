@@ -171,8 +171,8 @@ void compute_waypoint ( void )
 	
 #if ( USE_CROSSTRACKING == 1 )
 #define CTDEADBAND 0
-#define CTMARGIN 16
-#define CTGAIN 2
+#define CTMARGIN 32
+#define CTGAIN 1
 // note: CTGAIN*(CTMARGIN-CTDEADBAND) should equal 32
 	
 	// project the goal vector perpendicular to the desired direction vector

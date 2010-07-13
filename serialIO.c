@@ -38,9 +38,9 @@ void udb_init_GPS(void)
 	U2MODE = 0b1010000000000000 ; // turn on
 	U2STA  = 0b0000010100010000 ;
 	
-	IFS1bits.U2RXIF = 0 ; // clear the interrupt
-	IPC6bits.U2RXIP = 4 ; // priority 4
-	IEC1bits.U2RXIE = 1 ; // turn on the interrupt
+	_U2RXIF = 0 ; // clear the interrupt
+	_U2RXIP = 4 ; // priority 4
+	_U2RXIE = 1 ; // turn on the interrupt
 	
 	return ;
 }
@@ -61,7 +61,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 	
 	if ( U2STAbits.FERR ) { udb_init_GPS(); }
 	if ( U2STAbits.OERR ) { udb_init_GPS(); }
-	IFS1bits.U2RXIF = 0 ; // clear the interrupt
+	_U2RXIF = 0 ; // clear the interrupt
 	while ( U2STAbits.URXDA )
 	{
 		unsigned char rxchar = U2RXREG ;
@@ -100,13 +100,13 @@ void udb_init_USART(void)
 	
 	U1STAbits.UTXEN = 1 ; // turn on transmitter
 	
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
-	IPC2bits.U1RXIP = 3 ; // priority 3
-	IEC0bits.U1RXIE = 1 ; // turn on the interrupt
+	_U1RXIF = 0 ; // clear the interrupt
+	_U1RXIP = 3 ; // priority 3
+	_U1RXIE = 1 ; // turn on the interrupt
 	
-	IFS0bits.U1TXIF = 0 ; // clear the interrupt 
- 	IPC2bits.U1TXIP = 4 ; // priority 4 
- 	IEC0bits.U1TXIE = 1 ; // turn on the interrupt
+	_U1TXIF = 0 ; // clear the interrupt 
+ 	_U1TXIP = 4 ; // priority 4 
+ 	_U1TXIE = 1 ; // turn on the interrupt
 	
 	return ;
 }
@@ -121,7 +121,7 @@ void udb_serial_set_rate(int rate)
 
 void udb_serial_start_sending(void)
 {
-	IFS0bits.U1RXIF = 1 ; // fire the tx interrupt
+	_U1RXIF = 1 ; // fire the tx interrupt
 	return ;
 }
 
@@ -136,7 +136,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 	if ( U1STAbits.FERR ) {  udb_init_USART(); }
 	else if ( U1STAbits.OERR ) {  udb_init_USART(); }
 	
-	IFS0bits.U1RXIF = 0 ; // clear the interrupt
+	_U1RXIF = 0 ; // clear the interrupt
+	
 	udb_serial_callback_received_char(rxchar) ;
 	
 	// interrupt_restore_extended_state ;
@@ -150,7 +151,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
-	IFS0bits.U1TXIF = 0 ; // clear the interrupt 
+	_U1TXIF = 0 ; // clear the interrupt 
+	
 	unsigned char txchar = udb_serial_callback_get_char_to_send() ;
 	
 	if ( txchar )

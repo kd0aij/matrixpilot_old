@@ -115,3 +115,38 @@ void udb_setDSPLibInUse(boolean inUse)
 	needSaveExtendedState = inUse ;
 	return ;
 }
+
+
+void udb_a2d_record_offsets(void)
+{
+	// almost ready to turn the control on, save the input offsets
+	udb_xaccel.offset = udb_xaccel.value ;
+	udb_xrate.offset = udb_xrate.value ;
+	udb_yaccel.offset = udb_yaccel.value ;
+	udb_yrate.offset = udb_yrate.value ;
+	udb_zaccel.offset = udb_zaccel.value - ((int)(2*GRAVITY)) ; // GRAVITY is measured in A-D/2 units
+	udb_zrate.offset = udb_zrate.value ;
+#ifdef VREF
+	udb_vref.offset = udb_vref.value ;
+#endif
+	return ;
+}
+
+
+void udb_servo_record_trims(void)
+{
+	int i;
+	for (i=0; i <= NUM_INPUTS; i++)
+		udb_pwTrim[i] = udb_pwIn[i] ;
+	
+	return ;
+}
+
+
+// saturation logic to maintain pulse width within bounds
+int udb_servo_pulsesat ( long pw )
+{
+	if ( pw > SERVOMAX ) pw = SERVOMAX ;
+	if ( pw < SERVOMIN ) pw = SERVOMIN ;
+	return (int)pw ;
+}

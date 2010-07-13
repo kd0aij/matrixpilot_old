@@ -25,13 +25,13 @@
 
 #define	ADCON2CONFIG 0b0010010000011000 ; //?
 
-#define	xrateBUFF	ADCBUF1 //?
-#define	yrateBUFF	ADCBUF3  //?
-#define	zrateBUFF	ADCBUF2 //?
+#define	xrateBUFF	3
+#define	yrateBUFF	1
+#define	zrateBUFF	2
 
-#define	xaccelBUFF	ADCBUF4 //?
-#define	yaccelBUFF	ADCBUF5 //?
-#define	zaccelBUFF	ADCBUF6 //?
+#define	xaccelBUFF	5
+#define	yaccelBUFF	6
+#define	zaccelBUFF	4
 
 #define XSIGN + //?
 #define YSIGN + //?
@@ -39,8 +39,8 @@
 
 //#define VREF
 
-#define SCALEGYRO 4.95 //?
-#define SCALEACCEL 2.64 //?
+#define SCALEGYRO 4.95
+#define SCALEACCEL 2.64
 
 // Max inputs and outputs
 #define MAX_INPUTS	8

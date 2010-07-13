@@ -59,47 +59,20 @@ void udb_init_capture(void)
 	_TRISD8 = _TRISD9 = _TRISD10 = _TRISD11 = _TRISD12 = _TRISD13 = _TRISD14 = _TRISD15 = 1 ;
 	
 	//	set the interrupt priorities to 6
-	
-	IPC0bits.IC1IP = 
-	IPC1bits.IC2IP = 
-	IPC9bits.IC3IP = 
-	IPC9bits.IC4IP = 
-	IPC9bits.IC5IP = 
-	IPC10bits.IC6IP = 
-	IPC5bits.IC7IP = 
-	IPC5bits.IC8IP = 6 ; 
+	_IC1IP = _IC2IP = _IC3IP = _IC4IP = _IC5IP = _IC6IP = _IC7IP = _IC8IP = 6 ; 
 	
 	//	clear the interrupts:
-	
-	IFS0bits.IC1IF = 
-	IFS0bits.IC2IF = 
-	IFS2bits.IC3IF = 
-	IFS2bits.IC4IF = 
-	IFS2bits.IC5IF = 
-	IFS2bits.IC6IF = 
-	IFS1bits.IC7IF = 
-	IFS1bits.IC8IF = 0 ;
+	_IC1IF = _IC2IF = _IC3IF = _IC4IF = _IC5IF = _IC6IF = _IC7IF = _IC8IF = 0 ;
 	
 	//	enable the interrupts:
-	
-	if (NUM_INPUTS > 0) IEC0bits.IC1IE = 1 ;
-	if (NUM_INPUTS > 1) IEC0bits.IC2IE = 1 ; 
-	if (NUM_INPUTS > 2) IEC2bits.IC3IE = 1 ; 
-	if (NUM_INPUTS > 3) IEC2bits.IC4IE = 1 ; 
-	if (NUM_INPUTS > 4) IEC2bits.IC5IE = 1 ; 
-	if (NUM_INPUTS > 5) IEC2bits.IC6IE = 1 ; 
-	if (NUM_INPUTS > 6) IEC1bits.IC7IE = 1 ; 
-	if (NUM_INPUTS > 7) IEC1bits.IC8IE = 1 ;
-	
-	return ;
-}
-
-
-void udb_servo_record_trims(void)
-{
-	int i;
-	for (i=0; i <= NUM_INPUTS; i++)
-		udb_pwTrim[i] = udb_pwIn[i] ;
+	if (NUM_INPUTS > 0) _IC1IE = 1 ;
+	if (NUM_INPUTS > 1) _IC2IE = 1 ; 
+	if (NUM_INPUTS > 2) _IC3IE = 1 ; 
+	if (NUM_INPUTS > 3) _IC4IE = 1 ; 
+	if (NUM_INPUTS > 4) _IC5IE = 1 ; 
+	if (NUM_INPUTS > 5) _IC6IE = 1 ; 
+	if (NUM_INPUTS > 6) _IC7IE = 1 ; 
+	if (NUM_INPUTS > 7) _IC8IE = 1 ;
 	
 	return ;
 }
@@ -109,7 +82,7 @@ void udb_servo_record_trims(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 {
 	unsigned int time ;	
-	IFS0bits.IC1IF = 0 ; // clear the interrupt
+	_IC1IF = 0 ; // clear the interrupt
 	while ( IC1CONbits.ICBNE )
 	{
 		time = IC1BUF ;
@@ -148,7 +121,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 {
 	unsigned int time ;
-	IFS0bits.IC2IF = 0 ; // clear the interrupt
+	_IC2IF = 0 ; // clear the interrupt
 	while ( IC2CONbits.ICBNE )
 	{
 		time = IC2BUF ;
@@ -187,7 +160,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC2Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC3Interrupt(void)
 {
 	unsigned int time ;
-	IFS2bits.IC3IF = 0 ; // clear the interrupt
+	_IC3IF = 0 ; // clear the interrupt
 	while ( IC3CONbits.ICBNE )
 	{
 		time = IC3BUF ;
@@ -226,7 +199,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC3Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC4Interrupt(void)
 {
 	unsigned int time ;
-	IFS2bits.IC4IF =  0 ; // clear the interrupt
+	_IC4IF =  0 ; // clear the interrupt
 	while ( IC4CONbits.ICBNE )
 	{
 		time = IC4BUF ;
@@ -265,7 +238,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC4Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC5Interrupt(void)
 {
 	unsigned int time ;
-	IFS2bits.IC5IF =  0 ; // clear the interrupt
+	_IC5IF =  0 ; // clear the interrupt
 	while ( IC5CONbits.ICBNE )
 	{
 		time = IC5BUF ;
@@ -304,7 +277,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC5Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC6Interrupt(void)
 {
 	unsigned int time ;
-	IFS2bits.IC6IF =  0 ; // clear the interrupt
+	_IC6IF =  0 ; // clear the interrupt
 	while ( IC6CONbits.ICBNE )
 	{
 		time = IC6BUF ;
@@ -343,7 +316,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC6Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 {
 	unsigned int time ;
-	IFS1bits.IC7IF =  0 ; // clear the interrupt
+	_IC7IF =  0 ; // clear the interrupt
 	while ( IC7CONbits.ICBNE )
 	{
 		time = IC7BUF ;
@@ -382,7 +355,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC7Interrupt(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _IC8Interrupt(void)
 {
 	unsigned int time ;
-	IFS1bits.IC8IF =  0 ; // clear the interrupt
+	_IC8IF =  0 ; // clear the interrupt
 	while ( IC8CONbits.ICBNE )
 	{
 		time = IC8BUF ;

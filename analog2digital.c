@@ -51,26 +51,10 @@ void udb_init_ADC( void )
 	
 	udb_flags._.firstsamp = 1 ;
 	
-	IFS0bits.ADIF = 0 ; 	// clear the AD interrupt
-	IPC2bits.ADIP = 5 ;     // priority 5
-	IEC0bits.ADIE = 1 ;     // enable the interrupt
-	ADCON1bits.ADON = 1 ;	// turn on the A to D
-	return ;
-}
-
-
-void udb_a2d_record_offsets(void)
-{
-	// almost ready to turn the control on, save the input offsets
-	udb_xaccel.offset = udb_xaccel.value ;
-	udb_xrate.offset = udb_xrate.value ;
-	udb_yaccel.offset = udb_yaccel.value ;
-	udb_yrate.offset = udb_yrate.value ;
-	udb_zaccel.offset = udb_zaccel.value - ((int)(2*GRAVITY)) ; // GRAVITY is measured in A-D/2 units
-	udb_zrate.offset = udb_zrate.value ;
-#ifdef VREF
-	udb_vref.offset = udb_vref.value ;
-#endif
+	_ADIF = 0 ; 	// clear the AD interrupt
+	_ADIP = 5 ;     // priority 5
+	_ADIE = 1 ;     // enable the interrupt
+	_ADON = 1 ;	// turn on the A to D
 	return ;
 }
 
@@ -118,7 +102,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _ADCInterrupt(void)
 #endif
 	}
 	
-	IFS0bits.ADIF = 0 ; 	// clear the AD interrupt
+	_ADIF = 0 ; 	// clear the AD interrupt
 	
 	interrupt_restore_extended_state ;
 	return ;
