@@ -1,7 +1,7 @@
 [HEADER]
 magic_cookie={66E99B07-E706-4689-9E80-9B2582898A13}
 file_version=1.0
-device=dsPIC30F4011
+device=dsPIC33FJ256GP710A
 [PATH_INFO]
 BuildDirPolicy=BuildDirIsProjectDir
 dir_src=
@@ -192,11 +192,11 @@ file_020=libDCM\gpsParseUBX.c
 file_021=libDCM\mathlibNAV.c
 file_022=libDCM\rmat.c
 file_023=libDCM\libDCM.c
-file_024=libUDB\analog2digital_udb.c
-file_025=libUDB\magneto_udb.c
-file_026=libUDB\radioIn_udb.c
-file_027=libUDB\serialIO_udb.c
-file_028=libUDB\servoOut_udb.c
+file_024=libUDB\analog2digital_udb4.c
+file_025=libUDB\magneto_udb4.c
+file_026=libUDB\radioIn_udb4.c
+file_027=libUDB\servoOut_udb4.c
+file_028=libUDB\serialIO_udb4.c
 file_029=libUDB\ConfigGreen.h
 file_030=libUDB\ConfigIXZ500.h
 file_031=libUDB\ConfigRed.h
