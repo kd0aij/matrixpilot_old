@@ -33,9 +33,9 @@
 #define	yaccelBUFF	6
 #define	zaccelBUFF	4
 
-#define XSIGN + //?
-#define YSIGN + //?
-#define ZSIGN - //?
+#define XSIGN -
+#define YSIGN -
+#define ZSIGN -
 
 //#define VREF
 
