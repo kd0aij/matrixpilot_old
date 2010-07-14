@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM.h"
+#include "libDCM/libDCM.h"
 #include "defines.h"
 
 union fbts_int flags ;

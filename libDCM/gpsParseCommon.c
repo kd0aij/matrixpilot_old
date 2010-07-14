@@ -20,7 +20,6 @@
 
 
 #include "libDCM_internal.h"
-#include "defines.h"
 
 
 struct relative3D GPSlocation 		  = { 0 , 0 , 0 } ;

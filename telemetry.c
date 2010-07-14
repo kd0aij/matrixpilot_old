@@ -19,9 +19,9 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM.h"
+#include "libDCM/libDCM.h"
+#include "libDCM/libDCM_internal.h"
 #include "defines.h"
-#include "libDCM_internal.h"
 
 #define _ADDED_C_LIB 1 // Needed to get vsnprintf()
 #include <stdio.h>

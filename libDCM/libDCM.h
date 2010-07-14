@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libUDB.h"
+#include "../libUDB/libUDB.h"
 #include "libDCM_defines.h"
 
 #ifndef LIB_DCM_H
