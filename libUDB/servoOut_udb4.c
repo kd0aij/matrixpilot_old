@@ -22,7 +22,7 @@
 //	routines to drive the PWM pins for the servos,
 //	assumes the use of the 16MHz crystal.
 
-#define TMR7_PERIOD 50000  //  25 milliseconds
+#define TMR3_PERIOD 50000  //  25 milliseconds
 
 #include "libUDB_internal.h"
 
@@ -64,14 +64,24 @@ void udb_init_pwm( void )	// initialize the PWM
 	OC7CONbits.OCM = 
 	OC8CONbits.OCM = 6 ;  // enable
 
-	TMR7 = 0 ; 				// initialize timer
-	PR7 = TMR7_PERIOD ;		// set period register
-	T7CONbits.TCKPS = 1 ;	// prescaler = 8 option
-	T7CONbits.TCS = 0 ;		// use the internal clock
-	_T7IP = 3 ;				//
-	_T7IF = 0 ;				// clear the interrupt
-	_T7IE = 1 ;				// enable the interrupt
-	T7CONbits.TON = 1 ;		// turn on timer 7
+	OC1CONbits.OCTSEL =
+	OC2CONbits.OCTSEL =
+	OC3CONbits.OCTSEL =
+	OC4CONbits.OCTSEL =
+	OC5CONbits.OCTSEL =
+	OC6CONbits.OCTSEL =
+	OC7CONbits.OCTSEL =
+	OC8CONbits.OCTSEL = 1 ;  // timer 3
+
+
+	TMR3 = 0 ; 				// initialize timer
+	PR3 = TMR3_PERIOD ;		// set period register
+	T3CONbits.TCKPS = 1 ;	// prescaler = 8 option
+	T3CONbits.TCS = 0 ;		// use the internal clock
+	_T3IP = 3 ;				//
+	_T3IF = 0 ;				// clear the interrupt
+	_T3IE = 1 ;				// enable the interrupt
+	T3CONbits.TON = 1 ;		// turn on timer 3
 	
 	return ;
 }
@@ -83,7 +93,7 @@ void udb_set_action_state(boolean newValue)
 }
 
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void) 
+void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void) 
 {
 	// interrupt_save_extended_state ;
 	
@@ -114,16 +124,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void)
 	
 	udb_servo_callback_prepare_outputs() ;
 	
-	OC1RS = udb_pwOut[1] ;
-	OC2RS = udb_pwOut[2] ;
-	OC3RS = udb_pwOut[3] ;
-	OC4RS = udb_pwOut[4] ;
-	OC5RS = udb_pwOut[5] ;
-	OC6RS = udb_pwOut[6] ;
-	OC7RS = udb_pwOut[7] ;
-	OC8RS = udb_pwOut[8] ;
+//!!	OC1RS = udb_pwOut[1] ;
+//!!	OC2RS = udb_pwOut[2] ;
+//!!	OC3RS = udb_pwOut[3] ;
+//!!	OC4RS = udb_pwOut[4] ;
+//!!	OC5RS = udb_pwOut[5] ;
+//!!	OC6RS = udb_pwOut[6] ;
+//!!	OC7RS = udb_pwOut[7] ;
+//!!	OC8RS = udb_pwOut[8] ;
 	
-	_T7IF = 0 ;		// clear the interrupt
+	_T3IF = 0 ;		// clear the interrupt
 	
 	// interrupt_restore_extended_state ;
 	return ;

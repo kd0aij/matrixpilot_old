@@ -60,12 +60,12 @@ void udb_init_clock(void)	/* initialize timers */
 	T5CONbits.TON = 0 ;		// turn off timer 5
 	timer_5_on = 0;
 	
-	//	The T3 interrupt is used to trigger background tasks such as
+	//	The T7 interrupt is used to trigger background tasks such as
 	//	navigation processing after binary data is received from the GPS.
 
-	_T3IP = 2 ;				// priority 2
-	_T3IF = 0 ;				// clear the interrupt
-	_T3IE = 1 ;				// enable the interrupt
+	_T7IP = 2 ;				// priority 2
+	_T7IF = 0 ;				// clear the interrupt
+	_T7IE = 1 ;				// enable the interrupt
 	
 	return ;
 }
@@ -103,8 +103,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 }
 
 
-void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void) 
-//  process T3 interrupt
+void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void) 
+//  process T7 interrupt
 {
 	// interrupt_save_extended_state ;
 	
@@ -112,7 +112,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 	
 	udb_background_callback_triggered() ;
 	
-	_T3IF = 0 ;			// clear the interrupt
+	_T7IF = 0 ;			// clear the interrupt
 	
 	// interrupt_restore_extended_state ;
 	return ;
@@ -121,7 +121,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 
 void udb_background_trigger(void)
 {
-	_T3IF = 1 ;  // trigger the interrupt
+	_T7IF = 1 ;  // trigger the interrupt
 	return ;
 }
 
