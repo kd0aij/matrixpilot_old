@@ -20,6 +20,7 @@
 
 
 #include "libDCM_internal.h"
+#include "defines.h"
 
 
 #if ( GPS_TYPE == GPS_STD )

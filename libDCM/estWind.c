@@ -20,6 +20,7 @@
 
 
 #include "libDCM_internal.h"
+#include "defines.h"
 
 int groundVelocityHistory[3] = { 0 , 0 , 0 } ;
 int fuselageDirectionHistory[3] = { 0 , 0 , 0 } ;
