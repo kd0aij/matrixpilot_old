@@ -124,14 +124,14 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 	
 	udb_servo_callback_prepare_outputs() ;
 	
-//!!	OC1RS = udb_pwOut[1] ;
-//!!	OC2RS = udb_pwOut[2] ;
-//!!	OC3RS = udb_pwOut[3] ;
-//!!	OC4RS = udb_pwOut[4] ;
-//!!	OC5RS = udb_pwOut[5] ;
-//!!	OC6RS = udb_pwOut[6] ;
-//!!	OC7RS = udb_pwOut[7] ;
-//!!	OC8RS = udb_pwOut[8] ;
+	OC1RS = udb_pwOut[1] ;
+	OC2RS = udb_pwOut[2] ;
+	OC3RS = udb_pwOut[3] ;
+	OC4RS = udb_pwOut[4] ;
+	OC5RS = udb_pwOut[5] ;
+	OC6RS = udb_pwOut[6] ;
+	OC7RS = udb_pwOut[7] ;
+	OC8RS = udb_pwOut[8] ;
 	
 	_T3IF = 0 ;		// clear the interrupt
 	
