@@ -34,6 +34,16 @@
 unsigned int cpu_timer = 0 ;
 boolean skip_timer_reset = 1 ; 
 
+#if ( BOARD_TYPE == UDB4_BOARD )
+#define _TTRIGGERIP _T7IP
+#define _TTRIGGERIF _T7IF
+#define _TTRIGGERIE _T7IE
+#else
+#define _TTRIGGERIP _T3IP
+#define _TTRIGGERIF _T3IF
+#define _TTRIGGERIE _T3IE
+#endif
+
 
 void udb_init_clock(void)	/* initialize timers */
 {
@@ -63,9 +73,9 @@ void udb_init_clock(void)	/* initialize timers */
 	//	The T7 interrupt is used to trigger background tasks such as
 	//	navigation processing after binary data is received from the GPS.
 
-	_T7IP = 2 ;				// priority 2
-	_T7IF = 0 ;				// clear the interrupt
-	_T7IE = 1 ;				// enable the interrupt
+	_TTRIGGERIP = 2 ;				// priority 2
+	_TTRIGGERIF = 0 ;				// clear the interrupt
+	_TTRIGGERIE = 1 ;				// enable the interrupt
 	
 	return ;
 }
@@ -102,9 +112,12 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 	return ;
 }
 
-
+#if ( BOARD_TYPE == UDB4_BOARD )
 void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void) 
-//  process T7 interrupt
+#else
+void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void) 
+#endif
+//  process TRIGGER interrupt
 {
 	// interrupt_save_extended_state ;
 	
@@ -112,7 +125,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void)
 	
 	udb_background_callback_triggered() ;
 	
-	_T7IF = 0 ;			// clear the interrupt
+	_TTRIGGERIF = 0 ;			// clear the interrupt
 	
 	// interrupt_restore_extended_state ;
 	return ;
@@ -121,7 +134,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void)
 
 void udb_background_trigger(void)
 {
-	_T7IF = 1 ;  // trigger the interrupt
+	_TTRIGGERIF = 1 ;  // trigger the interrupt
 	return ;
 }
 
