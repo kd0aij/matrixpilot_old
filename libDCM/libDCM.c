@@ -51,6 +51,8 @@ void dcm_init( void )
 	dcm_flags.B = 0 ;
 	dcm_flags._.first_mag_reading = 1 ;
 	
+	dcm_init_rmat() ;
+	
 	return ;
 }
 

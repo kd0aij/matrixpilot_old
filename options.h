@@ -83,7 +83,7 @@
 // Use DEADRECKONING to select the dead reckoning option.
 // DEADRECKONING 0 selects the GPS to perform navigation, at the GPS update rate.
 // DEADRECKONING 1 selects the dead reckoning computations to perform navigation, at 40 Hz.
-#define DEADRECKONING 1
+#define DEADRECKONING						1
 
 // Wind Estimation and Navigation
 // Set this to 1 to use automatic wind estimation and navigation. 

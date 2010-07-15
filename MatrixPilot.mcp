@@ -6,7 +6,7 @@ device=dsPIC30F4011
 BuildDirPolicy=BuildDirIsProjectDir
 dir_src=
 dir_bin=
-dir_tmp=build
+dir_tmp=build/udb
 dir_sin=
 dir_inc=.
 dir_lib=C:\Program Files\Microchip\MPLAB C30\lib
@@ -70,7 +70,6 @@ file_042=libUDB
 file_043=libUDB
 file_044=.
 file_045=.
-file_046=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -118,7 +117,6 @@ file_042=no
 file_043=no
 file_044=no
 file_045=no
-file_046=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -166,7 +164,6 @@ file_042=no
 file_043=no
 file_044=no
 file_045=yes
-file_046=yes
 [FILE_INFO]
 file_000=altitudeCntrl.c
 file_001=libUDB\background.c
@@ -214,7 +211,6 @@ file_042=libUDB\ConfigIXZ500RAD2a.h
 file_043=libUDB\ConfigUDB4.h
 file_044=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
 file_045=C:\Program Files\Microchip\MPLAB C30\support\dsPIC30F\h\p30f4011.h
-file_046=C:\Program Files\Microchip\MPLAB C30\support\dsPIC33F\h\p33FJ256GP710A.h
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

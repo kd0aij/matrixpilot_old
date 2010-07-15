@@ -101,6 +101,17 @@ fractional errorYawplane[]  = { 0 , 0 , 0 } ;
 //	measure of error in orthogonality, used for debugging purposes:
 fractional error = 0 ;
 
+fractional declinationVector[2] ;
+
+
+void dcm_init_rmat( void )
+{
+#if ( MAG_YAW_DRIFT == 1 )
+	declinationVector[0] = cosine(DECLINATIONANGLE) ;
+	declinationVector[1] = sine(DECLINATIONANGLE) ;
+#endif
+}
+
 
 //	Implement the cross product. *dest = *src1X*src2 ;
 void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
@@ -445,8 +456,6 @@ fractional magFieldBodyPrevious[3] ;
 fractional rmatPrevious[9] ;
 
 int offsetDelta[3] ;
-
-extern fractional declinationVector[2] ;
 
 void align_rmat_to_mag(void)
 {
