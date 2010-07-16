@@ -20,7 +20,6 @@
 
 
 #include "libDCM_internal.h"
-#include "defines.h"
 
 
 struct relative3D GPSlocation 		  = { 0 , 0 , 0 } ;
@@ -46,7 +45,7 @@ int gps_data_age ;
 extern void (* msg_parse ) ( unsigned char inchar ) ;
 
 
-void gpsoutline2(char message[]) // output one NMEA line to the GPS
+void gpsoutline(char message[]) // output one NMEA line to the GPS
 {
 	int index ;
 	char outchar ;
@@ -58,7 +57,7 @@ void gpsoutline2(char message[]) // output one NMEA line to the GPS
 	return ;
 }
 
-void gpsoutbin2(int length , const unsigned char msg[] )  // output a binary message to the GPS
+void gpsoutbin(int length , const unsigned char msg[] )  // output a binary message to the GPS
 {
 	int index = 0 ;
 	while ( index < length )

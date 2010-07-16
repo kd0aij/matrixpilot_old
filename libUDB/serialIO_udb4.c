@@ -92,10 +92,9 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U1RXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
-//	if ( U1STAbits.FERR )
-//		udb_init_GPS();
-//	else if ( U1STAbits.OERR )
-//		udb_init_GPS();
+//  Re-init can change the bitrate and break uart communications
+//	if ( U1STAbits.FERR ) udb_init_GPS();
+//	else if ( U1STAbits.OERR ) udb_init_GPS();
 	
 	_U1RXIF = 0 ; // clear the interrupt
 	
@@ -195,11 +194,10 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U2RXInterrupt(void)
 	// interrupt_save_extended_state ;
 	
 	indicate_loading_inter ;
-	
-//	if ( U2STAbits.FERR )
-//		udb_init_UART();
-//	else if ( U2STAbits.OERR )
-//		udb_init_UART();
+
+//  Re-init can change the bitrate and break uart communications	
+//	if ( U2STAbits.FERR ) udb_init_UART();
+//	else if ( U2STAbits.OERR ) udb_init_UART();
 	
 	_U2RXIF = 0 ; // clear the interrupt
 	

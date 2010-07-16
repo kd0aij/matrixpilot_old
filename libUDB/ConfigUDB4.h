@@ -21,7 +21,8 @@
 
 // used for the UDB4
 
-#define FREQOSC 32000000
+#define FREQOSC 	32000000
+#define CLK_PHASES	2
 
 #define	ADCON2CONFIG 0b0010010000011000 ; //?
 

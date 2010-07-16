@@ -19,7 +19,6 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM/libDCM.h"
 #include "defines.h"
 
 // servo throw can be more than 3 turns - 1080 degrees - so use integers rather than char

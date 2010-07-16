@@ -125,11 +125,11 @@ void udb_servo_callback_prepare_outputs(void);			// Callback
 void udb_set_action_state(boolean newValue);
 
 // Baud Rate Generator -- See section 19.3.1 of datasheet.
-// The data sheet says to use (16*rate), but we seem to need to use (32*rate).
-// U1BRG = (Fcy/(32*BaudRate))-1
-// U1BRG = (32000000/(32*9600))-1
+// Fcy = FREQOSC / CLK_PHASES
+// U1BRG = (Fcy/(16*BaudRate))-1
+// U1BRG = ((32000000/2)/(16*9600))-1
 // U1BRG = 103
-#define UDB_BAUD(x)		((int)(FREQOSC / ((long)32 * x) - 1))
+#define UDB_BAUD(x)		((int)((FREQOSC / CLK_PHASES) / ((long)16 * x) - 1))
 
 
 ////////////////////////////////////////////////////////////////////////////////

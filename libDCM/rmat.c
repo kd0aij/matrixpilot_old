@@ -20,7 +20,6 @@
 
 
 #include "libDCM_internal.h"
-#include "defines.h"
 
 //		These are the routines for maintaining a direction cosine matrix
 //		that can be used to transform vectors between the earth and plane

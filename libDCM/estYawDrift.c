@@ -20,7 +20,6 @@
 
 
 #include "libDCM_internal.h"
-#include "defines.h"
 
 //	Compute actual and desired courses.
 //	Actual course is simply the scaled GPS course over ground information.

@@ -19,7 +19,6 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM/libDCM.h"
 #include "defines.h"
 
 //	routines to drive the PWM pins for the servos,
@@ -27,6 +26,7 @@
 
 int gpscount ; // counter to initialize GPS
 int calibcount ; // number of PWM pulses before control is turned on
+int pitch_control, roll_control, yaw_control, altitude_control ;
 
 char eightHertzCounter = 0 ;
 boolean startTelemetry = 0 ;

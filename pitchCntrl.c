@@ -19,7 +19,6 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM/libDCM.h"
 #include "defines.h"
 
 //	If the state machine selects pitch feedback, compute it from the pitch gyro and accelerometer.

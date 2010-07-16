@@ -59,8 +59,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
-	if ( U2STAbits.FERR ) { udb_init_GPS(); }
-	if ( U2STAbits.OERR ) { udb_init_GPS(); }
+//  Re-init can change the bitrate and break uart communications
+//	if ( U2STAbits.FERR ) { udb_init_GPS(); } 	// re-init can change the bitrate and break uart communications
+//	else if ( U2STAbits.OERR ) { udb_init_GPS(); }
+
 	_U2RXIF = 0 ; // clear the interrupt
 	while ( U2STAbits.URXDA )
 	{
@@ -121,7 +123,7 @@ void udb_serial_set_rate(int rate)
 
 void udb_serial_start_sending(void)
 {
-	_U1RXIF = 1 ; // fire the tx interrupt
+	_U1TXIF = 1 ; // fire the tx interrupt
 	return ;
 }
 
@@ -132,9 +134,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
+//  Re-init can change the bitrate and break uart communications
+//	if ( U1STAbits.FERR ) {  udb_init_USART(); }
+//	else if ( U1STAbits.OERR ) {  udb_init_USART(); }
+	
 	char rxchar = U1RXREG ;
-	if ( U1STAbits.FERR ) {  udb_init_USART(); }
-	else if ( U1STAbits.OERR ) {  udb_init_USART(); }
 	
 	_U1RXIF = 0 ; // clear the interrupt
 	

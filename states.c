@@ -19,10 +19,11 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM/libDCM.h"
 #include "defines.h"
 
 union fbts_int flags ;
+int waggle = 0 ;
+int calib_timer, standby_timer ;
 
 void startS(void) ;
 void calibrateS(void) ;

@@ -20,7 +20,6 @@
 
 
 #include "libDCM_internal.h"
-#include "defines.h"
 
 
 #if ( GPS_TYPE == GPS_UBX_2HZ || GPS_TYPE == GPS_UBX_4HZ )
@@ -361,16 +360,16 @@ unsigned char * const msg_BODYRATES_parse[] = {
 
 void gps_startup_sequence(int gpscount)
 {
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
-	if (gpscount == 190)
-		gpsoutline2( (char*)disable_GSV );
-	else if (gpscount == 180)
-		gpsoutline2( (char*)disable_GSA );
-	else if (gpscount == 170)
-		gpsoutline2( (char*)disable_GLL );
-#elif (HILSIM == 1)
+#if (HILSIM == 1)
 	if (gpscount == 980)
 		udb_gps_set_rate(19200);
+#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
+	if (gpscount == 190)
+		gpsoutline( (char*)disable_GSV );
+	else if (gpscount == 180)
+		gpsoutline( (char*)disable_GSA );
+	else if (gpscount == 170)
+		gpsoutline( (char*)disable_GLL );
 #else
 	if (gpscount == 190);
 		// do nothing
@@ -378,36 +377,36 @@ void gps_startup_sequence(int gpscount)
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
 	else if (gpscount == 160)
-		gpsoutline2( (char*)disable_VTG );
+		gpsoutline( (char*)disable_VTG );
 #endif
 	
 	else if (gpscount == 150)
 		//set the UBX to use binary mode
-		gpsoutline2( (char*)bin_mode );
+		gpsoutline( (char*)bin_mode );
 	else if (gpscount == 140)
-		gpsoutbin2( set_rate_length, set_rate );
+		gpsoutbin( set_rate_length, set_rate );
 	else if (gpscount == 130)
 		// command GPS to select which messages are sent, using UBX interface
-		gpsoutbin2( enable_NAV_SOL_length, enable_NAV_SOL );
+		gpsoutbin( enable_NAV_SOL_length, enable_NAV_SOL );
 	else if (gpscount == 120)
-		gpsoutbin2( enable_NAV_POSLLH_length, enable_NAV_POSLLH );
+		gpsoutbin( enable_NAV_POSLLH_length, enable_NAV_POSLLH );
 	else if (gpscount == 110)
-		gpsoutbin2( enable_NAV_VELNED_length, enable_NAV_VELNED );
+		gpsoutbin( enable_NAV_VELNED_length, enable_NAV_VELNED );
 	else if (gpscount == 100)
-		gpsoutbin2( enable_NAV_DOP_length, enable_NAV_DOP );
+		gpsoutbin( enable_NAV_DOP_length, enable_NAV_DOP );
 	
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
 	else if (gpscount == 90)
-		gpsoutbin2( enable_UBX_only_length, enable_UBX_NMEA );
+		gpsoutbin( enable_UBX_only_length, enable_UBX_NMEA );
 #else
 	else if (gpscount == 90)
-		gpsoutbin2( enable_UBX_only_length, enable_UBX_only );
+		gpsoutbin( enable_UBX_only_length, enable_UBX_only );
 #endif
 	
 	else if (gpscount == 80)
-		gpsoutbin2( enable_SBAS_length, enable_SBAS );
+		gpsoutbin( enable_SBAS_length, enable_SBAS );
 	else if (gpscount == 70)
-		gpsoutbin2( config_NAV5_length, config_NAV5 );
+		gpsoutbin( config_NAV5_length, config_NAV5 );
 	
 	return ;
 }

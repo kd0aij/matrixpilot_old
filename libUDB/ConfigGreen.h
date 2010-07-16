@@ -19,7 +19,8 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#define FREQOSC 8000000
+#define FREQOSC		16000000
+#define CLK_PHASES	4
 
 #define	ADCON2CONFIG 0b0000010000011000 ; // AVDD ref, scana ch0, int every 7, 16word, usa A only
 

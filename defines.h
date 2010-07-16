@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libUDB/libUDB.h"
+#include "libDCM/libDCM.h"
 
 struct relWaypointDef { struct relative3D loc ; int flags ; struct relative3D viewpoint ; } ;
 struct waypointDef { struct waypoint3D loc ; int flags ; struct waypoint3D viewpoint ; } ;

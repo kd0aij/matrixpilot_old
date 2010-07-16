@@ -20,7 +20,6 @@
 
 
 #include "libDCM_internal.h"
-#include "defines.h"
 
 
 #if ( GPS_TYPE == GPS_STD )
@@ -124,10 +123,10 @@ void gps_startup_sequence(int gpscount)
 {
 	if (gpscount == 12)
 		// set the GPS to use binary mode
-		gpsoutline2((char*)bin_mode)  ;
+		gpsoutline((char*)bin_mode)  ;
 	else if (gpscount == 10)
 		// command GPS to select which messages are sent, using NMEA interface
-		gpsoutbin2( mode_length , mode ) ;
+		gpsoutbin( mode_length , mode ) ;
 	else if (gpscount == 8)
 		// Switch to 19200 baud
 		udb_gps_set_rate(19200);
