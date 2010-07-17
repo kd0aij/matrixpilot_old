@@ -121,7 +121,9 @@ boolean gps_nav_valid(void)
 
 void gps_startup_sequence(int gpscount)
 {
-	if (gpscount == 12)
+	if (gpscount == 14)
+		udb_gps_set_rate(4800);
+	else if (gpscount == 12)
 		// set the GPS to use binary mode
 		gpsoutline((char*)bin_mode)  ;
 	else if (gpscount == 10)

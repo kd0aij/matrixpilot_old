@@ -95,7 +95,7 @@ void udb_init_USART(void)
 	U1MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
 	U1STA  = 0b0000010100010000 ;
 	
-	U1BRG =  UDB_BAUD(9600) ;
+	U1BRG =  UDB_BAUD(19200) ;
 	
 	U1MODEbits.UARTEN = 1 ; // turn on uart
 	U1MODEbits.ALTIO = 1 ; // use alternate pins
