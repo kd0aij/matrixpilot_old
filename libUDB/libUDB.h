@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "options.h"
+#include "../options.h"
 #include "libUDB_defines.h"
 #include "magnetometerOptions.h"
 #include <dsp.h>
@@ -123,13 +123,6 @@ void udb_servo_callback_prepare_outputs(void);			// Callback
 // This can be used to do things like triggering cameras, turning on
 // lights, etc.
 void udb_set_action_state(boolean newValue);
-
-// Baud Rate Generator -- See section 19.3.1 of datasheet.
-// Fcy = FREQOSC / CLK_PHASES
-// U1BRG = (Fcy/(16*BaudRate))-1
-// U1BRG = ((32000000/2)/(16*9600))-1
-// U1BRG = 103
-#define UDB_BAUD(x)		((int)((FREQOSC / CLK_PHASES) / ((long)16 * x) - 1))
 
 
 ////////////////////////////////////////////////////////////////////////////////
