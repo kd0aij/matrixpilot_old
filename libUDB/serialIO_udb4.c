@@ -140,7 +140,7 @@ void udb_init_USART(void)
 	U2MODEbits.PDSEL = 0;	// Bits1,2 8bit, No Parity
 	U2MODEbits.STSEL = 0;	// Bit0 One Stop Bit
 	
-	U2BRG =  UDB_BAUD(9600) ;
+	U2BRG =  UDB_BAUD(19200) ;
 
 	// Load all values in for U1STA SFR
 	U2STAbits.UTXISEL1 = 0;	//Bit15 Int when Char is transferred (1/2 config!)
@@ -184,7 +184,7 @@ void udb_serial_set_rate(int rate)
 
 void udb_serial_start_sending(void)
 {
-	_U2RXIF = 1 ; // fire the tx interrupt
+	_U2TXIF = 1 ; // fire the tx interrupt
 	return ;
 }
 
