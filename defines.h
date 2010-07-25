@@ -62,7 +62,7 @@ extern signed char	desired_dir ;
 extern int tofinish_line ;
 extern int progress_to_goal ; // Fraction of the way to the goal in the range 0-4096 (2^12)
 
-extern int waggle, calib_timer, standby_timer ;
+extern int waggle ;
 
 extern union longww throttleFiltered ;
 extern int pitchAltitudeAdjust ;

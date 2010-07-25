@@ -506,7 +506,6 @@ void msg_B3 ( unsigned char gpschar )
 
 void msg_SYNC1 ( unsigned char gpschar )
 {
-	
 	if ( gpschar == 0x62 )
 	{
 		//bin_out(0x02);
