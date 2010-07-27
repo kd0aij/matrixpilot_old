@@ -33,8 +33,6 @@ void udb_init_GPS(void)
 	U2MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
 	U2STA  = 0b0000010100010000 ;
 	
-	U2BRG =  UDB_BAUD(9600) ;
-	
 	U2MODE = 0b1010000000000000 ; // turn on
 	U2STA  = 0b0000010100010000 ;
 	
@@ -59,9 +57,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
-//  Re-init can change the bitrate and break uart communications
-//	if ( U2STAbits.FERR ) { udb_init_GPS(); } 	// re-init can change the bitrate and break uart communications
-//	else if ( U2STAbits.OERR ) { udb_init_GPS(); }
+	if ( U2STAbits.FERR ) udb_init_GPS();
+	else if ( U2STAbits.OERR ) udb_init_GPS();
 
 	_U2RXIF = 0 ; // clear the interrupt
 	while ( U2STAbits.URXDA )
@@ -78,7 +75,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2RXInterrupt(void)
 void udb_gps_send_char ( char outchar ) // output one character to the GPS
 {
 	//bin_out(outchar);
-	while ( ! U2STAbits.TRMT ) { }
+	while ( U2STAbits.UTXBF ) { }
 	U2TXREG = outchar ;
 	return ;
 }
@@ -94,8 +91,6 @@ void udb_init_USART(void)
 	//	debugging/telemetry USART, runs at 19200 baud
 	U1MODE = 0b0010000000000000 ; // turn off RX, used to clear errors
 	U1STA  = 0b0000010100010000 ;
-	
-	U1BRG =  UDB_BAUD(19200) ;
 	
 	U1MODEbits.UARTEN = 1 ; // turn on uart
 	U1MODEbits.ALTIO = 1 ; // use alternate pins
@@ -134,9 +129,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1RXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
-//  Re-init can change the bitrate and break uart communications
-//	if ( U1STAbits.FERR ) {  udb_init_USART(); }
-//	else if ( U1STAbits.OERR ) {  udb_init_USART(); }
+	if ( U1STAbits.FERR ) udb_init_USART();
+	else if ( U1STAbits.OERR ) udb_init_USART();
 	
 	char rxchar = U1RXREG ;
 	

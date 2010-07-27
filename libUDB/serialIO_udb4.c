@@ -45,24 +45,22 @@ void udb_init_GPS(void)
 	U1MODEbits.PDSEL = 0;	// Bits1,2 8bit, No Parity
 	U1MODEbits.STSEL = 0;	// Bit0 One Stop Bit
 	
-	U1BRG =  UDB_BAUD(9600) ;
-
 	// Load all values in for U1STA SFR
 	U1STAbits.UTXISEL1 = 0;	//Bit15 Int when Char is transferred (1/2 config!)
 	U1STAbits.UTXINV = 0;	//Bit14 N/A, IRDA config
-	U1STAbits.UTXISEL0 = 0;	//Bit13 Other half of Bit15
+	U1STAbits.UTXISEL0 = 1;	//Bit13 Other half of Bit15
 	//						//Bit12
 	U1STAbits.UTXBRK = 0;	//Bit11 Disabled
-	U1STAbits.UTXEN = 1;	//Bit10 TX pins controlled by periph
-	U1STAbits.UTXBF = 0;	//Bit9 *Read Only Bit*
-	U1STAbits.TRMT = 0;		//Bit8 *Read Only bit*
+	//U1STAbits.UTXEN = 1;	//Bit10 TX pins controlled by periph (handled below)
+	//U1STAbits.UTXBF = 0;	//Bit9 *Read Only Bit*
+	//U1STAbits.TRMT = 0;	//Bit8 *Read Only bit*
 	U1STAbits.URXISEL = 0;	//Bits6,7 Int. on character recieved
 	U1STAbits.ADDEN = 0;	//Bit5 Address Detect Disabled
-	U1STAbits.RIDLE = 0;	//Bit4 *Read Only Bit*
-	U1STAbits.PERR = 0;		//Bit3 *Read Only Bit*
-	U1STAbits.FERR = 0;		//Bit2 *Read Only Bit*
+	//U1STAbits.RIDLE = 0;	//Bit4 *Read Only Bit*
+	//U1STAbits.PERR = 0;	//Bit3 *Read Only Bit*
+	//U1STAbits.FERR = 0;	//Bit2 *Read Only Bit*
 	U1STAbits.OERR = 0;		//Bit1 *Read Only Bit*
-	U1STAbits.URXDA = 0;	//Bit0 *Read Only Bit*
+	//U1STAbits.URXDA = 0;	//Bit0 *Read Only Bit*
 
 	_U1RXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
 
@@ -92,17 +90,16 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U1RXInterrupt(void)
 	
 	indicate_loading_inter ;
 	
-//  Re-init can change the bitrate and break uart communications
-//	if ( U1STAbits.FERR ) udb_init_GPS();
-//	else if ( U1STAbits.OERR ) udb_init_GPS();
-	
-	_U1RXIF = 0 ; // clear the interrupt
+	if ( U1STAbits.FERR ) udb_init_GPS();
+	else if ( U1STAbits.OERR ) udb_init_GPS();
 	
 	while ( U1STAbits.URXDA )
 	{
 		unsigned char rxchar = U1RXREG ;
 		udb_gps_callback_received_char(rxchar) ;
 	}
+	
+	_U1RXIF = 0 ; // clear the interrupt
 	
 	interrupt_restore_extended_state ;
 	return ;
@@ -112,8 +109,9 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U1RXInterrupt(void)
 void udb_gps_send_char ( char outchar ) // output one character to the GPS
 {
 	//bin_out(outchar);
-	while ( ! U1STAbits.TRMT ) { }
+	while ( U1STAbits.UTXBF ) {} ;
 	U1TXREG = outchar ;
+	
 	return ;
 }
 
@@ -140,24 +138,22 @@ void udb_init_USART(void)
 	U2MODEbits.PDSEL = 0;	// Bits1,2 8bit, No Parity
 	U2MODEbits.STSEL = 0;	// Bit0 One Stop Bit
 	
-	U2BRG =  UDB_BAUD(19200) ;
-
 	// Load all values in for U1STA SFR
 	U2STAbits.UTXISEL1 = 0;	//Bit15 Int when Char is transferred (1/2 config!)
 	U2STAbits.UTXINV = 0;	//Bit14 N/A, IRDA config
-	U2STAbits.UTXISEL0 = 0;	//Bit13 Other half of Bit15
+	U2STAbits.UTXISEL0 = 1;	//Bit13 Other half of Bit15
 	//				 		//Bit12
 	U2STAbits.UTXBRK = 0;	//Bit11 Disabled
-	U2STAbits.UTXEN = 1;	//Bit10 TX pins controlled by periph
-	U2STAbits.UTXBF = 0;	//Bit9 *Read Only Bit*
-	U2STAbits.TRMT = 0;		//Bit8 *Read Only bit*
+	//U2STAbits.UTXEN = 1;	//Bit10 TX pins controlled by periph (handled below)
+	//U2STAbits.UTXBF = 0;	//Bit9 *Read Only Bit*
+	//U2STAbits.TRMT = 0;	//Bit8 *Read Only bit*
 	U2STAbits.URXISEL = 0;	//Bits6,7 Int. on character recieved
 	U2STAbits.ADDEN = 0;	//Bit5 Address Detect Disabled
-	U2STAbits.RIDLE = 0;	//Bit4 *Read Only Bit*
-	U2STAbits.PERR = 0;		//Bit3 *Read Only Bit*
-	U2STAbits.FERR = 0;		//Bit2 *Read Only Bit*
+	//U2STAbits.RIDLE = 0;	//Bit4 *Read Only Bit*
+	//U2STAbits.PERR = 0;	//Bit3 *Read Only Bit*
+	//U2STAbits.FERR = 0;	//Bit2 *Read Only Bit*
 	U2STAbits.OERR = 0;		//Bit1 *Read Only Bit*
-	U2STAbits.URXDA = 0;	//Bit0 *Read Only Bit*
+	//U2STAbits.URXDA = 0;	//Bit0 *Read Only Bit*
 
 	_U2TXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
 	_U2RXIP = 3;	// Mid Range Interrupt Priority level, no urgent reason
@@ -195,17 +191,16 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U2RXInterrupt(void)
 	
 	indicate_loading_inter ;
 
-//  Re-init can change the bitrate and break uart communications	
-//	if ( U2STAbits.FERR ) udb_init_UART();
-//	else if ( U2STAbits.OERR ) udb_init_UART();
-	
-	_U2RXIF = 0 ; // clear the interrupt
+	if ( U2STAbits.FERR ) udb_init_USART();
+	else if ( U2STAbits.OERR ) udb_init_USART();
 	
 	while ( U2STAbits.URXDA )
 	{
 		unsigned char rxchar = U2RXREG ;
 		udb_serial_callback_received_char(rxchar) ;
 	}
+	
+	_U2RXIF = 0 ; // clear the interrupt
 	
 	// interrupt_restore_extended_state ;
 	return ;

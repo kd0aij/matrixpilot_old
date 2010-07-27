@@ -29,6 +29,7 @@ void gps_startup_sequence(int gpscount) ;
 void init_states(void) ;
 void init_behavior( void ) ;
 void init_servoPrepare( void ) ;
+void init_serial( void ) ;
 
 int determine_navigation_deflection(char navType);
 

@@ -360,19 +360,21 @@ unsigned char * const msg_BODYRATES_parse[] = {
 
 void gps_startup_sequence(int gpscount)
 {
-#if (HILSIM == 1)
 	if (gpscount == 980)
+	{
+#if (HILSIM == 1)
 		udb_gps_set_rate(19200);
-#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
-	if (gpscount == 190)
+#else
+		udb_gps_set_rate(9600);
+#endif
+	}
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI || SERIAL_OUTPUT_FORMAT == SERIAL_OSD_IF )
+	else if (gpscount == 190)
 		gpsoutline( (char*)disable_GSV );
 	else if (gpscount == 180)
 		gpsoutline( (char*)disable_GSA );
 	else if (gpscount == 170)
 		gpsoutline( (char*)disable_GLL );
-#else
-	if (gpscount == 190);
-		// do nothing
 #endif
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
