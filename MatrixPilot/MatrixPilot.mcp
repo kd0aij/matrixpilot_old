@@ -233,8 +233,8 @@ file_046=..\libUDB\ConfigUDB4.h
 file_047=..\libUDB\boardRotation_defines.h
 file_048=flightplan-logo.h
 file_049=..\libUDB\ConfigHILSIM.h
-file_050=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
-file_051=C:\Program Files\Microchip\MPLAB C30\support\dsPIC30F\h\p30f4011.h
+file_050=C:\Program Files (x86)\Microchip\MPLAB C30\lib\libdsp-coff.a
+file_051=..\..\..\..\..\..\..\..\Program Files (x86)\Microchip\MPLAB C30\support\dsPIC30F\h\p30f4011.h
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
