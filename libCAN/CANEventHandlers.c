@@ -1,5 +1,6 @@
 #include "CANDataIDRefs.h"
 #include "CANTelemetryManager.h"
+#include "../MatrixPilot/defines.h"
 
 // Process a event send with data identifier ID_EVENT
 void processEvent(TELEMETRY_DATA* pteleData)

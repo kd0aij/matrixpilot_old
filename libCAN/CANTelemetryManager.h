@@ -1,6 +1,6 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
-#include "libUDB.h"
+#include "../libUDB/libUDB.h"
 
 #ifndef TELEMETRY_MANAGER_H
 #define TELEMETRY_MANAGER_H

@@ -4,7 +4,7 @@
 // This is done so that CANbus loop testing is possible on the interface board
 
 // CANdefines does simple setup between UDB and interface
-#include "libUDB.h"
+#include "../libUDB/libUDB.h"
 #include "CANDataProtocol.h"
 
 

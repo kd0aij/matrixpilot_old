@@ -4,8 +4,8 @@
 // The CANbus code will not work for ECAN on dsPIC33
 
 
-#include "libUDB_internal.h"
-#include "CANInterface_internal.h"
+#include "../libUDB/libUDB_internal.h"
+#include "../libCAN/CANInterface_internal.h"
 //#include <string.h>
 
 #include "CANDataProtocol.h"
