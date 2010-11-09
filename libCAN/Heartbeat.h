@@ -1,6 +1,6 @@
 // See end of file for license
 
-#include "libUDB.h"
+#include "../libUDB/libUDB.h"
 #include "events.h"
 
 #ifndef HEARTBEAT_H

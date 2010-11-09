@@ -1,6 +1,6 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
-#include "libUDB_internal.h"
+#include "../libUDB/libUDB_internal.h"
 #include "CANInterfaceOptions.h"
 #include "heartbeat.h"
 

@@ -1,6 +1,6 @@
 // See end of file for license
 
-#include "libUDB_internal.h"
+#include "../libUDB/libUDB_internal.h"
 
 #define ADC_ACTIVE_CHANNEL_COUNT	4
 

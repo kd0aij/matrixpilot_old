@@ -1,7 +1,7 @@
 // SEE END OF FILE FOR LICENSING
 
 #include "events.h"
-#include "libUDB_internal.h"
+#include "../libUDB/libUDB_internal.h"
 
 //#define _TTRIGGERIP _T1IP
 //#define _TTRIGGERIF _T1IF

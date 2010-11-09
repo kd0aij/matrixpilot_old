@@ -1,7 +1,7 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
 
-#include "libUDB.h"
+#include "../libUDB/libUDB.h"
 #include "CANInterface_defines.h"
 
 //	Measure the pulse widths of the servo channel inputs from the radio.

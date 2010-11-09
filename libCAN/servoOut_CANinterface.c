@@ -1,6 +1,6 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
-#include "libUDB.h"
+#include "../libUDB/libUDB.h"
 #include "CANInterface_defines.h"
 
 //	routines to drive the PWM pins for the servos,

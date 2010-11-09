@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "defines.h"
+#include "../MatrixPilot/defines.h"
 
 //	main program for testing the IMU.
 

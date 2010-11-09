@@ -1,11 +1,10 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
-#include "libUDB_internal.h"
+#include "../libUDB/libUDB.h"
+#include "../libUDB/libUDB_internal.h"
 #include "CANInterface_defines.h"
 #include "CANInterface_internal.h"
 #include "CANDataProtocol.h"
-
-//#error "This code is not operatational yet, use UDB_CAN_Interface folder"
 
 unsigned int uiServosFound = 0;
 
