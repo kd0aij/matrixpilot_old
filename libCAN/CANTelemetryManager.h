@@ -28,8 +28,15 @@ typedef struct tagTELEMETRY_LIST_ENTRY
 
 extern const TELEMETRY_LIST_ENTRY telemetryLists[TELEMETRY_LIST_COUNT][TELEMETRY_LIST_MAX_SIZE];	
 
+extern const unsigned int telemetryAutoRequestCycles[TELEMETRY_LIST_COUNT];
+
 // Intitalise telemetry manager
 void initTelemetryManager(void);
+
+// Increment counters for automatic telemetry requests and check if any are due.
+//  If a telemetry request is due, set the request flag and reset the counter.
+//   Return true if one of the requests is flagged.
+boolean requestAutoTelemetrySend(void);
 
 // Set a flag requesting that the given telemetry queue be started
 extern void requestTelemetrySend(unsigned char queueNo);
@@ -44,6 +51,13 @@ boolean parse_telemetry_data(const TELEMETRY_DATA* pteleData);
 
 // Process a event send with data identifier ID_EVENT
 extern void processEvent(TELEMETRY_DATA* pteleData);
+
+// Get the data pointer to a variable from its identifier and array offset
+// The array offset acts as a index into array variables
+unsigned char* get_variable_from_identifier(unsigned int identifier, unsigned int arrayOffset, unsigned int* pbyteSize);
+
+// Same as get_variable_from_identifier but for variables specific to node
+unsigned char* get_node_variable_from_identifier(unsigned int identifier, unsigned int arrayOffset, unsigned int* pbyteSize);
 
 #endif
 

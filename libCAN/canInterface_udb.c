@@ -1,14 +1,13 @@
-
+// SEE END OF FILE FOR LICENSE TERMS
 
 // This is only for the classic boards.
 // The CANbus code will not work for ECAN on dsPIC33
 
-
 #include "../libUDB/libUDB_internal.h"
 #include "../libCAN/CANInterface_internal.h"
-//#include <string.h>
-
 #include "CANDataProtocol.h"
+
+#include <string.h>  	// for memcpy
 
 #if(BOARD_GENERATION == GENERATION_CLASSIC)
 
@@ -18,17 +17,19 @@ int udb_pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
 
 
 int failSafePulses = 0 ;
+int twentyHertzCounter 	= 0 ;
 
-int twentyHertzCounter = 0 ;
-int outputNum ;
+int outputNum ;						// Which servo data to send next.
+
+void udb_init_canbus_interface(void);
 
 
 void send_servo_outputs(void);		// Autopilot send servo data to interface
 void receive_servo_inputs(void);	// Autopilot recieve servo data from interface
 void setupOutputs( void ) ;
 
-void ResetAllCAN1Tx(void);
-void ResetAllCAN1Rx(void);
+inline void ResetAllCAN1Tx(void);
+inline void ResetAllCAN1Rx(void);
 
 
 unsigned int ServoOutBuff[8];
@@ -116,8 +117,8 @@ void init_CAN1(void)
 {
 
 
-	TRISF = TRISF |= 0x0002;			// CAN 1 TX set to output	
-	TRISF = TRISF &= 0xFFFE;			// CAN 1 RX set to input
+	TRISFbits.TRISF1 = 0;				// CAN 1 TX set to output	
+	TRISFbits.TRISF0 = 1;				// CAN 1 RX set to input
 
 //--------------------------------------------------------------------------------------------------------------------
 				//Initialization of CAN1 Module and Enabling of CAN1 Interrupts
@@ -217,14 +218,16 @@ void send_servo_outputs(void)
 //-----------------------------------------------------------------------------------------------------------------------
 void send_flight_data()
 {
-	requestTelemetrySend(0);	// Fast flight data is the first, highest priority queue
+
+//	requestTelemetrySend(0);	// Fast flight data is the first, highest priority queue
 
 	if(C1TX2CONbits.TXREQ == 1)	// If already transmitting data then return
 	{
 		return;
 	}
 		
-	start_CAN_data_send(&CANxTX1ProtoStruct);
+	if(requestAutoTelemetrySend())
+			start_CAN_data_send(&CANxTX1ProtoStruct);
 };
 
 
@@ -519,3 +522,33 @@ void setupOutputs( void )
 
 #endif
 
+
+/****************************************************************************/
+// This is part of the servo and radio interface software
+//
+// ServoInterface source code
+//	http://code.google.com/p/rc-servo-interface
+//
+// Copyright 2010 ServoInterface Team
+// See the AUTHORS.TXT file for a list of authors of ServoInterface.
+//
+// ServoInterface is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// ServoInterface is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License 
+// along with ServoInterface.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Many parts of ServoInterface use either modified or unmodified code
+// from the MatrixPilot pilot project.
+// The project also contains code for modifying MatrixPilot to operate
+// with ServoInterface.
+// For details, credits and licenses of MatrixPilot see the AUTHORS.TXT file.
+// or see this website: http://code.google.com/p/gentlenav
+/****************************************************************************/

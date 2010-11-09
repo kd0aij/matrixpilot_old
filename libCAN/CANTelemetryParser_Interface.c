@@ -1,5 +1,3 @@
-// SEE END OF FILE FOR LICENSE TERMS
-
 #include "../libDCM/libDCM.h"
 #include "../libDCM/libDCM_internal.h"
 #include "../MatrixPilot/defines.h"
@@ -8,11 +6,24 @@
 #include "CANTelemetryManager.h"
 #include "CANDataIDrefs.h"
 
+// A buffer for variables aquired by functions.
+// THIS ONLY WORKS FOR:
+//  single canbus and dual canbus atthe same interrupt priority
+unsigned char tempBuffer[8];
+
+// temporary place to put the interface clock variable
+unsigned int interfaceClock;
+
+
 // Get the data pointer to a variable from its identifier and array offset
 // The array offset acts as a index into array variables
 unsigned char* get_variable_from_identifier(unsigned int identifier, unsigned int arrayOffset, unsigned int* pbyteSize)
 {
 	unsigned char* 	pData;
+
+#if(BOARD_TYPE == CAN_INTERFACE)
+	unsigned int 	tempint;
+#endif
 
 	switch(identifier)
 	{
@@ -24,6 +35,20 @@ unsigned char* get_variable_from_identifier(unsigned int identifier, unsigned in
 		pData = 0;
 		*pbyteSize = 0;
 		break;
+
+#if(BOARD_TYPE == CAN_INTERFACE)
+	case ID_CLOCK_TICK:
+		tempint = getHeartbeatTick();
+		memcpy(tempBuffer, &tempint, sizeof(tempint));
+		pData = (unsigned char*) &tempBuffer;
+		*pbyteSize = sizeof(tempint);
+		break;
+#else
+	case ID_CLOCK_TICK:
+		pData = (unsigned char*) &interfaceClock;
+		*pbyteSize = 0;	
+		break;
+#endif
 
 	case ID_FLAGS:
 		pData = (unsigned char*) &flags;
@@ -244,43 +269,11 @@ unsigned char* get_variable_from_identifier(unsigned int identifier, unsigned in
 		*pbyteSize = 4;
 		break;
 
-	// On default call the node specific handlers.
-
 	default:
-		pData = get_node_variable_from_identifier(identifier, arrayOffset, pbyteSize);
+		pData = 0;
+		*pbyteSize = 0;
 		break;
 	}
 
 	return pData;
 }
-
-
-/****************************************************************************/
-// This is part of the servo and radio interface software
-//
-// ServoInterface source code
-//	http://code.google.com/p/rc-servo-interface
-//
-// Copyright 2010 ServoInterface Team
-// See the AUTHORS.TXT file for a list of authors of ServoInterface.
-//
-// ServoInterface is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// ServoInterface is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License 
-// along with ServoInterface.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Many parts of ServoInterface use either modified or unmodified code
-// from the MatrixPilot pilot project.
-// The project also contains code for modifying MatrixPilot to operate
-// with ServoInterface.
-// For details, credits and licenses of MatrixPilot see the AUTHORS.TXT file.
-// or see this website: http://code.google.com/p/gentlenav
-/****************************************************************************/

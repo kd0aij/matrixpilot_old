@@ -3,6 +3,17 @@
 #include "CANTelemetryManager.h"
 #include "CANDataIDRefs.h"
 
+
+// A list of the number of cycles requried to trigger a telemetry send
+// One value is required per entry in the telemetry list
+const unsigned int telemetryAutoRequestCycles[TELEMETRY_LIST_COUNT] = 
+	{
+		1,
+		5,
+		40
+	};
+
+
 const TELEMETRY_LIST_ENTRY telemetryLists[TELEMETRY_LIST_COUNT][TELEMETRY_LIST_MAX_SIZE] = 
 	{
 		{

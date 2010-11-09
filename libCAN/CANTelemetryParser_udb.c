@@ -1,59 +1,38 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
-// CANbus structures defined for transmission
+#include "../libDCM/libDCM.h"
+#include "../libDCM/libDCM_internal.h"
+#include "../MatrixPilot/defines.h"
+#include "../libUDB/libUDB_internal.h"
 
-// The CANbus port changes between the AP and interface board.
-// This is done so that CANbus loop testing is possible on the interface board
+#include "CANTelemetryManager.h"
+#include "CANDataIDrefs.h"
 
-// CANdefines does simple setup between UDB and interface
-#include "../libUDB/libUDB.h"
-#include "CANDataProtocol.h"
+// temporary place to put the interface clock variable
+unsigned int interfaceClock;
 
 
-/*******************STRUCTURES FOR CAN INTERFACE******************/
-#if(BOARD_TYPE == CAN_INTERFACE)
+// Get the data pointer to a variable from its identifier and array offset
+// The array offset acts as a index into array variables
+unsigned char* get_node_variable_from_identifier(unsigned int identifier, unsigned int arrayOffset, unsigned int* pbyteSize)
+{
+	unsigned char* 	pData;
 
-const CAN_TX_PROTOCOL_STRUCT	CANxTX1ProtoStruct = 
+	switch(identifier)
 	{
-		&C2TX1SIDbits,
-		&C2TX1EIDbits,
-		&C2TX1DLCbits,
-		&C2TX1B1,
-		&C2TX1CONbits
-	};
 
-const CAN_RX_PROTOCOL_STRUCT	CANxRX2ProtoStruct = 
-	{
-		&C2RX1SIDbits,
-		(CxRXEIDBITS*) &C2RX1EID,
-		&C2RX1DLCbits,
-		&C2RX1B1
-	};
+	case ID_CLOCK_TICK:
+		pData = (unsigned char*) &interfaceClock;
+		*pbyteSize = 0;	
+		break;
+	default:
+		pData = 0;
+		*pbyteSize = 0;
+		break;
+	}
 
-
-/***************STRUCTURES FOR MATRIXPILOT **********************/
-#else
-
-const CAN_TX_PROTOCOL_STRUCT	CANxTX1ProtoStruct = 
-	{
-		&C1TX1SIDbits,
-		&C1TX1EIDbits,
-		&C1TX1DLCbits,
-		&C1TX1B1,
-		&C1TX1CONbits
-	};
-
-const CAN_RX_PROTOCOL_STRUCT	CANxRX2ProtoStruct = 
-	{
-		&C1RX1SIDbits,
-		(CxRXEIDBITS*) &C1RX1EID,
-		&C1RX1DLCbits,
-		&C1RX1B1
-	};
-
-
-#endif
-
+	return pData;
+}
 
 /****************************************************************************/
 // This is part of the servo and radio interface software

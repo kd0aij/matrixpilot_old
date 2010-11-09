@@ -3,8 +3,16 @@
 #include "CANTelemetryManager.h"
 #include "CANDataIDrefs.h"
 
+
+#include "events.h"
+
+#include <string.h>  	// for memcpy
+
 // An array of telemetry queue requests, one per queue
 boolean telemetryRequests[TELEMETRY_LIST_COUNT];
+
+// A list of counters for the auto requests
+unsigned int telemetryAutoRequestCounters[TELEMETRY_LIST_COUNT]; 
 
 // The index into the telemetry queues
 // Needs a count for every queue since the transmission of
@@ -15,9 +23,27 @@ unsigned char telemetryIndices[TELEMETRY_LIST_COUNT];
 //  Return ID_NULL if finished sending
 TELEMETRY_LIST_ENTRY* get_next_telemetry_send_item(void);
 
-// Get a pointer to the variable from the identifier
-extern unsigned char* get_variable_from_identifier(unsigned int identifier, unsigned int arrayOffset, unsigned int* pbyteSize);
 
+// Increment counters for automatic telemetry requests and check if any are due.
+//  If a telemetry request is due, set the request flag and reset the counter.
+//   Return true if one of the requests is flagged.
+boolean requestAutoTelemetrySend(void)
+{
+	int Index;
+	boolean triggered = false;
+
+	for(Index = 0; Index < TELEMETRY_LIST_COUNT; Index++)
+	{
+		if( ((telemetryAutoRequestCounters[Index])++) >= telemetryAutoRequestCycles[Index])
+		{
+			telemetryAutoRequestCounters[Index] = 0;
+			telemetryRequests[Index] = true;
+			triggered = true;
+		}		
+	}
+	
+	return triggered;
+}
 
 // Request that a queue of telemetry items be sent
 // queueNo is the index of the requested queue
@@ -25,6 +51,7 @@ extern unsigned char* get_variable_from_identifier(unsigned int identifier, unsi
 inline void requestTelemetrySend(unsigned char queueNo)
 {
 	telemetryRequests[queueNo] = true;
+	telemetryAutoRequestCounters[queueNo] = 0;
 };
 
 // Initialise everything
@@ -89,7 +116,7 @@ TELEMETRY_LIST_ENTRY* get_next_telemetry_send_item()
 		if(telemetryRequests[queueIndex] == true)
 		{
 			itemIndex = telemetryIndices[queueIndex];
-			pTelemetryItem 	= &(telemetryLists[queueIndex][itemIndex]);
+			pTelemetryItem 	= (TELEMETRY_LIST_ENTRY*) &(telemetryLists[queueIndex][itemIndex]);
 
 			if(pTelemetryItem->identifier == ID_NULL)
 			{
@@ -123,7 +150,7 @@ boolean parse_telemetry_data(const TELEMETRY_DATA* pteleData)
 	unsigned char* pData = get_variable_from_identifier(pteleData->identifier, pteleData->arrayOffset, &byteSize);
 
 	if(pteleData->identifier == ID_EVENT)
-		processEvent(pteleData);
+		processEvent( (TELEMETRY_DATA*) pteleData);
 	else if(pData == 0) return false;
 
 	// Check the data sizes match
