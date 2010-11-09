@@ -3,6 +3,7 @@
 
 #include "../libUDB/libUDB.h"
 #include "CANInterface_defines.h"
+#include "heartbeat.h"
 
 //	Measure the pulse widths of the servo channel inputs from the radio.
 //	The capture timers are used for 8 cahnnels.  An extra channel is measured on an interrupt timer.

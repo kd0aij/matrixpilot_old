@@ -29,8 +29,8 @@
 void cpu_timer_process(void);
 unsigned int cpu_timer = 0 ;
 
-unsigned char	hBackgroundEvent = INVALID_HANDLE;
-unsigned char	hBackgroundTimer = INVALID_HANDLE;
+unsigned int	hBackgroundEvent = INVALID_HANDLE;
+unsigned int	hBackgroundTimer = INVALID_HANDLE;
 
 
 void udb_init_clock(void)	/* initialize timers */

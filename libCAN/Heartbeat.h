@@ -9,6 +9,9 @@
 // Make this inline
 unsigned int getHeartbeatTick(void);
 
+// Intitalise the heartbeat
+void init_heartbeat(void);
+
 // Callback to the radio input with the current clock tick
 extern void radio_heartbeat_callback(unsigned int tick);
 
@@ -24,6 +27,7 @@ unsigned int register_timer(unsigned int hEvent);
 
 // Setup a timer and activate it
 void set_timer(unsigned int hTimer, unsigned int period, boolean repeat );
+
 
 #endif
 

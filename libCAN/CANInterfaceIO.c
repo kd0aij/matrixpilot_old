@@ -96,9 +96,6 @@ void send_radio_data(void)
 // Interface recieves servo data from autopilot
 void receive_servo_data()
 {
-	int index;
-	unsigned int ServoPW;
-
 	if(ServoInDataBuff[THROTTLE_OUTPUT_CHANNEL] < THROTTLE_MINIMUM_OUTPUT)
 		ServoInDataBuff[THROTTLE_OUTPUT_CHANNEL] = THROTTLE_MINIMUM_OUTPUT;
 
@@ -127,8 +124,8 @@ void send_coprocessor_data(void)
 //-------------------------------------------------------------------------------------------------------------------
 void init_CAN2(void)
 {
-	TRISG = TRISG |= 0x0002;		// CAN 2 TX set to output	
-	TRISG = TRISG &= 0xFFFE;		// CAN 2 RX set to input
+	TRISGbits.TRISG1 = 0;			// CAN 2 TX set to output	
+	TRISGbits.TRISG0 = 1;			// CAN 2 RX set to input
 
 	C2CTRLbits.CANCKS = 0;			// Select the CAN Master Clock . It is equal to 4Fcy here. 
 									// (Fcy=4MHz)

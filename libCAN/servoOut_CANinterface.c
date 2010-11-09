@@ -2,6 +2,7 @@
 
 #include "../libUDB/libUDB.h"
 #include "CANInterface_defines.h"
+#include <string.h>
 
 //	routines to drive the PWM pins for the servos,
 //	assumes the use of the 16MHz crystal.
