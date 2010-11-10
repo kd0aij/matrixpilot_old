@@ -9,31 +9,6 @@
 #include "../libUDB/libUDB.h"
 #include "CANDataProtocol.h"
 
-
-/*******************STRUCTURES FOR CAN INTERFACE******************/
-#if(BOARD_TYPE == CAN_INTERFACE)
-
-const CAN_TX_PROTOCOL_STRUCT	CANxTX1ProtoStruct = 
-	{
-		&C2TX1SIDbits,
-		&C2TX1EIDbits,
-		&C2TX1DLCbits,
-		&C2TX1B1,
-		&C2TX1CONbits
-	};
-
-const CAN_RX_PROTOCOL_STRUCT	CANxRX2ProtoStruct = 
-	{
-		&C2RX1SIDbits,
-		(CxRXEIDBITS*) &C2RX1EID,
-		&C2RX1DLCbits,
-		&C2RX1B1
-	};
-
-
-/***************STRUCTURES FOR MATRIXPILOT **********************/
-#else
-
 const CAN_TX_PROTOCOL_STRUCT	CANxTX1ProtoStruct = 
 	{
 		&C1TX1SIDbits,
@@ -51,8 +26,6 @@ const CAN_RX_PROTOCOL_STRUCT	CANxRX2ProtoStruct =
 		&C1RX1B1
 	};
 
-
-#endif
 
 
 /****************************************************************************/
