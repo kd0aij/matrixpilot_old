@@ -1,6 +1,6 @@
 #include "indicators.h"
 #include "../libUDB/libUDB.h"
-#include "CANInterface_defines.h"
+#include "../libCAN/CANInterface_defines.h"
 #include "heartbeat.h"
 
 void indicator_tick_callback(void);

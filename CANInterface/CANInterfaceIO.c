@@ -2,9 +2,9 @@
 
 #include "../libUDB/libUDB.h"
 #include "../libUDB/libUDB_internal.h"
-#include "CANInterface_defines.h"
-#include "CANInterface_internal.h"
-#include "CANDataProtocol.h"
+#include "../libCAN/CANInterface_defines.h"
+#include "../libCAN/CANInterface_internal.h"
+#include "../libCAN/CANDataProtocol.h"
 
 unsigned int uiServosFound = 0;
 

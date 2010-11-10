@@ -20,7 +20,7 @@
 
 
 #include "../libUDB/libUDB_internal.h"
-#include "CANInterface_defines.H"
+#include "../libCAN/CANInterface_defines.H"
 
 /*
 _FOSC( CSW_FSCM_OFF & HS ) ;		// external high speed crystal

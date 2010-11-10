@@ -5,7 +5,7 @@
 
 #include "CANTelemetryManager.h"
 #include "CANDataIDrefs.h"
-#include "heartbeat.h"
+#include "../CANInterface/heartbeat.h"
 #include <string.h>
 
 // A buffer for variables aquired by functions.

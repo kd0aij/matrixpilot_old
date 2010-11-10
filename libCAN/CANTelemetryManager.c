@@ -3,8 +3,7 @@
 #include "CANTelemetryManager.h"
 #include "CANDataIDrefs.h"
 
-
-#include "events.h"
+#include "../CANInterface/events.h"
 
 #include <string.h>  	// for memcpy
 

@@ -5,7 +5,7 @@
 
 #include "../libUDB/libUDB_internal.h"
 #include "../libCAN/CANInterface_internal.h"
-#include "CANDataProtocol.h"
+#include "../libCAN/CANDataProtocol.h"
 
 #include <string.h>  	// for memcpy
 

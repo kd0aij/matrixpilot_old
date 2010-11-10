@@ -1,7 +1,7 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
 #include "../libUDB/libUDB_internal.h"
-#include "CANInterfaceOptions.h"
+#include "../libCAN/CANInterfaceOptions.h"
 #include "heartbeat.h"
 
 volatile unsigned int tickCount = 0;
