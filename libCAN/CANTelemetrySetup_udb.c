@@ -4,19 +4,8 @@
 #include "CANDataIDRefs.h"
 
 
-// A list of the number of cycles requried to trigger a telemetry send
-// One value is required per entry in the telemetry list
-const unsigned int telemetryAutoRequestCycles[TELEMETRY_LIST_COUNT] = 
+const TELEMETRY_LIST_ENTRY DCMRateList[] = 
 	{
-		1,
-		5,
-		40
-	};
-
-
-const TELEMETRY_LIST_ENTRY telemetryLists[TELEMETRY_LIST_COUNT][TELEMETRY_LIST_MAX_SIZE] = 
-	{
-		{
 			{ID_RADIO_INPUTS, 1},
 			{ID_RADIO_INPUTS, 5},
 			{ID_SERVO_OUTPUTS,1},
@@ -33,8 +22,10 @@ const TELEMETRY_LIST_ENTRY telemetryLists[TELEMETRY_LIST_COUNT][TELEMETRY_LIST_M
 
 			{ID_EVENT,ID_AUTOPILOT_DCM_TELEMETRY_COMPLETE},
 			{ID_NULL, 0}
-		},		
-		{
+	};
+
+const TELEMETRY_LIST_ENTRY NavRateList[] = 
+	{
 			{ID_GPS_LOCATION,0},
 			{ID_LOC_ERROR_EARTH,0},
 			{ID_ESTIMATED_WIND,0},
@@ -42,13 +33,6 @@ const TELEMETRY_LIST_ENTRY telemetryLists[TELEMETRY_LIST_COUNT][TELEMETRY_LIST_M
 			{ID_GPS_TOW,0},
 			{ID_GPS_VARS,0},	// MODE1,MODE2,SVS,NAV_VALID
 			{ID_GPS_VARS2,0},	// SOG, COG, CLIMB_GPS, WEEK_NO
-//			{ID_GPS_HDOP,0},
-//			{ID_GPS_XPG,0},
-//			{ID_GPS_YPG,0},
-//			{ID_GPS_ZPG,0},
-//			{ID_GPS_XVG,0},
-//			{ID_GPS_YVG,0},
-//			{ID_GPS_ZVG,0},
 
 			{ID_FLAGS,0},
 			{ID_UDB_FLAGS,0},
@@ -56,28 +40,37 @@ const TELEMETRY_LIST_ENTRY telemetryLists[TELEMETRY_LIST_COUNT][TELEMETRY_LIST_M
 			{ID_DESIRED_BEHAVOIR,0},
 			{ID_ORIENTATION,0},
 
-			// UDB FLAGS
-			// DCM FLAGS
-			// FLAGS
-			// COG
-			// SOG
-			// CPU
-			// air_speed_magnitude
-			// EST WIND
 			{ID_MAG_FIELD_EARTH,0},
 			{ID_AIRSPEED_MAG,0},
-			{ID_MAG_FIELD_EARTH,0},
 			{ID_EVENT,ID_AUTOPILOT_NAV_TELEMETRY_COMPLETE},
 			{ID_NULL, 0}
-		},
-		{
+	};
+
+const TELEMETRY_LIST_ENTRY BackgroundRateList[] = 
+	{
 			{ID_ORIGIN_LAT, 0},
 			{ID_ORIGIN_LONG, 0},
 			{ID_ORIGIN_ALT, 0},
+			{ID_EVENT,ID_AUTOPILOT_BACKGROUND_TELEMETRY_COMPLETE},
 			{ID_NULL, 0}
-			// VOLTS
-			
-		}
+	};
+
+const TELEMETRY_LIST_ENTRY* ptelemetryLists[TELEMETRY_LIST_COUNT] = 
+	{
+			&DCMRateList[0],
+			&NavRateList[0],
+			&BackgroundRateList[0]
+	};
+
+
+
+// A list of the number of cycles requried to trigger a telemetry send
+// One value is required per entry in the telemetry list
+const unsigned int telemetryAutoRequestCycles[TELEMETRY_LIST_COUNT] = 
+	{
+		1,
+		5,
+		40
 	};
 
 

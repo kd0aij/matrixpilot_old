@@ -22,12 +22,12 @@ typedef struct tagTELEMETRY_LIST_ENTRY
 	unsigned int 	arrayOffset;	// offset into the data array
 } TELEMETRY_LIST_ENTRY;
 
-// An ID_NULL terminated list of identifiers to send for telemetry
-#define TELEMETRY_LIST_MAX_SIZE 100
 #define TELEMETRY_LIST_COUNT 3
 
-extern const TELEMETRY_LIST_ENTRY telemetryLists[TELEMETRY_LIST_COUNT][TELEMETRY_LIST_MAX_SIZE];	
+// An list of pointers to ID_NULL terminated list of identifiers to send for telemetry
+extern const TELEMETRY_LIST_ENTRY* ptelemetryLists[TELEMETRY_LIST_COUNT];
 
+// A const list of request cycles requried to trigger each of the telemetry queues
 extern const unsigned int telemetryAutoRequestCycles[TELEMETRY_LIST_COUNT];
 
 // Intitalise telemetry manager

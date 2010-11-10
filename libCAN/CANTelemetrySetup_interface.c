@@ -13,22 +13,28 @@ const unsigned int telemetryAutoRequestCycles[TELEMETRY_LIST_COUNT] =
 	};
 
 
-const TELEMETRY_LIST_ENTRY telemetryLists[TELEMETRY_LIST_COUNT][TELEMETRY_LIST_MAX_SIZE] = 
+const TELEMETRY_LIST_ENTRY DCMRateList[] = 
 	{
-		{
 			{ID_CLOCK_TICK, 1},
 			{ID_NULL, 0}
-		},		
-		{
-			{ID_NULL, 0}
-		},
-		{
-			{ID_NULL, 0}
-			// VOLTS
-			
-		}
 	};
 
+const TELEMETRY_LIST_ENTRY NavRateList[] = 
+	{
+			{ID_NULL, 0}
+	};
+
+const TELEMETRY_LIST_ENTRY BackgroundRateList[] = 
+	{
+			{ID_NULL, 0}
+	};
+
+const TELEMETRY_LIST_ENTRY* ptelemetryLists[TELEMETRY_LIST_COUNT] = 
+	{
+			&DCMRateList[0],
+			&NavRateList[0],
+			&BackgroundRateList[0]
+	};
 
 
 /****************************************************************************/

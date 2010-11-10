@@ -14,10 +14,8 @@ boolean telemetryRequests[TELEMETRY_LIST_COUNT];
 // A list of counters for the auto requests
 unsigned int telemetryAutoRequestCounters[TELEMETRY_LIST_COUNT]; 
 
-// The index into the telemetry queues
-// Needs a count for every queue since the transmission of
-// a low prority list can be interrupted by a higher priority
-unsigned char telemetryIndices[TELEMETRY_LIST_COUNT];
+// Pointers to the current items in the telemetry queue
+TELEMETRY_LIST_ENTRY* telemetrypQueues[TELEMETRY_LIST_COUNT];
 
 // Get the next telemetry identifier in the queue
 //  Return ID_NULL if finished sending
@@ -61,7 +59,7 @@ void initTelemetryManager(void)
 
 	for(index = 0; index < TELEMETRY_LIST_COUNT; index++)
 	{
-		telemetryIndices[index] = 0;
+		telemetrypQueues[index] = (TELEMETRY_LIST_ENTRY*) ptelemetryLists[index];
 		telemetryRequests[index] = false;
 	}
 };
@@ -109,23 +107,21 @@ TELEMETRY_LIST_ENTRY* get_next_telemetry_send_item()
 	TELEMETRY_LIST_ENTRY* 	pTelemetryItem;
 
 	unsigned char	queueIndex = 0;
-	unsigned char	itemIndex = 0;
 	
 	while(queueIndex < TELEMETRY_LIST_COUNT)
 	{
 		if(telemetryRequests[queueIndex] == true)
 		{
-			itemIndex = telemetryIndices[queueIndex];
-			pTelemetryItem 	= (TELEMETRY_LIST_ENTRY*) &(telemetryLists[queueIndex][itemIndex]);
+			pTelemetryItem 	= telemetrypQueues[queueIndex];
 
 			if(pTelemetryItem->identifier == ID_NULL)
 			{
 				telemetryRequests[queueIndex] = false;
-				telemetryIndices[queueIndex] = 0;
+				telemetrypQueues[queueIndex] = (TELEMETRY_LIST_ENTRY*) ptelemetryLists[queueIndex];
 			}
 			else
 			{
-				telemetryIndices[queueIndex] = itemIndex + 1;
+				telemetrypQueues[queueIndex] = &(telemetrypQueues[queueIndex][1]); //sizeof(TELEMETRY_LIST_ENTRY);
 				queueIndex = TELEMETRY_LIST_COUNT;
 			}
 		}
