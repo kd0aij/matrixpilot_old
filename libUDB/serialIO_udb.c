@@ -159,11 +159,11 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 	
 	_U1TXIF = 0 ; // clear the interrupt 
 	
-	unsigned char txchar = udb_serial_callback_get_char_to_send() ;
+	int txchar = udb_serial_callback_get_char_to_send() ;
 	
-	if ( txchar )
+	if ( txchar > -1 )
 	{
-		U1TXREG = txchar ;
+		U1TXREG = (unsigned char) txchar ;
 	}
 	
 	interrupt_restore_extended_state ;

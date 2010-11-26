@@ -27,6 +27,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
+#include <string.h>
+#include <mavlink.h>
+#endif
 
 union intbb voltage_milis = {0} ;
 union intbb voltage_temp ;
@@ -42,9 +46,13 @@ unsigned char fp_checksum;
 
 void (* sio_parse ) ( unsigned char inchar ) = &sio_newMsg ;
 
+#if (SERIAL_FORMAT == SERIAL_MAVLINK)
+#define SERIAL_BUFFER_SIZE 	300
+#else
+#define SERIAL_BUFFER_SIZE 	256
+#endif
 
-#define SERIAL_BUFFER_SIZE 256
-char serial_buffer[SERIAL_BUFFER_SIZE] ;
+unsigned char serial_buffer[SERIAL_BUFFER_SIZE] ;
 int sb_index = 0 ;
 int end_index = 0 ;
 
@@ -189,7 +197,6 @@ void sio_fp_data( unsigned char inchar )
 	return ;
 }
 
-
 void sio_fp_checksum( unsigned char inchar )
 {
 	char hexVal = hex_char_val(inchar) ;
@@ -219,6 +226,31 @@ void sio_fp_checksum( unsigned char inchar )
 // Output Serial Data
 //
 
+#if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
+
+void uart1_send(uint8_t buf[], uint16_t len)
+// len is the number of bytes in the buffer
+{
+	int start_index = end_index ;
+	int remaining = SERIAL_BUFFER_SIZE - start_index ;
+	if ( len > remaining )
+	{
+		//length = remaining ;
+		len = remaining ;
+	}
+	if (remaining > 1)
+	{
+		memcpy(&serial_buffer[start_index], buf, len);
+		end_index = start_index + len ;
+	}	
+	if (sb_index == 0)
+	{
+		udb_serial_start_sending();
+	}
+	return ;
+}
+
+#else
 // add this text to the output buffer
 void serial_output( char* format, ... )
 {
@@ -244,15 +276,15 @@ void serial_output( char* format, ... )
 	
 	return ;
 }
+#endif
 
-
-char udb_serial_callback_get_char_to_send(void)
-{
-	char txchar = serial_buffer[ sb_index++ ] ;
-	
-	if ( txchar )
+int udb_serial_callback_get_char_to_send(void) 
+// routine returns an integer so as to allow sending binary code (including 0x00) over serial
+{ 
+	if ( sb_index < end_index && sb_index < SERIAL_BUFFER_SIZE ) // ensure never end up racing thru memory.
 	{
-		return txchar ;
+		unsigned char txchar = serial_buffer[ sb_index++ ] ;
+		return (int) txchar ;
 	}
 	else
 	{
@@ -260,7 +292,7 @@ char udb_serial_callback_get_char_to_send(void)
 		end_index = 0 ;
 	}
 	
-	return 0;
+	return -1 ;
 }
 
 
@@ -540,6 +572,97 @@ void serial_output_8hz( void )
 			I2messages ,
 			I2CCON , I2CSTAT , I2ERROR ) ;
 		skip = 0;
+	}
+	return ;
+}
+
+
+#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
+
+// The Coordiante Frame and Dimensional Units of Mavlink are
+// explained in detail at this web URL:-
+// http://pixhawk.ethz.ch/wiki/software/coordinate_frame
+// An abreviated summary is:
+// Mavlink Aviation  X Axis is the UDB Aviation Y axis which is the fuselage axis.
+// Mavlink Avitation Y axis is out of the right wing, and so is the negative of the UDB X Axis
+// Mavlink Aviation  Z axis is downward from the plane, ans so is the same as UDB Z axis.
+// Mavlink Yaw is positive to the right (same as UDB)
+// Pitch is positive when the front of the plane pitches up from horizontal (opposite of UDB)
+// Roll is possitive to the right of the plane (same as UDB)
+// So angles follow the "right hand rule"
+
+#define 	BYTE_CIR_16_TO_RAD  ((2.0 * 3.14159265) / 65536.0 ) // Conversion factor: 16 bit byte circular to radians
+int skip = 0 ;
+uint16_t len = 0 ;
+uint64_t usec = 0 ;			// A measure of time
+
+void serial_output_8hz( void )
+{
+
+	struct relative2D matrix_accum ;
+	float earth_pitch ;		// pitch in binary angles ( 0-255 is 360 degreres)
+	float earth_roll ;		// roll of the plane with respect to earth frame
+	float earth_yaw ;		// yaw with respect to earth frame
+	int accum ;
+
+	if (++skip == 2)
+	{
+		skip = 0;
+		usec++ ;
+		// Define the system type, in this case an airplane
+		int system_type = MAV_FIXED_WING;
+ 
+		// Initialize the required buffers
+		mavlink_message_t msg;
+		uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+		
+		// HEARTBEAT	
+		mavlink_msg_heartbeat_pack(100, 200, &msg, system_type, MAV_AUTOPILOT_GENERIC);
+		len = mavlink_msg_to_send_buffer(buf, &msg);
+		uart1_send(buf, len);
+		
+		// RC CHANNELS
+ 		mavlink_msg_rc_channels_pack(100, 200, &msg,  (uint16_t) udb_pwOut[0],  (uint16_t) udb_pwOut[1],  (uint16_t) udb_pwOut[2],  (uint16_t) udb_pwOut[3], (uint16_t)  udb_pwOut[4],
+				  (uint16_t) udb_pwOut[5], (uint16_t) 0,  (uint16_t) 0, 
+			(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0);
+		len = mavlink_msg_to_send_buffer(buf, &msg);
+		uart1_send(buf, len);
+
+		// ATTITUDE
+		//  Roll: Earth Frame of Reference
+		matrix_accum.x = rmat[8] ;
+		matrix_accum.y = rmat[6] ;
+		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
+		earth_roll = ( - accum ) * BYTE_CIR_16_TO_RAD ;		// Convert to Radians
+		
+		//  Pitch: Earth Frame of Reference
+		//  Note that we are using the matrix_accum.x
+		//  left over from previous rect_to_polar in this calculation.
+		//  so this Pitch calculation must follow the Roll calculation
+		matrix_accum.y = rmat[7] ;
+		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
+		earth_pitch = ( - accum) * BYTE_CIR_16_TO_RAD ;		// Convert to Radians
+		
+		// Yaw: Earth Frame of Reference
+		
+		matrix_accum.x = rmat[4] ;
+		matrix_accum.y = rmat[1] ;
+		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
+		earth_yaw = ( - accum * BYTE_CIR_16_TO_RAD) ;			// Convert to Radians
+
+		// mavlink_msg_attitude_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, uint64_t usec, 
+		//	float roll, float pitch, float yaw, float rollspeed, float pitchspeed, float yawspeed)
+		mavlink_msg_attitude_pack(100, 200, &msg, usec, earth_roll, earth_pitch, earth_yaw,  0.0, 0.0, 0.0) ;
+		len = mavlink_msg_to_send_buffer(buf, &msg);
+		uart1_send(buf, len);
+
+		// RAW SENSORS - ACCELOREMETERS and GYROS
+		mavlink_msg_raw_imu_pack(100, 200, &msg, usec,
+				 udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input, (uint16_t) ( udb_yrate.input + 32768 ),
+					(uint16_t) - ( udb_xrate.input + 32768 ),(uint16_t) ( udb_zrate.input + 32768 ), 
+				 10, 11, 12) ;
+		len = mavlink_msg_to_send_buffer(buf, &msg);
+		uart1_send(buf, len);
 	}
 	return ;
 }

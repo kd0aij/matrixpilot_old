@@ -189,7 +189,7 @@ void udb_serial_send_char( char outchar );
 
 // Implement this callback to tell the UDB what character is next to send on the serial port.
 // Return 0 to stop sending this string of characters.
-char udb_serial_callback_get_char_to_send(void);		// Callback
+int udb_serial_callback_get_char_to_send(void);		// Callback
 
 // Implement this cal;back to handle receiving a character from the serial port
 void udb_serial_callback_received_char(char rxchar);	// Callback
