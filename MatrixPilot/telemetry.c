@@ -29,7 +29,7 @@
 
 #if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
 #include <string.h>
-#include <mavlink.h>
+#include "../MAVLink/mavlink.h"
 #endif
 
 union intbb voltage_milis = {0} ;
