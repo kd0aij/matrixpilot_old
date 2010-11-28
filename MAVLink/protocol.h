@@ -833,7 +833,8 @@ void comm_send_ch(mavlink_channel_t chan, uint8_t ch)
  */
 
 
-static inline void mavlink_send_uart(mavlink_channel_t chan, mavlink_message_t* msg)
+//static inline void mavlink_send_uart(mavlink_channel_t chan, mavlink_message_t* msg)
+void mavlink_send_uart(mavlink_channel_t chan, mavlink_message_t* msg)
 {
 	// ARM7 MCU board implementation
 	// Create pointer on message struct
@@ -844,7 +845,8 @@ static inline void mavlink_send_uart(mavlink_channel_t chan, mavlink_message_t* 
 	comm_send_ch(chan, msg->sysid);
 	comm_send_ch(chan, msg->compid);
 	comm_send_ch(chan, msg->msgid);
-	for(uint16_t i = 0; i < msg->len; i++)
+	uint16_t i ;
+	for( i = 0; i < msg->len; i++)
 	{
 		comm_send_ch(chan, msg->payload[i]);
 	}
