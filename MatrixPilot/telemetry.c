@@ -630,25 +630,20 @@ void serial_output_8hz( void )
 	{
 		skip = 0;
 		usec++ ;
-		// Define the system type, in this case an airplane
-		int system_type = MAV_FIXED_WING;
- 
-		// Initialize the required buffers
-		mavlink_message_t msg;
-		uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+		mavlink_system.sysid = 100; // System ID, 1-255
+		mavlink_system.compid = 50; // Component/Subsystem ID, 1-255
 		
-		// HEARTBEAT	
-		mavlink_msg_heartbeat_pack(100, 200, &msg, system_type, MAV_AUTOPILOT_GENERIC);
-		len = mavlink_msg_to_send_buffer(buf, &msg);
-		uart1_send(buf, len);
+		// HEARTBEAT
+		mavlink_msg_heartbeat_send(MAVLINK_COMM_0, MAV_FIXED_WING, MAV_AUTOPILOT_ARDUPILOT) ;
 		
 		// RC CHANNELS
- 		mavlink_msg_rc_channels_pack(100, 200, &msg,  (uint16_t) udb_pwOut[0],  (uint16_t) udb_pwOut[1],  (uint16_t) udb_pwOut[2],  (uint16_t) udb_pwOut[3], (uint16_t)  udb_pwOut[4],
-				  (uint16_t) udb_pwOut[5], (uint16_t) 0,  (uint16_t) 0, 
+		// Channel values shifted left by 1, to divide by two, so values reflect PWM pulses in microseconds.
+ 		mavlink_msg_rc_channels_send(MAVLINK_COMM_0,(uint16_t)(udb_pwOut[0]>>1),  (uint16_t) (udb_pwOut[1]>>1), 
+			 (uint16_t) (udb_pwOut[2]>>1),  (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
+				  (uint16_t) (udb_pwOut[5]>>1), (uint16_t) 0,  (uint16_t) 0, 
 			(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0);
-		len = mavlink_msg_to_send_buffer(buf, &msg);
-		uart1_send(buf, len);
-
+	
 		// ATTITUDE
 		//  Roll: Earth Frame of Reference
 		matrix_accum.x = rmat[8] ;
@@ -671,19 +666,13 @@ void serial_output_8hz( void )
 		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
 		earth_yaw = ( - accum * BYTE_CIR_16_TO_RAD) ;			// Convert to Radians
 
-		// mavlink_msg_attitude_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, uint64_t usec, 
-		//	float roll, float pitch, float yaw, float rollspeed, float pitchspeed, float yawspeed)
-		mavlink_msg_attitude_pack(100, 200, &msg, usec, earth_roll, earth_pitch, earth_yaw,  0.0, 0.0, 0.0) ;
-		len = mavlink_msg_to_send_buffer(buf, &msg);
-		uart1_send(buf, len);
+		mavlink_msg_attitude_send(MAVLINK_COMM_0,usec, earth_roll, earth_pitch, earth_yaw,  0.0, 0.0, 0.0) ;
 
 		// RAW SENSORS - ACCELOREMETERS and GYROS
-		mavlink_msg_raw_imu_pack(100, 200, &msg, usec,
+		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
 				 udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input, (uint16_t) ( udb_yrate.input + 32768 ),
 					(uint16_t) - ( udb_xrate.input + 32768 ),(uint16_t) ( udb_zrate.input + 32768 ), 
 				 10, 11, 12) ;
-		len = mavlink_msg_to_send_buffer(buf, &msg);
-		uart1_send(buf, len);
 	}
 	return ;
 }
