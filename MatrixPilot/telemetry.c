@@ -657,7 +657,7 @@ void serial_output_8hz( void )
 		//  so this Pitch calculation must follow the Roll calculation
 		matrix_accum.y = rmat[7] ;
 		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
-		earth_pitch = ( - accum) * BYTE_CIR_16_TO_RAD ;		// Convert to Radians
+		earth_pitch = ( accum) * BYTE_CIR_16_TO_RAD ;		// Convert to Radians
 		
 		// Yaw: Earth Frame of Reference
 		
@@ -669,10 +669,25 @@ void serial_output_8hz( void )
 		mavlink_msg_attitude_send(MAVLINK_COMM_0,usec, earth_roll, earth_pitch, earth_yaw,  0.0, 0.0, 0.0) ;
 
 		// RAW SENSORS - ACCELOREMETERS and GYROS
+		// The values sent are raw with no offsets, scaling, and sign correction
+		// It is expected that these values are graphed to allow users to check basic sensor operation,
+		// and to graph noise on the signals.
+#if ( MAG_YAW_DRIFT == 1 )
+		extern int magFieldRaw[] ;
 		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
-				 udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input, (uint16_t) ( udb_yrate.input + 32768 ),
-					(uint16_t) - ( udb_xrate.input + 32768 ),(uint16_t) ( udb_zrate.input + 32768 ), 
-				 10, 11, 12) ;
+				 udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input, 
+				 (uint16_t)   ( udb_yrate.input + 32768 ),
+                 (uint16_t) - ( udb_xrate.input + 32768 ),
+                 (uint16_t)   ( udb_zrate.input + 32768 ), 
+				  magFieldRaw[0], magFieldRaw[1], magFieldRaw[2]) ;
+#else
+		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
+				 udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input,
+				 (uint16_t)   ( udb_yrate.input + 32768 ),
+                 (uint16_t) - ( udb_xrate.input + 32768 ),
+                 (uint16_t)   ( udb_zrate.input + 32768 ), 
+				 0, 0, 0) ;
+#endif
 	}
 	return ;
 }

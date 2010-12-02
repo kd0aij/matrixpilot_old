@@ -280,11 +280,19 @@ void I2C_stopReadMagData(void)
 
 int previousMagFieldRaw[3] = { 0 , 0 , 0 } ;
 
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
+// Make magFieldRaw a global variable when used in telemetry	
+int magFieldRaw[3] ;
+#endif
 
 void I2C_doneReadMagData(void)
 {
 	int vectorIndex ;
+
+#if ( SERIAL_OUTPUT_FORMAT != SERIAL_MAVLINK )
 	int magFieldRaw[3] ;
+#endif
+
 	magFieldRaw[0] = (magreg[0]<<8)+magreg[1] ; 
 	magFieldRaw[1] = (magreg[2]<<8)+magreg[3] ; 
 	magFieldRaw[2] = (magreg[4]<<8)+magreg[5] ;
