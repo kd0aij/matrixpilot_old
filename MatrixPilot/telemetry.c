@@ -421,7 +421,7 @@ extern unsigned int maxstack ;
 
 void serial_output_8hz( void )
 {
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )	// Only run through this function once per second, by skipping all but every N runs through it.
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )	// Only run through this function twice per second, by skipping all but every 4 runs through it.
 	// Saves CPU and XBee power.
 	if (++skip < 4) return ;
 	skip = 0 ;
@@ -469,20 +469,24 @@ void serial_output_8hz( void )
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )
 			serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
 				"as%i:wvx%i:wvy%i:wvz%i:\r\n",
-				tow, udb_flags._.radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
+				tow.WW, udb_flags._.radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
 				lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
 				rmat[0] , rmat[1] , rmat[2] ,
 				rmat[3] , rmat[4] , rmat[5] ,
 				rmat[6] , rmat[7] , rmat[8] ,
 				(unsigned int)cog_gps.BB, sog_gps.BB, (unsigned int)udb_cpu_load(), voltage_milis.BB,
 				air_speed_magnitude, estimatedWind[0], estimatedWind[1],estimatedWind[2]) ;
+			
+			// Approximate time passing between each telemetry line, even though
+			// we may not have new GPS time data each time through.
+			if (tow.WW > 0) tow.WW += 500 ;
 				
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 			if (print_choice == 0 )
 			{
 				serial_output("F2:T%li:S%d%d%d:N%li:E%li:A%li:W%i:a%i:b%i:c%i:d%i:e%i:f%i:g%i:h%i:i%i:c%u:s%i:cpu%u:bmv%i:"
 					"as%i:wvx%i:wvy%i:wvz%i:ma%i:mb%i:mc%i:svs%i:hd%i:",
-					tow, udb_flags._.radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
+					tow.WW, udb_flags._.radio_on, dcm_flags._.nav_capable, flags._.GPS_steering,
 					lat_gps.WW , long_gps.WW , alt_sl_gps.WW, waypointIndex,
 					rmat[0] , rmat[1] , rmat[2] ,
 					rmat[3] , rmat[4] , rmat[5] ,
@@ -497,6 +501,11 @@ void serial_output_8hz( void )
 #endif
 					
 					svs, hdop ) ;
+				
+				// Approximate time passing between each telemetry line, even though
+				// we may not have new GPS time data each time through.
+				if (tow.WW > 0) tow.WW += 250 ; 
+				
 				// Save  pwIn and PwOut buffers for printing next time around
 				int i ;
 				for (i=0; i <= NUM_INPUTS; i++)
@@ -616,6 +625,9 @@ void serial_output_8hz( void )
 int skip = 0 ;
 uint16_t len = 0 ;
 uint64_t usec = 0 ;			// A measure of time
+float previous_earth_pitch  = 0.0 ;
+float previous_earth_roll   = 0.0 ;
+float previous_earth_yaw    = 0.0 ;
 
 void serial_output_8hz( void )
 {
@@ -625,8 +637,9 @@ void serial_output_8hz( void )
 	float earth_roll ;		// roll of the plane with respect to earth frame
 	float earth_yaw ;		// yaw with respect to earth frame
 	int accum ;
+	uint8_t mode; ///< System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
 
-	if (++skip == 2)
+	if (++skip == 2) // Be careful about chaning. There is frequency sensitve code below.
 	{
 		skip = 0;
 		usec++ ;
@@ -636,13 +649,34 @@ void serial_output_8hz( void )
 		
 		// HEARTBEAT
 		mavlink_msg_heartbeat_send(MAVLINK_COMM_0, MAV_FIXED_WING, MAV_AUTOPILOT_ARDUPILOTMEGA) ;
+
+		// SYSTEM STATUS
+		if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 0)
+				 mode = MAV_MODE_MANUAL ;
+		else if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 1) 
+				 mode = MAV_MODE_GUIDED ;
+		else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 1)
+				 mode = MAV_MODE_AUTO ;
+		else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 0)
+				 mode = MAV_MODE_TEST1 ; // Return to Landing (lost contact with transmitter)
+		else
+				 mode = MAV_MODE_TEST1 ; // Unknown state 
+
+		mavlink_msg_sys_status_send(MAVLINK_COMM_0, mode, MAV_NAV_WAYPOINT, MAV_STATE_ACTIVE, 
+			( uint16_t) 1000 , 	// (uint16_t) (udb_cpu_load()) * 10, 
+			(uint16_t)  10000,  // Battery voltage in mV
+			(uint8_t)   0,      // 0 Motor free to turn off, 1 Motor Blocked from turning on
+			(uint16_t)  0) ;    // Packet Loss in uplink, 0 Until MatrixPilot supports uplink.
 		
 		// RC CHANNELS
 		// Channel values shifted left by 1, to divide by two, so values reflect PWM pulses in microseconds.
- 		//mavlink_msg_rc_channels_send(MAVLINK_COMM_0,(uint16_t)(udb_pwOut[0]>>1),  (uint16_t) (udb_pwOut[1]>>1), 
-		//	 (uint16_t) (udb_pwOut[2]>>1),  (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
-		//		  (uint16_t) (udb_pwOut[5]>>1), (uint16_t) 0,  (uint16_t) 0, 
-		//	(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0);
+		// mavlink_msg_rc_channels_raw_send(mavlink_channel_t chan, uint16_t chan1_raw, uint16_t chan2_raw,
+		//    uint16_t chan3_raw, uint16_t chan4_raw, uint16_t chan5_raw, uint16_t chan6_raw, uint16_t chan7_raw,
+		//    uint16_t chan8_raw, uint8_t rssi)
+ 		mavlink_msg_rc_channels_raw_send(MAVLINK_COMM_0,(uint16_t)(udb_pwOut[0]>>1),  (uint16_t) (udb_pwOut[1]>>1), 
+			 (uint16_t) (udb_pwOut[2]>>1), (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
+			 (uint16_t) (udb_pwOut[5]>>1), (uint16_t)                 0,                 (uint16_t) 0, 
+			 (uint8_t) 0); // last item, RSSI currently not measured on UDB.
 	
 		// ATTITUDE
 		//  Roll: Earth Frame of Reference
@@ -666,7 +700,10 @@ void serial_output_8hz( void )
 		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
 		earth_yaw = ( - accum * BYTE_CIR_16_TO_RAD) ;			// Convert to Radians
 
-		mavlink_msg_attitude_send(MAVLINK_COMM_0,usec, earth_roll, earth_pitch, earth_yaw,  0.0, 0.0, 0.0) ;
+		mavlink_msg_attitude_send(MAVLINK_COMM_0,usec, earth_roll, earth_pitch, earth_yaw, 
+				(earth_roll - previous_earth_roll)     * 2 , // Note: This is Time / Frequency sensitive Code
+				(earth_pitch - previous_earth_pitch)   * 2 , // Muliply by 4, to have radians / sec 
+                (earth_yaw - previous_earth_yaw)       * 2 ) ;
 
 		// RAW SENSORS - ACCELOREMETERS and GYROS
 		// The values sent are raw with no offsets, scaling, and sign correction

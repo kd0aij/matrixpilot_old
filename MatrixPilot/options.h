@@ -164,6 +164,10 @@
 #define CAMERA_ROLL_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_A_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_B_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_C_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_D_INPUT_CHANNEL			CHANNEL_UNUSED
 
 // NUM_OUTPUTS: Set to 3, 4, 5, or 6
 //   3 enables only the standard 3 output channels
@@ -194,6 +198,10 @@
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
+#define PASSTHROUGH_A_OUTPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_B_OUTPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_C_OUTPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_D_OUTPUT_CHANNEL		CHANNEL_UNUSED
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -462,7 +470,7 @@
 // within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
-#define ALT_HOLD_PITCH_MIN					-15.0  
+#define ALT_HOLD_PITCH_MIN					-15.0
 #define ALT_HOLD_PITCH_MAX					 15.0
 #define ALT_HOLD_PITCH_HIGH					-15.0
 
@@ -494,7 +502,12 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Debugging defines
+
 // The following can be used to do a ground check of stabilization without a GPS.
 // If you define TestGains, stabilization functions
 // will be enabled, even without GPS or Tx turned on. (Tx is optional)
 // #define TestGains						// uncomment this line if you want to test your gains without using GPS
+
+// Set this to 1 to calculate and print out free stack space
+#define RECORD_FREE_STACK_SPACE 			0
