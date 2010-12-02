@@ -29,8 +29,8 @@
 
 #if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
 #include <string.h>
-#include "../MAVLink/matrixpilot_mavlink_bridge_header.h"
-#include "../MAVLink/mavlink.h"
+#include "../MAVLink/include/matrixpilot_mavlink_bridge_header.h"
+#include "../MAVLink/include/common/mavlink.h"
 #endif
 
 union intbb voltage_milis = {0} ;
@@ -635,14 +635,14 @@ void serial_output_8hz( void )
 		mavlink_system.compid = 50; // Component/Subsystem ID, 1-255
 		
 		// HEARTBEAT
-		mavlink_msg_heartbeat_send(MAVLINK_COMM_0, MAV_FIXED_WING, MAV_AUTOPILOT_ARDUPILOT) ;
+		mavlink_msg_heartbeat_send(MAVLINK_COMM_0, MAV_FIXED_WING, MAV_AUTOPILOT_ARDUPILOTMEGA) ;
 		
 		// RC CHANNELS
 		// Channel values shifted left by 1, to divide by two, so values reflect PWM pulses in microseconds.
- 		mavlink_msg_rc_channels_send(MAVLINK_COMM_0,(uint16_t)(udb_pwOut[0]>>1),  (uint16_t) (udb_pwOut[1]>>1), 
-			 (uint16_t) (udb_pwOut[2]>>1),  (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
-				  (uint16_t) (udb_pwOut[5]>>1), (uint16_t) 0,  (uint16_t) 0, 
-			(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0);
+ 		//mavlink_msg_rc_channels_send(MAVLINK_COMM_0,(uint16_t)(udb_pwOut[0]>>1),  (uint16_t) (udb_pwOut[1]>>1), 
+		//	 (uint16_t) (udb_pwOut[2]>>1),  (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
+		//		  (uint16_t) (udb_pwOut[5]>>1), (uint16_t) 0,  (uint16_t) 0, 
+		//	(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0,(uint8_t) 0);
 	
 		// ATTITUDE
 		//  Roll: Earth Frame of Reference
@@ -675,17 +675,17 @@ void serial_output_8hz( void )
 #if ( MAG_YAW_DRIFT == 1 )
 		extern int magFieldRaw[] ;
 		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
-				 udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input, 
-				 (uint16_t)   ( udb_yrate.input + 32768 ),
-                 (uint16_t) - ( udb_xrate.input + 32768 ),
-                 (uint16_t)   ( udb_zrate.input + 32768 ), 
-				  magFieldRaw[0], magFieldRaw[1], magFieldRaw[2]) ;
+				 (int16_t)   udb_yaccel.input, (int16_t) - udb_xaccel.input, (int16_t) udb_zaccel.input, 
+				 (int16_t)   ( udb_yrate.input + 32768 ),
+                 (int16_t) - ( udb_xrate.input + 32768 ),
+                 (int16_t)   ( udb_zrate.input + 32768 ), 
+				  (int16_t) magFieldRaw[0], (int16_t) magFieldRaw[1], (int16_t) magFieldRaw[2]) ;
 #else
 		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
 				 udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input,
-				 (uint16_t)   ( udb_yrate.input + 32768 ),
-                 (uint16_t) - ( udb_xrate.input + 32768 ),
-                 (uint16_t)   ( udb_zrate.input + 32768 ), 
+				    ( udb_yrate.input + 32768 ),
+                  - ( udb_xrate.input + 32768 ),
+                    ( udb_zrate.input + 32768 ), 
 				 0, 0, 0) ;
 #endif
 	}

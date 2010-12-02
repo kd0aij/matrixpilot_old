@@ -1,0 +1,478 @@
+
+typedef struct __mavlink_heartbeat_t 
+{
+	 ; ///< The heartbeat message shows that a system is present and responding. The type of the MAV and Autopilot hardware allow the receiving system to treat further messages from this system appropriate (e.g. by laying out the user interface based on the autopilot).
+	uint8_t type; ///< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
+	uint8_t autopilot; ///< Type of the Autopilot: 0: Generic, 1: PIXHAWK, 2: SLUGS, 3: Ardupilot (up to 15 types), defined in MAV_AUTOPILOT_TYPE ENUM
+
+} mavlink_heartbeat_t;
+
+typedef struct __mavlink_boot_t 
+{
+	 ; ///< The boot message indicates that a system is starting. The onboard software version allows to keep track of onboard soft/firmware revisions.
+	uint32_t version; ///< The onboard software version
+
+} mavlink_boot_t;
+
+typedef struct __mavlink_system_time_t 
+{
+	 ; ///< The system time is the time of the master clock, typically the computer clock of the main onboard computer.
+	uint64_t time_usec; ///< Timestamp of the master clock in microseconds since UNIX epoch.
+
+} mavlink_system_time_t;
+
+typedef struct __mavlink_ping_t 
+{
+	 ; ///< A ping message either requesting or responding to a ping. This allows to measure the system latencies, including serial port, radio modem and UDP connections.
+	uint32_t seq; ///< PING sequence
+	uint8_t target_system; ///< 0: request ping from all receiving systems, if greater than 0: message is a ping response and number is the system id of the requesting system
+	uint8_t target_component; ///< 0: request ping from all receiving components, if greater than 0: message is a ping response and number is the system id of the requesting system
+	uint64_t time; ///< Unix timestamp in microseconds
+
+} mavlink_ping_t;
+
+typedef struct __mavlink_action_t 
+{
+	 ; ///< An action message allows to execute a certain onboard action. These include liftoff, land, storing parameters too EEPROM, shutddown, etc. The action ids are defined in ENUM MAV_ACTION in mavlink/include/mavlink_types.h
+	uint8_t target; ///< The system executing the action
+	uint8_t target_component; ///< The component executing the action
+	uint8_t action; ///< The action id
+
+} mavlink_action_t;
+
+typedef struct __mavlink_action_ack_t 
+{
+	 ; ///< This message acknowledges an action. IMPORTANT: The acknowledgement can be also negative, e.g. the MAV rejects a reset message because it is in-flight. The action ids are defined in ENUM MAV_ACTION in mavlink/include/mavlink_types.h
+	uint8_t action; ///< The action id
+	uint8_t result; ///< 0: Action DENIED, 1: Action executed
+
+} mavlink_action_ack_t;
+
+typedef struct __mavlink_set_mode_t 
+{
+	 ; ///< Set the system mode, as defined by enum MAV_MODE in mavlink/include/mavlink_types.h. There is no target component id as the mode is by definition for the overall aircraft, not only for one component.
+	uint8_t target; ///< The system setting the mode
+	uint8_t mode; ///< The new mode
+
+} mavlink_set_mode_t;
+
+typedef struct __mavlink_set_nav_mode_t 
+{
+	 ; ///< Set the system navigation mode, as defined by enum MAV_NAV_MODE in mavlink/include/mavlink_types.h. The navigation mode applies to the whole aircraft and thus all components.
+	uint8_t target; ///< The system setting the mode
+	uint8_t nav_mode; ///< The new navigation mode
+
+} mavlink_set_nav_mode_t;
+
+typedef struct __mavlink_param_request_read_t 
+{
+	 ; ///< Request to read the onboard parameter with the param_id string id. Onboard parameters are stored as key[const char*] -> value[float]. This allows to send a parameter to any other component (such as the GCS) without the need of previous knowledge of possible parameter names. Thus the same GCS can store different parameters for different autopilots. See also http://qgroundcontrol.org/parameter_interface for a full documentation of QGroundControl and IMU code.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	int8_t param_id[15]; ///< Onboard parameter id
+	uint16_t param_index; ///< Parameter index
+
+} mavlink_param_request_read_t;
+
+typedef struct __mavlink_param_request_list_t 
+{
+	 ; ///< Request all parameters of this component. After his request, all parameters are emitted.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+
+} mavlink_param_request_list_t;
+
+typedef struct __mavlink_param_value_t 
+{
+	 ; ///< Emit the value of a onboard parameter. The inclusion of param_count and param_index in the message allows the recipient to keep track of received parameters and allows him to re-request missing parameters after a loss or timeout.
+	int8_t param_id[15]; ///< Onboard parameter id
+	float param_value; ///< Onboard parameter value
+	uint16_t param_count; ///< Total number of onboard parameters
+	uint16_t param_index; ///< Index of this onboard parameter
+
+} mavlink_param_value_t;
+
+typedef struct __mavlink_param_set_t 
+{
+	 ; ///< Set a parameter value TEMPORARILY to RAM. It will be reset to default on system reboot. Send the ACTION MAV_ACTION_STORAGE_WRITE to PERMANENTLY write the RAM contents to EEPROM. IMPORTANT: The receiving component should acknowledge the new parameter value by sending a param_value message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	int8_t param_id[15]; ///< Onboard parameter id
+	float param_value; ///< Onboard parameter value
+
+} mavlink_param_set_t;
+
+typedef struct __mavlink_raw_imu_t 
+{
+	 ; ///< The RAW IMU readings for the usual 9DOF sensor setup. This message should always contain the true raw values without any scaling to allow data capture and system debugging.
+	uint64_t usec; ///< Timestamp (microseconds since UNIX epoch)
+	int16_t xacc; ///< X acceleration (mg raw)
+	int16_t yacc; ///< Y acceleration (mg raw)
+	int16_t zacc; ///< Z acceleration (mg raw)
+	int16_t xgyro; ///< Angular speed around X axis (millirad /sec)
+	int16_t ygyro; ///< Angular speed around Y axis (millirad /sec)
+	int16_t zgyro; ///< Angular speed around Z axis (millirad /sec)
+	int16_t xmag; ///< X Magnetic field (milli tesla)
+	int16_t ymag; ///< Y Magnetic field (milli tesla)
+	int16_t zmag; ///< Z Magnetic field (milli tesla)
+
+} mavlink_raw_imu_t;
+
+typedef struct __mavlink_raw_pressure_t 
+{
+	 ; ///< The RAW pressure readings for the typical setup of one absolute pressure and one differential pressure sensor. The sensor values should be the raw, unscaled ADC values.
+	uint64_t usec; ///< Timestamp (microseconds since UNIX epoch)
+	int32_t press_abs; ///< Absolute pressure (hectopascal)
+	int32_t press_diff1; ///< Differential pressure 1 (hectopascal)
+	int32_t press_diff2; ///< Differential pressure 2 (hectopascal)
+
+} mavlink_raw_pressure_t;
+
+typedef struct __mavlink_attitude_t 
+{
+	 ; ///< The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
+	uint64_t usec; ///< Timestamp (microseconds)
+	float roll; ///< Roll angle (rad)
+	float pitch; ///< Pitch angle (rad)
+	float yaw; ///< Yaw angle (rad)
+	float rollspeed; ///< Roll angular speed (rad/s)
+	float pitchspeed; ///< Pitch angular speed (rad/s)
+	float yawspeed; ///< Yaw angular speed (rad/s)
+
+} mavlink_attitude_t;
+
+typedef struct __mavlink_local_position_t 
+{
+	 ; ///< The filtered local position (e.g. fused computer vision and accelerometers).
+	uint64_t usec; ///< Timestamp (microseconds since unix epoch)
+	float x; ///< X Position
+	float y; ///< Y Position
+	float z; ///< Z Position
+	float vx; ///< X Speed
+	float vy; ///< Y Speed
+	float vz; ///< Z Speed
+
+} mavlink_local_position_t;
+
+typedef struct __mavlink_gps_raw_t 
+{
+	 ; ///< The global position, as returned by the Global Positioning System (GPS). This is
+NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate.
+	uint64_t usec; ///< Timestamp (microseconds since unix epoch)
+	uint8_t fix_type; ///< 0-1: no fix, 2: 2D fix, 3: 3D fix
+	float lat; ///< X Position
+	float lon; ///< Y Position
+	float alt; ///< Z Position in meters
+	float eph; ///< Uncertainty in meters of latitude
+	float epv; ///< Uncertainty in meters of longitude
+	float v; ///< Overall speed
+	float hdg; ///< Heading, in FIXME
+
+} mavlink_gps_raw_t;
+
+typedef struct __mavlink_gps_status_t 
+{
+	 ; ///< The global position, as returned by the Global Positioning System (GPS). This is
+NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate. This message can contain information for up to 20 satellites.
+	uint8_t satellites_visible; ///< Number of satellites visible
+	int8_t satellite_prn[20]; ///< Global satellite ID
+	int8_t satellite_used[20]; ///< 0: Satellite not used, 1: used for localization
+	int8_t satellite_elevation[20]; ///< Elevation (0: right on top of receiver, 90: on the horizon) of satellite
+	int8_t satellite_azimuth[20]; ///< Direction of satellite, 0: 0 deg, 255: 360 deg.
+	int8_t satellite_snr[20]; ///< Signal to noise ratio of satellite
+
+} mavlink_gps_status_t;
+
+typedef struct __mavlink_global_position_t 
+{
+	 ; ///< The filtered global position (e.g. fused GPS and accelerometers).
+	uint64_t usec; ///< Timestamp (microseconds since unix epoch)
+	float lat; ///< X Position
+	float lon; ///< Y Position
+	float alt; ///< Z Position
+	float vx; ///< X Speed
+	float vy; ///< Y Speed
+	float vz; ///< Z Speed
+
+} mavlink_global_position_t;
+
+typedef struct __mavlink_sys_status_t 
+{
+	 ; ///< The general system state. If the system is following the MAVLink standard, the system state is mainly defined by three orthogonal states/modes: The system mode, which is either LOCKED (motors shut down and locked), MANUAL (system under RC control), GUIDED (system with autonomous position control, position setpoint controlled manually) or AUTO (system guided by path/waypoint planner). The NAV_MODE defined the current flight state: LIFTOFF (often an open-loop maneuver), LANDING, WAYPOINTS or VECTOR. This represents the internal navigation state machine. The system status shows wether the system is currently active or not and if an emergency occured. During the CRITICAL and EMERGENCY states the MAV is still considered to be active, but should start emergency procedures autonomously. After a failure occured it should first move from active to critical to allow manual intervention and then move to emergency after a certain timeout.
+	uint8_t mode; ///< System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
+	uint8_t nav_mode; ///< Navigation mode, see MAV_NAV_MODE ENUM
+	uint8_t status; ///< System status flag, see MAV_STATUS ENUM
+	uint16_t load; ///< Maximum usage in percent of the mainloop time, (0%: 0, 100%: 1000) should be always below 1000
+	uint16_t vbat; ///< Battery voltage, in millivolts (1 = 1 millivolt)
+	uint8_t motor_block; ///< Motor block status flag, 0: Motors can be switched on (and could be either off or on), 1: Mechanical motor block switch is on, motors cannot be switched on (and are definitely off)
+	uint16_t packet_drop; ///< Dropped packets (packets that were corrupted on reception on the MAV)
+
+} mavlink_sys_status_t;
+
+typedef struct __mavlink_rc_channels_raw_t 
+{
+	 ; ///< The RAW values of the RC channels received. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification.
+	uint16_t chan1_raw; ///< RC channel 1 value, in microseconds
+	uint16_t chan2_raw; ///< RC channel 2 value, in microseconds
+	uint16_t chan3_raw; ///< RC channel 3 value, in microseconds
+	uint16_t chan4_raw; ///< RC channel 4 value, in microseconds
+	uint16_t chan5_raw; ///< RC channel 5 value, in microseconds
+	uint16_t chan6_raw; ///< RC channel 6 value, in microseconds
+	uint16_t chan7_raw; ///< RC channel 7 value, in microseconds
+	uint16_t chan8_raw; ///< RC channel 8 value, in microseconds
+	uint8_t rssi; ///< Receive signal strength indicator, 0: 0%, 255: 100%
+
+} mavlink_rc_channels_raw_t;
+
+typedef struct __mavlink_rc_channels_scaled_t 
+{
+	 ; ///< The scaled values of the RC channels received. (-100%) -10000, (0%) 0, (100%) 10000
+	int16_t chan1_scaled; ///< RC channel 1 value scaled, (-100%) -10000, (0%) 0, (100%) 10000
+	int16_t chan2_scaled; ///< RC channel 2 value scaled, (-100%) -10000, (0%) 0, (100%) 10000
+	int16_t chan3_scaled; ///< RC channel 3 value scaled, (-100%) -10000, (0%) 0, (100%) 10000
+	int16_t chan4_scaled; ///< RC channel 4 value scaled, (-100%) -10000, (0%) 0, (100%) 10000
+	int16_t chan5_scaled; ///< RC channel 5 value scaled, (-100%) -10000, (0%) 0, (100%) 10000
+	int16_t chan6_scaled; ///< RC channel 6 value scaled, (-100%) -10000, (0%) 0, (100%) 10000
+	int16_t chan7_scaled; ///< RC channel 7 value scaled, (-100%) -10000, (0%) 0, (100%) 10000
+	int16_t chan8_scaled; ///< RC channel 8 value scaled, (-100%) -10000, (0%) 0, (100%) 10000
+	uint8_t rssi; ///< Receive signal strength indicator, 0: 0%, 255: 100%
+
+} mavlink_rc_channels_scaled_t;
+
+typedef struct __mavlink_waypoint_t 
+{
+	 ; ///< Message encoding a waypoint. This message is emitted to announce
+     the presence of a waypoint. It cannot be used to set a waypoint, use WAYPOINT_SET for this purpose. The waypoint can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon. The global and body frame are related as: positive Z-down, positive X(front looking north, positive Y(body:right) looking east. Therefore y encodes in global mode the latitude, whereas x encodes the longitude and z the GPS altitude (WGS84).
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	uint16_t seq; ///< Sequence
+	uint8_t frame; ///< The coordinate system of the waypoint. see MAV_FRAME in mavlink_types.h
+	uint8_t action; ///< The scheduled action for the waypoint. see MAV_ACTION in mavlink_types.h
+	float orbit; ///< Orbit to circle around the waypoint, in meters. Set to 0 to fly straight through the waypoint
+	uint8_t orbit_direction; ///< Direction of the orbit circling: 0: clockwise, 1: counter-clockwise
+	float param1; ///< For waypoints of type 0 and 1: Radius in which the waypoint is accepted as reached, in meters
+	float param2; ///< For waypoints of type 0 and 1: Time that the MAV should stay inside the orbit before advancing, in milliseconds
+	uint8_t current; ///< false:0, true:1
+	float x; ///< local: x position, global: longitude
+	float y; ///< y position: global: latitude
+	float z; ///< z position: global: altitude
+	float yaw; ///< yaw orientation in radians, 0 = NORTH
+	uint8_t autocontinue; ///< autocontinue to next wp
+
+} mavlink_waypoint_t;
+
+typedef struct __mavlink_waypoint_request_t 
+{
+	 ; ///< Request the information of the waypoint with the sequence number seq. The response of the system to this message should be a WAYPOINT message.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	uint16_t seq; ///< Sequence
+
+} mavlink_waypoint_request_t;
+
+typedef struct __mavlink_waypoint_set_current_t 
+{
+	 ; ///< Set the waypoint with sequence number seq as current waypoint. This means that the MAV will continue to this waypoint on the shortest path (not following the waypoints in-between).
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	uint16_t seq; ///< Sequence
+
+} mavlink_waypoint_set_current_t;
+
+typedef struct __mavlink_waypoint_current_t 
+{
+	 ; ///< Message that announces the sequence number of the current active waypoint. The MAV will fly towards this waypoint.
+	uint16_t seq; ///< Sequence
+
+} mavlink_waypoint_current_t;
+
+typedef struct __mavlink_waypoint_request_list_t 
+{
+	 ; ///< Request the overall list of waypoints from the system/component.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+
+} mavlink_waypoint_request_list_t;
+
+typedef struct __mavlink_waypoint_count_t 
+{
+	 ; ///< This message is emitted as response to WAYPOINT_REQUEST_LIST by the MAV. The GCS can then request the individual waypoints based on the knowledge of the total number of waypoints.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	uint16_t count; ///< Number of Waypoints in the Sequence
+
+} mavlink_waypoint_count_t;
+
+typedef struct __mavlink_waypoint_clear_all_t 
+{
+	 ; ///< Delete all waypoints at once.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+
+} mavlink_waypoint_clear_all_t;
+
+typedef struct __mavlink_waypoint_reached_t 
+{
+	 ; ///< A certain waypoint has been reached. The system will either hold this position (or circle on the orbit) or (if the autocontinue on the WP was set) continue to the next waypoint.
+	uint16_t seq; ///< Sequence
+
+} mavlink_waypoint_reached_t;
+
+typedef struct __mavlink_waypoint_ack_t 
+{
+	 ; ///< Ack message during waypoint handling. The type field states if this message is a positive ack (type=0) or if an error happened (type=non-zero).
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	uint8_t type; ///< 0: OK, 1: Error
+
+} mavlink_waypoint_ack_t;
+
+typedef struct __mavlink_waypoint_set_global_reference_t 
+{
+	 ; ///< As local waypoints exist, the global waypoint reference allows to transform between the local coordinate frame and the global (GPS) coordinate frame. This can be necessary when e.g. in- and outdoor settings are connected and the MAV should move from in- to outdoor.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	float global_x; ///< global x position
+	float global_y; ///< global y position
+	float global_z; ///< global z position
+	float global_yaw; ///< global yaw orientation in radians, 0 = NORTH
+	float local_x; ///< local x position that matches the global x position
+	float local_y; ///< local y position that matches the global y position
+	float local_z; ///< local z position that matches the global z position
+	float local_yaw; ///< local yaw that matches the global yaw orientation
+
+} mavlink_waypoint_set_global_reference_t;
+
+typedef struct __mavlink_local_position_setpoint_set_t 
+{
+	 ; ///< Set the setpoint for a local position controller. This is the position in local coordinates the MAV should fly to. This message is sent by the path/waypoint planner to the onboard position controller. As some MAVs have a degree of freedom in yaw (e.g. all helicopters/quadrotors), the desired yaw angle is part of the message.
+	uint8_t target_system; ///< System ID
+	uint8_t target_component; ///< Component ID
+	float x; ///< x position 1
+	float y; ///< y position 1
+	float z; ///< z position 1
+	float yaw; ///< x position 2
+
+} mavlink_local_position_setpoint_set_t;
+
+typedef struct __mavlink_local_position_setpoint_t 
+{
+	 ; ///< Transmit the current local setpoint of the controller to other MAVs (collision avoidance) and to the GCS.
+	float x; ///< x position 1
+	float y; ///< y position 1
+	float z; ///< z position 1
+	float yaw; ///< x position 2
+
+} mavlink_local_position_setpoint_t;
+
+typedef struct __mavlink_attitude_controller_output_t 
+{
+	 ; ///< The output of the attitude controller. This output is the control response the controller currently generates and the attitude the MAV would take if it is under control of the attitude controller. The primary use of this message is to check the response and signs of the controller before the actual flight.
+	uint8_t enabled; ///< 1: enabled, 0: disabled
+	int8_t roll; ///< Attitude roll: -128: -100%, 127: +100%
+	int8_t pitch; ///< Attitude pitch: -128: -100%, 127: +100%
+	int8_t yaw; ///< Attitude yaw: -128: -100%, 127: +100%
+	int8_t thrust; ///< Attitude thrust: -128: -100%, 127: +100%
+
+} mavlink_attitude_controller_output_t;
+
+typedef struct __mavlink_position_controller_output_t 
+{
+	 ; ///< The output of the position controller. The primary use of this message is to check the response and signs of the controller before the actual flight.
+	uint8_t enabled; ///< 1: enabled, 0: disabled
+	int8_t x; ///< Position x: -128: -100%, 127: +100%
+	int8_t y; ///< Position y: -128: -100%, 127: +100%
+	int8_t z; ///< Position z: -128: -100%, 127: +100%
+	int8_t yaw; ///< Position yaw: -128: -100%, 127: +100%
+
+} mavlink_position_controller_output_t;
+
+typedef struct __mavlink_position_target_t 
+{
+	 ; ///< The goal position of the system. This position is the input to any navigation or path planning algorithm and does NOT represent the current controller setpoint.
+	float x; ///< x position
+	float y; ///< y position
+	float z; ///< z position
+	float yaw; ///< yaw orientation in radians, 0 = NORTH
+
+} mavlink_position_target_t;
+
+typedef struct __mavlink_state_correction_t 
+{
+	 ; ///< Corrects the systems state by adding an error correction term to the position and velocity, and by rotating the attitude by a correction angle.
+	float xErr; ///< x position error
+	float yErr; ///< y position error
+	float zErr; ///< z position error
+	float rollErr; ///< roll error (radians)
+	float pitchErr; ///< pitch error (radians)
+	float yawErr; ///< yaw error (radians)
+	float vxErr; ///< x velocity
+	float vyErr; ///< y velocity
+	float vzErr; ///< z velocity
+
+} mavlink_state_correction_t;
+
+typedef struct __mavlink_set_altitude_t 
+{
+	uint8_t target; ///< The system setting the altitude
+	uint32_t mode; ///< The new altitude in meters
+
+} mavlink_set_altitude_t;
+
+typedef struct __mavlink_request_data_stream_t 
+{
+	uint8_t target_system; ///< The target requested to send the message stream.
+	uint8_t target_component; ///< The target requested to send the message stream.
+	uint8_t req_stream_id; ///< The ID of the requested message type
+	uint16_t req_message_rate; ///< The requested interval between two messages of this type
+	uint8_t start_stop; ///< 1 to start sending, 0 to stop sending.
+
+} mavlink_request_data_stream_t;
+
+typedef struct __mavlink_request_dynamic_gyro_calibration_t 
+{
+	uint8_t target_system; ///< The system which should auto-calibrate
+	uint8_t target_component; ///< The system component which should auto-calibrate
+	float mode; ///< The current ground-truth rpm
+	uint8_t axis; ///< The axis to calibrate: 0 roll, 1 pitch, 2 yaw
+	uint16_t time; ///< The time to average over in ms
+
+} mavlink_request_dynamic_gyro_calibration_t;
+
+typedef struct __mavlink_request_static_calibration_t 
+{
+	uint8_t target_system; ///< The system which should auto-calibrate
+	uint8_t target_component; ///< The system component which should auto-calibrate
+	uint16_t time; ///< The time to average over in ms
+
+} mavlink_request_static_calibration_t;
+
+typedef struct __mavlink_manual_control_t 
+{
+	uint8_t target; ///< The system to be controlled
+	float roll; ///< roll
+	float pitch; ///< pitch
+	float yaw; ///< yaw
+	float thrust; ///< thrust
+	uint8_t roll_manual; ///< roll control enabled auto:0, manual:1
+	uint8_t pitch_manual; ///< pitch auto:0, manual:1
+	uint8_t yaw_manual; ///< yaw auto:0, manual:1
+	uint8_t thrust_manual; ///< thrust auto:0, manual:1
+
+} mavlink_manual_control_t;
+
+typedef struct __mavlink_statustext_t 
+{
+	 ; ///< Status text message. These messages are printed in yellow in the COMM console of QGroundControl. WARNING: They consume quite some bandwidth, so use only for important status and error messages. If implemented wisely, these messages are buffered on the MCU and sent only at a limited rate (e.g. 10 Hz).
+	uint8_t severity; ///< Severity of status, 0 = info message, 255 = critical fault
+	int8_t text[50]; ///< Status text message, without null termination character
+
+} mavlink_statustext_t;
+
+typedef struct __mavlink_debug_t 
+{
+	 ; ///< Send a debug value. The index is used to discriminate between values. These values show up in the plot of QGroundControl as DEBUG N.
+	uint8_t ind; ///< index of debug variable
+	float value; ///< DEBUG value
+
+} mavlink_debug_t;

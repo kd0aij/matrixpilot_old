@@ -30,8 +30,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type (Set to RED_BOARD, GREEN_BOARD, UDB3_BOARD, RUSTYS_BOARD, or UDB4_BOARD)
-// If building for UDB4, use the MatrixPilot-udb4.mcp project file.
-#define BOARD_TYPE 							RED_BOARD
+#define BOARD_TYPE 							UDB3_BOARD
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +60,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, or GPS_UBX_4HZ)
-#define GPS_TYPE							GPS_STD
+#define GPS_TYPE							GPS_UBX_2HZ
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,12 +77,12 @@
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
 #define AILERON_NAVIGATION					1
-#define RUDDER_NAVIGATION					1
+#define RUDDER_NAVIGATION					0
 
 // Altitude Hold
 // Use altitude hold in stabilized mode?  In waypoint mode?
 // Each of these settings can be AH_NONE, AH_FULL, or AH_PITCH_ONLY
-#define ALTITUDEHOLD_STABILIZED				AH_PITCH_ONLY
+#define ALTITUDEHOLD_STABILIZED				AH_NONE
 #define ALTITUDEHOLD_WAYPOINT				AH_FULL
 
 // Inverted flight
@@ -107,22 +106,22 @@
 // Wind estimation is done using a mathematical model developed by William Premerlani.
 // Every time the plane performs a significant turn, the plane estimates the wind.
 // This facility only requires a working GPS and the UAV DevBoard. 
-#define WIND_ESTIMATION						0
+#define WIND_ESTIMATION						1
 
 // Camera Stabilization
 // To enable, set this value to 1, and assign one or more of the CAMERA_*_OUTPUT_CHANNELS below.
-#define USE_CAMERA_STABILIZATION			0
+#define USE_CAMERA_STABILIZATION			1
 
 // Define MAG_YAW_DRIFT to be 1 to use magnetometer for yaw drift correction.
 // Otherwise, if set to 0 the GPS will be used.
-#define MAG_YAW_DRIFT 						0
+#define MAG_YAW_DRIFT 						1
 
 // Racing Mode
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
 // RACING_MODE_WP_THROTTLE is the throttle value to use, and should be set between 0.0 and 1.0.
 // Racing performance can be improved by disabling CROSSTRACKING in waypoints.h.
 #define RACING_MODE							0
-#define RACING_MODE_WP_THROTTLE				1.0
+#define RACING_MODE_WP_THROTTLE				0.8 // 1.0
 
 // Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
 // receiver. (Totally autonomous.)  This is just meant for debugging.  It is not recommended that
@@ -170,9 +169,10 @@
 //   4 also enables E0 as the 4th output channel
 //   5 also enables E2 as the 5th output channel
 //   6 also enables E4 as the 6th output channel
+
 //   NOTE: If USE_PPM_INPUT is enabled above, outputs 4, 5, and 6 will use the
 //         RC Input 3, 2, and 1 connections instead of pins E0, E2, and E4.)
-#define NUM_OUTPUTS							5
+#define NUM_OUTPUTS	6
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -189,10 +189,10 @@
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_ROLL_OUTPUT_CHANNEL			CHANNEL_UNUSED
-#define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
-#define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_6
+#define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_5
 #define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
 
 
@@ -202,14 +202,14 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
-#define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
-#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
-#define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
+#define AILERON_CHANNEL_REVERSED			0 // Switches can get accidentally thrown . HW_SWITCH_1
+#define ELEVATOR_CHANNEL_REVERSED			1 // Switches could be used for other things . HW_SWITCH_2
+#define RUDDER_CHANNEL_REVERSED				1 // 
+#define AILERON_SECONDARY_CHANNEL_REVERSED	0 // 
 #define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_ROLL_CHANNEL_REVERSED		0
-#define CAMERA_PITCH_CHANNEL_REVERSED		0
-#define CAMERA_YAW_CHANNEL_REVERSED			0
+#define CAMERA_PITCH_CHANNEL_REVERSED		1
+#define CAMERA_YAW_CHANNEL_REVERSED			1
 
 // Set this to 1 if you need to switch the left and right elevon or vtail surfaces
 #define ELEVON_VTAIL_SURFACES_REVERSED		0
@@ -238,7 +238,7 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN					1500
+#define FAILSAFE_INPUT_MIN					2220  // 2000 for Spektrum Receiver where low range is at 90% at bind time //1500
 #define FAILSAFE_INPUT_MAX					4500
 
 // FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
@@ -268,15 +268,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB,
-// SERIAL_UDB_EXTRA, or SERIAL_OSD_REMZIBI)
+// SERIAL_UDB_EXTRA, SERIAL_MAVLINK or SERIAL_OSD_REMZIBI)
 // This determines the format of the output sent out the spare serial port.
 // Note that SERIAL_OSD_REMZIBI only works with GPS_UBX.
 // SERIAL_UDB_EXTRA will add additional telemetry fields to those of SERIAL_UDB.
 // SERIAL_UDB_EXTRA can be used with the OpenLog without characters being dropped.
 // SERIAL_UDB_EXTRA may result in dropped characters if used with the XBEE wireless transmitter.
 // SERIAL_MAVLINK is a bi-directional binary format for use with the QgroundControl (Ground Control Station.)
-#define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
-
+#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAVLINK
 
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
@@ -334,10 +333,12 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP								0.25
-#define ROLLKD								0.125
-#define YAWKP_AILERON						0.100
-#define YAWKD_AILERON						0.2
+#define ROLLKP								0.15 // 0.15 changed from 0.2 to see if better autonomous
+												 //0.2 Check if slower response to roll and tighter nav
+											    // 0.3 main setting for a long time for twinstar//0.25
+#define ROLLKD								0.0 // 0.3 Testing how much movement slows down // 0.125
+#define YAWKP_AILERON						0.1 // 0.11 too much turn // 
+#define YAWKD_AILERON						0.0 // 0.01
 #define AILERON_BOOST						1.0
 
 // Elevator/Pitch Control Gains
@@ -346,9 +347,9 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
-#define PITCHGAIN							0.150
-#define PITCHKD								0.0625
-#define RUDDER_ELEV_MIX						0.5
+#define PITCHGAIN							0.15 //0.35 //0.30
+#define PITCHKD								0.04
+#define RUDDER_ELEV_MIX						0.1 // 0.5
 #define ROLL_ELEV_MIX						0.1
 #define ELEVATOR_BOOST						0.5
 
@@ -363,9 +364,9 @@
 // MANUAL_AILERON_RUDDER_MIX is the fraction of manual aileron control to mix into the rudder when
 // in stabilized or waypoint mode.  This mainly helps aileron-initiated turning while in stabilized.
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER						0.0625
-#define YAWKD_RUDDER						0.5
-#define ROLLKP_RUDDER						0.0625
+#define YAWKP_RUDDER						0.25
+#define YAWKD_RUDDER						0.1 //0.5
+#define ROLLKP_RUDDER					    0.0625
 #define MANUAL_AILERON_RUDDER_MIX			0.20
 #define RUDDER_BOOST						1.0
 
@@ -436,6 +437,8 @@
 #define CAM_TESTING_YAW_ANGLE			 	 90 // e.g. 90 degrees. Will try to swing 90 degrees left, then 90 degrees right
 #define CAM_TESTING_PITCH_ANGLE				 90 // In degrees.
 
+#define CAM_PITCH_TEST_GRANULATIY 			  0 // Move pitch servo by minimum amount.
+
 ////////////////////////////////////////////////////////////////////////////////
 // Configure altitude hold
 // These settings are only used when Altitude Hold is enabled above.
@@ -447,15 +450,17 @@
 // The range of altitude within which to linearly vary the throttle
 // and pitch to maintain altitude.  A bigger value makes altitude hold
 // smoother, and is suggested for very fast planes.
-#define HEIGHT_MARGIN						10
+#define HEIGHT_MARGIN						20
 
 // Use ALT_HOLD_THROTTLE_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_THROTTLE_MAX and ALT_HOLD_THROTTLE_MIN
 // when within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
-#define ALT_HOLD_THROTTLE_MIN				0.35
-#define ALT_HOLD_THROTTLE_MAX				1.0
+
+// Twinstar: Use Min 0.35 and Max 1.0 to go faster in windy weather.
+#define ALT_HOLD_THROTTLE_MIN				0.2  // 0.35
+#define ALT_HOLD_THROTTLE_MAX				0.7  // 0.8 1.0
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_PITCH_MAX and ALT_HOLD_PITCH_MIN when
@@ -473,7 +478,7 @@
 // it is used to increase speed (and wind penetration) during a return to launch.
 // set it to zero if you do not want to use this feature.
 // This only takes effect when entering RTL mode, which only happens when the plane loses the transmitter signal.
-#define RTL_PITCH_DOWN						0.0
+#define RTL_PITCH_DOWN				       -10.0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -494,7 +499,12 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Debugging defines
+
 // The following can be used to do a ground check of stabilization without a GPS.
 // If you define TestGains, stabilization functions
 // will be enabled, even without GPS or Tx turned on. (Tx is optional)
 // #define TestGains						// uncomment this line if you want to test your gains without using GPS
+
+// Set this to 1 to calculate and print out free stack space
+#define RECORD_FREE_STACK_SPACE 			0
