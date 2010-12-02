@@ -29,7 +29,7 @@
 #define UDB3_BOARD		3	// Test board for Inversense Gyros
 #define RUSTYS_BOARD	4	// Red board with Rusty's IXZ-500_RAD2a patch board
 #define UDB4_BOARD		5
-
+#define CAN_INTERFACE	6
 
 // Include the necessary files for the current board type
 #if (BOARD_TYPE == RED_BOARD)
@@ -51,6 +51,11 @@
 #elif (BOARD_TYPE == UDB4_BOARD)
 #include "p33fj256gp710a.h"
 #include "ConfigUDB4.h"
+
+#elif (BOARD_TYPE == CAN_INTERFACE)
+#include "p30f6010A.h"
+#include "../CANInterface/ConfigCANInterface.h"
+
 #endif
 
 
