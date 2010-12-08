@@ -56,6 +56,10 @@
 #include "p30f6010A.h"
 #include "../CANInterface/ConfigCANInterface.h"
 
+
+#elif (BOARD_TYPE == CAN_INTERFACE)
+#include "p30f6010A.h"
+#include "../CANInterface/ConfigCANInterface.h"
 #endif
 
 
@@ -67,6 +71,8 @@
 #if (USE_PPM_INPUT == 1)
 #undef MAX_INPUTS
 #define MAX_INPUTS 8
+#undef MAX_OUTPUTS
+#define MAX_OUTPUTS 9
 #endif
 
 
@@ -133,6 +139,7 @@ struct udb_flag_bits {
 #define CHANNEL_6		6
 #define CHANNEL_7		7
 #define CHANNEL_8		8
+#define CHANNEL_9		9
 
 
 // Constants
