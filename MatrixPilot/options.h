@@ -174,7 +174,7 @@
 //   4 also enables E0 as the 4th output channel
 //   5 also enables E2 as the 5th output channel
 //   6 also enables E4 as the 6th output channel
-//   NOTE: If USE_PPM_INPUT is enabled above, outputs 4, 5, and 6 will use the
+//   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
 //         RC Input 3, 2, and 1 connections instead of pins E0, E2, and E4.)
 #define NUM_OUTPUTS							5
 
@@ -276,7 +276,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB,
-// SERIAL_UDB_EXTRA, or SERIAL_OSD_REMZIBI)
+// SERIAL_UDB_EXTRA, SERIAL_MAVLINK or SERIAL_OSD_REMZIBI)
 // This determines the format of the output sent out the spare serial port.
 // Note that SERIAL_OSD_REMZIBI only works with GPS_UBX.
 // SERIAL_UDB_EXTRA will add additional telemetry fields to those of SERIAL_UDB.

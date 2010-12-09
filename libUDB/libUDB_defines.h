@@ -29,6 +29,7 @@
 #define UDB3_BOARD		3	// Test board for Inversense Gyros
 #define RUSTYS_BOARD	4	// Red board with Rusty's IXZ-500_RAD2a patch board
 #define UDB4_BOARD		5
+#define CAN_INTERFACE	6
 
 
 // Include the necessary files for the current board type
@@ -51,6 +52,10 @@
 #elif (BOARD_TYPE == UDB4_BOARD)
 #include "p33fj256gp710a.h"
 #include "ConfigUDB4.h"
+
+#elif (BOARD_TYPE == CAN_INTERFACE)
+#include "p30f6010A.h"
+#include "../CANInterface/ConfigCANInterface.h"
 #endif
 
 
@@ -62,6 +67,8 @@
 #if (USE_PPM_INPUT == 1)
 #undef MAX_INPUTS
 #define MAX_INPUTS 8
+#undef MAX_OUTPUTS
+#define MAX_OUTPUTS 9
 #endif
 
 
@@ -128,6 +135,7 @@ struct udb_flag_bits {
 #define CHANNEL_6		6
 #define CHANNEL_7		7
 #define CHANNEL_8		8
+#define CHANNEL_9		9
 
 
 // Constants
