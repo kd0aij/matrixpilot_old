@@ -633,13 +633,14 @@ void serial_output_8hz( void )
 {
 
 	struct relative2D matrix_accum ;
-	float earth_pitch ;		// pitch in binary angles ( 0-255 is 360 degreres)
+	float earth_pitch ;		// pitch in binary angles with respect to earth ( 0-255 is 360 degreres)
 	float earth_roll ;		// roll of the plane with respect to earth frame
 	float earth_yaw ;		// yaw with respect to earth frame
 	int accum ;
+	long accum_long ;
 	uint8_t mode; ///< System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
 
-	if (++skip == 2) // Be careful about chaning. There is frequency sensitve code below.
+	if (++skip == 2) // Be careful about changing. There is frequency sensitve code below.
 	{
 		skip = 0;
 		usec++ ;
@@ -701,30 +702,39 @@ void serial_output_8hz( void )
 		earth_yaw = ( - accum * BYTE_CIR_16_TO_RAD) ;			// Convert to Radians
 
 		mavlink_msg_attitude_send(MAVLINK_COMM_0,usec, earth_roll, earth_pitch, earth_yaw, 
-				(earth_roll - previous_earth_roll)     * 2 , // Note: This is Time / Frequency sensitive Code
-				(earth_pitch - previous_earth_pitch)   * 2 , // Muliply by 4, to have radians / sec 
-                (earth_yaw - previous_earth_yaw)       * 2 ) ;
+				(earth_roll - previous_earth_roll)     * 4 , // Note: This is Time / Frequency sensitive Code
+				(earth_pitch - previous_earth_pitch)   * 4 , // Muliply by 4, to have radians / sec 
+                (earth_yaw - previous_earth_yaw)       * 4 ) ;
 
 		// RAW SENSORS - ACCELOREMETERS and GYROS
 		// The values sent are raw with no offsets, scaling, and sign correction
 		// It is expected that these values are graphed to allow users to check basic sensor operation,
 		// and to graph noise on the signals.
 #if ( MAG_YAW_DRIFT == 1 )
+		
 		extern int magFieldRaw[] ;
 		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
-				 (int16_t)   udb_yaccel.input, (int16_t) - udb_xaccel.input, (int16_t) udb_zaccel.input, 
+				 (int16_t)   udb_yaccel.input,
+				 (int16_t) - udb_xaccel.input, (int16_t) udb_zaccel.input, 
 				 (int16_t)   ( udb_yrate.input + 32768 ),
                  (int16_t) - ( udb_xrate.input + 32768 ),
                  (int16_t)   ( udb_zrate.input + 32768 ), 
 				  (int16_t) magFieldRaw[0], (int16_t) magFieldRaw[1], (int16_t) magFieldRaw[2]) ;
 #else
 		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
-				 udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input,
-				    ( udb_yrate.input + 32768 ),
-                  - ( udb_xrate.input + 32768 ),
-                    ( udb_zrate.input + 32768 ), 
-				 0, 0, 0) ;
+				      udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input,
+				    ( udb_yrate.input + 32768 ), - ( udb_xrate.input + 32768 ), ( udb_zrate.input + 32768 ), 
+				      0, 0, 0) ; // MagFieldRaw[] zero as mag not connected.
 #endif
+		// GLOBAL POSITION - derived from fused sensors 
+		float lat_float, lon_float, alt_float = 0.0 ;
+		accum_long = IMUlocationy._.W1 + ( lat_origin.WW / 90 ) ; //  meters North from Equator
+		lat_float  =  ( accum_long * 90 ) / 10000000.0 ;          // degrees North from Equator 
+		lon_float =   (long_origin.WW  + ((( IMUlocationx._.W1 * 90 )) / ( float )( cos_lat / 16384.0 ))) / 10000000.0 ;
+		alt_float = (float) (((((int) (IMUlocationz._.W1)) * 100) + alt_origin._.W0)) / 100.0 ;
+		mavlink_msg_global_position_send(MAVLINK_COMM_0, usec, 
+			lat_float , lon_float, alt_float ,
+			(float) IMUvelocityx._.W1, (float) IMUvelocityy._.W1, (float) IMUvelocityz._.W1 ) ; // meters per second
 	}
 	return ;
 }
