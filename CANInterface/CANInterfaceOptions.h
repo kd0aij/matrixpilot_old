@@ -95,7 +95,10 @@
 //  before reverting to manual control
 #define RX_MAX_TIMEOUTS  5
 
-
+#undef MAX_INPUTS
+#define MAX_INPUTS 8
+#undef MAX_OUTPUTS
+#define MAX_OUTPUTS 8
 
 
 /****************************************************************************/

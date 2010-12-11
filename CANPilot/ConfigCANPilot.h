@@ -1,15 +1,46 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
-#include "../libUDB/libUDB.h"
-#include "../libUDB/libUDB_internal.h"
-#include "options.h"
+#include "p30f6010A.h"
 
-#ifndef LIBCAN_DEFINES_H
-#define LIBCAN_DEFINES_H
+#define FREQOSC		16000000
+#define CLK_PHASES	4
+
+#define	ADCON2CONFIG 0b0010010000011000 ; // Vref+ ref, scana ch0, int every 7, 16word, usa A only
 
 
+#define	xrateBUFF	ADCBUF2
+#define	yrateBUFF	ADCBUF3 
+#define	zrateBUFF	ADCBUF1
 
-#endif
+#define	xaccelBUFF	ADCBUF4
+#define	yaccelBUFF	ADCBUF5
+#define	zaccelBUFF	ADCBUF6
+
+#define XRATE_SIGN -
+#define YRATE_SIGN -
+#define ZRATE_SIGN -
+
+#define XACCEL_SIGN +
+#define YACCEL_SIGN +
+#define ZACCEL_SIGN +
+
+//#define VREF
+
+#define SCALEGYRO 3.0
+#define SCALEACCEL 2.64
+
+// Max inputs and outputs
+#define MAX_INPUTS	8
+#define MAX_OUTPUTS	8
+
+// LED pins
+#define LED_RED				LATDbits.LATD2
+#define LED_GREEN			LATDbits.LATD3
+
+// Pin locations of the hardware toggle switches
+#define HW_SWITCH_1			0
+#define HW_SWITCH_2			0
+#define HW_SWITCH_3			0
 
 /****************************************************************************/
 // This is part of the servo and radio interface software
@@ -40,4 +71,3 @@
 // For details, credits and licenses of MatrixPilot see the AUTHORS.TXT file.
 // or see this website: http://code.google.com/p/gentlenav
 /****************************************************************************/
-

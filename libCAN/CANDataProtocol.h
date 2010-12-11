@@ -31,6 +31,7 @@ typedef struct tagRADIO_DATA_BITS
 	unsigned int 	channelFound	: 1;
 } RADIO_DATA_BITS;
 
+
 typedef union 
 {
 	RADIO_DATA_BITS	_;
@@ -38,13 +39,25 @@ typedef union
 } RADIO_DATA;
 
 
+typedef struct tagIMU_FLAGS
+{
+	int 	flags ;
+	char 	dcm_flags;
+	char	udb_flags;
+	boolean	gps_nav_valid;
+	char	filler;
+} IMU_FLAGS;
+
+
 typedef struct tagDATA_TX_REQUEST_BITS
 {
 	unsigned int	tx_req_radio_data		: 1;
-	unsigned int	tx_req_control_data		: 1;
 	unsigned int	tx_req_servo_data		: 1;
+	unsigned int	tx_req_imu_data			: 1;
 	unsigned int	tx_req_flags_data		: 1;
-	unsigned int							: 4;
+	unsigned int	tx_req_dcm_data			: 1;
+	unsigned int	tx_req_mag_data			: 1;
+	unsigned int							: 2;
 } DATA_TX_REQUEST_BITS;
 
 
@@ -61,7 +74,10 @@ typedef enum
 	CONTROL_DATA_SERVO,
 	CONTROL_DATA_RADIO,
 	CONTROL_DATA_AP_CONTROL,
-	CONTROL_DATA_FLAGS
+	CONTROL_DATA_FLAGS,
+	CONTROL_DATA_IMU,
+	CONTROL_DATA_DCM,
+	CONTROL_DATA_MAG
 } CONTROL_DATA_TYPES;
 
 #endif

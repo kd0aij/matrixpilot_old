@@ -1,15 +1,42 @@
 // SEE END OF FILE FOR LICENSE TERMS
 
-#include "../libUDB/libUDB.h"
-#include "../libUDB/libUDB_internal.h"
-#include "options.h"
 
-#ifndef LIBCAN_DEFINES_H
-#define LIBCAN_DEFINES_H
+#include "../libUDB/libUDB_internal.h"
+#include "../libCAN/libCAN.h"
+
+#if (BOARD_IS_CLASSIC_UDB == 1)
+
+//	Measure the pulse widths of the servo channel inputs from the radio.
+//	The dsPIC makes this rather easy to do using its capture feature.
+
+//	One of the channels is also used to validate pulse widths to detect loss of radio.
+
+//	The pulse width inputs can be directly converted to units of pulse width outputs to control
+//	the servos by simply dividing by 2.
+
+// Only 2 pw input channels are needed, mode and failsafe.  Mixer is on the CAN interface
+
+int udb_pwIn[MAX_INPUTS+1] ;	// pulse widths of radio inputs
+int udb_pwTrim[MAX_INPUTS+1] ;	// initial pulse widths for trimming
+
+int failSafePulses = 0 ;
+
+
+void udb_init_capture(void)
+{
+	int i;
+
+	for (i=0; i <= NUM_INPUTS; i++)
+		udb_pwIn[i] = udb_pwTrim[i] = 0 ;
+	
+	return ;
+}
 
 
 
 #endif
+
+
 
 /****************************************************************************/
 // This is part of the servo and radio interface software
@@ -40,4 +67,3 @@
 // For details, credits and licenses of MatrixPilot see the AUTHORS.TXT file.
 // or see this website: http://code.google.com/p/gentlenav
 /****************************************************************************/
-

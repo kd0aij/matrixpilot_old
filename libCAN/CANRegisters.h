@@ -5,7 +5,7 @@
 #ifndef CAN_REGSITERS_H
 #define CAN_REGSITERS_H
 
-#if(BOARD_TYPE == CAN_INTERFACE)
+#if( (BOARD_TYPE == CAN_INTERFACE) || (BOARD_TYPE == CANPILOT_BOARD) )
 	#define CAN_PORT	2
 #else
 	#define CAN_PORT	1

@@ -16,6 +16,7 @@ Basic implementation of CAN port ISR and supporting functions.
 #include "libCAN_defines.h"
 #include "CANRegisters.h"
 #include "CANInterface_config.h"
+#include "CANDataProtocol.h"
 
 unsigned int RxTimeouts = 0;
 

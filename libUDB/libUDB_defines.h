@@ -30,6 +30,7 @@
 #define RUSTYS_BOARD	4	// Red board with Rusty's IXZ-500_RAD2a patch board
 #define UDB4_BOARD		5
 #define CAN_INTERFACE	6
+#define CANPILOT_BOARD	7
 
 // Include the necessary files for the current board type
 #if (BOARD_TYPE == RED_BOARD)
@@ -56,14 +57,10 @@
 #include "p30f6010A.h"
 #include "../CANInterface/ConfigCANInterface.h"
 
-
-#elif (BOARD_TYPE == CAN_INTERFACE)
+#elif (BOARD_TYPE == CANPILOT_BOARD)
 #include "p30f6010A.h"
-#include "../CANInterface/ConfigCANInterface.h"
+#include "../CANPilot/ConfigCANPilot.h"
 
-#elif (BOARD_TYPE == CAN_INTERFACE)
-#include "p30f6010A.h"
-#include "../CANInterface/ConfigCANInterface.h"
 #endif
 
 
@@ -94,7 +91,7 @@
 #include "boardRotation_defines.h"
 
 
-#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == UDB3_BOARD || BOARD_TYPE == RUSTYS_BOARD)
+#if (BOARD_TYPE == GREEN_BOARD || BOARD_TYPE == RED_BOARD || BOARD_TYPE == UDB3_BOARD || BOARD_TYPE == RUSTYS_BOARD || BOARD_TYPE == CAN_INTERFACE || BOARD_TYPE == CANPILOT_BOARD)
 #define BOARD_IS_CLASSIC_UDB		1
 #else
 #define BOARD_IS_CLASSIC_UDB		0

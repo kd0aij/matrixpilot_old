@@ -37,6 +37,23 @@ void CAN_send_servo_outputs(void);
 // Trigger sending of radio inputs
 void CAN_send_radio_inputs(void);
 
+// Trigger sending of radio inputs
+void CAN_send_imu_data(void);
+
+// Trigger sending of flag data
+void CAN_send_flags(void);
+
+// Trigger sending of dcm internal data
+void CAN_send_dcm_data(void);
+
+// Trigger sending of magnetometer measurement data
+void CAN_send_mag_data(void);
+
+
+// Get the IMU flag for valid gps navigation
+boolean IMU_gps_nav_valid(void);
+
+void CAN_failsafe_clock(void);
 
 // Callback when radio inputs are received
 extern void CAN_received_radio_inputs_callback(void);
