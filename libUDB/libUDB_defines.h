@@ -60,6 +60,10 @@
 #elif (BOARD_TYPE == CAN_INTERFACE)
 #include "p30f6010A.h"
 #include "../CANInterface/ConfigCANInterface.h"
+
+#elif (BOARD_TYPE == CAN_INTERFACE)
+#include "p30f6010A.h"
+#include "../CANInterface/ConfigCANInterface.h"
 #endif
 
 
