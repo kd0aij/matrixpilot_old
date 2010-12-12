@@ -92,15 +92,16 @@ void udb_serial_callback_received_char(char rxchar)
 mavlink_message_t msg;
 mavlink_status_t  r_mavlink_status;
 
-const char mavlink_debug[] = "Parsed a message\n" ; 
-const int  mavlink_debug_len = 17 ;
+uint8_t   mavlink_debug[] = "Parsed a message\n" ; 
+uint16_t  mavlink_debug_len = 17 ;
+
 void uart1_send(uint8_t buf[], uint16_t len) ;
 
 void mavlink_msg( unsigned char inchar )
 {
 	if (mavlink_parse_char(0, inchar, &msg, &r_mavlink_status ))
     {
-		uart1_send( &mavlink_debug, mavlink_debug_len ) ;
+		uart1_send( mavlink_debug, mavlink_debug_len ) ;
 		// Note: serial_output chews up a lof RAM because inserts vsnprintf() library function
 		//serial_output("Received message with ID %d, sequence: %d from component %d of system %d\n\n"); //,
 		// msg.msgid, msg.seq, msg.compid, msg.sysid);
