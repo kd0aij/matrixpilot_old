@@ -83,7 +83,9 @@
 // Altitude Hold
 // Use altitude hold in stabilized mode?  In waypoint mode?
 // Each of these settings can be AH_NONE, AH_FULL, or AH_PITCH_ONLY
-#define ALTITUDEHOLD_STABILIZED				AH_PITCH_ONLY
+// NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
+// as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
+#define ALTITUDEHOLD_STABILIZED				AH_NONE
 #define ALTITUDEHOLD_WAYPOINT				AH_FULL
 
 // Inverted flight
@@ -110,7 +112,7 @@
 #define WIND_ESTIMATION						0
 
 // Camera Stabilization
-// To enable, set this value to 1, and assign one or more of the CAMERA_*_OUTPUT_CHANNELS below.
+// Set this value to 1, for camera to be stabilized using camera options further below.
 #define USE_CAMERA_STABILIZATION			0
 
 // Define MAG_YAW_DRIFT to be 1 to use magnetometer for yaw drift correction.
@@ -138,16 +140,16 @@
 // This frees up RC inputs 3, 2, and 1 to act as RC outputs 4, 5, and 6.
 // If you're not sure, leave USE_PPM_INPUT set to 0.
 // PPM_NUMBER_OF_CHANNELS is the number of channels sent on the PWM signal.  This is
-// often different from the NUM_INPUTS value below.  It is usually 8.
-// If PPM_ALT_OUTPUT_PINS is set to 0, the 8 available RC outputs will be sent to the
-// following pins, in this order: Out1, Out2, Out3, In3, In2, In1, RE0, RE2.
+// often different from the NUM_INPUTS value below, and should usually be left at 8.
+// If PPM_ALT_OUTPUT_PINS is set to 0, the 9 available RC outputs will be sent to the
+// following pins, in this order: Out1, Out2, Out3, In3, In2, In1, RE0, RE2, RE4.
 // With it set to 1, the RC outputs will be in this alternate configuration:
-// Out1, Out2, Out3, RE0, RE2, RE4, In3, In2.
+// Out1, Out2, Out3, RE0, RE2, RE4, In3, In2, In1.
 #define USE_PPM_INPUT						0
 #define PPM_NUMBER_OF_CHANNELS				8
 #define PPM_ALT_OUTPUT_PINS					0
 
-// NUM_INPUTS: Set to 1-5 
+// NUM_INPUTS: Set to 1-5 (or 1-8 when using PPM input)
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
 #define NUM_INPUTS							5
@@ -161,9 +163,9 @@
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
 #define RUDDER_INPUT_CHANNEL				CHANNEL_5
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
-#define CAMERA_ROLL_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
+#define OSD_MODE_SWITCH_INPUT_CHANNEL		CHANNEL_UNUSED
 #define PASSTHROUGH_A_INPUT_CHANNEL			CHANNEL_UNUSED
 #define PASSTHROUGH_B_INPUT_CHANNEL			CHANNEL_UNUSED
 #define PASSTHROUGH_C_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -194,9 +196,8 @@
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
 #define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
-#define CAMERA_ROLL_OUTPUT_CHANNEL			CHANNEL_UNUSED
-#define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
-#define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_6
+#define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_5
 #define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
 #define PASSTHROUGH_A_OUTPUT_CHANNEL		CHANNEL_UNUSED
 #define PASSTHROUGH_B_OUTPUT_CHANNEL		CHANNEL_UNUSED
@@ -285,12 +286,19 @@
 // SERIAL_MAVLINK is a bi-directional binary format for use with the QgroundControl (Ground Control Station.)
 #define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
 
+// The following SERIAL_INPUT_FORMAT line is for MAVLink development purposes only.
+// At the time of inserting this line, MAVLINK uplink does not work because
+// absorbs to much ram for the UDB3. So only enable this line if developing the uplink
+// code and exploring how to reduce RAM requitements. Choices are:
+// NONE or SERIAL_MAVLINK (For now, NONE will default to normal input routines).
+#define SERIAL_INPUT_FORMAT    SERIAL_NONE
 
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
 // OSD_VIDEO_FORMAT can be set to either OSD_NTSC, or OSD_PAL
 #define USE_OSD								0
 #define OSD_VIDEO_FORMAT					OSD_NTSC
+#define OSD_SHOW_HORIZON					0
 #define OSD_CALL_SIGN						{0x95, 0x8B, 0x81, 0x8C, 0x8D, 0x8E, 0xFF} // KA1BCD
 
 
@@ -406,9 +414,12 @@
 // Camera Stabilization and Targeting
 // 
 // In Manual Mode the camera is fixed straight ahead.
-// In Stabilized Mode, the camera stabilizes in the pitch axis but keeps a constant yaw
-// relative to the plane's frame of reference. 
+// In Stabilized Mode, the camera stabilizes in the pitch axis but stabilizes a constant yaw
+// relative to the plane's frame of reference.
 // In Waypoint Mode, the direction of the camera is driven from a flight camera plan in waypoints.h
+// In all three flight modes, if you set CAMERA_*_INPUT_CHANNEL then the transmitter camera controls
+// will override the camera stabilisation. This allows a pilot to override the camera stabilization dynamically
+// during flight and point the camera at a specific target of interest.
 // 
 // To save cpu cycles, you will need to pre-compute the tangent of the desired pitch of the camera
 // when in stabilized mode. This should be expressed in 2:14 format. 

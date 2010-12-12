@@ -36,6 +36,7 @@
 union intbb voltage_milis = {0} ;
 union intbb voltage_temp ;
 
+void mavlink_msg(unsigned char);
 void sio_newMsg(unsigned char);
 void sio_voltage_low( unsigned char inchar ) ;
 void sio_voltage_high( unsigned char inchar ) ;
@@ -45,9 +46,13 @@ void sio_fp_checksum( unsigned char inchar ) ;
 char fp_high_byte;
 unsigned char fp_checksum;
 
+#if (  SERIAL_INPUT_FORMAT == SERIAL_MAVLINK && SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
+void (* sio_parse ) ( unsigned char inchar ) = &mavlink_msg ;
+#else
 void (* sio_parse ) ( unsigned char inchar ) = &sio_newMsg ;
+#endif
 
-#if (SERIAL_FORMAT == SERIAL_MAVLINK)
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
 #define SERIAL_BUFFER_SIZE 	MAVLINK_MAX_PACKET_LEN
 #else
 #define SERIAL_BUFFER_SIZE 	256
@@ -82,7 +87,27 @@ void udb_serial_callback_received_char(char rxchar)
 	return ;
 }
 
+#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK && SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
 
+mavlink_message_t msg;
+mavlink_status_t  r_mavlink_status;
+
+const char mavlink_debug[] = "Parsed a message\n" ; 
+const int  mavlink_debug_len = 17 ;
+void uart1_send(uint8_t buf[], uint16_t len) ;
+
+void mavlink_msg( unsigned char inchar )
+{
+	if (mavlink_parse_char(0, inchar, &msg, &r_mavlink_status ))
+    {
+		uart1_send( &mavlink_debug, mavlink_debug_len ) ;
+		// Note: serial_output chews up a lof RAM because inserts vsnprintf() library function
+		//serial_output("Received message with ID %d, sequence: %d from component %d of system %d\n\n"); //,
+		// msg.msgid, msg.seq, msg.compid, msg.sysid);
+	}
+}
+
+#else
 void sio_newMsg( unsigned char inchar )
 {
 	if ( inchar == 'V' )
@@ -220,7 +245,7 @@ void sio_fp_checksum( unsigned char inchar )
 	}
 	return ;
 }
-
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
