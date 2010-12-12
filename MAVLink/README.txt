@@ -35,13 +35,7 @@ This Mavlink directory has been created using the followign recipe:
 * Downloaded source code for Mavlink (XML data structures) from dev branch here:-
   https://github.com/pixhawk/mavlink
 
-* Using QGroundControl 0.76 Beta on Windows, selected from menu:- Window / MAVLink View
-  Selected Input File: location of file "message_definitions/common.xml"
-  selected Output File: a directory in which to drop the generated *.h files
-  However, this method produced a bug, with missing fields in key *.h files.
-  SO reverted to using pre-made include files from git repository (part of the above download).
-
-* Added in the file inttypes.h o the MAVLink include directory.
+* Added in the file inttypes.h to the MAVLink include directory.
 
 * Edited the QGroundControl website template to create matrixpilot_mavlink_bridge_header.h
   in the MAVLink include directory.
@@ -69,7 +63,7 @@ This Mavlink directory has been created using the followign recipe:
 	comm_send_ch(chan, msg->ck_b);
   }
 
-* Added all the *.h files in MAVLink directory and MAVLink/Common directory
+* Added all the *.h files in MAVLink include directory and MAVLink/include/common directory
   to the MPLAB project list for MatrixPilot (relative file addressing). 
   (we are currently only using the "common" message types.
 

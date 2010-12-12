@@ -145,7 +145,6 @@ union __mavlink_bitfield {
 	int32_t int32;
 };
 
-
 static inline void mavlink_start_checksum(mavlink_message_t* msg)
 {
 	union checksum_ ck;
@@ -205,12 +204,15 @@ static inline uint8_t mavlink_parse_char(uint8_t chan, uint8_t c, mavlink_messag
 #if (defined linux) | (defined __linux) | (defined  __MACH__) | (defined _WIN32)
 	static mavlink_message_t m_mavlink_message[MAVLINK_COMM_NB_HIGH];
 #else
-	static mavlink_message_t m_mavlink_message[MAVLINK_COMM_NB];
+	//static mavlink_message_t m_mavlink_message[MAVLINK_COMM_NB];
+	//static mavlink_message_t m_mavlink_message[MAVLINK_COMM_0];
+	// static mavlink_message_t m_mavlink_message[1];  // PDH - reduces memory by about 260 butees from COMM_NB
 #endif
 	// Initializes only once, values keep unchanged after first initialization
 	mavlink_parse_state_initialize(mavlink_get_channel_status(chan));
 
-	mavlink_message_t* rxmsg = &m_mavlink_message[chan]; ///< The currently decoded message
+	//mavlink_message_t* rxmsg = &m_mavlink_message[chan]; ///< The currently decoded message
+    mavlink_message_t* rxmsg = r_message; ///< The currently decoded message
 	mavlink_status_t* status = mavlink_get_channel_status(chan); ///< The current decode status
 	int bufferIndex = 0;
 
