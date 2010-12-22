@@ -21,22 +21,16 @@
 
 #include "defines.h"
 
-#include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM values
+#if (SERIAL_OUTPUT_FORMAT != SERIAL_MAVLINK) // All MAVLink telemetry code is in MAVLink.c
 
+#include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM values
 #define _ADDED_C_LIB 1 // Needed to get vsnprintf()
 #include <stdio.h>
 #include <stdarg.h>
 
-#if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
-#include <string.h>
-#include "../MAVLink/include/matrixpilot_mavlink_bridge_header.h"
-#include "../MAVLink/include/common/mavlink.h"
-#endif
-
 union intbb voltage_milis = {0} ;
 union intbb voltage_temp ;
 
-void mavlink_msg(unsigned char);
 void sio_newMsg(unsigned char);
 void sio_voltage_low( unsigned char inchar ) ;
 void sio_voltage_high( unsigned char inchar ) ;
@@ -46,75 +40,15 @@ void sio_fp_checksum( unsigned char inchar ) ;
 char fp_high_byte;
 unsigned char fp_checksum;
 
-#if (  SERIAL_INPUT_FORMAT == SERIAL_MAVLINK && SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
-void (* sio_parse ) ( unsigned char inchar ) = &mavlink_msg ;
-#else
 void (* sio_parse ) ( unsigned char inchar ) = &sio_newMsg ;
-#endif
 
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
-#define SERIAL_BUFFER_SIZE 	MAVLINK_MAX_PACKET_LEN
-#else
 #define SERIAL_BUFFER_SIZE 	256
-#endif
 
 unsigned char serial_buffer[SERIAL_BUFFER_SIZE] ;
 int sb_index = 0 ;
 int end_index = 0 ;
 
 
-
-void init_serial()
-{
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
-	dcm_flags._.nmea_passthrough = 1;
-#endif
-	
-	udb_serial_set_rate(19200) ;
-//	udb_serial_set_rate(38400) ;
-//	udb_serial_set_rate(57600) ;
-//	udb_serial_set_rate(115200) ;
-//	udb_serial_set_rate(230400) ;
-//	udb_serial_set_rate(460800) ;
-//	udb_serial_set_rate(921600) ; // yes, it really will work at this rate
-	
-	return ;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// 
-// Receive Serial Commands
-//
-
-void udb_serial_callback_received_char(char rxchar)
-{
-	(* sio_parse) ( rxchar ) ; // parse the input byte
-	return ;
-}
-
-#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK && SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
-
-mavlink_message_t msg;
-mavlink_status_t  r_mavlink_status;
-
-uint8_t   mavlink_debug[] = "Parsed a message\n" ; 
-uint16_t  mavlink_debug_len = 17 ;
-
-void uart1_send(uint8_t buf[], uint16_t len) ;
-
-void mavlink_msg( unsigned char inchar )
-{
-	if (mavlink_parse_char(0, inchar, &msg, &r_mavlink_status ))
-    {
-		uart1_send( mavlink_debug, mavlink_debug_len ) ;
-		// Note: serial_output chews up a lof RAM because inserts vsnprintf() library function
-		//serial_output("Received message with ID %d, sequence: %d from component %d of system %d\n\n"); //,
-		// msg.msgid, msg.seq, msg.compid, msg.sysid);
-	}
-}
-
-#else
 void sio_newMsg( unsigned char inchar )
 {
 	if ( inchar == 'V' )
@@ -252,44 +186,52 @@ void sio_fp_checksum( unsigned char inchar )
 	}
 	return ;
 }
-#endif
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
 // Output Serial Data
 //
-
-#if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
-
-void uart1_send(uint8_t buf[], uint16_t len)
-// len is the number of bytes in the buffer
+void init_serial()
 {
-	int start_index = end_index ;
-	int remaining = SERIAL_BUFFER_SIZE - start_index ;
-	if ( len > remaining )
-	{
-		//length = remaining ;
-		len = remaining ;
-	}
-	if (remaining > 1)
-	{
-		memcpy(&serial_buffer[start_index], buf, len);
-		end_index = start_index + len ;
-	}	
-	if (sb_index == 0)
-	{
-		udb_serial_start_sending();
-	}
+#if       ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
+dcm_flags._.nmea_passthrough = 1;
+#endif // ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
+
+udb_serial_set_rate(19200) ;
+//	udb_serial_set_rate(38400) ;
+//	udb_serial_set_rate(57600) ;
+//	udb_serial_set_rate(115200) ;
+//	udb_serial_set_rate(230400) ;
+//	udb_serial_set_rate(460800) ;
+//	udb_serial_set_rate(921600) ; // yes, it really will work at this rate
+
+return ;
+}
+
+void udb_serial_callback_received_char(char rxchar)
+{
+	(* sio_parse) ( rxchar ) ; // parse the input byte
 	return ;
 }
 
-void uart1_transmit(uint8_t ch) 
-{
-	uart1_send(&ch, 1);
+int udb_serial_callback_get_char_to_send(void) 
+// routine returns an integer so as to allow sending binary code (including 0x00) over serial
+{ 
+	if ( sb_index < end_index && sb_index < SERIAL_BUFFER_SIZE ) // ensure never end up racing thru memory.
+	{
+		unsigned char txchar = serial_buffer[ sb_index++ ] ;
+		return (int) txchar ;
+	}
+	else
+	{
+		sb_index = 0 ;
+		end_index = 0 ;
+	}
+	
+	return -1 ;
 }
 
-
-#else
 // add this text to the output buffer
 void serial_output( char* format, ... )
 {
@@ -314,24 +256,6 @@ void serial_output( char* format, ... )
 	va_end(arglist);
 	
 	return ;
-}
-#endif
-
-int udb_serial_callback_get_char_to_send(void) 
-// routine returns an integer so as to allow sending binary code (including 0x00) over serial
-{ 
-	if ( sb_index < end_index && sb_index < SERIAL_BUFFER_SIZE ) // ensure never end up racing thru memory.
-	{
-		unsigned char txchar = serial_buffer[ sb_index++ ] ;
-		return (int) txchar ;
-	}
-	else
-	{
-		sb_index = 0 ;
-		end_index = 0 ;
-	}
-	
-	return -1 ;
 }
 
 
@@ -433,7 +357,6 @@ void serial_output_8hz( void )
 	return ;
 }
 
-
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB || SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 
 int telemetry_counter = 6 ;
@@ -443,18 +366,18 @@ int skip = 0 ;
 int pwIn_save[NUM_INPUTS + 1] ;
 int pwOut_save[NUM_OUTPUTS + 1] ;
 char print_choice = 0 ;
-#endif
+#endif // ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 
 extern int waypointIndex ;
 
-#if (RECORD_FREE_STACK_SPACE == 1)
+#if      (RECORD_FREE_STACK_SPACE == 1)
 extern unsigned int maxstack ;
-#endif
+#endif //(RECORD_FREE_STACK_SPACE == 1)
 
 void serial_output_8hz( void )
 {
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )	// Only run through this function twice per second, by skipping all but every 4 runs through it.
-	// Saves CPU and XBee power.
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB )	// Only run through this function twice per second, 
+                                            // by skipping all but every 4 runs through it.
 	if (++skip < 4) return ;
 	skip = 0 ;
 	
@@ -462,8 +385,7 @@ void serial_output_8hz( void )
 	// SERIAL_UDB_EXTRA expected to be used with the OpenLog which can take greater transfer speeds than Xbee
 	// F2: SERIAL_UDB_EXTRA format is printed out every other time, although it is being called at 8Hz, this
 	//		version will output four F2 lines every second (4Hz updates)
-#endif
-
+#endif // ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 	switch (telemetry_counter)
 	{
 		// The first lines of telemetry contain info about the compile-time settings from the options.h file
@@ -530,7 +452,7 @@ void serial_output_8hz( void )
 					magFieldEarth[0],magFieldEarth[1],magFieldEarth[2],
 #else
 					(int)0, (int)0, (int)0,
-#endif
+#endif  // MAG_YAW_DRIFT == 1)
 					
 					svs, hdop ) ;
 				
@@ -554,19 +476,19 @@ void serial_output_8hz( void )
 				for (i= 1; i <= NUM_OUTPUTS; i++)
 					serial_output("p%io%i:",i,pwOut_save[i]);
 				serial_output("imx%i:imy%i:imz%i:fgs%X:",IMUlocationx._.W1 ,IMUlocationy._.W1 ,IMUlocationz._.W1, flags.WW );
-#if (RECORD_FREE_STACK_SPACE == 1)
+#if       (RECORD_FREE_STACK_SPACE == 1)
 				serial_output("stk%d:", (int)(4096-maxstack));
-#endif
+#endif  //(RECORD_FREE_STACK_SPACE == 1)
 				serial_output("\r\n");
 				print_choice = 0 ;
 			}
-#endif
+#endif // ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 			if (flags._.f13_print_req == 1)
 			{
 				// The F13 line of telemetry is printed when origin has been captured and inbetween F2 lines in SERIAL_UDB_EXTRA
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 				if (print_choice != 0) return ;
-#endif
+#endif // ( SERIAL_OUTPUT_FORMAT == SERIAL_UDB_EXTRA )
 				serial_output("F13:week%i:origN%li:origE%li:origA%li:\r\n", week_no, lat_origin.WW, long_origin.WW, alt_origin) ;
 				flags._.f13_print_req = 0 ;
 			}
@@ -639,139 +561,6 @@ void serial_output_8hz( void )
 }
 
 
-#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
-
-// The Coordiante Frame and Dimensional Units of Mavlink are
-// explained in detail at this web URL:-
-// http://pixhawk.ethz.ch/wiki/software/coordinate_frame
-// An abreviated summary is:
-// Mavlink Aviation  X Axis is the UDB Aviation Y axis which is the fuselage axis.
-// Mavlink Avitation Y axis is out of the right wing, and so is the negative of the UDB X Axis
-// Mavlink Aviation  Z axis is downward from the plane, ans so is the same as UDB Z axis.
-// Mavlink Yaw is positive to the right (same as UDB)
-// Pitch is positive when the front of the plane pitches up from horizontal (opposite of UDB)
-// Roll is possitive to the right of the plane (same as UDB)
-// So angles follow the "right hand rule"
-
-#define 	BYTE_CIR_16_TO_RAD  ((2.0 * 3.14159265) / 65536.0 ) // Conversion factor: 16 bit byte circular to radians
-int skip = 0 ;
-uint16_t len = 0 ;
-uint64_t usec = 0 ;			// A measure of time
-float previous_earth_pitch  = 0.0 ;
-float previous_earth_roll   = 0.0 ;
-float previous_earth_yaw    = 0.0 ;
-
-void serial_output_8hz( void )
-{
-
-	struct relative2D matrix_accum ;
-	float earth_pitch ;		// pitch in binary angles with respect to earth ( 0-255 is 360 degreres)
-	float earth_roll ;		// roll of the plane with respect to earth frame
-	float earth_yaw ;		// yaw with respect to earth frame
-	int accum ;
-	long accum_long ;
-	uint8_t mode; ///< System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
-
-	if (++skip == 2) // Be careful about changing. There is frequency sensitve code below.
-	{
-		skip = 0;
-		usec++ ;
-
-		mavlink_system.sysid = 100; // System ID, 1-255
-		mavlink_system.compid = 50; // Component/Subsystem ID, 1-255
-		
-		// HEARTBEAT
-		mavlink_msg_heartbeat_send(MAVLINK_COMM_0, MAV_FIXED_WING, MAV_AUTOPILOT_ARDUPILOTMEGA) ;
-
-		// SYSTEM STATUS
-		if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 0)
-				 mode = MAV_MODE_MANUAL ;
-		else if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 1) 
-				 mode = MAV_MODE_GUIDED ;
-		else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 1)
-				 mode = MAV_MODE_AUTO ;
-		else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 0)
-				 mode = MAV_MODE_TEST1 ; // Return to Landing (lost contact with transmitter)
-		else
-				 mode = MAV_MODE_TEST1 ; // Unknown state 
-
-		mavlink_msg_sys_status_send(MAVLINK_COMM_0, mode, MAV_NAV_WAYPOINT, MAV_STATE_ACTIVE, 
-			( uint16_t) 1000 , 	// (uint16_t) (udb_cpu_load()) * 10, 
-			(uint16_t)  10000,  // Battery voltage in mV
-			(uint8_t)   0,      // 0 Motor free to turn off, 1 Motor Blocked from turning on
-			(uint16_t)  0) ;    // Packet Loss in uplink, 0 Until MatrixPilot supports uplink.
-		
-		// RC CHANNELS
-		// Channel values shifted left by 1, to divide by two, so values reflect PWM pulses in microseconds.
-		// mavlink_msg_rc_channels_raw_send(mavlink_channel_t chan, uint16_t chan1_raw, uint16_t chan2_raw,
-		//    uint16_t chan3_raw, uint16_t chan4_raw, uint16_t chan5_raw, uint16_t chan6_raw, uint16_t chan7_raw,
-		//    uint16_t chan8_raw, uint8_t rssi)
- 		mavlink_msg_rc_channels_raw_send(MAVLINK_COMM_0,(uint16_t)(udb_pwOut[0]>>1),  (uint16_t) (udb_pwOut[1]>>1), 
-			 (uint16_t) (udb_pwOut[2]>>1), (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
-			 (uint16_t) (udb_pwOut[5]>>1), (uint16_t)                 0,                 (uint16_t) 0, 
-			 (uint8_t) 0); // last item, RSSI currently not measured on UDB.
-	
-		// ATTITUDE
-		//  Roll: Earth Frame of Reference
-		matrix_accum.x = rmat[8] ;
-		matrix_accum.y = rmat[6] ;
-		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
-		earth_roll = ( - accum ) * BYTE_CIR_16_TO_RAD ;		// Convert to Radians
-		
-		//  Pitch: Earth Frame of Reference
-		//  Note that we are using the matrix_accum.x
-		//  left over from previous rect_to_polar in this calculation.
-		//  so this Pitch calculation must follow the Roll calculation
-		matrix_accum.y = rmat[7] ;
-		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
-		earth_pitch = ( accum) * BYTE_CIR_16_TO_RAD ;		// Convert to Radians
-		
-		// Yaw: Earth Frame of Reference
-		
-		matrix_accum.x = rmat[4] ;
-		matrix_accum.y = rmat[1] ;
-		accum = rect_to_polar16(&matrix_accum) ;			// binary angle (0 to 65536 = 360 degrees)
-		earth_yaw = ( - accum * BYTE_CIR_16_TO_RAD) ;			// Convert to Radians
-
-		mavlink_msg_attitude_send(MAVLINK_COMM_0,usec, earth_roll, earth_pitch, earth_yaw, 
-				(earth_roll - previous_earth_roll)     * 4 , // Note: This is Time / Frequency sensitive Code
-				(earth_pitch - previous_earth_pitch)   * 4 , // Muliply by 4, to have radians / sec 
-                (earth_yaw - previous_earth_yaw)       * 4 ) ;
-
-		// RAW SENSORS - ACCELOREMETERS and GYROS
-		// The values sent are raw with no offsets, scaling, and sign correction
-		// It is expected that these values are graphed to allow users to check basic sensor operation,
-		// and to graph noise on the signals.
-#if ( MAG_YAW_DRIFT == 1 )
-		
-		extern int magFieldRaw[] ;
-		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
-				 (int16_t)   udb_yaccel.input,
-				 (int16_t) - udb_xaccel.input, (int16_t) udb_zaccel.input, 
-				 (int16_t)   ( udb_yrate.input + 32768 ),
-                 (int16_t) - ( udb_xrate.input + 32768 ),
-                 (int16_t)   ( udb_zrate.input + 32768 ), 
-				  (int16_t) magFieldRaw[0], (int16_t) magFieldRaw[1], (int16_t) magFieldRaw[2]) ;
-#else
-		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
-				      udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input,
-				    ( udb_yrate.input + 32768 ), - ( udb_xrate.input + 32768 ), ( udb_zrate.input + 32768 ), 
-				      0, 0, 0) ; // MagFieldRaw[] zero as mag not connected.
-#endif
-		// GLOBAL POSITION - derived from fused sensors 
-		float lat_float, lon_float, alt_float = 0.0 ;
-		accum_long = IMUlocationy._.W1 + ( lat_origin.WW / 90 ) ; //  meters North from Equator
-		lat_float  =  ( accum_long * 90 ) / 10000000.0 ;          // degrees North from Equator 
-		lon_float =   (long_origin.WW  + ((( IMUlocationx._.W1 * 90 )) / ( float )( cos_lat / 16384.0 ))) / 10000000.0 ;
-		alt_float = (float) (((((int) (IMUlocationz._.W1)) * 100) + alt_origin._.W0)) / 100.0 ;
-		mavlink_msg_global_position_send(MAVLINK_COMM_0, usec, 
-			lat_float , lon_float, alt_float ,
-			(float) IMUvelocityx._.W1, (float) IMUvelocityy._.W1, (float) IMUvelocityz._.W1 ) ; // meters per second
-	}
-	return ;
-}
-
-
 #else // If SERIAL_OUTPUT_FORMAT is set to SERIAL_NONE, or is not set
 
 void serial_output_8hz( void )
@@ -779,4 +568,6 @@ void serial_output_8hz( void )
 	return ;
 }
 
-#endif
+#endif //  // If SERIAL_OUTPUT_FORMAT is set to SERIAL_NONE, or is not set
+
+#endif //  (SERIAL_OUTPUT_FORMAT != SERIAL_MAVLINK)
