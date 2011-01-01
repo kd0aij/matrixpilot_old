@@ -31,7 +31,9 @@ int main (void)
 	init_states() ;
 	init_behavior() ;
 	init_serial() ;
-	
+#if ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
+	init_mavlink() ;
+#endif	
 	udb_run() ;
 	// This never returns.
 	

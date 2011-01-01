@@ -106,7 +106,9 @@ void dcm_servo_callback_prepare_outputs(void)
 		gps_startup_sequence(gpscount) ;
 		gpscount-- ;
 	}
-	
+#if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
+	if (startTelemetry) mavlink_output_40hz() ;
+#else
 	// This is a simple counter to do stuff at 8hz
 	eightHertzCounter++ ;
 	if ( eightHertzCounter >= 5 )
@@ -117,6 +119,7 @@ void dcm_servo_callback_prepare_outputs(void)
 		}
 		eightHertzCounter = 0 ;
 	}
+#endif 
 	
 #if (USE_OSD == 1)
 	osd_countdown(gpscount) ;

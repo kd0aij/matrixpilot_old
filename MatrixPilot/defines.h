@@ -198,6 +198,7 @@ extern union bfbts_word desired_behavior ;
 void init_serial( void ) ;
 void serial_output( char* format, ... ) ;
 void serial_output_8hz( void ) ;
+void mavlink_output_40hz( void ) ;
 
 // Serial Output Format
 #define SERIAL_NONE			0	// No serial data is sent
