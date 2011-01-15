@@ -39,6 +39,14 @@ enum MAV_ACTION {
 			MAV_ACTION_NAVIGATE = 25,
 			MAV_ACTION_LAND = 26,
 			MAV_ACTION_LOITER = 27,
+			MAV_ACTION_SET_ORIGIN = 28,
+			MAV_ACITON_RELAY_ON = 29,
+			MAV_ACTION_RELAY_OFF = 30,
+			MAV_ACTION_GET_IMAGE = 31,
+			MAV_ACTION_VIDEO_START = 32,
+			MAV_ACTION_VIDEO_STOP = 33,
+			MAV_ACTION_RESET_MAP = 34,
+			MAV_ACTION_RESET_PLAN = 35,
 			MAV_ACTION_NB        ///< Number of MAV actions
 };
 
@@ -48,11 +56,11 @@ enum MAV_MODE
 			MAV_MODE_LOCKED = 1, ///< Motors are blocked, system is safe
 			MAV_MODE_MANUAL = 2, ///< System is allowed to be active, under manual (RC) control
 			MAV_MODE_GUIDED = 3, ///< System is allowed to be active, under autonomous control, manual setpoint
-			MAV_MODE_AUTO = 4,   ///< System is allowed to be active, under autonomous control and navigation
-			MAV_MODE_TEST1 = 5,  ///< Generic test mode, for custom use
-			MAV_MODE_TEST2 = 6,  ///< Generic test mode, for custom use
-			MAV_MODE_TEST3 = 7,   ///< Generic test mode, for custom use
-			MAV_MODE_READY = 8,  ///< System is ready, motors are unblocked, but controllers are inactive
+			MAV_MODE_AUTO =   4, ///< System is allowed to be active, under autonomous control and navigation
+			MAV_MODE_TEST1 =  5, ///< Generic test mode, for custom use
+			MAV_MODE_TEST2 =  6, ///< Generic test mode, for custom use
+			MAV_MODE_TEST3 =  7, ///< Generic test mode, for custom use
+			MAV_MODE_READY =  8, ///< System is ready, motors are unblocked, but controllers are inactive
 			MAV_MODE_RC_TRAINING = 9 ///< System is blocked, only RC valued are read and reported back
 };
 
@@ -105,7 +113,11 @@ enum MAV_COMPONENT {
 	MAV_COMP_ID_BLOBTRACKER,
 	MAV_COMP_ID_PATHPLANNER,
 	MAV_COMP_ID_AIRSLAM,
-	MAV_COMP_ID_IMU = 200
+	MAV_COMP_ID_MAPPER,
+	MAV_COMP_ID_IMU = 200,
+	MAV_COMP_ID_UDP_BRIDGE = 240,
+	MAV_COMP_ID_UART_BRIDGE = 241,
+	MAV_COMP_ID_SYSTEM_CONTROL = 250
 };
 
 enum MAV_FRAME
@@ -128,6 +140,12 @@ enum MAV_DATA_STREAM{
 };
 
 
+
+enum DATA_TYPES {
+	DATA_TYPE_JPEG_IMAGE = 0,
+	DATA_TYPE_RAW_IMAGE = 1,
+	DATA_TYPE_KINECT
+};
 
 #define MAVLINK_STX 0x55 ///< Packet start sign
 #define MAVLINK_STX_LEN 1 ///< Length of start sign
@@ -164,6 +182,8 @@ typedef struct __mavlink_message {
 typedef enum {
 	MAVLINK_COMM_0,
 	MAVLINK_COMM_1,
+	MAVLINK_COMM_2,
+	MAVLINK_COMM_3,
 	MAVLINK_COMM_NB,
 	MAVLINK_COMM_NB_HIGH = 16
 } mavlink_channel_t;

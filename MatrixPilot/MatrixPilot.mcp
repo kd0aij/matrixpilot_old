@@ -56,7 +56,7 @@ file_028=MatrixPilot
 file_029=libDCM
 file_030=libUDB
 file_031=MatrixPilot
-file_032=.
+file_032=MatrixPilot
 file_033=libUDB
 file_034=libUDB
 file_035=libUDB
@@ -449,15 +449,15 @@ file_100=..\MAVLink\include\common\mavlink_msg_waypoint_request_list.h
 file_101=..\MAVLink\include\common\mavlink_msg_waypoint_set_current.h
 file_102=..\MAVLink\include\common\mavlink_msg_waypoint_set_global_reference.h
 file_103=..\MAVLink\include\mavlink_types.h
-file_104=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
-file_105=C:\Program Files\Microchip\MPLAB C30\support\dsPIC30F\h\p30f4011.h
+file_104=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
+file_105=C:\Program Files (x86)\Microchip\mplabc30\v3.25\support\dsPIC30F\h\p30f4011.h
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
 [TOOL_SETTINGS]
 TS{7D9C6ECE-785D-44CB-BA22-17BF2E119622}=-g
 TS{25AC22BD-2378-4FDB-BFB6-7345A15512D3}=-g -Wall
-TS{7DAC9A1D-4C45-45D6-B25A-D117C74E8F5A}=-Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
+TS{7DAC9A1D-4C45-45D6-B25A-D117C74E8F5A}=-o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)" -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem
 TS{509E5861-1E2A-483B-8B6B-CA8DB7F2DD78}=
 [INSTRUMENTED_TRACE]
 enable=0

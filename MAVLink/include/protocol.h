@@ -145,6 +145,7 @@ union __mavlink_bitfield {
 	int32_t int32;
 };
 
+
 static inline void mavlink_start_checksum(mavlink_message_t* msg)
 {
 	union checksum_ ck;
