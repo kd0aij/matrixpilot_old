@@ -36,9 +36,11 @@
 #include <string.h>
 #include "defines.h"
 #include "options.h"
+#include "gain_variables.h"
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM value
 #include "../MAVLink/include/matrixpilot_mavlink_bridge_header.h"
 #include "../MAVLink/include/common/mavlink.h"
+
 
 
 #if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
@@ -57,7 +59,7 @@ boolean mavlink_frequency_send( unsigned char transmit_frequency, unsigned char 
 
 union intbb voltage_milis = {0} ;
 unsigned char counter_40hz = 0 ;
-uint64_t usec = 0 ;			// A measure of time
+uint64_t usec = 0 ;			// A measure of time in microseconds (should be from Unix Epoch).
 
 int sb_index = 0 ;
 int end_index = 0 ;
@@ -67,14 +69,16 @@ float previous_earth_pitch  = 0.0 ;
 float previous_earth_roll   = 0.0 ;
 float previous_earth_yaw    = 0.0 ;
 
+unsigned char streamRateRawSensors      = 0 ;
+unsigned char streamRateRCChannels      = 0 ;
 
 #if (  SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-
+unsigned char send_variables_counter = 0;
+extern unsigned int maxstack ;
 mavlink_message_t msg ;
 mavlink_status_t  r_mavlink_status ;
-unsigned char streamRateRawSensors      = 0 ;
+
 // unsigned char streamRateExtendedStatus  = 0 ; 
-unsigned char streamRateRCChannels      = 0 ;
 // unsigned char streamRateRawController   = 0 ;
 // unsigned char streamRateRawSensorFusion = 0 ;
 // unsigned char streamRatePosition        = 0 ;
@@ -225,34 +229,22 @@ void handleMessage(mavlink_message_t* msg)
 	
 	            case MAV_ACTION_STORAGE_READ:
 					send_text((unsigned char*) "Action: Storage Read\r\n");
-	                //read_EEPROM_startup();
-	                //read_EEPROM_airstart_critical();
-	                //read_command_index();
-	                //read_EEPROM_flight_modes();
+					// udb_flags._.mavlink_send_variables = 1 ;
 	                break; 
 	
 	            case MAV_ACTION_STORAGE_WRITE:
-					send_text((unsigned char*) "Action: Storage Write\r\n"); 
-	                //save_EEPROM_trims();
-	                //save_EEPROM_waypoint_info();
-	                //save_EEPROM_gains();
-	                //save_command_index();
-	                //save_pressure_data();
-	                //save_EEPROM_radio_minmax();
-	                //save_user_configs();
-	                //save_EEPROM_flight_modes();
+					send_text((unsigned char*) "Action: Storage Write\r\n");
 	                break;
 	
 	            case MAV_ACTION_CALIBRATE_RC:
 					send_text((unsigned char*) "Action: Calibrate RC\r\n"); 
-	                //trim_radio();
 	                break;
 	            
 	            case MAV_ACTION_CALIBRATE_GYRO:
 	            case MAV_ACTION_CALIBRATE_MAG: 
 	            case MAV_ACTION_CALIBRATE_ACC: 
 	            case MAV_ACTION_CALIBRATE_PRESSURE:
-	            case MAV_ACTION_REBOOT:  // this is a rough interpretation
+	            case MAV_ACTION_REBOOT: 
 	                //startup_IMU_ground();     
 	                break; 
 	
@@ -398,7 +390,7 @@ void handleMessage(mavlink_message_t* msg)
 	        //if (mavlink_check_target(packet.target_system,packet.target_component)) break;
 	
 	        // Start sending parameters
-	        //global_data.parameter_i = 0;
+	        udb_flags._.mavlink_send_variables = 1 ;
 	    }
 	    break;
 	
@@ -700,8 +692,13 @@ void init_mavlink( void )
 {
 	mavlink_system.sysid = 100 ; // System ID, 1-255
 	mavlink_system.compid = 50 ; // Component/Subsystem ID, 1-255
+#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
 	streamRateRCChannels = 0 ;
-	streamRateRCChannels = 0 ;
+	streamRateRawSensors = 0 ;
+#else 
+	streamRateRCChannels = 2 ;
+	streamRateRawSensors = 4 ;
+#endif
 }
 
 const unsigned char mavlink_freq_table[] = { 0,40,20,13,10,8,7,6 } ;
@@ -768,11 +765,11 @@ void mavlink_output_40hz( void )
 	int accum ;
 	long accum_long ;
 	uint8_t mode; ///< System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
-	unsigned char spread_transmission_load = 0; // Used to spread sending of message types over a period of 1 second.
+	unsigned char spread_transmission_load = 0; // Used to spread sending of different message types over a period of 1 second.
 
     if ( ++counter_40hz == 40) counter_40hz = 0 ;
 	
-	usec = usec + 25 ; // Add 25 millisecond on each entry. Frequency sensitive code
+	usec = usec + 25000 ; // Frequency sensitive code
 
 	// Note that message types are arranged in order of importance so that if the serial buffer fills up,
 	// critical message types are more likely to still be transmitted.
@@ -784,7 +781,8 @@ void mavlink_output_40hz( void )
 		mavlink_msg_heartbeat_send(MAVLINK_COMM_0, MAV_FIXED_WING, MAV_AUTOPILOT_ARDUPILOTMEGA) ;
 	}
 
-	// GLOBAL POSITION - derived from fused sensors 
+	// GLOBAL POSITION - derived from fused sensors
+	// Note: This code assumes that Dead Reckoning is running.
 	spread_transmission_load = 6 ;
 	if (mavlink_frequency_send( 8 , counter_40hz + spread_transmission_load))
 	{ 
@@ -793,10 +791,11 @@ void mavlink_output_40hz( void )
 		accum_long = IMUlocationy._.W1 + ( lat_origin.WW / 90 ) ; //  meters North from Equator
 		lat_float  =  ( accum_long * 90 ) / 10000000.0 ;          // degrees North from Equator 
 		lon_float =   (long_origin.WW  + ((( IMUlocationx._.W1 * 90 )) / ( float )( cos_lat / 16384.0 ))) / 10000000.0 ;
-		alt_float = (float) (((((int) (IMUlocationz._.W1)) * 100) + alt_origin._.W0)) / 100.0 ;
+		alt_float = (float) (((((int) (IMUlocationz._.W1)) * 100) + alt_origin._.W0) / 100.0) ;
 		mavlink_msg_global_position_send(MAVLINK_COMM_0, usec, 
 			lat_float , lon_float, alt_float ,
 			(float) IMUvelocityx._.W1, (float) IMUvelocityy._.W1, (float) IMUvelocityz._.W1 ) ; // meters per second
+	
 	}
 
 	// ATTITUDE
@@ -858,8 +857,11 @@ void mavlink_output_40hz( void )
 		    (uint16_t) (udb_cpu_load()) * 10, 
 			(uint16_t)  10000,  // Battery voltage in mV
 			(uint8_t)   0,      // 0 Motor free to turn off, 1 Motor Blocked from turning on
-			(uint16_t)  0) ;    // Packet Loss in uplink, 0 Until MatrixPilot supports uplink.
-		
+#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
+			(uint16_t)  r_mavlink_status.packet_rx_drop_count) ;    // Not tested yet, may not be correct.
+#else
+			(uint16_t) 0 ) ; 
+#endif
 	}
 
 	// RC CHANNELS
@@ -870,13 +872,11 @@ void mavlink_output_40hz( void )
 	spread_transmission_load = 24 ;
 	if (mavlink_frequency_send( streamRateRCChannels, counter_40hz + spread_transmission_load)) 
 	{			
-	 	mavlink_msg_rc_channels_raw_send(MAVLINK_COMM_0,(uint16_t)(udb_pwOut[0]>>1),  (uint16_t) (udb_pwOut[1]>>1), 
-				 (uint16_t) (udb_pwOut[2]>>1), (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
-				 (uint16_t) (udb_pwOut[5]>>1), (uint16_t)                 0,                 (uint16_t) 0, 
-				 (uint8_t) 0); // last item, RSSI currently not measured on UDB.
+	 	mavlink_msg_rc_channels_raw_send(MAVLINK_COMM_0,
+			 (uint16_t)(udb_pwOut[1]>>1),  (uint16_t) (udb_pwOut[2]>>1), (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
+			 (uint16_t) (udb_pwOut[5]>>1), (uint16_t) (udb_pwOut[6]>>1), (uint16_t) (udb_pwOut[7]>>1), (uint16_t) (udb_pwOut[8]>>1),
+			 (uint8_t) 0); // last item, RSSI currently not measured on UDB.
 	}
-
-	
 
 	// RAW SENSORS - ACCELOREMETERS and GYROS
 	// The values sent are raw with no offsets, scaling, and sign correction
@@ -902,8 +902,73 @@ void mavlink_output_40hz( void )
 					    ( udb_yrate.input + 32768 ), - ( udb_xrate.input + 32768 ), ( udb_zrate.input + 32768 ), 
 					      0, 0, 0) ; // MagFieldRaw[] zero as mag not connected.
 #endif
+
 	}
+#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
+#define NO_OF_VARIABLES_TO_SEND		1
+	// SEND VALUES OF VARIABLES IF THEY HAVE BEEN REQUESTED
+	if 	( udb_flags._.mavlink_send_variables == 1 )
+	{
+		send_variables_counter++ ;
+		switch (send_variables_counter)	
+		{
+	    	case 1:  
+	    	{
+				const int8_t rollkp_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { 'R','O','L','L','K','P',0 };
+				// static inline void mavlink_msg_param_value_send(mavlink_channel_t chan, const int8_t* param_id,
+			    // float param_value, uint16_t param_count, uint16_t param_index)
+				mavlink_msg_param_value_send( MAVLINK_COMM_0, rollkp_name , (float) (rollkp / 16384.0 ),NO_OF_VARIABLES_TO_SEND	, 0 ) ;
+				break ;
+			}
+			case 2:
+			{
+				const int8_t rollkp_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { 'M','A','X','S','T','A','C','K',0 } ;
+				mavlink_msg_param_value_send( MAVLINK_COMM_0, rollkp_name , (float) (4096 - maxstack) ,NO_OF_VARIABLES_TO_SEND	, 0 ) ;
+			}
+			default :
+			{
+				udb_flags._.mavlink_send_variables = 0 ;
+				send_variables_counter = 0 ;
+				break ;
+			}
+		}
+	}				
+#endif		
 	return ;
 }
+
+/*
+#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
+// void (* sio_parse ) ( unsigned char inchar ) = &mavlink_msg_recv ;
+
+const struct mavlink_parameters {
+	char* parameter_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] ;
+    float max_value ;
+    float min_value ;
+	boolean read_only ;
+    void ( * mavlink_set_value) (char index) ;
+	} ;
+
+struct mavlink_parameters rollkp_param = { { 'M','A','X','S','T','A','C','K',0 }, 1.0, 0.0, false, &set_pid())
+
+const struct mavlink_parameters list_of_mavlink_parameters[] =
+			{ rollkp_param, maxstack_param } ;
+
+void mavlink_get_parameter( char index )
+{	
+}
+
+char * mavlink_get_parameter_name( char index)
+{
+	return list_of_mavlink_parameters[index].parameter)name ;
+}
+
+void set_parameter_value(char index, float value)
+{
+}
+
+
+#endif  //	( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )	
+*/
 
 #endif  // ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )

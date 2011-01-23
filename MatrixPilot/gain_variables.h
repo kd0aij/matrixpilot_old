@@ -12,16 +12,18 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#if(GAINS_VARIABLE == 0)
-	extern const int rollkp;
-	extern const int rollkd;
-	extern const int yawkpail;
-	extern const int yawkdail;
-#else
+
+#if ((SERIAL_INPUT_FORMAT == SERIAL_MAVLINK) || ( GAINS_VARIABLE == 1 ))
+   // MAVLINK, QGROUND CONTROL (Ground Control Station) can change these variables 
 	extern int rollkp;
 	extern int rollkd;
 	extern int yawkpail;
 	extern int yawkdail;
+#else
+	extern const int rollkp;
+	extern const int rollkd;
+	extern const int yawkpail;
+	extern const int yawkdail;
 #endif
 //#define AILERON_BOOST						1.0
 

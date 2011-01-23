@@ -126,7 +126,8 @@ struct ADchannel {
 
 
 struct udb_flag_bits {
-			unsigned int unused					: 6 ;
+			unsigned int unused					: 5 ;
+			unsigned int mavlink_send_variables : 1 ;
 			unsigned int firstsamp				: 1 ;
 			unsigned int radio_on				: 1 ;
 			} ;

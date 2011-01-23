@@ -27,13 +27,12 @@
 //	angle of the vector from the origin to the location of the plane.
 
 //	The origin is recorded as the location of the plane during power up of the control.
-
-#if(GAINS_VARIABLE == 0)
-	const int yawkpail = YAWKP_AILERON*RMAX ;
-	const int yawkprud = YAWKP_RUDDER*RMAX ;
-#else
+#if ((SERIAL_INPUT_FORMAT == SERIAL_MAVLINK) || ( GAINS_VARIABLE == 1 ))
 	int yawkpail = YAWKP_AILERON*RMAX ;
 	int yawkprud = YAWKP_RUDDER*RMAX ;
+#else 
+	const int yawkpail = YAWKP_AILERON*RMAX ;
+	const int yawkprud = YAWKP_RUDDER*RMAX ;
 #endif
 
 struct waypointparameters goal ;

@@ -20,7 +20,6 @@
 
 
 #include "../libDCM/libDCM.h"
-#include "gain_variables.h"
 
 
 #define BYTECIR_TO_DEGREE 92160		// (360.0/256 * 2^16)
@@ -194,11 +193,12 @@ extern union bfbts_word desired_behavior ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// serialIO.c
+// telemetry.c and MAVLink.c
 void init_serial( void ) ;
 void serial_output( char* format, ... ) ;
 void serial_output_8hz( void ) ;
 void mavlink_output_40hz( void ) ;
+void init_mavlink() ;
 
 // Serial Output Format
 #define SERIAL_NONE			0	// No serial data is sent
