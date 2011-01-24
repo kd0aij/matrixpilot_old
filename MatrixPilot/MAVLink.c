@@ -905,7 +905,7 @@ void mavlink_output_40hz( void )
 
 	}
 #if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-#define NO_OF_VARIABLES_TO_SEND		1
+#define NO_OF_VARIABLES_TO_SEND		2
 	// SEND VALUES OF VARIABLES IF THEY HAVE BEEN REQUESTED
 	if 	( udb_flags._.mavlink_send_variables == 1 )
 	{
@@ -922,9 +922,14 @@ void mavlink_output_40hz( void )
 			}
 			case 2:
 			{
+#if ( RECORD_FREE_STACK_SPACE ==  1)
 				const int8_t rollkp_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { 'M','A','X','S','T','A','C','K',0 } ;
 				mavlink_msg_param_value_send( MAVLINK_COMM_0, rollkp_name , (float) (4096 - maxstack) ,NO_OF_VARIABLES_TO_SEND	, 0 ) ;
+#else
+				const int8_t rollkp_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { 'N','U','L','L','_','M','A','X','S','T','A','C','K',0 } ;
+				mavlink_msg_param_value_send( MAVLINK_COMM_0, rollkp_name , (float) (0.0) ,NO_OF_VARIABLES_TO_SEND	, 0 ) ;
 			}
+#endif
 			default :
 			{
 				udb_flags._.mavlink_send_variables = 0 ;
