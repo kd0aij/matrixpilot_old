@@ -41,15 +41,13 @@
 #include "../MAVLink/include/matrixpilot_mavlink_bridge_header.h"
 #include "../MAVLink/include/common/mavlink.h"
 
-
-
 #if (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
 
 #define 	SERIAL_BUFFER_SIZE 	MAVLINK_MAX_PACKET_LEN
 #define 	BYTE_CIR_16_TO_RAD  ((2.0 * 3.14159265) / 65536.0 ) // Conveert 16 bit byte circular to radians
 #define 	MAVLINK_FRAME_FREQUENCY	40
 
-//void (* sio_parse ) ( unsigned char inchar ) = &sio_newMsg ;
+
 void mavlink_msg_recv(unsigned char);
 void (* sio_parse ) ( unsigned char inchar ) = &mavlink_msg_recv ;
 void send_text(uint8_t text[]) ;
@@ -73,10 +71,21 @@ unsigned char streamRateRawSensors      = 0 ;
 unsigned char streamRateRCChannels      = 0 ;
 
 #if (  SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-unsigned char send_variables_counter = 0;
 extern unsigned int maxstack ;
 mavlink_message_t msg ;
 mavlink_status_t  r_mavlink_status ;
+void mavlink_msg_param_value_send_by_index(unsigned char index) ;
+unsigned char send_variables_counter = 0;
+unsigned char send_by_specific_variable_index = 0 ;
+
+// Would have liked to have used structures for much of the following, but struct uses up RAM. Could not find a way
+// to put structures in ROM, yet. Would use structures on UDB4 which has much more RAM.
+const int8_t parameter_names[][MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { { 'R','O','L','L','K','P',0         }, 
+//const char parameter_names[][MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { { 'R','O','L','L','K','P',0         }, 
+																		     { 'M','A','X','S','T','A','C','K',0 }
+																		     } ;	
+		
+const int count_of_parameter_names = sizeof parameter_names / MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN ;
 
 // unsigned char streamRateExtendedStatus  = 0 ; 
 // unsigned char streamRateRawController   = 0 ;
@@ -90,6 +99,31 @@ uint8_t   mavlink_debug[] = "Parsed a message\r\n" ;
 uint16_t  mavlink_debug_len = 18 ;
 
 void uart1_send(uint8_t buf[], uint16_t len) ;
+boolean mavlink_check_target( uint8_t target_system, uint8_t target_component ) ;
+
+boolean mavlink_check_target( uint8_t target_system, uint8_t target_component )
+{
+	if ( target_system == mavlink_system.sysid )
+			// &&
+			//( target_component == mavlink_system.compid ))
+			//( target_component == 25 )
+			// Note QGroundControl 0.8 may have bug in that request for list of parameters always uses component id of 25 even though we are using component id 1.
+			// However when setting parameters QGroundConrol then appears to use the correct component id of 1. So for now we do not check component Ids.
+	{
+		return true ;
+	}
+	else
+	{
+		send_text( (unsigned char*) "System Target Check Failed: 0x");
+		uart1_transmit(( target_system >> 4 ) + 0x30 ) ;
+		uart1_transmit(( target_system & 0x0f ) + 0x30 ) ;
+		send_text( (unsigned char*) " 0x");
+		uart1_transmit(( target_component >> 4 ) + 0x30 ) ;
+		uart1_transmit(( target_component & 0x0f ) + 0x30 ) ;
+		send_text( (unsigned char*) "\r\n");
+		return false ;
+	}
+}
 
 void mavlink_msg_recv( unsigned char inchar )
 {
@@ -120,7 +154,7 @@ void handleMessage(mavlink_message_t* msg)
 	        mavlink_request_data_stream_t packet;
 	        mavlink_msg_request_data_stream_decode(msg, &packet);
 			send_text((unsigned char*) "Action: Request data stream\r\n");
-	        //if (mavlink_check_target(packet.target_system,packet.target_component)) break;
+	        if (mavlink_check_target(packet.target_system,packet.target_component) == false ) break;
 	
 	        int freq = 0; // packet frequency
 	
@@ -179,7 +213,7 @@ void handleMessage(mavlink_message_t* msg)
 	        // decode
 	        mavlink_action_t packet;
 	        mavlink_msg_action_decode(msg, &packet);
-	        //if (mavlink_check_target(packet.target,packet.target_component)) break;
+	        if (mavlink_check_target(packet.target,packet.target_component) == false ) break;
 			
 	        switch(packet.action)
 	        {
@@ -385,12 +419,13 @@ void handleMessage(mavlink_message_t* msg)
 			send_text((unsigned char*)"param request list\r\n");
 	
 	        // decode
-	        //mavlink_param_request_list_t packet;
-	        //mavlink_msg_param_request_list_decode(msg, &packet);
-	        //if (mavlink_check_target(packet.target_system,packet.target_component)) break;
-	
-	        // Start sending parameters
-	        udb_flags._.mavlink_send_variables = 1 ;
+	        mavlink_param_request_list_t packet;
+	        mavlink_msg_param_request_list_decode(msg, &packet);
+	        if ( mavlink_check_target(packet.target_system,packet.target_component) == true )
+			{
+				// Start sending parameters
+	        	udb_flags._.mavlink_send_variables = 1 ;
+			}
 	    }
 	    break;
 	
@@ -537,61 +572,78 @@ void handleMessage(mavlink_message_t* msg)
 	           	// XXX ignores waypoint radius for individual waypoints, can
 				// only set WP_RADIUS parameter
 	        //}
-	        //break;
+	        break;
 	    }
 	
 	    case MAVLINK_MSG_ID_PARAM_SET:
 	    {
 	        // decode
 			send_text((unsigned char*)"Param Set\r\n");
-	        //mavlink_param_set_t packet;
-	        //mavlink_msg_param_set_decode(msg, &packet);
-	        //if (mavlink_check_target(packet.target_system,packet.target_component))
-	            //break;
-	
-	        // set parameter
-	        //const char * key = (const char*) packet.param_id;
-	
-	        // iterate known parameters
-	        // XXX linear search; would be better to sort params & use a binary search
-	        //for (uint16_t i = 0; i < global_data.param_count; i++) {
-	
-	            // compare key with parameter name
-	            //if (!strcmp_P(key, getParamName(i))) {
-	
-	                // sanity-check the new parameter
-	                //if (!isnan(packet.param_value) &&						// not nan
-						//!isinf(packet.param_value)) {						// not inf
-	
-	                    //setParamAsFloat(i,packet.param_value);
-	
-	                    // Report back new value
-	                    //char param_name[ONBOARD_PARAM_NAME_LENGTH];			/// XXX HACK
-	                    //strcpy_P(param_name, getParamName(i));	/// XXX HACK
-	                    //mavlink_msg_param_value_send(chan,
-	                                                 //(int8_t*)param_name,
-	                                                 //getParamAsFloat(i),
-													 //global_data.param_count,i);
-						// call load if required
-						//if (i >= PARAM_RLL2SRV_P && i <= PARAM_RLL2SRV_IMAX) pidServoRoll.load_gains();
-						//if (i >= PARAM_PTCH2SRV_P && i <= PARAM_PTCH2SRV_IMAX) pidServoPitch.load_gains();
-						//if (i >= PARAM_YW2SRV_P && i <= PARAM_YW2SRV_IMAX) pidServoRudder.load_gains();
-						//if (i >= PARAM_HDNG2RLL_P && i <= PARAM_HDNG2RLL_IMAX) pidNavRoll.load_gains();
-						//if (i >= PARAM_ARSPD2PTCH_P && i <= PARAM_ARSPD2PTCH_IMAX) pidNavPitchAirspeed.load_gains();
-						//if (i >= PARAM_ALT2PTCH_P && i <= PARAM_ALT2PTCH_IMAX) pidNavPitchAltitude.load_gains();
-						//if (i >= PARAM_ENRGY2THR_P && i <= PARAM_ENRGY2THR_IMAX) pidTeThrottle.load_gains();
-						//if (i >= PARAM_ALT2THR_P && i <= PARAM_ALT2THR_IMAX) pidAltitudeThrottle.load_gains();
-	                //}
-	                //break;
-	            //}
-	        //}
-	        //break;
+	        mavlink_param_set_t packet;
+	        mavlink_msg_param_set_decode(msg, &packet);
+	        if (mavlink_check_target(packet.target_system,packet.target_component) == false)
+			{
+				send_text((unsigned char*) "failed target system check on parameter set \r\n");
+				break;
+			}
+			else
+			{
+		        // set parameter
+		        const char * key = (const char*) packet.param_id;
+		
+		        // iterate known parameters
+				unsigned char i = 0 ;
+		        for ( i = 0; i < count_of_parameter_names ; i++) 
+				{
+		            // compare key with parameter name
+		            if (!strcmp(key,(const char *) parameter_names[i]))
+				    {
+		                // sanity-check the new parameter
+						if ( i == 0 ) //rollkp
+						{
+							send_text((unsigned char*)"Setting rollkp \r\n");	
+		                	if ((packet.param_value) > 0  && (packet.param_value < 0.4 )) 
+							{						
+								rollkp = (int) ( packet.param_value * 16384.0 ) ;
+							}
+							send_by_specific_variable_index = i + 1 ;
+							udb_flags._.mavlink_send_specific_variable = 1 ;
+							break ;
+						}
+						else if ( i == 1 ) // Maxstack
+						{
+							send_text((unsigned char*)"Setting maxstack \r\n");
+							maxstack = (int) packet.param_value ;
+							send_by_specific_variable_index = i + 1 ;
+							udb_flags._.mavlink_send_specific_variable = 1 ;
+							break ;
+						}
+						else
+						{
+							// should never reach here
+							send_text((unsigned char*) "param_set: failed to match parameter name \r\n");
+							break ;
+						}
+		            }
+				}
+	        }
+	        break;
 	    } // end case
+
+		/* Following case statement untested as hard to make QGroundContgrol send this message  - PDH
+		case MAVLINK_MSG_ID_PARAM_VALUE :
+		{
+			send_text((unsigned char*)"Specific Param Requested\r\n");
+			mavlink_param_value_t packet ;
+			mavlink_msg_param_value_decode(msg, &packet) ;
+			if (mavlink_check_target(packet.target_system,packet.target_component))break;
+			send_by_specific_variable_index = packet.param_index ;
+			udb_flags._.mavlink_send_specific_variable = 1 ;
+			break ;
+		} // end case
+		*/
   	} // end switch
 } // end handle mavlink
-
-
-
 
 
 #else
@@ -606,13 +658,10 @@ void mavlink_msg_recv( unsigned char inchar )
 
 void init_serial()
 {
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
-dcm_flags._.nmea_passthrough = 1;
-#endif
 
 //  udb_serial_set_rate(19200) ;
 //	udb_serial_set_rate(38400) ;
-	udb_serial_set_rate(57600) ;
+	udb_serial_set_rate(57600) ; 
 //	udb_serial_set_rate(115200) ;
 //	udb_serial_set_rate(230400) ;
 //	udb_serial_set_rate(460800) ;
@@ -690,8 +739,8 @@ void send_text(uint8_t text[])
 
 void init_mavlink( void )
 {
-	mavlink_system.sysid = 100 ; // System ID, 1-255
-	mavlink_system.compid = 50 ; // Component/Subsystem ID, 1-255
+	mavlink_system.sysid  = 55 ; // System ID, 1-255, ID of your Plane for GCS
+	mavlink_system.compid = 1 ; // Component/Subsystem ID,  1-255, MatrixPilot on IDB is component 1.
 #if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
 	streamRateRCChannels = 0 ;
 	streamRateRawSensors = 0 ;
@@ -892,9 +941,9 @@ void mavlink_output_40hz( void )
 					 (int16_t)   udb_yaccel.input,
 					 (int16_t) - udb_xaccel.input,
 					 (int16_t)   udb_zaccel.input, 
-					 (int16_t)   ( udb_yrate.input + 32768 ),
-	                 (int16_t) - ( udb_xrate.input + 32768 ),
-	                 (int16_t)   ( udb_zrate.input + 32768 ), 
+					 (int16_t)   ( udb_yrate.input ),
+	                 (int16_t) - ( udb_xrate.input ),
+	                 (int16_t)   ( udb_zrate.input ), 
 					  (int16_t) magFieldRaw[0], (int16_t) magFieldRaw[1], (int16_t) magFieldRaw[2]) ;
 #else
 		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
@@ -904,76 +953,73 @@ void mavlink_output_40hz( void )
 #endif
 
 	}
+
+
 #if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-#define NO_OF_VARIABLES_TO_SEND		2
-	// SEND VALUES OF VARIABLES IF THEY HAVE BEEN REQUESTED
+	// SEND VALUES OF PARAMETERS IF THE LIST HAS BEEN REQUESTED
 	if 	( udb_flags._.mavlink_send_variables == 1 )
 	{
 		send_variables_counter++ ;
-		switch (send_variables_counter)	
+		if ( send_variables_counter <= count_of_parameter_names )
 		{
-	    	case 1:  
-	    	{
-				const int8_t rollkp_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { 'R','O','L','L','K','P',0 };
-				// static inline void mavlink_msg_param_value_send(mavlink_channel_t chan, const int8_t* param_id,
-			    // float param_value, uint16_t param_count, uint16_t param_index)
-				mavlink_msg_param_value_send( MAVLINK_COMM_0, rollkp_name , (float) (rollkp / 16384.0 ),NO_OF_VARIABLES_TO_SEND	, 0 ) ;
-				break ;
-			}
-			case 2:
-			{
-#if ( RECORD_FREE_STACK_SPACE ==  1)
-				const int8_t rollkp_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { 'M','A','X','S','T','A','C','K',0 } ;
-				mavlink_msg_param_value_send( MAVLINK_COMM_0, rollkp_name , (float) (4096 - maxstack) ,NO_OF_VARIABLES_TO_SEND	, 0 ) ;
-#else
-				const int8_t rollkp_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { 'N','U','L','L','_','M','A','X','S','T','A','C','K',0 } ;
-				mavlink_msg_param_value_send( MAVLINK_COMM_0, rollkp_name , (float) (0.0) ,NO_OF_VARIABLES_TO_SEND	, 0 ) ;
-			}
-#endif
-			default :
-			{
-				udb_flags._.mavlink_send_variables = 0 ;
-				send_variables_counter = 0 ;
-				break ;
-			}
+			mavlink_msg_param_value_send_by_index(send_variables_counter) ;
 		}
-	}				
+		else 
+		{
+			udb_flags._.mavlink_send_variables = 0 ;
+			send_variables_counter = 0 ;
+		}	
+	}
+
+	// SEND SPECIFICALLY REQUESTED PARAMETER
+	if ( udb_flags._.mavlink_send_specific_variable == 1 )
+	{
+		mavlink_msg_param_value_send_by_index( send_by_specific_variable_index ) ;
+		udb_flags._.mavlink_send_specific_variable = 0 ;
+	}	
+	
+				
 #endif		
 	return ;
 }
 
-/*
 #if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-// void (* sio_parse ) ( unsigned char inchar ) = &mavlink_msg_recv ;
 
-const struct mavlink_parameters {
-	char* parameter_name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] ;
-    float max_value ;
-    float min_value ;
-	boolean read_only ;
-    void ( * mavlink_set_value) (char index) ;
-	} ;
-
-struct mavlink_parameters rollkp_param = { { 'M','A','X','S','T','A','C','K',0 }, 1.0, 0.0, false, &set_pid())
-
-const struct mavlink_parameters list_of_mavlink_parameters[] =
-			{ rollkp_param, maxstack_param } ;
-
-void mavlink_get_parameter( char index )
-{	
-}
-
-char * mavlink_get_parameter_name( char index)
+void mavlink_msg_param_value_send_by_index(unsigned char index)
 {
-	return list_of_mavlink_parameters[index].parameter)name ;
+	switch(index)
+	{
+		case 0:
+			send_text((unsigned char*) "Error: specific param send reached case: 0 ! \r\n");
+			break ;
+		case 1:
+		{
+			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[send_variables_counter - 1],
+												 (float) (rollkp / 16384.0 ), count_of_parameter_names, 0 ) ;
+			break ;
+		}
+		case 2:
+		{
+#if ( RECORD_FREE_STACK_SPACE ==  1)
+			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[send_variables_counter - 1] , 
+										(float) ( 4096 - maxstack ), count_of_parameter_names, 0 ) ;
+#else
+			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[send_variables_counter - 1] ,
+															 (float) (0.0) , count_of_parameter_names , 0 ) ;
+#endif	
+			break ;
+		}
+		default :
+		{
+			// Should never reach here
+			send_text((unsigned char*) "Error: specific param send reached case: default ! \r\n");
+			break;
+		}
+	}
 }
-
-void set_parameter_value(char index, float value)
-{
-}
+#endif
 
 
-#endif  //	( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )	
-*/
+
 
 #endif  // ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
