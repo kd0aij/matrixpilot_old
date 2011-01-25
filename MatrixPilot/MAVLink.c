@@ -606,16 +606,22 @@ void handleMessage(mavlink_message_t* msg)
 							{						
 								rollkp = (int) ( packet.param_value * 16384.0 ) ;
 							}
-							send_by_specific_variable_index = i + 1 ;
-							udb_flags._.mavlink_send_specific_variable = 1 ;
+							if( udb_flags._.mavlink_send_specific_variable == 0 )
+							{
+								send_by_specific_variable_index = i + 1 ;
+								udb_flags._.mavlink_send_specific_variable = 1 ;
+							}
 							break ;
 						}
 						else if ( i == 1 ) // Maxstack
 						{
 							send_text((unsigned char*)"Setting maxstack \r\n");
-							maxstack = (int) packet.param_value ;
-							send_by_specific_variable_index = i + 1 ;
-							udb_flags._.mavlink_send_specific_variable = 1 ;
+							maxstack = (int)( 4096 - packet.param_value ) ;
+							if( udb_flags._.mavlink_send_specific_variable == 0 )
+							{
+								send_by_specific_variable_index = i + 1 ;
+								udb_flags._.mavlink_send_specific_variable = 1 ;
+							}
 							break ;
 						}
 						else

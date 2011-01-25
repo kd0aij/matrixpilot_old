@@ -36,9 +36,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Select Clock Configuration (Set to CRYSTAL_CLOCK or FRC8X_CLOCK)
-// CRYSTAL_CLOCK is the 16 MHz crystal, FRC8X_CLOCK is the fast RC clock (7.3728 MHz) with 8X multiplier
-// #define CLOCK_CONFIG 					FRC8X_CLOCK
-#define CLOCK_CONFIG 						CRYSTAL_CLOCK
+// CRYSTAL_CLOCK is the 16 MHz crystal.  This is the speed used in the past, and may be
+// more compatible with other add-ons.
+// FRC8X_CLOCK is the fast RC clock (7.3728 MHz) with 8X multiplier.  Use this if you want
+// to be able to use serial baud rates above 19200.
+#define CLOCK_CONFIG 						FRC8X_CLOCK
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,9 +92,14 @@
 // Altitude Hold
 // Use altitude hold in stabilized mode?  In waypoint mode?
 // Each of these settings can be AH_NONE, AH_FULL, or AH_PITCH_ONLY
+//  - In waypoint mode, the target altitude is defined by the waypoints or logo program.
+//  - In stabilized mode, when ALTITUDEHOLD_STABILIZED is set to AH_PITCH_ONLY, the target
+// altitude is whatever altitude the plane was at when switched into stabilized mode.
+//  - In stabilized mode, when ALTITUDEHOLD_STABILIZED is set to AH_FULL, the target
+// altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED				AH_NONE
+#define ALTITUDEHOLD_STABILIZED				AH_PITCH_ONLY
 #define ALTITUDEHOLD_WAYPOINT				AH_FULL
 
 // Inverted flight
@@ -154,6 +161,7 @@
 // Out1, Out2, Out3, RE0, RE2, RE4, In3, In2, In1.
 #define USE_PPM_INPUT						0
 #define PPM_NUMBER_OF_CHANNELS				8
+#define PPM_SIGNAL_INVERTED					0
 #define PPM_ALT_OUTPUT_PINS					0
 
 // NUM_INPUTS: Set to 1-5 (or 1-8 when using PPM input)
@@ -184,8 +192,7 @@
 //   5 also enables E2 as the 5th output channel
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
-//         RC Input 3, 2, and 1 connections instead of pins E0, E2, and E4.)
-#define NUM_OUTPUTS							5
+#define NUM_OUTPUTS							4
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -202,9 +209,9 @@
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
-#define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_6
-#define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_5
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
+#define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
 #define PASSTHROUGH_A_OUTPUT_CHANNEL		CHANNEL_UNUSED
 #define PASSTHROUGH_B_OUTPUT_CHANNEL		CHANNEL_UNUSED
@@ -284,25 +291,25 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB,
-// SERIAL_UDB_EXTRA, SERIAL_MAVLINK or SERIAL_OSD_REMZIBI)
+// SERIAL_UDB_EXTRA, or SERIAL_OSD_REMZIBI)
 // This determines the format of the output sent out the spare serial port.
 // Note that SERIAL_OSD_REMZIBI only works with GPS_UBX.
 // SERIAL_UDB_EXTRA will add additional telemetry fields to those of SERIAL_UDB.
 // SERIAL_UDB_EXTRA can be used with the OpenLog without characters being dropped.
 // SERIAL_UDB_EXTRA may result in dropped characters if used with the XBEE wireless transmitter.
-// SERIAL_MAVLINK is a bi-directional binary format for use with the QgroundControl (Ground Control Station.)
-#define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
+#define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
 
 // The following SERIAL_INPUT_FORMAT line is for MAVLink development purposes only.
 // At the time of inserting this line, MAVLINK uplink does not work because
 // absorbs to much ram for the UDB3. So only enable this line if developing the uplink
-// code and exploring how to reduce RAM requitements. Choices are:
-// NONE or SERIAL_MAVLINK (For now, NONE will default to normal input routines).
+// code and exploring how to reduce RAM requitements. Choices are the same as for SERIAL_OUTPUT_FORMAT
 #define SERIAL_INPUT_FORMAT    SERIAL_NONE
+//#define SERIAL_INPUT_FORMAT    SERIAL_MAVLINK
 
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
 // OSD_VIDEO_FORMAT can be set to either OSD_NTSC, or OSD_PAL
+// To hide the callsign, set OSD_CALL_SIGN to just {0xFF}
 #define USE_OSD								0
 #define OSD_VIDEO_FORMAT					OSD_NTSC
 #define OSD_SHOW_HORIZON					0
@@ -430,7 +437,7 @@
 // 
 // To save cpu cycles, you will need to pre-compute the tangent of the desired pitch of the camera
 // when in stabilized mode. This should be expressed in 2:14 format. 
-// Example: You require the camera to be pitched down by 15 degrees from the horizon.
+// Example: You require the camera to be pitched down by 15 degrees from the horizon in stabilized mode.
 // Paste the following line into a google search box (without the //)
 // tan((( 15 /180 )* 3.1416 ))* 16384
 // The result, as an integer, will be 4390. Change the angle, 15, for whatever angle you would like.
@@ -506,7 +513,11 @@
 // Hardware In the Loop Simulation
 // Only set this to 1 for testing in the simulator.  Do not try to fly with this set to 1!
 // See the MatrixPilot wiki for more info on using HILSIM.
+// HILSIM_BAUD is the serial speed for communications with the X-Plane plugin.  Default is
+// 19200, but 230400 is a good speedy option.  Make sure the X-Plane plugin's Setup file has
+// its speed set to match.
 #define HILSIM 								0
+#define HILSIM_BAUD							19200
 
 
 ////////////////////////////////////////////////////////////////////////////////

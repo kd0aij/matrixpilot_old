@@ -338,31 +338,33 @@ void gps_startup_sequence(int gpscount)
 	if (gpscount == 980)
 	{
 #if (HILSIM == 1)
-		udb_gps_set_rate(19200) ;
+		udb_gps_set_rate(HILSIM_BAUD) ;
 #else
 		udb_gps_set_rate(9600) ;
 #endif
 	}
-	else if (dcm_flags._.nmea_passthrough && gpscount == 190)
+	else if (dcm_flags._.nmea_passthrough && gpscount == 200)
 		gpsoutline( (char*)disable_GSV );
-	else if (dcm_flags._.nmea_passthrough && gpscount == 180)
+	else if (dcm_flags._.nmea_passthrough && gpscount == 190)
 		gpsoutline( (char*)disable_GSA );
-	else if (dcm_flags._.nmea_passthrough && gpscount == 170)
+	else if (dcm_flags._.nmea_passthrough && gpscount == 180)
 		gpsoutline( (char*)disable_GLL );
-	else if (dcm_flags._.nmea_passthrough && gpscount == 160)
+	else if (dcm_flags._.nmea_passthrough && gpscount == 170)
 		gpsoutline( (char*)disable_VTG );
 	
-	else if (dcm_flags._.nmea_passthrough && gpscount == 150)
+	else if (dcm_flags._.nmea_passthrough && gpscount == 160)
 		//set the UBX to use binary and nmea
 		gpsoutline( (char*)bin_mode_withnmea );
-	else if (!dcm_flags._.nmea_passthrough && gpscount == 150)
+	else if (!dcm_flags._.nmea_passthrough && gpscount == 160)
 		//set the UBX to use binary mode
 		gpsoutline( (char*)bin_mode_nonmea );
-	else if (gpscount == 142)
-		udb_gps_set_rate(19200);
-	
-	else if (gpscount == 140)
+		
+	else if (gpscount == 150)
 		gpsoutbin( set_rate_length, set_rate );
+#if (HILSIM != 1)
+	else if (gpscount == 148)
+		udb_gps_set_rate(19200);
+#endif
 	else if (gpscount == 130)
 		// command GPS to select which messages are sent, using UBX interface
 		gpsoutbin( enable_NAV_SOL_length, enable_NAV_SOL );
@@ -702,7 +704,6 @@ void msg_VELNED( unsigned char gpschar )
 		// was zero to start with. either way, the byte we just received is the first checksum byte.
 		//gpsoutchar2(0x0B);
 		checksum._.B1 = gpschar;
-		udb_background_trigger() ;  // parsing is complete, schedule navigation
 		msg_parse = &msg_CS1 ;
 	}
 	return ;
@@ -771,15 +772,16 @@ void msg_MSGU ( unsigned char gpschar )
 void msg_CS1 ( unsigned char gpschar )
 {
 	checksum._.B0 = gpschar;
-	if((checksum._.B1 == CK_A) && (checksum._.B0 == CK_B))
+	if ((checksum._.B1 == CK_A) && (checksum._.B0 == CK_B))
 	{
-		if(msg_id == 0x02)
+		if (msg_id == 0x12)
 		{
-			//correct checksum, do nothing
+			//correct checksum for VELNED message
+			udb_background_trigger() ;  // parsing is complete, schedule navigation
 		}
 		
 #if ( HILSIM == 1 )
-		else if(msg_id == 0xAB)
+		else if (msg_id == 0xAB)
 		{
 			//If we got the correct checksum for bodyrates, commit that data immediately
 			commit_bodyrate_data() ;
