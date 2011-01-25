@@ -1000,17 +1000,17 @@ void mavlink_msg_param_value_send_by_index(unsigned char index)
 			break ;
 		case 1:
 		{
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[send_variables_counter - 1],
+			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index -1],
 												 (float) (rollkp / 16384.0 ), count_of_parameter_names, 0 ) ;
 			break ;
 		}
 		case 2:
 		{
 #if ( RECORD_FREE_STACK_SPACE ==  1)
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[send_variables_counter - 1] , 
+			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index - 1] , 
 										(float) ( 4096 - maxstack ), count_of_parameter_names, 0 ) ;
 #else
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[send_variables_counter - 1] ,
+			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index - 1] ,
 															 (float) (0.0) , count_of_parameter_names , 0 ) ;
 #endif	
 			break ;
