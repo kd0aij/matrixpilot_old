@@ -74,28 +74,143 @@ unsigned char streamRateRCChannels      = 0 ;
 extern unsigned int maxstack ;
 mavlink_message_t msg ;
 mavlink_status_t  r_mavlink_status ;
-void mavlink_msg_param_value_send_by_index(unsigned char index) ;
+// void mavlink_msg_param_value_send_by_index(unsigned char index) ;
 unsigned char send_variables_counter = 0;
-unsigned char send_by_specific_variable_index = 0 ;
+unsigned char send_by_index = 0 ;
 
-// Would have liked to have used structures for much of the following, but struct uses up RAM. Could not find a way
-// to put structures in ROM, yet. Would use structures on UDB4 which has much more RAM.
-const int8_t parameter_names[][MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = { { 'M','A','X','S','T','A','C','K',0 },
-																			   { 'R','O','L','L','K','P'        ,0 },
-																			   { 'R','O','L','L','K','D'		,0 },
-																			   { 'Y','A','W','K','P','A','I','L',0 },
-																			   { 'Y','A','W','K','D','A','I','L',0 }
-																		     } ;	
-		
-const int count_of_parameter_names = sizeof parameter_names / MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN ;
+// ROUTINES FOR READING AND SETTING UAV ONBOARD PARAMETERS
+// All paramaters are sent as type (float) between Ground Control Station and MatrixPilot.
+// So paramaters have to be converted between type (float) and their normal representation.
 
-// unsigned char streamRateExtendedStatus  = 0 ; 
-// unsigned char streamRateRawController   = 0 ;
-// unsigned char streamRateRawSensorFusion = 0 ;
-// unsigned char streamRatePosition        = 0 ;
-// unsigned char streamRateExtra1          = 0 ;
-// unsigned char streamRateExtra2          = 0 ; 
-// unsigned char streamRateExtra3          = 0 ;
+struct mavlink_parameter 
+	{ 	int8_t name[15] ;                           // Name that will be displayed in the GCS
+		float min ;               					// Minimum allowed (float) value for parameter
+		float max ;               					// Maximum allowed (float) value for parameter
+		void (*send_parm)(unsigned char) ; 			// Routine to send parameter to GCS after converting to float.
+		void (*set_parm)(float, unsigned char) ;    // Routine to convert from float to local type and set
+		char readonly ; } ;       					// Parameter is readonly (true) or Read / Write (false)
+
+void mavlink_send_param_maxstack( unsigned char i ) ;
+void mavlink_set_maxstack(float setting, unsigned char i ) ;
+void mavlink_send_param_rollkp( unsigned char i ) ;
+void mavlink_set_rollkp( float setting, unsigned char i) ;
+void mavlink_send_param_rollkd( unsigned char i ) ;
+void mavlink_set_rollkd(float setting,  unsigned char i)  ;
+void mavlink_send_param_yawkpail( unsigned char i ) ;
+void mavlink_set_yawkpail(float setting, unsigned char i ) ;
+void mavlink_send_param_yawkdail( unsigned char i ) ;
+void mavlink_set_yawkdail(float setting, unsigned char i ) ;
+
+boolean mavlink_parameter_out_of_bounds( float parm, unsigned char i ) ;
+
+#define READONLY	1
+#define READWRITE	0
+
+const struct mavlink_parameter mavlink_parameters_list[] =
+	{
+	{"MAXSTACK", 0.0 , 4096.0 ,  &mavlink_send_param_maxstack, &mavlink_set_maxstack , READWRITE },
+	{"ROLLKP"  , 0.0 , 0.4    ,  &mavlink_send_param_rollkp  , &mavlink_set_rollkp   , READWRITE },
+	{"ROLLKD"  , 0.0 , 0.4    ,  &mavlink_send_param_rollkd  , &mavlink_set_rollkd   , READWRITE },
+	{"YAWKPAIL", 0.0 , 0.4    ,  &mavlink_send_param_yawkpail, &mavlink_set_yawkpail , READWRITE },
+	{"YAWKDAIL", 0.0 , 0.4    ,  &mavlink_send_param_yawkdail, &mavlink_set_yawkdail , READWRITE }
+	} ;    
+
+const int count_of_parameters_list =  sizeof mavlink_parameters_list / sizeof mavlink_parameters_list[0] ;
+
+boolean mavlink_parameter_out_of_bounds( float parm, unsigned char i )
+{
+	if ((parm < mavlink_parameters_list[i].min) || (parm > mavlink_parameters_list[i].max))
+    {
+		return  true ;
+	}
+	else { return false ; }
+}
+
+void mavlink_send_param_maxstack( unsigned char i )
+{
+#if ( RECORD_FREE_STACK_SPACE ==  1)
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name , 
+		(float) ( 4096 - maxstack ) , count_of_parameters_list , 0 ) ;
+#else
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		(float) (0.0) , count_of_parameters_list , 0 ) ;
+#endif	
+	return ;
+} 
+
+void mavlink_set_maxstack( float setting , unsigned char i ) 
+{
+	//send_text((unsigned char*)"Setting maxstack \r\n");
+	if (( mavlink_parameters_list[i].readonly == true ) ||
+			 ( mavlink_parameter_out_of_bounds( setting , i ) == true )) return ;
+	maxstack = (int)( 4096 - setting ) ;
+	return ;
+}
+
+void mavlink_send_param_rollkp( unsigned char i )
+{
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		(float) (rollkp / 16384.0 ), count_of_parameters_list, 0 ) ; // 16384.0 is RMAX defined as a float.	
+	return ;
+} 
+
+void mavlink_set_rollkp(float setting,  unsigned char i ) 
+{
+	//send_text((unsigned char*)"Setting rollkp \r\n");
+	if (( mavlink_parameters_list[i].readonly == true ) || 
+			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
+	rollkp = (int) ( setting * 16384.0 ) ;
+	return ;
+}
+
+void mavlink_send_param_rollkd( unsigned char i ) 
+{
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		(float) (rollkd / ( SCALEGYRO * 16384.0 )) , count_of_parameters_list, 0 ) ; // 16384.0 is RMAX defined as a float.	
+	return ;
+}
+
+void mavlink_set_rollkd(float setting,  unsigned char i)
+{
+	if (( mavlink_parameters_list[i].readonly == true ) || 
+			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
+	rollkd = (int) ( setting * ( SCALEGYRO * 16384.0 ) ) ;
+	return ;
+}
+
+void mavlink_send_param_yawkpail( unsigned char i )
+{
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		(float) (yawkpail / 16384.0 ), count_of_parameters_list, 0 ) ; // 16384.0 is RMAX defined as a float.	
+	return ;
+} 
+
+void mavlink_set_yawkpail(float setting,  unsigned char i ) 
+{
+	if (( mavlink_parameters_list[i].readonly == true ) || 
+			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
+	yawkpail = (int) ( setting * 16384.0 ) ;
+	return ;
+}
+
+void mavlink_send_param_yawkdail( unsigned char i ) 
+{
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		(float) (yawkdail / ( SCALEGYRO * 16384.0 )) , count_of_parameters_list, 0 ) ; // 16384.0 is RMAX defined as a float.	
+	return ;
+}
+
+void mavlink_set_yawkdail(float setting,  unsigned char i)
+{
+	if (( mavlink_parameters_list[i].readonly == true ) || 
+			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
+	yawkdail = (int) ( setting * ( SCALEGYRO * 16384.0 ) ) ;
+	return ;
+}
+
+
+// END OF GENERAL ROUTINES FOR READING AND SETTING UAV ONBOARD PARAMETERS
+
 
 uint8_t   mavlink_debug[] = "Parsed a message\r\n" ; 
 uint16_t  mavlink_debug_len = 18 ;
@@ -265,7 +380,6 @@ void handleMessage(mavlink_message_t* msg)
 	
 	            case MAV_ACTION_STORAGE_READ:
 					send_text((unsigned char*) "Action: Storage Read\r\n");
-					// udb_flags._.mavlink_send_variables = 1 ;
 	                break; 
 	
 	            case MAV_ACTION_STORAGE_WRITE:
@@ -595,50 +709,20 @@ void handleMessage(mavlink_message_t* msg)
 		
 		        // iterate known parameters
 				unsigned char i = 0 ;
-		        for ( i = 0; i < count_of_parameter_names ; i++) 
+		        for ( i = 0; i < count_of_parameters_list ; i++) 
 				{
 		            // compare key with parameter name
-		            if (!strcmp(key,(const char *) parameter_names[i]))
+		            if (!strcmp(key,(const char *) mavlink_parameters_list[i].name))
 				    {
-		                
-						if ( i == 0 ) // Maxstack
+						mavlink_parameters_list[i].set_parm(packet.param_value, i) ;
+						// After setting parameter, re-send it to GCS as acknowledgement of success.
+						if( udb_flags._.mavlink_send_specific_variable == 0 )
 						{
-							//send_text((unsigned char*)"Setting maxstack \r\n");
-							maxstack = (int)( 4096 - packet.param_value ) ;
-							if( udb_flags._.mavlink_send_specific_variable == 0 )
-							{
-								send_by_specific_variable_index = i + 1 ;
-								udb_flags._.mavlink_send_specific_variable = 1 ;
-							}
-							break ;
+							send_by_index = i ;
+							udb_flags._.mavlink_send_specific_variable = 1 ;
 						}
-						else if ( i == 1 ) // Rollkp
-						{
-							//send_text((unsigned char*)"Setting rollkp \r\n");	
-		                	if ((packet.param_value) > 0  && (packet.param_value < 0.4 )) 
-							{						
-								rollkp = (int) ( packet.param_value * 16384.0 ) ;
-							}
-							if( udb_flags._.mavlink_send_specific_variable == 0 )
-							{
-								send_by_specific_variable_index = i + 1 ;
-								udb_flags._.mavlink_send_specific_variable = 1 ;
-							}
-							break ;
-						}
-						else if ( i == 2 ) // Rollkd
-						{
-							//send_text((unsigned char*)"rollkp \r\n");
-							if ((packet.param_value) > 0  && (packet.param_value < 0.4 )) 
-								{						
-									rollkd = (int) ( packet.param_value * (SCALEGYRO * RMAX ) ) ;
-								}
-							if( udb_flags._.mavlink_send_specific_variable == 0 )
-							{
-								send_by_specific_variable_index = i + 1 ;
-								udb_flags._.mavlink_send_specific_variable = 1 ;
-							}
-							break ;
+					}
+					/*
 						}
 						else if ( i == 3 ) // yawkpail
 						{
@@ -649,7 +733,7 @@ void handleMessage(mavlink_message_t* msg)
 								}
 							if( udb_flags._.mavlink_send_specific_variable == 0 )
 							{
-								send_by_specific_variable_index = i + 1 ;
+								send_by_index = i + 1 ;
 								udb_flags._.mavlink_send_specific_variable = 1 ;
 							}
 							break ;
@@ -663,31 +747,24 @@ void handleMessage(mavlink_message_t* msg)
 								}
 							if( udb_flags._.mavlink_send_specific_variable == 0 )
 							{
-								send_by_specific_variable_index = i + 1 ;
+								send_by_index = i + 1 ;
 								udb_flags._.mavlink_send_specific_variable = 1 ;
 							}
-							break ;
-						}
-						else
-						{
-							// should never reach here
-							send_text((unsigned char*) "param_set: failed to match parameter name \r\n");
-							break ;
-						}
-		            }
+					
+		            } */
 				}
 	        }
 	        break;
 	    } // end case
 
-		/* Following case statement untested as hard to make QGroundContgrol send this message  - PDH
+		/* Following case statement now out of date and needs re-writing for new parameter structures  - PDH
 		case MAVLINK_MSG_ID_PARAM_VALUE :
 		{
 			send_text((unsigned char*)"Specific Param Requested\r\n");
 			mavlink_param_value_t packet ;
 			mavlink_msg_param_value_decode(msg, &packet) ;
 			if (mavlink_check_target(packet.target_system,packet.target_component))break;
-			send_by_specific_variable_index = packet.param_index ;
+			send_by_index = packet.param_index ;
 			udb_flags._.mavlink_send_specific_variable = 1 ;
 			break ;
 		} // end case
@@ -1009,85 +1086,27 @@ void mavlink_output_40hz( void )
 	// SEND VALUES OF PARAMETERS IF THE LIST HAS BEEN REQUESTED
 	if 	( udb_flags._.mavlink_send_variables == 1 )
 	{
-		send_variables_counter++ ;
-		if ( send_variables_counter <= count_of_parameter_names )
+		if ( send_variables_counter < count_of_parameters_list)
 		{
-			mavlink_msg_param_value_send_by_index(send_variables_counter) ;
+			mavlink_parameters_list[send_variables_counter].send_parm( send_variables_counter) ;
+			send_variables_counter++ ;
 		}
 		else 
 		{
-			udb_flags._.mavlink_send_variables = 0 ;
 			send_variables_counter = 0 ;
+			udb_flags._.mavlink_send_variables = 0 ;
 		}	
 	}
 
 	// SEND SPECIFICALLY REQUESTED PARAMETER
 	if ( udb_flags._.mavlink_send_specific_variable == 1 )
 	{
-		mavlink_msg_param_value_send_by_index( send_by_specific_variable_index ) ;
+		mavlink_parameters_list[send_by_index].send_parm( send_by_index ) ;
 		udb_flags._.mavlink_send_specific_variable = 0 ;
 	}	
-	
-				
+					
 #endif		
 	return ;
 }
-
-#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-
-void mavlink_msg_param_value_send_by_index(unsigned char index)
-{
-	switch(index)
-	{
-		case 0:
-			send_text((unsigned char*) "Error: specific param send reached case: 0 ! \r\n");
-			break ;
-		case 1:
-		{
-#if ( RECORD_FREE_STACK_SPACE ==  1)
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index - 1] , 
-					(float) ( 4096 - maxstack ), count_of_parameter_names, 0 ) ;
-#else
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index - 1] ,
-					(float) (0.0) , count_of_parameter_names , 0 ) ;
-#endif	
-			break ;
-		}
-		case 2:
-		{
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index -1],
-					(float) (rollkp / 16384.0 ), count_of_parameter_names, 0 ) ; // 16384.0 is RMAX defined as a float.
-			break ;
-		}
-		case 3:
-		{
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index -1],
-												 (float) (rollkd / ( SCALEGYRO * 16384.0 ) ), count_of_parameter_names, 0 ) ;
-			break ;
-		}
-		case 4:
-		{
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index -1],
-												 (float) (yawkpail / 16384.0 ), count_of_parameter_names, 0 ) ;
-			break ;
-		}
-		case 5:
-		{
-			mavlink_msg_param_value_send( MAVLINK_COMM_0, parameter_names[index -1],
-												 (float) (yawkdail / ( SCALEGYRO * 16384.0 ) ), count_of_parameter_names, 0 ) ;
-			break ;
-		}																			
-		default :
-		{
-			// Should never reach here
-			send_text((unsigned char*) "Error: specific param send reached case: default ! \r\n");
-			break;
-		}
-	}
-}
-#endif
-
-
-
 
 #endif  // ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
