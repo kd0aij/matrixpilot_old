@@ -19,8 +19,6 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
-
 // The Coordinate Frame and Dimensional Units of Mavlink are
 // explained in detail at this web URL:-
 // http://pixhawk.ethz.ch/wiki/software/coordinate_frame
@@ -90,8 +88,10 @@ struct mavlink_parameter
 		void (*set_parm)(float, unsigned char) ;    // Routine to convert from float to local type and set
 		char readonly ; } ;       					// Parameter is readonly (true) or Read / Write (false)
 
+#if ( RECORD_FREE_STACK_SPACE ==  1)
 void mavlink_send_param_maxstack( unsigned char i ) ;
 void mavlink_set_maxstack(float setting, unsigned char i ) ;
+#endif
 void mavlink_send_param_rollkp( unsigned char i ) ;
 void mavlink_set_rollkp( float setting, unsigned char i) ;
 void mavlink_send_param_rollkd( unsigned char i ) ;
@@ -108,7 +108,9 @@ boolean mavlink_parameter_out_of_bounds( float parm, unsigned char i ) ;
 
 const struct mavlink_parameter mavlink_parameters_list[] =
 	{
+#if ( RECORD_FREE_STACK_SPACE ==  1)
 	{"MAXSTACK", 0.0 , 4096.0 ,  &mavlink_send_param_maxstack, &mavlink_set_maxstack , READWRITE },
+#endif
 	{"ROLLKP"  , 0.0 , 0.4    ,  &mavlink_send_param_rollkp  , &mavlink_set_rollkp   , READWRITE },
 	{"ROLLKD"  , 0.0 , 0.4    ,  &mavlink_send_param_rollkd  , &mavlink_set_rollkd   , READWRITE },
 	{"YAWKPAIL", 0.0 , 0.4    ,  &mavlink_send_param_yawkpail, &mavlink_set_yawkpail , READWRITE },
@@ -126,15 +128,11 @@ boolean mavlink_parameter_out_of_bounds( float parm, unsigned char i )
 	else { return false ; }
 }
 
+#if ( RECORD_FREE_STACK_SPACE ==  1)
 void mavlink_send_param_maxstack( unsigned char i )
 {
-#if ( RECORD_FREE_STACK_SPACE ==  1)
 	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name , 
-		(float) ( 4096 - maxstack ) , count_of_parameters_list , 0 ) ;
-#else
-	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
-		(float) (0.0) , count_of_parameters_list , 0 ) ;
-#endif	
+		(float) ( 4096 - maxstack ) , count_of_parameters_list , 0 ) ;	
 	return ;
 } 
 
@@ -146,6 +144,8 @@ void mavlink_set_maxstack( float setting , unsigned char i )
 	maxstack = (int)( 4096 - setting ) ;
 	return ;
 }
+
+#endif
 
 void mavlink_send_param_rollkp( unsigned char i )
 {
@@ -722,36 +722,6 @@ void handleMessage(mavlink_message_t* msg)
 							udb_flags._.mavlink_send_specific_variable = 1 ;
 						}
 					}
-					/*
-						}
-						else if ( i == 3 ) // yawkpail
-						{
-							//send_text((unsigned char*)"Setting yawkpail \r\n");
-							if ((packet.param_value) > 0  && (packet.param_value < 0.4 )) 
-								{						
-									yawkpail = (int) ( packet.param_value * 16384.0 ) ;
-								}
-							if( udb_flags._.mavlink_send_specific_variable == 0 )
-							{
-								send_by_index = i + 1 ;
-								udb_flags._.mavlink_send_specific_variable = 1 ;
-							}
-							break ;
-						}
-						else if ( i == 4 ) // yawkdail
-						{
-							send_text((unsigned char*)"Setting yawkdail \r\n");
-							if ((packet.param_value) > 0  && (packet.param_value < 0.4 )) 
-								{						
-									yawkdail = (int) ( packet.param_value * (SCALEGYRO * RMAX ) ) ;
-								}
-							if( udb_flags._.mavlink_send_specific_variable == 0 )
-							{
-								send_by_index = i + 1 ;
-								udb_flags._.mavlink_send_specific_variable = 1 ;
-							}
-					
-		            } */
 				}
 	        }
 	        break;
@@ -872,8 +842,8 @@ void init_mavlink( void )
 	streamRateRCChannels = 0 ;
 	streamRateRawSensors = 0 ;
 #else 
-	streamRateRCChannels = 2 ;
-	streamRateRawSensors = 4 ;
+	streamRateRCChannels = 10 ;
+	streamRateRawSensors = 40 ;
 #endif
 }
 
