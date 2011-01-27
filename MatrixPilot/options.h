@@ -298,15 +298,18 @@
 // SERIAL_UDB_EXTRA can be used with the OpenLog without characters being dropped.
 // SERIAL_UDB_EXTRA may result in dropped characters if used with the XBEE wireless transmitter.
 // SERIAL_MAVLINK is a bi-directional binary format for use with QgroundControl (a Ground Control Station.)
-#define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
+// Note that SERIAL_MAVLINK defaults to using a baud rate of 57600 baud.
+// Note also DEADRECKONING should be set to 1, for MAVLink to report the UAV Position.
+#define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
 
 // The following SERIAL_INPUT_FORMAT line is for MAVLink development purposes only.
-// At the time of inserting this line, MAVLINK uplink does not work because
-// absorbs to much ram for the UDB3. So only enable this line if developing the uplink
-// code and exploring how to reduce RAM requitements. Choices are the same as for SERIAL_OUTPUT_FORMAT
-#define SERIAL_INPUT_FORMAT    SERIAL_NONE
+// At the time of inserting this line, MAVLINK uplink only just works because
+// it uses nearly all the available RAM. So only enable this line if developing the uplink
+// code and exploring how to reduce RAM requitements or performing ground engineering tests.
+// Do not use in flight.
+// Choices are the same as for SERIAL_OUTPUT_FORMAT
 //#define SERIAL_INPUT_FORMAT    SERIAL_MAVLINK
-
+#define SERIAL_INPUT_FORMAT    SERIAL_NONE
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
 // OSD_VIDEO_FORMAT can be set to either OSD_NTSC, or OSD_PAL

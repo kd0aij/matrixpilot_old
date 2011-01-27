@@ -45,13 +45,13 @@
 #define 	BYTE_CIR_16_TO_RAD  ((2.0 * 3.14159265) / 65536.0 ) // Conveert 16 bit byte circular to radians
 #define 	MAVLINK_FRAME_FREQUENCY	40
 
-
 void mavlink_msg_recv(unsigned char);
-void (* sio_parse ) ( unsigned char inchar ) = &mavlink_msg_recv ;
 void send_text(uint8_t text[]) ;
 void handleMessage(mavlink_message_t* msg) ;
+void uart1_send(uint8_t buf[], uint16_t len) ;
 boolean is_this_the_moment_to_send( unsigned char counter, unsigned char max_counter ) ;
 boolean mavlink_frequency_send( unsigned char transmit_frequency, unsigned char counter) ;
+boolean mavlink_check_target( uint8_t target_system, uint8_t target_component ) ;
 
 union intbb voltage_milis = {0} ;
 unsigned char counter_40hz = 0 ;
@@ -68,10 +68,110 @@ float previous_earth_yaw    = 0.0 ;
 unsigned char streamRateRawSensors      = 0 ;
 unsigned char streamRateRCChannels      = 0 ;
 
+void init_serial()
+{
+//  udb_serial_set_rate(19200) ;
+//	udb_serial_set_rate(38400) ;
+	udb_serial_set_rate(57600) ; 
+//	udb_serial_set_rate(115200) ;
+//	udb_serial_set_rate(230400) ;
+//	udb_serial_set_rate(460800) ;
+//	udb_serial_set_rate(921600) ; // yes, it really will work at this rate
+return ;
+}
+
+void init_mavlink( void )
+{
+	mavlink_system.sysid  = 55 ; // System ID, 1-255, ID of your Plane for GCS
+	mavlink_system.compid = 1 ;  // Component/Subsystem ID,  (1-255) MatrixPilot on UDB is component 1.
+#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
+	streamRateRCChannels = 0 ;
+	streamRateRawSensors = 0 ;
+#else 
+	streamRateRCChannels = 10 ;
+	streamRateRawSensors = 40 ;
+#endif
+}
+
+int udb_serial_callback_get_char_to_send(void) 
+// routine returns a signed integer so as to allow sending binary code (including 0x00) over serial
+{ 
+	if ( sb_index < end_index && sb_index < SERIAL_BUFFER_SIZE ) // ensure never end up racing thru memory.
+	{
+		unsigned char txchar = serial_buffer[ sb_index++ ] ;
+		return (int) txchar ;
+	}
+	else
+	{
+		sb_index = 0 ;
+		end_index = 0 ;
+	}
+	
+	return -1 ;
+}
+
+void uart1_send(uint8_t buf[], uint16_t len)
+// len is the number of bytes in the buffer
+{
+	int start_index = end_index ;
+	int remaining = SERIAL_BUFFER_SIZE - start_index ;
+	if ( len > remaining ) 	len = remaining ;
+	if (remaining > 1)
+	{
+		memcpy(&serial_buffer[start_index], buf, len);
+		end_index = start_index + len ;
+	}	
+	if (sb_index == 0)
+	{
+		udb_serial_start_sending();
+	}
+	return ;
+}
+
+void uart1_transmit(uint8_t ch) 
+// routine to send a single character used by MAVlink standard include routines.
+// We forward to multi-byte sending routine so that firmware can interleave
+// ascii debug messages with MAVLink binary messages without them overwriting each other.
+{
+	uart1_send(&ch, 1);
+}
+
+void send_text(uint8_t text[])
+{
+	uint16_t index = 0;
+	while ( text[index++] != 0 && index < 80)
+	{
+		; // Do nothing, just putting length of text in index.
+	}
+	uart1_send(text, index - 1) ;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// 
+// MAIN MAVLINK CODE FOR RECEIVING COMMANDS FROM THE GROUND CONTROL STATION
+//
+
 #if (  SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-extern unsigned int maxstack ;
 mavlink_message_t msg ;
 mavlink_status_t  r_mavlink_status ;
+
+void udb_serial_callback_received_char(char rxchar)
+{
+	if (mavlink_parse_char(0, rxchar, &msg, &r_mavlink_status ))
+    {
+		handleMessage(&msg) ;
+	}
+	return ;
+}
+#else 
+void udb_serial_callback_received_char(char rxchar)
+{
+	return ; // Do nothing with received characters MAVLINK disabled for input
+}
+#endif
+
+#if (  SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
+extern unsigned int maxstack ;
 // void mavlink_msg_param_value_send_by_index(unsigned char index) ;
 unsigned char send_variables_counter = 0;
 unsigned char send_by_index = 0 ;
@@ -211,13 +311,6 @@ void mavlink_set_yawkdail(float setting,  unsigned char i)
 
 // END OF GENERAL ROUTINES FOR READING AND SETTING UAV ONBOARD PARAMETERS
 
-
-uint8_t   mavlink_debug[] = "Parsed a message\r\n" ; 
-uint16_t  mavlink_debug_len = 18 ;
-
-void uart1_send(uint8_t buf[], uint16_t len) ;
-boolean mavlink_check_target( uint8_t target_system, uint8_t target_component ) ;
-
 boolean mavlink_check_target( uint8_t target_system, uint8_t target_component )
 {
 	if ( target_system == mavlink_system.sysid )
@@ -242,23 +335,13 @@ boolean mavlink_check_target( uint8_t target_system, uint8_t target_component )
 	}
 }
 
-void mavlink_msg_recv( unsigned char inchar )
-{
-	if (mavlink_parse_char(0, inchar, &msg, &r_mavlink_status ))
-    {
-		uart1_send( mavlink_debug, mavlink_debug_len ) ;
-		handleMessage(&msg) ;
-	}
-	return ;
-}
-
-// Portions of the following code (handlesmessage())are templated off source code written by James Goppert for the
+// Portions of the following code in handlesmessage() are templated off source code written by James Goppert for the
 // ArdupilotMega, and are used by his kind permission and also in accordance with the GPS V3 licensing
 // of that code.
 
 void handleMessage(mavlink_message_t* msg)
 {
-	send_text( (unsigned char*) "Handling message ID ..");
+	// send_text( (const unsigned char*) "Handling message ID ..");
 	uart1_transmit(( msg->msgid >> 4 ) + 0x30 ) ;
 	uart1_transmit(( msg->msgid & 0x0f ) + 0x30 ) ;
 	send_text( (unsigned char*) "\r\n");
@@ -270,7 +353,7 @@ void handleMessage(mavlink_message_t* msg)
 	        // decode
 	        mavlink_request_data_stream_t packet;
 	        mavlink_msg_request_data_stream_decode(msg, &packet);
-			send_text((unsigned char*) "Action: Request data stream\r\n");
+			// send_text((const unsigned char*) "Action: Request data stream\r\n");
 	        if (mavlink_check_target(packet.target_system,packet.target_component) == false ) break;
 	
 	        int freq = 0; // packet frequency
@@ -293,7 +376,7 @@ void handleMessage(mavlink_message_t* msg)
 	            // streamRateExtra3 = freq; 
 	            break;
 	        case MAV_DATA_STREAM_RAW_SENSORS:
-				send_text((unsigned char*) "Action: Request Raw Sensors\r\n");
+				// send_text((unsigned char*) "Action: Request Raw Sensors\r\n");
 	            streamRateRawSensors = freq ;  
 	            break;
 	        case MAV_DATA_STREAM_EXTENDED_STATUS:
@@ -326,7 +409,7 @@ void handleMessage(mavlink_message_t* msg)
 	    }
 	    case MAVLINK_MSG_ID_ACTION:
 	    {
-			send_text((unsigned char*) "Action: Specific Action Required\r\n");
+			// send_text((unsigned char*) "Action: Specific Action Required\r\n");
 	        // decode
 	        mavlink_action_t packet;
 	        mavlink_msg_action_decode(msg, &packet);
@@ -336,28 +419,26 @@ void handleMessage(mavlink_message_t* msg)
 	        {
 	
 	            case MAV_ACTION_LAUNCH:
-					send_text((unsigned char*) "Action: Launch !\r\n");
+					// send_text((unsigned char*) "Action: Launch !\r\n");
 	                //set_mode(TAKEOFF);
 						
 	                break;
 	
 	            case MAV_ACTION_RETURN:
-					send_text((unsigned char*) "Action: Return !\r\n");
+					// send_text((unsigned char*) "Action: Return !\r\n");
 	                //set_mode(RTL);
 	                break;
 	
 	            case MAV_ACTION_EMCY_LAND:
-					send_text((unsigned char*) "Action: Emergency Land !\r\n");
+					// send_text((unsigned char*) "Action: Emergency Land !\r\n");
 	                //set_mode(LAND);
 	                break;
 	
 	            case MAV_ACTION_HALT: 
-					send_text((unsigned char*) "Action: Halt !\r\n");
+					// send_text((unsigned char*) "Action: Halt !\r\n");
 	                //loiter_at_location();
 	                break;
 	
-	            // can't implement due to APM configuration
-	            // just setting to manual to be safe
 	            case MAV_ACTION_MOTORS_START:
 	            case MAV_ACTION_CONFIRM_KILL:
 	            case MAV_ACTION_EMCY_KILL:
@@ -379,15 +460,15 @@ void handleMessage(mavlink_message_t* msg)
 	                break; 
 	
 	            case MAV_ACTION_STORAGE_READ:
-					send_text((unsigned char*) "Action: Storage Read\r\n");
+					// send_text((unsigned char*) "Action: Storage Read\r\n");
 	                break; 
 	
 	            case MAV_ACTION_STORAGE_WRITE:
-					send_text((unsigned char*) "Action: Storage Write\r\n");
+					//send_text((unsigned char*) "Action: Storage Write\r\n");
 	                break;
 	
 	            case MAV_ACTION_CALIBRATE_RC:
-					send_text((unsigned char*) "Action: Calibrate RC\r\n"); 
+					//send_text((unsigned char*) "Action: Calibrate RC\r\n"); 
 	                break;
 	            
 	            case MAV_ACTION_CALIBRATE_GYRO:
@@ -403,12 +484,12 @@ void handleMessage(mavlink_message_t* msg)
 	            case MAV_ACTION_REC_STOP: break; 
 	
 	            case MAV_ACTION_TAKEOFF:
-					send_text((unsigned char*) "Action: Take Off !\r\n");
+					//send_text((unsigned char*) "Action: Take Off !\r\n");
 	                //set_mode(TAKEOFF);
 	                break; 
 	
 	            case MAV_ACTION_NAVIGATE:
-					send_text((unsigned char*) "Action: Navigate !\r\n");
+					// send_text((unsigned char*) "Action: Navigate !\r\n");
 	                //set_mode(AUTO);
 	                break; 
 	
@@ -427,7 +508,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_REQUEST_LIST:
 	    {
-			send_text((unsigned char*) "waypoint request list\r\n");
+			// send_text((unsigned char*) "waypoint request list\r\n");
 	
 	        // decode
 	        //mavlink_waypoint_request_list_t packet;
@@ -448,7 +529,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_REQUEST:
 	    {
-			send_text((unsigned char*)"waypoint request\r\n");
+			// send_text((unsigned char*)"waypoint request\r\n");
 	
 	        // Check if sending waypiont
 	        //if (!global_data.waypoint_sending) break;
@@ -532,7 +613,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
 	    {
-			send_text((unsigned char*)"param request list\r\n");
+			//send_text((unsigned char*)"param request list\r\n");
 	
 	        // decode
 	        mavlink_param_request_list_t packet;
@@ -547,7 +628,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_CLEAR_ALL:
 	    {
-			send_text((unsigned char*)"waypoint clear all\r\n");
+			//send_text((unsigned char*)"waypoint clear all\r\n");
 	
 	        // decode
 	        //mavlink_waypoint_clear_all_t packet;
@@ -566,7 +647,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_SET_CURRENT:
 	    {
-			send_text((unsigned char*)"waypoint set current\r\n");
+			//send_text((unsigned char*)"waypoint set current\r\n");
 	
 	        // decode
 	        //mavlink_waypoint_set_current_t packet;
@@ -586,7 +667,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_COUNT:
 	    {
-			send_text((unsigned char*)"waypoint count\r\n");
+			//send_text((unsigned char*)"waypoint count\r\n");
 	
 	        // decode
 	        //mavlink_waypoint_count_t packet;
@@ -606,7 +687,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT:
 	    {
-			send_text((unsigned char*)"waypoint\r\n");
+			//send_text((unsigned char*)"waypoint\r\n");
 	        // Check if receiving waypiont
 	        //if (!global_data.waypoint_receiving) break;
 	
@@ -694,7 +775,7 @@ void handleMessage(mavlink_message_t* msg)
 	    case MAVLINK_MSG_ID_PARAM_SET:
 	    {
 	        // decode
-			send_text((unsigned char*)"Param Set\r\n");
+			//send_text((unsigned char*)"Param Set\r\n");
 	        mavlink_param_set_t packet;
 	        mavlink_msg_param_set_decode(msg, &packet);
 	        if (mavlink_check_target(packet.target_system,packet.target_component) == false)
@@ -742,110 +823,13 @@ void handleMessage(mavlink_message_t* msg)
   	} // end switch
 } // end handle mavlink
 
-
-#else
-
-void mavlink_msg_recv( unsigned char inchar )
-{
-	return;  // Do nothing with the character
-}
-
 #endif	// ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-
-
-void init_serial()
-{
-
-//  udb_serial_set_rate(19200) ;
-//	udb_serial_set_rate(38400) ;
-	udb_serial_set_rate(57600) ; 
-//	udb_serial_set_rate(115200) ;
-//	udb_serial_set_rate(230400) ;
-//	udb_serial_set_rate(460800) ;
-//	udb_serial_set_rate(921600) ; // yes, it really will work at this rate
-
-return ;
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// Receive Serial Commands
+// MAIN MAVLINK CODE FOR SENDING COMMANDS TO THE GROUND CONTROL STATION
 //
-
-void udb_serial_callback_received_char(char rxchar)
-{
-	(* sio_parse) ( rxchar ) ; // parse the input byte
-	return ;
-}
-
-int udb_serial_callback_get_char_to_send(void) 
-// routine returns an integer so as to allow sending binary code (including 0x00) over serial
-{ 
-	if ( sb_index < end_index && sb_index < SERIAL_BUFFER_SIZE ) // ensure never end up racing thru memory.
-	{
-		unsigned char txchar = serial_buffer[ sb_index++ ] ;
-		return (int) txchar ;
-	}
-	else
-	{
-		sb_index = 0 ;
-		end_index = 0 ;
-	}
-	
-	return -1 ;
-}
-
-
-void uart1_send(uint8_t buf[], uint16_t len)
-// len is the number of bytes in the buffer
-{
-	int start_index = end_index ;
-	int remaining = SERIAL_BUFFER_SIZE - start_index ;
-	if ( len > remaining )
-	{
-		//length = remaining ;
-		len = remaining ;
-	}
-	if (remaining > 1)
-	{
-		memcpy(&serial_buffer[start_index], buf, len);
-		end_index = start_index + len ;
-	}	
-	if (sb_index == 0)
-	{
-		udb_serial_start_sending();
-	}
-	return ;
-}
-
-void uart1_transmit(uint8_t ch) 
-{
-	uart1_send(&ch, 1);
-}
-
-void send_text(uint8_t text[])
-{
-	uint16_t index = 0;
-	while ( text[index++] != 0 && index < 80)
-	{
-		; // Do nothing
-	}
-	uart1_send(text, index - 1) ;
-}
-
-void init_mavlink( void )
-{
-	mavlink_system.sysid  = 55 ; // System ID, 1-255, ID of your Plane for GCS
-	mavlink_system.compid = 1 ; // Component/Subsystem ID,  1-255, MatrixPilot on IDB is component 1.
-#if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
-	streamRateRCChannels = 0 ;
-	streamRateRawSensors = 0 ;
-#else 
-	streamRateRCChannels = 10 ;
-	streamRateRawSensors = 40 ;
-#endif
-}
 
 const unsigned char mavlink_freq_table[] = { 0,40,20,13,10,8,7,6 } ;
 
@@ -902,15 +886,15 @@ boolean mavlink_frequency_send( unsigned char frequency, unsigned char counter)
 void mavlink_output_40hz( void )
 {
 	struct relative2D matrix_accum ;
-	float earth_pitch ;		// pitch in radians with respect to earth 
-	float earth_roll ;		// roll in radians of the plane with respect to earth frame
-	float earth_yaw ;		// yaw in radians with respect to earth frame
+	float earth_pitch ;			 // pitch in radians with respect to earth 
+	float earth_roll ;		 	 // roll in radians of the plane with respect to earth frame
+	float earth_yaw ;			 // yaw in radians with respect to earth frame
 	float earth_pitch_velocity ; // radians / sec with respect to earth
 	float earth_roll_velocity ;  // radians / sec with respect to earth
 	float earth_yaw_velocity ;   // radians / sec with respect to earth
-	int accum ;
-	long accum_long ;
-	uint8_t mode; ///< System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
+	int accum ;					 // general purpose temporary storage
+	long accum_long ;			 // general purpose temporary storage
+	uint8_t mode; 				// System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
 	unsigned char spread_transmission_load = 0; // Used to spread sending of different message types over a period of 1 second.
 
     if ( ++counter_40hz == 40) counter_40hz = 0 ;
@@ -940,8 +924,7 @@ void mavlink_output_40hz( void )
 		alt_float = (float) (((((int) (IMUlocationz._.W1)) * 100) + alt_origin._.W0) / 100.0) ;
 		mavlink_msg_global_position_send(MAVLINK_COMM_0, usec, 
 			lat_float , lon_float, alt_float ,
-			(float) IMUvelocityx._.W1, (float) IMUvelocityy._.W1, (float) IMUvelocityz._.W1 ) ; // meters per second
-	
+			(float) IMUvelocityx._.W1, (float) IMUvelocityy._.W1, (float) IMUvelocityz._.W1 ) ; // meters per secon
 	}
 
 	// ATTITUDE
