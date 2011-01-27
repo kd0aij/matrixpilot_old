@@ -148,7 +148,7 @@ void send_text(uint8_t text[])
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// MAIN MAVLINK CODE FOR RECEIVING COMMANDS FROM THE GROUND CONTROL STATION
+// MAIN MATRIXPILOT MAVLINK CODE FOR RECEIVING COMMANDS FROM THE GROUND CONTROL STATION
 //
 
 #if (  SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
@@ -176,9 +176,11 @@ extern unsigned int maxstack ;
 unsigned char send_variables_counter = 0;
 unsigned char send_by_index = 0 ;
 
-// ROUTINES FOR READING AND SETTING UAV ONBOARD PARAMETERS
+// ROUTINES FOR CHANGING UAV ONBOARD PARAMETERS
 // All paramaters are sent as type (float) between Ground Control Station and MatrixPilot.
 // So paramaters have to be converted between type (float) and their normal representation.
+// An explanation of the MAVLink protocol for changing paramaters can be found at:
+// http://www.qgroundcontrol.org/parameter_interface
 
 struct mavlink_parameter 
 	{ 	int8_t name[15] ;                           // Name that will be displayed in the GCS
@@ -206,6 +208,7 @@ boolean mavlink_parameter_out_of_bounds( float parm, unsigned char i ) ;
 #define READONLY	1
 #define READWRITE	0
 
+
 const struct mavlink_parameter mavlink_parameters_list[] =
 	{
 #if ( RECORD_FREE_STACK_SPACE ==  1)
@@ -221,7 +224,7 @@ const int count_of_parameters_list =  sizeof mavlink_parameters_list / sizeof ma
 
 boolean mavlink_parameter_out_of_bounds( float parm, unsigned char i )
 {
-	if ((parm < mavlink_parameters_list[i].min) || (parm > mavlink_parameters_list[i].max))
+	if (( parm < mavlink_parameters_list[i].min ) || ( parm > mavlink_parameters_list[i].max ))
     {
 		return  true ;
 	}
@@ -308,8 +311,7 @@ void mavlink_set_yawkdail(float setting,  unsigned char i)
 	return ;
 }
 
-
-// END OF GENERAL ROUTINES FOR READING AND SETTING UAV ONBOARD PARAMETERS
+// END OF GENERAL ROUTINES FOR CHANGING UAV ONBOARD PARAMETERS
 
 boolean mavlink_check_target( uint8_t target_system, uint8_t target_component )
 {
@@ -340,11 +342,12 @@ boolean mavlink_check_target( uint8_t target_system, uint8_t target_component )
 // of that code.
 
 void handleMessage(mavlink_message_t* msg)
+// This is the main routine for taking action against a parsed message from the GCS
 {
 	// send_text( (const unsigned char*) "Handling message ID ..");
-	uart1_transmit(( msg->msgid >> 4 ) + 0x30 ) ;
-	uart1_transmit(( msg->msgid & 0x0f ) + 0x30 ) ;
-	send_text( (unsigned char*) "\r\n");
+	// uart1_transmit(( msg->msgid >> 4 ) + 0x30 ) ;
+	// uart1_transmit(( msg->msgid & 0x0f ) + 0x30 ) ;
+	// send_text( (unsigned char*) "\r\n");
 
 	switch (msg->msgid)	
 	{

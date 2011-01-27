@@ -102,6 +102,7 @@ void udb_init_pwm( void )	// initialize the PWM
 	_PTEN = 1; 		// turn on the PWM 
 	_PWMIF = 0 ; 	// clear the PWM interrupt
 	_PWMIP = 3 ;    // priority 3
+	_PWMIE = 1 ;     // enable the PWM interrupt
 	
 	if (NUM_OUTPUTS >= 4)
 	{
@@ -149,6 +150,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	// interrupt_save_extended_state ;
 	
 	indicate_loading_inter ;
+
+	udb_flags._.a2d_read = 1 ; // signal the A/D to report out the values
 	
 	//	Executes whatever needs to be done every 25 milliseconds, using the PWM clock.
 	//	This is a good place to run the A/D digital filters and compute pulse widths for servos.
