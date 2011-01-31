@@ -1021,22 +1021,21 @@ void mavlink_output_40hz( void )
 		
 		extern int magFieldRaw[] ;
 		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
-					 (int16_t)   udb_yaccel.input,
-					 (int16_t) - udb_xaccel.input,
-					 (int16_t)   udb_zaccel.input, 
-					 (int16_t)   ( udb_yrate.input ),
-	                 (int16_t) - ( udb_xrate.input ),
-	                 (int16_t)   ( udb_zrate.input ), 
+					 (int16_t)   udb_yaccel.value,
+					 (int16_t) - udb_xaccel.value,
+					 (int16_t)   udb_zaccel.value, 
+					 (int16_t)   ( udb_yrate.value ),
+	                 (int16_t) - ( udb_xrate.value ),
+	                 (int16_t)   ( udb_zrate.value ), 
 					  (int16_t) magFieldRaw[0], (int16_t) magFieldRaw[1], (int16_t) magFieldRaw[2]) ;
 #else
 		mavlink_msg_raw_imu_send(MAVLINK_COMM_0, usec,
-					      udb_yaccel.input, - udb_xaccel.input, udb_zaccel.input,
-					    ( udb_yrate.input + 32768 ), - ( udb_xrate.input + 32768 ), ( udb_zrate.input + 32768 ), 
+						udb_yaccel.value, - udb_xaccel.value, udb_zaccel.value,
+					        ( udb_yrate.value + 32768 ), - ( udb_xrate.value + 32768 ), ( udb_zrate.value + 32768 ),
 					      0, 0, 0) ; // MagFieldRaw[] zero as mag not connected.
 #endif
 
 	}
-
 
 #if ( SERIAL_INPUT_FORMAT == SERIAL_MAVLINK )
 	// SEND VALUES OF PARAMETERS IF THE LIST HAS BEEN REQUESTED
@@ -1066,3 +1065,4 @@ void mavlink_output_40hz( void )
 }
 
 #endif  // ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK )
+
