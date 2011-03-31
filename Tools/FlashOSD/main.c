@@ -122,6 +122,7 @@ int main (void)
 
 
 // Unused callbacks
+void udb_servo_callback_mix_outputs(void) {} ;
 void udb_background_callback_triggered(void) {}
 void udb_gps_callback_received_byte( char rxchar ) {}
 int udb_gps_callback_get_byte_to_send( void ) { return 0 ; }

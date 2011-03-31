@@ -136,6 +136,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 	if (udb_sub_counter % 4 == 0)	// 50Hz
 	{
 		// Start the sequential servo pulses
+		udb_servo_callback_mix_outputs() ;
 		start_pwm_outputs() ;
 	}
 	

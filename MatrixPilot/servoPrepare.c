@@ -59,11 +59,9 @@ void dcm_servo_callback_prepare_outputs(void)
 		yawCntrl() ;
 		altitudeCntrl();
 		pitchCntrl() ;
-		servoMix() ;
 #if ( USE_CAMERA_STABILIZATION == 1 )
 		cameraCntrl() ;
 #endif
-		cameraServoMix() ;
 		updateTriggerAction() ;
 	}
 	else
@@ -88,6 +86,7 @@ void dcm_servo_callback_prepare_outputs(void)
 	return ;
 }
 
+
 void manualPassthrough( void )
 {
 	roll_control = pitch_control = yaw_control = throttle_control = 0 ;
@@ -96,3 +95,10 @@ void manualPassthrough( void )
 	return ;
 }
 
+
+void udb_servo_callback_mix_outputs(void)
+{
+	servoMix() ;
+	cameraServoMix() ;
+	return ;
+}
