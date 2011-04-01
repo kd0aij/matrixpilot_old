@@ -224,28 +224,79 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Main Flight Plan
 //
-// Fly a 100m square at an altitude of 100m, beginning above the origin, pointing North
+////////////////////////////////////////////////////////////////////////////////
 
-#define SQUARE 1
+// UDB LOGO Program
+
+#define SQUARE			1
+#define CIRCLE			2
 
 const struct logoInstructionDef instructions[] = {
-	
-	SET_ALT(100)
-	
-	// Go Home and point North
-	HOME
-	
-	REPEAT_FOREVER
-		DO_ARG(SQUARE, 100)
+
+FLAG_ON(F_CROSS_TRACK)
+
+FD(5)
+
+RT(90)
+
+DO_ARG(SQUARE, 25)
+
+LT(180)
+
+FD(20)
+
+RT(90)
+
+FD(8)
+
+LT(90)
+
+DO_ARG(CIRCLE, 25)
+
+FD(5)
+
+LT(90)
+
+FD(10)
+
+RT(90)
+
+FD(30)
+
+RT(90)
+
+FD(40)
+
+RT(90)
+
+FD(80)
+
+RT(90)
+
+FD(40)
+
+HOME
+
+END
+
+
+TO (SQUARE)
+	REPEAT(4)
+		FD_PARAM
+		LT(90)
 	END
-	
-	
-	TO (SQUARE)
-		REPEAT(4)
-			FD_PARAM
-			RT(90)
-		END
+END
+
+
+TO (CIRCLE)
+	PARAM_DIV(5)
+	REPEAT(18)
+		FD_PARAM
+		RT(20)
 	END
+END
+
+
 } ;
 
 
