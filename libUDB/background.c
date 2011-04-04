@@ -72,14 +72,14 @@ void udb_init_clock(void)	/* initialize timers */
 	// Initialize timer1, used as the 40Hz heartbeat of libUDB.
 	TMR1 = 0 ;
 #if (BOARD_TYPE == UDB4_BOARD)
-	PR1 = 10000 ;			// 5 millisecond period at 16 Mz clock, prescale = 4
-	T1CONbits.TCKPS = 1;	// prescaler = 4
+	PR1 = 10000 ;			// 5 millisecond period at 16 Mz clock, tmr prescale = 8
+	T1CONbits.TCKPS = 1;	// prescaler = 8
 #elif ( CLOCK_CONFIG == CRYSTAL_CLOCK )
-	PR1 = 2500 ;			// 5 millisecond period at 16 Mz clock, prescale = 4	
-	T1CONbits.TCKPS = 1;	// prescaler = 4
+	PR1 = 2500 ;			// 5 millisecond period at 16 Mz clock, inst. prescale = 4, tmr prescale = 8	
+	T1CONbits.TCKPS = 1;	// prescaler = 8
 #elif ( CLOCK_CONFIG == FRC8X_CLOCK )
-	PR1 = 9216 ;			// 5 millisecond period at 58.982 Mz clock, prescale = 4	
-	T1CONbits.TCKPS = 1;	// prescaler = 4
+	PR1 = 9216 ;			// 5 millisecond period at 58.982 Mz clock, inst. prescale = 4, tmr prescale = 8
+	T1CONbits.TCKPS = 1;	// prescaler = 8
 #endif
 	T1CONbits.TCS = 0 ;		// use the crystal to drive the clock
 	_T1IP = 6 ;				// High priority
@@ -133,6 +133,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 	indicate_loading_inter ;
 	interrupt_save_set_corcon ;
 	
+	_T1IF = 0 ;			// clear the interrupt
+	
 	if (udb_sub_counter % 4 == 0)	// 50Hz
 	{
 		// Start the sequential servo pulses
@@ -167,8 +169,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 	
 	udb_sub_counter = (udb_sub_counter+1) % 200; // Evenly divisable by 40 and 50
 	
-	_T1IF = 0 ;			// clear the interrupt
-	
 	interrupt_restore_corcon ;
 	return ;
 }
@@ -194,9 +194,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T3Interrupt(void)
 	indicate_loading_inter ;
 	interrupt_save_set_corcon ;
 	
-	udb_background_callback_triggered() ;
-	
 	_TTRIGGERIF = 0 ;			// clear the interrupt
+	
+	udb_background_callback_triggered() ;
 	
 	interrupt_restore_corcon ;
 	return ;
@@ -225,13 +225,15 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T5Interrupt(void)
 //	Executes whatever lower priority calculation needs to be done every 25 milliseconds.
 //	This is a good place to eventually compute pulse widths for servos.
 #if ( BOARD_TYPE == UDB4_BOARD )
-void __attribute__((__interrupt__,__no_auto_psv__)) _T6Interrupt(void) 
+void __attribute__((__interrupt__,__no_auto_psv__)) _T6Interrupt(void)
 #else
 void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 #endif
 {
 	indicate_loading_inter ;
 	interrupt_save_set_corcon ;
+	
+	_THEARTBEATIF = 0 ; /* clear the interrupt */
 	
 #if ( NORADIO != 1 )
 	// 20Hz testing for radio link
@@ -242,7 +244,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 			udb_flags._.radio_on = 0 ;
 			LED_GREEN = LED_OFF ;
 		}
-		else if ( failSafePulses >= 2 )
+		else
 		{
 			udb_flags._.radio_on = 1 ;
 			LED_GREEN = LED_ON ;
@@ -253,9 +255,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	
 	udb_servo_callback_prepare_outputs() ;
 	
-	_THEARTBEATIF = 0 ; /* clear the interrupt */
-	
-
 	interrupt_restore_corcon ;
 	return ;
 }
