@@ -410,7 +410,7 @@ void serial_output_8hz( void )
 				// if there was not a software reset (trap error) clear the trap data
 				trap_flags = trap_source = 0 ;
 			}
-			serial_output("\r\nF14:WIND_EST=%i:GPS_TYPE=%i:DR=%i:BOARD_TYPE=%i:AIRFRAME=%i:RCON=0x%X:TRAP_FLAGS=0x%X:TRAP_SOURCE=0x%X:\r\n",
+			serial_output("\r\nF14:WIND_EST=%i:GPS_TYPE=%i:DR=%i:BOARD_TYPE=%i:AIRFRAME=%i:RCON=0x%X:TRAP_FLAGS=0x%X:TRAP_SOURCE=0x%X:SVN_REV:$Rev$\r\n",
 				WIND_ESTIMATION, GPS_TYPE, DEADRECKONING, BOARD_TYPE, AIRFRAME_TYPE, RCON , trap_flags , trap_source ) ;
 				RCON = 0 ;
 				trap_flags = 0 ;
