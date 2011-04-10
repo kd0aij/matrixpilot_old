@@ -20,7 +20,15 @@
 
 
 #include "defines.h"
+#ifndef MODE_SWITCH_USE_RUDDER
+#define MODE_SWITCH_USE_RUDDER 0 // default value, use normal mode switch
+#endif
 
+#if (MODE_SWITCH_USE_RUDDER)
+// Variables used for using the rudder to go into navigate mode
+short mode_switch_rudder_count = 0;
+
+#endif
 union fbts_int flags ;
 union fbts_int old_rtl_flags ;
 int waggle = 0 ;
@@ -56,6 +64,35 @@ void udb_background_callback_periodic(void)
 	
 	if ( udb_flags._.radio_on )
 	{
+#if (MODE_SWITCH_USE_RUDDER)
+#if (THROTTLE_TYPE != THROTTLE_CAR)
+#error "MODE_SWITCH_USE_RUDDER is only valid for THROTTLE_CAR"
+#endif
+            // Toggle between navigate (flags._.home_req) and manual mode using the rudder input channel
+            if (mode_switch_rudder_count == 0)
+            {
+                if (udb_pwIn[RUDDER_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH)
+                {
+                    mode_switch_rudder_count = 1;
+                }
+            } else {
+                mode_switch_rudder_count ++;
+                if (udb_pwIn[RUDDER_INPUT_CHANNEL] < MODE_SWITCH_THRESHOLD_HIGH)
+                {
+                    flags._.man_req = 0 ;
+                    flags._.auto_req = 0 ;
+                    flags._.home_req = 1 ;
+                    mode_switch_rudder_count = 0; // reset the mode switching counter
+                }
+            }
+            if (udb_pwIn[THROTTLE_INPUT_CHANNEL] < (udb_pwTrim[THROTTLE_INPUT_CHANNEL] - 50))
+            { // reduce throttle (with a 25 ms 'margin') from the recorded 'neutral' to return into manual mode
+                flags._.man_req = 1 ;
+                flags._.auto_req = 0 ;
+                flags._.home_req = 0 ;
+                mode_switch_rudder_count = 0; // reset the mode switching counter
+            }
+#else
 		//	Select manual, automatic, or come home, based on pulse width of the switch input channel as defined in options.h.
 		if ( udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH )
 		{
@@ -75,7 +112,8 @@ void udb_background_callback_periodic(void)
 			flags._.auto_req = 0 ;
 			flags._.home_req = 0 ;
 		}
-		
+#endif // MODE_SWITCH_USE_RUDDER off
+
 		// With Failsafe Hold enabled: After losing RC signal, and then regaining it, you must manually
 		// change the mode switch position in order to exit RTL mode.
 		if (flags._.rtl_hold)

@@ -29,14 +29,36 @@ int pitch_control, roll_control, yaw_control, throttle_control ;
 void manualPassthrough( void ) ;
 
 
+#ifndef THROTTLE_TYPE
+#define THROTTLE_TYPE THROTTLE_NORMAL // default value
+#endif
+
 void init_servoPrepare( void )	// initialize the PWM
 {
 	int i;
 	for (i=0; i <= NUM_INPUTS; i++)
-		udb_pwTrim[i] = udb_pwIn[i] = ((i == THROTTLE_INPUT_CHANNEL) ? 0 : 3000) ;
-	
-	for (i=0; i <= NUM_OUTPUTS; i++)
+#if (THROTTLE_TYPE == THROTTLE_CAR)
+#if (!(AIRFRAME_TYPE && AIRFRAME_GROUND))
+#error "THROTTLE_CAR only valid on ground vehicles"
+#endif
+            udb_pwTrim[i] = udb_pwIn[i] = 3000 ;
+#elif // THROTTLE_NORMAL
+            udb_pwTrim[i] = udb_pwIn[i] = ((i == THROTTLE_INPUT_CHANNEL) ? 0 : 3000) ;
+#else
+#error "Unkown throttle type defined"
+#endif
+
+            for (i=0; i <= NUM_OUTPUTS; i++)
+#if (THROTTLE_TYPE == THROTTLE_CAR)
+#if (!(AIRFRAME_TYPE && AIRFRAME_GROUND))
+#error "THROTTLE_CAR only valid on ground vehicles"
+#endif
+		udb_pwOut[i] = 3000 ;
+#elif // THROTTLE_NORMAL
 		udb_pwOut[i] = ((i == THROTTLE_OUTPUT_CHANNEL) ? 0 : 3000) ;
+#else
+#error "Unkown throttle type defined"
+#endif
 	
 #if (NORADIO == 1)
 	udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] = udb_pwTrim[MODE_SWITCH_INPUT_CHANNEL] = 4000 ;
@@ -59,9 +81,11 @@ void dcm_servo_callback_prepare_outputs(void)
 		yawCntrl() ;
 		altitudeCntrl();
 		pitchCntrl() ;
+		servoMix() ;
 #if ( USE_CAMERA_STABILIZATION == 1 )
 		cameraCntrl() ;
 #endif
+		cameraServoMix() ;
 		updateTriggerAction() ;
 	}
 	else
@@ -95,10 +119,3 @@ void manualPassthrough( void )
 	return ;
 }
 
-
-void udb_servo_callback_mix_outputs(void)
-{
-	servoMix() ;
-	cameraServoMix() ;
-	return ;
-}

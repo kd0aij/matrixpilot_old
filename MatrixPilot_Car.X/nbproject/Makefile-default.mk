@@ -30,7 +30,7 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1018708451/traps_udb_asm.o ${OBJECTDIR}/_ext/682965384/cameraCntrl.o ${OBJECTDIR}/_ext/1018724808/deadReckoning.o ${OBJECTDIR}/_ext/1018708451/osd.o ${OBJECTDIR}/_ext/682965384/navigate.o ${OBJECTDIR}/_ext/682965384/altitudeCntrl.o ${OBJECTDIR}/_ext/1018708451/magneto_udb.o ${OBJECTDIR}/_ext/682965384/servoMix.o ${OBJECTDIR}/_ext/682965384/mp_osd.o ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o ${OBJECTDIR}/_ext/682965384/flightplan-waypoints.o ${OBJECTDIR}/_ext/1018708451/analog2digital_udb.o ${OBJECTDIR}/_ext/1018724808/estYawDrift.o ${OBJECTDIR}/_ext/682965384/flightplan-logo.o ${OBJECTDIR}/_ext/682965384/behavior.o ${OBJECTDIR}/_ext/1018724808/libDCM.o ${OBJECTDIR}/_ext/682965384/telemetry.o ${OBJECTDIR}/_ext/682965384/yawCntrl.o ${OBJECTDIR}/_ext/1018724808/estWind.o ${OBJECTDIR}/_ext/1018724808/gpsParseUBX.o ${OBJECTDIR}/_ext/1018708451/background.o ${OBJECTDIR}/_ext/682965384/servoPrepare.o ${OBJECTDIR}/_ext/682965384/states.o ${OBJECTDIR}/_ext/682965384/rollCntrl.o ${OBJECTDIR}/_ext/682965384/pitchCntrl.o ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o ${OBJECTDIR}/_ext/1018708451/serialIO_udb.o ${OBJECTDIR}/_ext/1018708451/servoOut.o ${OBJECTDIR}/_ext/1018724808/gpsParseSTD.o ${OBJECTDIR}/_ext/1018724808/rmat.o ${OBJECTDIR}/_ext/1018724808/gpsParseCommon.o ${OBJECTDIR}/_ext/682965384/main.o ${OBJECTDIR}/_ext/1018708451/libUDB.o
+OBJECTFILES=${OBJECTDIR}/_ext/1018708451/traps_udb_asm.o ${OBJECTDIR}/_ext/682965384/cameraCntrl.o ${OBJECTDIR}/_ext/1018724808/deadReckoning.o ${OBJECTDIR}/_ext/1018708451/osd.o ${OBJECTDIR}/_ext/682965384/navigate.o ${OBJECTDIR}/_ext/682965384/altitudeCntrl.o ${OBJECTDIR}/_ext/1018708451/magneto_udb.o ${OBJECTDIR}/_ext/682965384/servoMix.o ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o ${OBJECTDIR}/_ext/682965384/mp_osd.o ${OBJECTDIR}/_ext/682965384/flightplan-waypoints.o ${OBJECTDIR}/_ext/1018708451/analog2digital_udb.o ${OBJECTDIR}/_ext/1018724808/estYawDrift.o ${OBJECTDIR}/_ext/682965384/flightplan-logo.o ${OBJECTDIR}/_ext/682965384/behavior.o ${OBJECTDIR}/_ext/1018724808/libDCM.o ${OBJECTDIR}/_ext/682965384/telemetry.o ${OBJECTDIR}/_ext/682965384/yawCntrl.o ${OBJECTDIR}/_ext/1018724808/estWind.o ${OBJECTDIR}/_ext/1018724808/gpsParseUBX.o ${OBJECTDIR}/_ext/1018708451/background.o ${OBJECTDIR}/_ext/682965384/servoPrepare.o ${OBJECTDIR}/_ext/682965384/states.o ${OBJECTDIR}/_ext/682965384/rollCntrl.o ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o ${OBJECTDIR}/_ext/682965384/pitchCntrl.o ${OBJECTDIR}/_ext/1018708451/serialIO_udb.o ${OBJECTDIR}/_ext/1018708451/servoOut.o ${OBJECTDIR}/_ext/1018724808/gpsParseSTD.o ${OBJECTDIR}/_ext/1018724808/rmat.o ${OBJECTDIR}/_ext/1018724808/gpsParseCommon.o ${OBJECTDIR}/_ext/682965384/main.o ${OBJECTDIR}/_ext/1018708451/libUDB.o
 
 
 CFLAGS=
@@ -185,21 +185,6 @@ else
 	${CP} ${OBJECTDIR}/_ext/682965384/servoMix.o.tmp ${OBJECTDIR}/_ext/682965384/servoMix.o.d 
 	${RM} ${OBJECTDIR}/_ext/682965384/servoMix.o.tmp}
 endif
-${OBJECTDIR}/_ext/682965384/mp_osd.o: ../MatrixPilot/mp_osd.c  nbproject/Makefile-${CND_CONF}.mk
-	${MKDIR} ${OBJECTDIR}/_ext/682965384 
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${MP_CC} -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -omf=elf -x c -c -mcpu=30F4011 -Wall -I"../MatrixPilot" -I"../libUDB" -I"../libDCM" -MMD -MF ${OBJECTDIR}/_ext/682965384/mp_osd.o.d -o ${OBJECTDIR}/_ext/682965384/mp_osd.o ../MatrixPilot/mp_osd.c  
-ifneq (,$(findstring MINGW32,$(OS_CURRENT))) 
-	@sed -e 's/\"//g' -e 's/\\$$/__EOL__/g' -e 's/\\ /__ESCAPED_SPACES__/g' -e 's/\\/\//g' -e 's/__ESCAPED_SPACES__/\\ /g' -e 's/__EOL__$$/\\/g' ${OBJECTDIR}/_ext/682965384/mp_osd.o.d > ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${CP} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp}
-else 
-	@sed -e 's/\"//g' ${OBJECTDIR}/_ext/682965384/mp_osd.o.d > ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${CP} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp}
-endif
 ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o: ../libUDB/radioIn_udb.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR}/_ext/1018708451 
 	${RM} ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.d 
@@ -214,6 +199,21 @@ else
 	${RM} ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.d 
 	${CP} ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.tmp ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.d 
 	${RM} ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.tmp}
+endif
+${OBJECTDIR}/_ext/682965384/mp_osd.o: ../MatrixPilot/mp_osd.c  nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} ${OBJECTDIR}/_ext/682965384 
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${MP_CC} -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -omf=elf -x c -c -mcpu=30F4011 -Wall -I"../MatrixPilot" -I"../libUDB" -I"../libDCM" -MMD -MF ${OBJECTDIR}/_ext/682965384/mp_osd.o.d -o ${OBJECTDIR}/_ext/682965384/mp_osd.o ../MatrixPilot/mp_osd.c  
+ifneq (,$(findstring MINGW32,$(OS_CURRENT))) 
+	@sed -e 's/\"//g' -e 's/\\$$/__EOL__/g' -e 's/\\ /__ESCAPED_SPACES__/g' -e 's/\\/\//g' -e 's/__ESCAPED_SPACES__/\\ /g' -e 's/__EOL__$$/\\/g' ${OBJECTDIR}/_ext/682965384/mp_osd.o.d > ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${CP} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp}
+else 
+	@sed -e 's/\"//g' ${OBJECTDIR}/_ext/682965384/mp_osd.o.d > ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${CP} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp}
 endif
 ${OBJECTDIR}/_ext/682965384/flightplan-waypoints.o: ../MatrixPilot/flightplan-waypoints.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR}/_ext/682965384 
@@ -425,21 +425,6 @@ else
 	${CP} ${OBJECTDIR}/_ext/682965384/rollCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/rollCntrl.o.d 
 	${RM} ${OBJECTDIR}/_ext/682965384/rollCntrl.o.tmp}
 endif
-${OBJECTDIR}/_ext/682965384/pitchCntrl.o: ../MatrixPilot/pitchCntrl.c  nbproject/Makefile-${CND_CONF}.mk
-	${MKDIR} ${OBJECTDIR}/_ext/682965384 
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${MP_CC} -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -omf=elf -x c -c -mcpu=30F4011 -Wall -I"../MatrixPilot" -I"../libUDB" -I"../libDCM" -MMD -MF ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d -o ${OBJECTDIR}/_ext/682965384/pitchCntrl.o ../MatrixPilot/pitchCntrl.c  
-ifneq (,$(findstring MINGW32,$(OS_CURRENT))) 
-	@sed -e 's/\"//g' -e 's/\\$$/__EOL__/g' -e 's/\\ /__ESCAPED_SPACES__/g' -e 's/\\/\//g' -e 's/__ESCAPED_SPACES__/\\ /g' -e 's/__EOL__$$/\\/g' ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d > ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${CP} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp}
-else 
-	@sed -e 's/\"//g' ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d > ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${CP} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp}
-endif
 ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o: ../libDCM/mathlibNAV.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR}/_ext/1018724808 
 	${RM} ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.d 
@@ -454,6 +439,21 @@ else
 	${RM} ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.d 
 	${CP} ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.tmp ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.d 
 	${RM} ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.tmp}
+endif
+${OBJECTDIR}/_ext/682965384/pitchCntrl.o: ../MatrixPilot/pitchCntrl.c  nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} ${OBJECTDIR}/_ext/682965384 
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${MP_CC} -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -omf=elf -x c -c -mcpu=30F4011 -Wall -I"../MatrixPilot" -I"../libUDB" -I"../libDCM" -MMD -MF ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d -o ${OBJECTDIR}/_ext/682965384/pitchCntrl.o ../MatrixPilot/pitchCntrl.c  
+ifneq (,$(findstring MINGW32,$(OS_CURRENT))) 
+	@sed -e 's/\"//g' -e 's/\\$$/__EOL__/g' -e 's/\\ /__ESCAPED_SPACES__/g' -e 's/\\/\//g' -e 's/__ESCAPED_SPACES__/\\ /g' -e 's/__EOL__$$/\\/g' ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d > ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${CP} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp}
+else 
+	@sed -e 's/\"//g' ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d > ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${CP} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp}
 endif
 ${OBJECTDIR}/_ext/1018708451/serialIO_udb.o: ../libUDB/serialIO_udb.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR}/_ext/1018708451 
@@ -666,21 +666,6 @@ else
 	${CP} ${OBJECTDIR}/_ext/682965384/servoMix.o.tmp ${OBJECTDIR}/_ext/682965384/servoMix.o.d 
 	${RM} ${OBJECTDIR}/_ext/682965384/servoMix.o.tmp}
 endif
-${OBJECTDIR}/_ext/682965384/mp_osd.o: ../MatrixPilot/mp_osd.c  nbproject/Makefile-${CND_CONF}.mk
-	${MKDIR} ${OBJECTDIR}/_ext/682965384 
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${MP_CC}  -omf=elf -x c -c -mcpu=30F4011 -Wall -I"../MatrixPilot" -I"../libUDB" -I"../libDCM" -MMD -MF ${OBJECTDIR}/_ext/682965384/mp_osd.o.d -o ${OBJECTDIR}/_ext/682965384/mp_osd.o ../MatrixPilot/mp_osd.c  
-ifneq (,$(findstring MINGW32,$(OS_CURRENT))) 
-	@sed -e 's/\"//g' -e 's/\\$$/__EOL__/g' -e 's/\\ /__ESCAPED_SPACES__/g' -e 's/\\/\//g' -e 's/__ESCAPED_SPACES__/\\ /g' -e 's/__EOL__$$/\\/g' ${OBJECTDIR}/_ext/682965384/mp_osd.o.d > ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${CP} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp}
-else 
-	@sed -e 's/\"//g' ${OBJECTDIR}/_ext/682965384/mp_osd.o.d > ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${CP} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
-	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp}
-endif
 ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o: ../libUDB/radioIn_udb.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR}/_ext/1018708451 
 	${RM} ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.d 
@@ -695,6 +680,21 @@ else
 	${RM} ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.d 
 	${CP} ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.tmp ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.d 
 	${RM} ${OBJECTDIR}/_ext/1018708451/radioIn_udb.o.tmp}
+endif
+${OBJECTDIR}/_ext/682965384/mp_osd.o: ../MatrixPilot/mp_osd.c  nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} ${OBJECTDIR}/_ext/682965384 
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${MP_CC}  -omf=elf -x c -c -mcpu=30F4011 -Wall -I"../MatrixPilot" -I"../libUDB" -I"../libDCM" -MMD -MF ${OBJECTDIR}/_ext/682965384/mp_osd.o.d -o ${OBJECTDIR}/_ext/682965384/mp_osd.o ../MatrixPilot/mp_osd.c  
+ifneq (,$(findstring MINGW32,$(OS_CURRENT))) 
+	@sed -e 's/\"//g' -e 's/\\$$/__EOL__/g' -e 's/\\ /__ESCAPED_SPACES__/g' -e 's/\\/\//g' -e 's/__ESCAPED_SPACES__/\\ /g' -e 's/__EOL__$$/\\/g' ${OBJECTDIR}/_ext/682965384/mp_osd.o.d > ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${CP} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp}
+else 
+	@sed -e 's/\"//g' ${OBJECTDIR}/_ext/682965384/mp_osd.o.d > ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${CP} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp ${OBJECTDIR}/_ext/682965384/mp_osd.o.d 
+	${RM} ${OBJECTDIR}/_ext/682965384/mp_osd.o.tmp}
 endif
 ${OBJECTDIR}/_ext/682965384/flightplan-waypoints.o: ../MatrixPilot/flightplan-waypoints.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR}/_ext/682965384 
@@ -906,21 +906,6 @@ else
 	${CP} ${OBJECTDIR}/_ext/682965384/rollCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/rollCntrl.o.d 
 	${RM} ${OBJECTDIR}/_ext/682965384/rollCntrl.o.tmp}
 endif
-${OBJECTDIR}/_ext/682965384/pitchCntrl.o: ../MatrixPilot/pitchCntrl.c  nbproject/Makefile-${CND_CONF}.mk
-	${MKDIR} ${OBJECTDIR}/_ext/682965384 
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${MP_CC}  -omf=elf -x c -c -mcpu=30F4011 -Wall -I"../MatrixPilot" -I"../libUDB" -I"../libDCM" -MMD -MF ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d -o ${OBJECTDIR}/_ext/682965384/pitchCntrl.o ../MatrixPilot/pitchCntrl.c  
-ifneq (,$(findstring MINGW32,$(OS_CURRENT))) 
-	@sed -e 's/\"//g' -e 's/\\$$/__EOL__/g' -e 's/\\ /__ESCAPED_SPACES__/g' -e 's/\\/\//g' -e 's/__ESCAPED_SPACES__/\\ /g' -e 's/__EOL__$$/\\/g' ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d > ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${CP} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp}
-else 
-	@sed -e 's/\"//g' ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d > ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${CP} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
-	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp}
-endif
 ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o: ../libDCM/mathlibNAV.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR}/_ext/1018724808 
 	${RM} ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.d 
@@ -935,6 +920,21 @@ else
 	${RM} ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.d 
 	${CP} ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.tmp ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.d 
 	${RM} ${OBJECTDIR}/_ext/1018724808/mathlibNAV.o.tmp}
+endif
+${OBJECTDIR}/_ext/682965384/pitchCntrl.o: ../MatrixPilot/pitchCntrl.c  nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} ${OBJECTDIR}/_ext/682965384 
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${MP_CC}  -omf=elf -x c -c -mcpu=30F4011 -Wall -I"../MatrixPilot" -I"../libUDB" -I"../libDCM" -MMD -MF ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d -o ${OBJECTDIR}/_ext/682965384/pitchCntrl.o ../MatrixPilot/pitchCntrl.c  
+ifneq (,$(findstring MINGW32,$(OS_CURRENT))) 
+	@sed -e 's/\"//g' -e 's/\\$$/__EOL__/g' -e 's/\\ /__ESCAPED_SPACES__/g' -e 's/\\/\//g' -e 's/__ESCAPED_SPACES__/\\ /g' -e 's/__EOL__$$/\\/g' ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d > ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${CP} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp}
+else 
+	@sed -e 's/\"//g' ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d > ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${CP} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.d 
+	${RM} ${OBJECTDIR}/_ext/682965384/pitchCntrl.o.tmp}
 endif
 ${OBJECTDIR}/_ext/1018708451/serialIO_udb.o: ../libUDB/serialIO_udb.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR}/_ext/1018708451 

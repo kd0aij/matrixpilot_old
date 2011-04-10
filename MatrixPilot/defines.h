@@ -39,11 +39,12 @@ extern int waggle ;
 
 struct flag_bits {
 			unsigned int unused					: 6 ;
+
 			unsigned int save_origin   			: 1 ;
 			unsigned int GPS_steering			: 1 ;
 			unsigned int pitch_feedback			: 1 ;
-			unsigned int altitude_hold_throttle	: 1 ;
-			unsigned int altitude_hold_pitch	: 1 ;
+			unsigned int altitude_hold_throttle             : 1 ;
+			unsigned int altitude_hold_pitch                : 1 ;
 			unsigned int man_req				: 1 ;
 			unsigned int auto_req				: 1 ;
 			unsigned int home_req				: 1 ;
@@ -76,7 +77,7 @@ extern int pitchAltitudeAdjust ;
 
 // AltitudeHold type
 #define AH_NONE				0
-#define AH_PITCH_ONLY		1
+#define AH_PITCH_ONLY                   1
 #define AH_FULL				3
 
 
@@ -92,9 +93,18 @@ void cameraServoMix( void ) ;
 #define AIRFRAME_VTAIL				1
 #define AIRFRAME_DELTA				2
 #define AIRFRAME_HELI				3		// Untested
+#define AIRFRAME_QUAD                           4
+
+// Note that ground vehicles start with 8 so they can be easily identified
+#define AIRFRAME_GROUND                         8   
+
+
+// Other defines used in options.h
+#define THROTTLE_NORMAL                         0
+#define THROTTLE_CAR                            1
 
 // Negate VALUE if NEEDS_REVERSING is true
-#define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)		((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))
+#define REVERSE_IF_NEEDED(NEEDS_REVERSING, VALUE)   ((NEEDS_REVERSING) ? (-(VALUE)) : (VALUE))
 
 extern int cam_pitch_servo_pwm_delta ;  
 extern int cam_yaw_servo_pwm_delta ;

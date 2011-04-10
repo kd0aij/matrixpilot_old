@@ -79,10 +79,7 @@ void dcm_callback_gps_location_updated(void)
 
 
 // Called at 40 Hz, before sending servo pulses
-void dcm_servo_callback_prepare_outputs(void) {}
-
-// Called at 50 Hz, before sending servo pulses
-void udb_servo_callback_mix_outputs(void)
+void dcm_servo_callback_prepare_outputs(void)
 {
 	if (!dcm_flags._.calib_finished)
 	{

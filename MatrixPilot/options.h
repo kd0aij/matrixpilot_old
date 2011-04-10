@@ -69,7 +69,7 @@
 //    AIRFRAME_VTAIL			Ailerons(optional), and Elevator and Rudder as V-tail controls
 //    AIRFRAME_DELTA			Aileron and Elevator as Elevons, and Rudder(optional)
 // (Note that although AIRFRAME_HELI is also recognized, the code for this airframe type is not ready.)
-#define AIRFRAME_TYPE               AIRFRAME_STANDARD //TODO: AIRFRAME_GROUND
+#define AIRFRAME_TYPE               AIRFRAME_GROUND
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@
 #define ROLL_STABILIZATION_AILERONS			0
 #define ROLL_STABILIZATION_RUDDER			0
 #define PITCH_STABILIZATION				0
-#define YAW_STABILIZATION_RUDDER			1
+#define YAW_STABILIZATION_RUDDER			0
 #define YAW_STABILIZATION_AILERON			0
 
 // Aileron and Rudder Navigation
@@ -120,7 +120,7 @@
 // Use DEADRECKONING to select the dead reckoning option.
 // DEADRECKONING 0 selects the GPS to perform navigation, at the GPS update rate.
 // DEADRECKONING 1 selects the dead reckoning computations to perform navigation, at 40 Hz.
-#define DEADRECKONING					1
+#define DEADRECKONING					0
 
 // Wind Estimation and Navigation
 // Set this to 1 to use automatic wind estimation and navigation. 
@@ -250,6 +250,15 @@
 #define MODE_SWITCH_USE_RUDDER                          1 // HIGHLY EXPERIMENTAL - please set to 0
 #define MODE_SWITCH_THRESHOLD_LOW			2000
 #define MODE_SWITCH_THRESHOLD_HIGH			2500
+
+////////////////////////////////////////////////////////////////////////////////
+// Throttle type: Can be either THROTTLE_NORMAL (the default) or THROTTLE_CAR
+// This defines the behavior of the throttle channel. With THROTTLE_NORMAL,
+// MatrixPilot will automatically zero out the throttle channel (to prevent
+// accidental arming of the ESC. THROTTLE_CAR, by contrast will save the
+//
+////////////////////////////////////////////////////////////////////////////////
+#define THROTTLE_TYPE                                   THROTTLE_CAR // THROTTLE_NORMAL
 
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -124,10 +124,6 @@ void udb_servo_record_trims(void);
 // It is called at 40Hz (once every 25ms).
 void udb_servo_callback_prepare_outputs(void);			// Callback
 
-// Implement this callback to mix the pwOut values.
-// It is called at 50Hz (once every 20ms).
-void udb_servo_callback_mix_outputs(void) ;				// Callback
-
 // Call this function to set the digital output to 0 or 1.
 // This can be used to do things like triggering cameras, turning on
 // lights, etc.
