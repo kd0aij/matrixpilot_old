@@ -33,7 +33,7 @@ union intbb voltage_temp ;
 
 volatile int trap_flags __attribute__ ((persistent));
 volatile int trap_source __attribute__ ((persistent));
-
+volatile int osc_fail_count __attribute__ ((persistent));
 void sio_newMsg(unsigned char);
 void sio_voltage_low( unsigned char inchar ) ;
 void sio_voltage_high( unsigned char inchar ) ;
@@ -408,13 +408,15 @@ void serial_output_8hz( void )
 			if ( _SWR == 0 )
 			{
 				// if there was not a software reset (trap error) clear the trap data
-				trap_flags = trap_source = 0 ;
+				trap_flags = trap_source = osc_fail_count = 0 ;
 			}
-			serial_output("\r\nF14:WIND_EST=%i:GPS_TYPE=%i:DR=%i:BOARD_TYPE=%i:AIRFRAME=%i:RCON=0x%X:TRAP_FLAGS=0x%X:TRAP_SOURCE=0x%X:\r\n",
-				WIND_ESTIMATION, GPS_TYPE, DEADRECKONING, BOARD_TYPE, AIRFRAME_TYPE, RCON , trap_flags , trap_source ) ;
+			serial_output("\r\nF14:WIND_EST=%i:GPS_TYPE=%i:DR=%i:BOARD_TYPE=%i:AIRFRAME=%i:RCON=0x%X:TRAP_FLAGS=0x%X:TRAP_SOURCE=0x%X:ALARMS=%i:"  \
+							"CLOCK=%i:\r\n",
+				WIND_ESTIMATION, GPS_TYPE, DEADRECKONING, BOARD_TYPE, AIRFRAME_TYPE, RCON , trap_flags , trap_source , osc_fail_count, CLOCK_CONFIG ) ;
 				RCON = 0 ;
 				trap_flags = 0 ;
 				trap_source = 0 ;
+				osc_fail_count = 0 ;
 			break ;
 		case 5:
 			serial_output("F4:R_STAB_A=%i:R_STAB_RD=%i:P_STAB=%i:Y_STAB_R=%i:Y_STAB_A=%i:AIL_NAV=%i:RUD_NAV=%i:AH_STAB=%i:AH_WP=%i:RACE=%i:\r\n",
@@ -496,7 +498,8 @@ void serial_output_8hz( void )
 					serial_output("p%ii%i:",i,pwIn_save[i]);
 				for (i= 1; i <= NUM_OUTPUTS; i++)
 					serial_output("p%io%i:",i,pwOut_save[i]);
-				serial_output("imx%i:imy%i:imz%i:fgs%X:",IMUlocationx._.W1 ,IMUlocationy._.W1 ,IMUlocationz._.W1, flags.WW );
+				serial_output("imx%i:imy%i:imz%i:fgs%X:ofc%i:",IMUlocationx._.W1 ,IMUlocationy._.W1 ,IMUlocationz._.W1,
+					 flags.WW, osc_fail_count );
 #if (RECORD_FREE_STACK_SPACE == 1)
 				serial_output("stk%d:", (int)(4096-maxstack));
 #endif
