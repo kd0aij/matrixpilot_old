@@ -36,6 +36,9 @@
 unsigned int cpu_timer = 0 ;
 unsigned int _cpu_timer = 0 ;
 
+#ifdef SERVO_50HZ
+unsigned char udb_sub_counter = 0 ;
+#endif
 unsigned int udb_heartbeat_counter = 0 ;
 #define HEARTBEAT_MAX	57600		// Evenly divisible by many common values: 2^8 * 3^2 * 5^2
 
@@ -67,20 +70,33 @@ void udb_init_clock(void)	/* initialize timers */
 {
 	TRISF = 0b1111111111101100 ;
 	
-	
-	// Initialize timer1, used as the 40Hz heartbeat of libUDB.
 	TMR1 = 0 ;
+#ifdef SERVO_50HZ
+	// Initialize timer1, used as the 200Hz heartbeat of libUDB.
 #if (BOARD_TYPE == UDB4_BOARD)
-	PR1 = 50000 ;			// 25 millisecond period at 16 Mz clock, tmr prescale = 8
+        PR1 = 10000 ;		// 5 millisecond period at 16 Mz clock, tmr prescale = 8
 	T1CONbits.TCKPS = 1;	// prescaler = 8
 #elif ( CLOCK_CONFIG == CRYSTAL_CLOCK )
-	PR1 = 12500 ;			// 25 millisecond period at 16 Mz clock, inst. prescale 4, tmr prescale 8	
+        PR1 = 2500 ;		// 5 millisecond period at 16 Mz clock, inst. prescale = 4, tmr prescale = 8
+        T1CONbits.TCKPS = 1;	// prescaler = 8
+#elif ( CLOCK_CONFIG == FRC8X_CLOCK )
+        PR1 = 9216 ;		// 5 millisecond period at 58.982 Mz clock, inst. prescale = 4, tmr prescale = 8
+        T1CONbits.TCKPS = 1;	// prescaler = 8
+#endif
+#else // SERVO_50HZ not defined, use default 40Hz heartbeat
+	// Initialize timer1, used as the 40Hz heartbeat of libUDB.
+#if (BOARD_TYPE == UDB4_BOARD)
+	PR1 = 50000 ;		// 25 millisecond period at 16 Mz clock, tmr prescale = 8
+	T1CONbits.TCKPS = 1;	// prescaler = 8
+#elif ( CLOCK_CONFIG == CRYSTAL_CLOCK )
+	PR1 = 12500 ;		// 25 millisecond period at 16 Mz clock, inst. prescale 4, tmr prescale 8	
 	T1CONbits.TCKPS = 1;	// prescaler = 8
 #elif ( CLOCK_CONFIG == FRC8X_CLOCK )
-	PR1 = 46080 ;			// 25 millisecond period at 58.982 Mz clock,inst. prescale 4, tmr prescale 8	
+	PR1 = 46080 ;		// 25 millisecond period at 58.982 Mz clock,inst. prescale 4, tmr prescale 8	
 	T1CONbits.TCKPS = 1;	// prescaler = 8
 #endif
-	T1CONbits.TCS = 0 ;		// use the crystal to drive the clock
+#endif //IFDEF SERVO_50HZ
+        T1CONbits.TCS = 0 ;		// use the crystal to drive the clock
 	_T1IP = 6 ;				// High priority
 	_T1IF = 0 ;				// clear the interrupt
 	_T1IE = 1 ;				// enable the interrupt
@@ -125,13 +141,45 @@ void udb_init_clock(void)	/* initialize timers */
 
 
 // This high priority interrupt is the Heartbeat of libUDB.
+// If SERVO_50HZ is defined, it runs at 200Hz, and handles firing off
+// the PWM Outputs at 50Hz and the DCM calculations at 40Hz. Otherwise, it runs
+// at 40Hz.
 void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void) 
 {
 	indicate_loading_inter ;
 	interrupt_save_set_corcon ;
 	
 	_T1IF = 0 ;			// clear the interrupt
-	
+#ifdef SERVO_50HZ
+        if (udb_sub_counter % 4 == 0)   // 50Hz
+        {
+                // Start the sequential servo pulses
+                udb_servo_callback_mix_outputs() ;
+                start_pwm_outputs() ;
+        }
+        if (udb_sub_counter % 5 == 0)   // 40Hz
+        {
+                // Capture cpu_timer once per second.
+                if (udb_heartbeat_counter % 40 == 0)
+                {
+                        T5CONbits.TON = 0 ;             // turn off timer 5
+                        cpu_timer = _cpu_timer ;// snapshot the load counter
+                        _cpu_timer = 0 ;                // reset the load counter
+                        T5CONbits.TON = 1 ;             // turn on timer 5
+                }
+                // Call the periodic callback at 2Hz
+                if (udb_heartbeat_counter % 20 == 0)
+                {
+                        udb_background_callback_periodic() ;
+                }
+                // Trigger the 40Hz calculations, but at a lower priority
+                _THEARTBEATIF = 1 ;
+
+                udb_heartbeat_counter = (udb_heartbeat_counter+1) % HEARTBEAT_MAX;
+        }
+
+        udb_sub_counter = (udb_sub_counter+1) % 200; // Evenly divisable by 40 and 50
+#else // SERVO_50HZ not defined
 	// Start the sequential servo pulses
 	start_pwm_outputs() ;
 	
@@ -142,22 +190,19 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 		cpu_timer = _cpu_timer ;// snapshot the load counter
 		_cpu_timer = 0 ; 		// reset the load counter
 		T5CONbits.TON = 1 ;		// turn on timer 5
-	}
-	
+	}	
 	// Call the periodic callback at 2Hz
 	if (udb_heartbeat_counter % 20 == 0)
 	{
 		udb_background_callback_periodic() ;
 	}
-	
-	
 	// Trigger the 40Hz calculations, but at a lower priority
-	_THEARTBEATIF = 1 ;
-	
+	_THEARTBEATIF = 1 ;	
 	
 	udb_heartbeat_counter = (udb_heartbeat_counter+1) % HEARTBEAT_MAX;
-	
-	interrupt_restore_corcon ;
+#endif // SERVO_50HZ
+
+        interrupt_restore_corcon ;
 	return ;
 }
 

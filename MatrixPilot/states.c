@@ -26,7 +26,7 @@
 
 #if (MODE_SWITCH_USE_RUDDER)
 // Variables used for using the rudder to go into navigate mode
-short mode_switch_rudder_count = 0;
+unsigned char mode_switch_rudder_count = 0;
 
 #endif
 union fbts_int flags ;
@@ -69,20 +69,25 @@ void udb_background_callback_periodic(void)
 #error "MODE_SWITCH_USE_RUDDER is only valid for THROTTLE_CAR"
 #endif
             // Toggle between navigate (flags._.home_req) and manual mode using the rudder input channel
-            if (mode_switch_rudder_count == 0)
-            {
-                if (udb_pwIn[RUDDER_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH)
+            if ( (udb_pwIn[THROTTLE_INPUT_CHANNEL] > (udb_pwTrim[THROTTLE_INPUT_CHANNEL] - 30) ) &&
+                 (udb_pwIn[THROTTLE_INPUT_CHANNEL] < (udb_pwTrim[THROTTLE_INPUT_CHANNEL] + 30) ) )
+            { // only test this if the the throttle channel is within a 60ms 'dead band' of the pwTrim
+                udb_led_toggle(LED_GREEN) ;
+                if (mode_switch_rudder_count == 0)
                 {
-                    mode_switch_rudder_count = 1;
-                }
-            } else {
-                mode_switch_rudder_count ++;
-                if (udb_pwIn[RUDDER_INPUT_CHANNEL] < MODE_SWITCH_THRESHOLD_HIGH)
-                {
-                    flags._.man_req = 0 ;
-                    flags._.auto_req = 0 ;
-                    flags._.home_req = 1 ;
-                    mode_switch_rudder_count = 0; // reset the mode switching counter
+                    if (udb_pwIn[RUDDER_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH)
+                    {
+                        mode_switch_rudder_count = 1;
+                    }
+                } else {
+                    mode_switch_rudder_count ++;
+                    if (udb_pwIn[RUDDER_INPUT_CHANNEL] < MODE_SWITCH_THRESHOLD_LOW)
+                    {
+                        flags._.man_req = 0 ;
+                        flags._.auto_req = 0 ;
+                        flags._.home_req = 1 ;
+                        mode_switch_rudder_count = 0; // reset the mode switching counter
+                    }
                 }
             }
             if (udb_pwIn[THROTTLE_INPUT_CHANNEL] < (udb_pwTrim[THROTTLE_INPUT_CHANNEL] - 50))
@@ -112,7 +117,7 @@ void udb_background_callback_periodic(void)
 			flags._.auto_req = 0 ;
 			flags._.home_req = 0 ;
 		}
-#endif // MODE_SWITCH_USE_RUDDER off
+#endif // MODE_SWITCH_USE_RUDDER
 
 		// With Failsafe Hold enabled: After losing RC signal, and then regaining it, you must manually
 		// change the mode switch position in order to exit RTL mode.

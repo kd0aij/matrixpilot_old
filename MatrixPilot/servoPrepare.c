@@ -81,12 +81,16 @@ void dcm_servo_callback_prepare_outputs(void)
 		yawCntrl() ;
 		altitudeCntrl();
 		pitchCntrl() ;
-		servoMix() ;
+#ifndef SERVO_50HZ
+                servoMix() ;
+#endif
 #if ( USE_CAMERA_STABILIZATION == 1 )
 		cameraCntrl() ;
 #endif
+#ifndef SERVO_50HZ
 		cameraServoMix() ;
-		updateTriggerAction() ;
+#endif
+                updateTriggerAction() ;
 	}
 	else
 	{
@@ -119,3 +123,11 @@ void manualPassthrough( void )
 	return ;
 }
 
+#ifdef SERVO_50HZ
+void udb_servo_callback_mix_outputs(void)
+{
+	servoMix() ;
+	cameraServoMix() ;
+	return ;
+}
+#endif

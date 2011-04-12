@@ -135,7 +135,7 @@
 
 // Define MAG_YAW_DRIFT to be 1 to use magnetometer for yaw drift correction.
 // Otherwise, if set to 0 the GPS will be used.
-#define MAG_YAW_DRIFT 					0 //TODO: 1
+#define MAG_YAW_DRIFT 					1
 
 // Racing Mode
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
@@ -248,8 +248,8 @@
 // These are the thresholds for the cutoffs between low and middle, and between middle and high.
 // Normal signals should fall within about 2000 - 4000.
 #define MODE_SWITCH_USE_RUDDER                          1 // HIGHLY EXPERIMENTAL - please set to 0
-#define MODE_SWITCH_THRESHOLD_LOW			2000
-#define MODE_SWITCH_THRESHOLD_HIGH			2500
+#define MODE_SWITCH_THRESHOLD_LOW			2200
+#define MODE_SWITCH_THRESHOLD_HIGH			3600
 
 ////////////////////////////////////////////////////////////////////////////////
 // Throttle type: Can be either THROTTLE_NORMAL (the default) or THROTTLE_CAR
@@ -548,3 +548,9 @@
 
 // Set this to 1 to calculate and print out free stack space
 #define RECORD_FREE_STACK_SPACE 			1
+
+////////////////////////////////////////////////////////////////////////////////
+// 50Hz Servo refresh rate. THIS IS HIGHLY EXPERIMENTAL.
+// Uncomment the line below to enable
+#define SERVO_50HZ                                      1
+
