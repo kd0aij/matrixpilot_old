@@ -231,3 +231,56 @@ int rect_to_polar16 ( struct relative2D *xy )
 
 	return ( theta16 ) ;
 }
+
+unsigned int square_root_int( unsigned int sqr )
+{
+	// based on Heron's algorithm
+	unsigned int binary_point = 0 ;
+	unsigned int result = 255 ; 
+							
+	int iterations = 3 ;		
+	if ( sqr == 0 )
+	{
+		return 0 ;
+	}
+	while ( ( sqr & 0b1100000000000000 ) == 0 ) // shift left to get a 1 in the 2 MSbits
+	{
+		sqr = sqr*4 ; // shift 2 bits
+		binary_point ++ ; // track half of the number of bits shifted
+	}
+	sqr = sqr/2 ; // for convenience, Herons formula is result = ( result + sqr/result ) / 2
+	while ( iterations )
+	{
+		iterations -- ;
+		result = result/2 + sqr/result ;
+	}
+	result = result >> binary_point ; // shift result right to account for shift left of sqr 
+	return result ;
+}
+
+unsigned int square_root_long_int( unsigned long int sqr )
+{
+	// based on Heron's algorithm
+	unsigned int binary_point = 0 ;
+	unsigned int result = 65535 ; // need to start high and work down to avoid overflow in divud
+
+	int iterations = 3 ;	// thats all you need
+
+	if ( sqr < 65536 )	// use the 16 bit square root
+	{
+		return square_root_int( sqr ) ;
+	}
+	while ( ( sqr & 0b11000000000000000000000000000000 ) == 0 ) // shift left to get a 1 in the 2 MSbits
+	{
+		sqr = sqr<< 2 ;
+		binary_point ++ ; // track half of the number of bits shifted
+	}
+	sqr = sqr>>1 ; // for convenience, Herons formula is result = ( result + sqr/result ) / 2
+	while ( iterations )
+	{
+		iterations -- ;
+		result = result/2 + __builtin_divud ( sqr , result ) ;
+	}
+	result = result >> binary_point ; // shift result right to account for shift left of sqr 
+	return result ;
+}
