@@ -193,7 +193,7 @@ void compute_bearing_to_goal( void )
 			}
 		}
 		
-		if ((estimatedWind[0] == 0 && estimatedWind[1] == 0) || air_speed_magnitude < WIND_NAV_AIR_SPEED_MIN)
+		if ((estimatedWind[0] == 0 && estimatedWind[1] == 0) || air_speed_magnitudeXY < WIND_NAV_AIR_SPEED_MIN)
 			// last clause keeps ground testing results same as in the past. Small and changing GPS speed on the ground,
 			// combined with small wind_estimation will change calculated heading 4 times / second with result
 			// that ailerons start moving 4 times / second on the ground. This clause prevents this happening when not flying.
@@ -207,11 +207,11 @@ void compute_bearing_to_goal( void )
 			// compute the wind component that is perpendicular to the desired bearing:
 			crossWind.WW = ( __builtin_mulss( estimatedWind[0] , sine( desired_bearing_over_ground ))
 									- __builtin_mulss( estimatedWind[1] , cosine( desired_bearing_over_ground )))<<2 ;
-			if (  air_speed_magnitude > abs(crossWind._.W1) )
+			if (  air_speed_magnitudeXY > abs(crossWind._.W1) )
 			{
 				// the correction to the bearing is the arcsine of the ratio of cross wind to air speed
 				desired_dir_temp = desired_bearing_over_ground
-				+ arcsine( __builtin_divsd ( crossWind.WW , air_speed_magnitude )>>2 ) ;
+				+ arcsine( __builtin_divsd ( crossWind.WW , air_speed_magnitudeXY )>>2 ) ;
 			}
 			else
 			{
@@ -223,7 +223,7 @@ void compute_bearing_to_goal( void )
 	else {
 		// If not using Cross Tracking
 		
-		if ((estimatedWind[0] == 0 && estimatedWind[1] == 0) || air_speed_magnitude < WIND_NAV_AIR_SPEED_MIN)
+		if ((estimatedWind[0] == 0 && estimatedWind[1] == 0) || air_speed_magnitudeXY < WIND_NAV_AIR_SPEED_MIN)
 			// last clause keeps ground testing results same as in the past. Small and changing GPS speed on the ground,
 			// combined with small wind_estimation will change calculated heading 4 times / second with result
 			// that ailerons start moving 4 times / second on the ground. This clause prevents this happening when not flying.
@@ -239,11 +239,11 @@ void compute_bearing_to_goal( void )
 			// compute the wind component that is perpendicular to the desired bearing:
 			crossWind.WW = ( __builtin_mulss( estimatedWind[0] , sine( desired_bearing_over_ground ))
 									- __builtin_mulss( estimatedWind[1] , cosine( desired_bearing_over_ground )))<<2 ;
-			if (  air_speed_magnitude > abs(crossWind._.W1) )
+			if (  air_speed_magnitudeXY > abs(crossWind._.W1) )
 			{
 				// the correction to the bearing is the arcsine of the ratio of cross wind to air speed
 				desired_dir_temp = desired_bearing_over_ground
-				+ arcsine( __builtin_divsd ( crossWind.WW , air_speed_magnitude )>>2 ) ;
+				+ arcsine( __builtin_divsd ( crossWind.WW , air_speed_magnitudeXY )>>2 ) ;
 			}
 			else
 			{
@@ -260,7 +260,7 @@ void compute_bearing_to_goal( void )
 		{
 			// progress_to_goal is the fraction of the distance from the start to the finish of
 			// the current waypoint leg, that is still remaining.  it ranges from 0 - 1<<12.
-			progress_to_goal = (((long)goal.legDist - tofinish_line + velocity_magnitude/100)<<12) / goal.legDist ;
+			progress_to_goal = (((long)goal.legDist - tofinish_line + ground_velocity_magnitudeXY/100)<<12) / goal.legDist ;
 			if (progress_to_goal < 0) progress_to_goal = 0 ;
 			if (progress_to_goal > (long)1<<12) progress_to_goal = (long)1<<12 ;
 		}

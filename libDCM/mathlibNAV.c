@@ -232,7 +232,7 @@ int rect_to_polar16 ( struct relative2D *xy )
 	return ( theta16 ) ;
 }
 
-unsigned int square_root_int( unsigned int sqr )
+unsigned int sqrt_int( unsigned int sqr )
 {
 	// based on Heron's algorithm
 	unsigned int binary_point = 0 ;
@@ -243,7 +243,7 @@ unsigned int square_root_int( unsigned int sqr )
 	{
 		return 0 ;
 	}
-	while ( ( sqr & 0b1100000000000000 ) == 0 ) // shift left to get a 1 in the 2 MSbits
+	while ( ( sqr & 0xC000 ) == 0 ) // shift left to get a 1 in the 2 MSbits
 	{
 		sqr = sqr*4 ; // shift 2 bits
 		binary_point ++ ; // track half of the number of bits shifted
@@ -258,7 +258,7 @@ unsigned int square_root_int( unsigned int sqr )
 	return result ;
 }
 
-unsigned int square_root_long_int( unsigned long int sqr )
+unsigned int sqrt_long( unsigned long int sqr )
 {
 	// based on Heron's algorithm
 	unsigned int binary_point = 0 ;
@@ -268,9 +268,9 @@ unsigned int square_root_long_int( unsigned long int sqr )
 
 	if ( sqr < 65536 )	// use the 16 bit square root
 	{
-		return square_root_int( sqr ) ;
+		return sqrt_int( ( unsigned int ) sqr ) ;
 	}
-	while ( ( sqr & 0b11000000000000000000000000000000 ) == 0 ) // shift left to get a 1 in the 2 MSbits
+	while ( ( sqr & 0xC0000000 ) == 0 ) // shift left to get a 1 in the 2 MSbits
 	{
 		sqr = sqr<< 2 ;
 		binary_point ++ ; // track half of the number of bits shifted
@@ -284,3 +284,19 @@ unsigned int square_root_long_int( unsigned long int sqr )
 	result = result >> binary_point ; // shift result right to account for shift left of sqr 
 	return result ;
 }
+
+unsigned int vector2_mag( int x , int y )
+{
+	long unsigned int magsqr ;
+	magsqr = __builtin_mulss( x , x ) + __builtin_mulss( y , y ) ;
+	return sqrt_long( magsqr )	;
+}
+
+unsigned int vector3_mag( int x , int y , int z )
+{
+	long unsigned int magsqr ;
+	magsqr = __builtin_mulss( x , x ) + __builtin_mulss( y , y ) + __builtin_mulss( z , z );
+	return sqrt_long( magsqr )	;
+}
+
+ 
