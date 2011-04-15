@@ -23,15 +23,16 @@
 
 #define DR_PERIOD (int)((40/GPS_RATE)+4 )
 
-#define TIMESTEP 0.025
+#define DR_TIMESTEP 0.025
 #define MAX16 (4.0*RMAX)
+#define DR_TAU 2.5
 
-#define ACCEL2DELTAV ((TIMESTEP*GRAVITYM*MAX16)/GRAVITY)
-#define VELOCITY2LOCATION (TIMESTEP*.01*MAX16*16.0)
+#define ACCEL2DELTAV ((DR_TIMESTEP*GRAVITYM*MAX16)/GRAVITY)
+#define VELOCITY2LOCATION (DR_TIMESTEP*.01*MAX16*16.0)
 //	The factor of 16 is so that the gain is more precise.
 //	There is a subsequent right shift by 4 to cancel the multiply by 16.
 
-#define DR_FILTER_GAIN (int) (TIMESTEP*MAX16)
+#define DR_FILTER_GAIN (int) (DR_TIMESTEP*MAX16/DR_TAU)
 
 extern fractional accelEarth[] ;
 
@@ -46,18 +47,6 @@ union longww IMUvelocityz =  { 0 }  ;
 union longww IMUlocationx =  { 0 }  ;
 union longww IMUlocationy =  { 0 }  ;
 union longww IMUlocationz =  { 0 }  ;
-
-//      filtered IMU velocity
-//		This mimics the dynamics of the GPS
-//union longww filteredIMUvelocityx =  { 0 }  ;
-//union longww filteredIMUvelocityy =  { 0 }  ;
-//union longww filteredIMUvelocityz =  { 0 }  ;
-
-//      filtered IMU location
-//		This mimics the dynamics of the GPS
-//union longww filteredIMUlocationx =  { 0 }  ;
-//union longww filteredIMUlocationy =  { 0 }  ;
-//union longww filteredIMUlocationz =  { 0 }  ;
 
 //	GPSlocation - IMUlocation
 fractional locationErrorEarth[] = { 0 , 0 , 0 } ;
