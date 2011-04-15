@@ -129,6 +129,8 @@ void udb_background_callback_triggered(void)
 		commit_gps_data() ;
 
 		gps_data_age = 0 ;
+
+		dcm_callback_gps_location_updated() ;
 		
 		accum_nav.WW = ((lat_gps.WW - lat_origin.WW)/90) ; // in meters, range is about 20 miles
 		location[1] = accum_nav._.W0 ;
@@ -208,8 +210,12 @@ void udb_background_callback_triggered(void)
 		estimateWind() ;
 		estYawDrift() ;	
 		dcm_flags._.yaw_req = 1 ;  // request yaw drift correction 
-		dcm_flags._.reckon_req = 1 ; // request dead reckoning correction	
-		dcm_callback_gps_location_updated() ;
+		dcm_flags._.reckon_req = 1 ; // request dead reckoning correction
+	
+#if ( DEADRECKONING == 0 )
+		process_flightplan() ;
+#endif	
+
 
 	}
 	else

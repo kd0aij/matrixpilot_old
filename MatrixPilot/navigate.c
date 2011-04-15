@@ -69,10 +69,7 @@ void dcm_callback_gps_location_updated(void)
 		flags._.save_origin = 0 ;
 		setup_origin() ;
 	}
-	
-#if ( DEADRECKONING == 0 )
-	process_flightplan() ;
-#endif
+
 	
 //	Ideally, navigate should take less than one second. For MatrixPilot, navigation takes only
 //	a few milliseconds.
