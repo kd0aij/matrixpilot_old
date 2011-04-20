@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -69,6 +69,10 @@ void pitchCntrl( void ) ;
 void yawCntrl( void ) ;
 void altitudeCntrl( void ) ;
 void setTargetAltitude(int targetAlt) ;
+
+// wind gain adjustment
+unsigned int wind_gain_adjustment(void) ;
+extern unsigned int wind_gain ;
 
 extern int pitch_control, roll_control, yaw_control, throttle_control ;
 extern union longww throttleFiltered ;

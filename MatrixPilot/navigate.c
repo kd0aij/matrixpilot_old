@@ -275,7 +275,7 @@ void compute_bearing_to_goal( void )
 	}
 }
 
-unsigned int yawkp_wind_adjustment(unsigned int yawgain )
+unsigned int wind_gain_adjustment( void )
 {
 	unsigned int horizontal_air_speed ;
 	unsigned int horizontal_ground_speed_over_2 ;
@@ -289,7 +289,7 @@ unsigned int yawkp_wind_adjustment(unsigned int yawgain )
 
 	if ( horizontal_ground_speed_over_2 >= horizontal_air_speed )  
 	{
-		return yawgain<<1 ;
+		return 0xFFFF ;
 	}
 	else if ( horizontal_air_speed > 0 )
 	{
@@ -297,13 +297,11 @@ unsigned int yawkp_wind_adjustment(unsigned int yawgain )
 		G_over_2A = __builtin_divud ( temporary_long , horizontal_air_speed ) ;
 		temporary_long = __builtin_muluu ( G_over_2A , G_over_2A ) ;
 		G_over_2A_sqr = temporary_long >> 16 ;
-		temporary_long = __builtin_muluu ( G_over_2A_sqr , yawgain ) ;
-		yawgain = temporary_long >> 16 ;
-		return (yawgain<<2) ;
+		return ( G_over_2A_sqr ) ;
 	}
 	else
 	{
-		return yawgain ;
+		return 0x4000 ;
 	}
 }
 
@@ -322,19 +320,19 @@ int determine_navigation_deflection(char navType)
 	
 	if (navType == 'y')
 	{
-		yawkp =  yawkp_wind_adjustment( yawkprud ) ;
+		yawkp =  yawkprud  ;
 		actualX = rmat[1] ;
 		actualY = rmat[4] ;
 	}
 	else if (navType == 'a')
 	{
-		yawkp =  yawkp_wind_adjustment( yawkpail ) ;
+		yawkp =  yawkpail ;
 		actualX = rmat[1] ;
 		actualY = rmat[4] ;
 	}
 	else if (navType == 'h')
 	{
-		yawkp = yawkp_wind_adjustment( yawkpail ) ;
+		yawkp = yawkpail ;
 		actualX = rmat[2] ;
 		actualY = rmat[5] ;
 	}
@@ -353,7 +351,8 @@ int determine_navigation_deflection(char navType)
 	
 	dotprod.WW = __builtin_mulss( actualX , desiredX ) + __builtin_mulss( actualY , desiredY ) ;
 	crossprod.WW = __builtin_mulss( actualX , desiredY ) - __builtin_mulss( actualY , desiredX ) ;
-	crossprod.WW = crossprod.WW<<2 ;
+	crossprod.WW = crossprod.WW<<3 ; // at this point, we have 1/2 of the cross product
+									// cannot go any higher than that, could get overflow
 	if ( dotprod._.W1 > 0 )
 	{
 		deflectionAccum.WW = __builtin_mulsu( crossprod._.W1 , yawkp ) ;
@@ -362,15 +361,17 @@ int determine_navigation_deflection(char navType)
 	{
 		if ( crossprod._.W1 > 0 )
 		{
-			deflectionAccum._.W1 = (yawkp/4) ;
+			deflectionAccum._.W1 = (yawkp/2) ;
 		}
 		else
 		{
-			deflectionAccum._.W1 = -(yawkp/4) ; // yawkp is unsigned, must divide and then negate
+			deflectionAccum._.W1 = -(yawkp/2) ; // yawkp is unsigned, must divide and then negate
 		}
 	}
 	
 	if (navType == 'h') deflectionAccum.WW = -deflectionAccum.WW ;
-	
+
+	// multiply by wind gain adjustment, and multiply by 2
+	deflectionAccum.WW = ( __builtin_mulsu ( deflectionAccum._.W1 , wind_gain )<<1 ) ; 
 	return deflectionAccum._.W1 ;
 }
