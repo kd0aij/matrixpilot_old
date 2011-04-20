@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -275,6 +275,37 @@ void compute_bearing_to_goal( void )
 	}
 }
 
+unsigned int yawkp_wind_adjustment(unsigned int yawgain )
+{
+	unsigned int horizontal_air_speed ;
+	unsigned int horizontal_ground_speed_over_2 ;
+	unsigned int G_over_2A ;
+	unsigned int G_over_2A_sqr ;
+	unsigned long temporary_long ;
+	horizontal_air_speed = vector2_mag( IMUvelocityx._.W1 - estimatedWind[0] , 
+										IMUvelocityy._.W1 - estimatedWind[1]) ;
+	horizontal_ground_speed_over_2 = vector2_mag( IMUvelocityx._.W1  , 
+										IMUvelocityy._.W1 ) >> 1;
+
+	if ( horizontal_ground_speed_over_2 >= horizontal_air_speed )  
+	{
+		return yawgain<<1 ;
+	}
+	else if ( horizontal_air_speed > 0 )
+	{
+		temporary_long = ((unsigned long ) horizontal_ground_speed_over_2 ) << 16 ;
+		G_over_2A = __builtin_divud ( temporary_long , horizontal_air_speed ) ;
+		temporary_long = __builtin_muluu ( G_over_2A , G_over_2A ) ;
+		G_over_2A_sqr = temporary_long >> 16 ;
+		temporary_long = __builtin_muluu ( G_over_2A_sqr , yawgain ) ;
+		yawgain = temporary_long >> 16 ;
+		return (yawgain<<2) ;
+	}
+	else
+	{
+		return yawgain ;
+	}
+}
 
 // Values for navType:
 // 'y' = yaw/rudder, 'a' = aileron/roll, 'h' = aileron/hovering
@@ -287,23 +318,23 @@ int determine_navigation_deflection(char navType)
 	int desiredY ;
 	int actualX ;
 	int actualY ;
-	int yawkp ;
+	unsigned int yawkp ;
 	
 	if (navType == 'y')
 	{
-		yawkp = yawkprud ;
+		yawkp =  yawkp_wind_adjustment( yawkprud ) ;
 		actualX = rmat[1] ;
 		actualY = rmat[4] ;
 	}
 	else if (navType == 'a')
 	{
-		yawkp = yawkpail ;
+		yawkp =  yawkp_wind_adjustment( yawkpail ) ;
 		actualX = rmat[1] ;
 		actualY = rmat[4] ;
 	}
 	else if (navType == 'h')
 	{
-		yawkp = yawkpail ;
+		yawkp = yawkp_wind_adjustment( yawkpail ) ;
 		actualX = rmat[2] ;
 		actualY = rmat[5] ;
 	}
@@ -325,17 +356,17 @@ int determine_navigation_deflection(char navType)
 	crossprod.WW = crossprod.WW<<2 ;
 	if ( dotprod._.W1 > 0 )
 	{
-		deflectionAccum.WW = __builtin_mulss( crossprod._.W1 , yawkp ) ;
+		deflectionAccum.WW = __builtin_mulsu( crossprod._.W1 , yawkp ) ;
 	}
 	else
 	{
 		if ( crossprod._.W1 > 0 )
 		{
-			deflectionAccum._.W1 = yawkp/4 ;
+			deflectionAccum._.W1 = (yawkp/4) ;
 		}
 		else
 		{
-			deflectionAccum._.W1 = -yawkp/4 ;
+			deflectionAccum._.W1 = -(yawkp/4) ; // yawkp is unsigned, must divide and then negate
 		}
 	}
 	
