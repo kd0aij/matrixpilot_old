@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -258,9 +258,9 @@ void osd_update_values( void )
 		case 3:
 		{
 			osd_spi_write_location(2, 20) ;
-			//osd_spi_write_number(air_speed_magnitude/100, 5, 0, 0, 0) ;	// speed in m/s
-			osd_spi_write_number(air_speed_magnitude/45, 5, 0, 0, 0) ;		// speed in mi/hr
-			//osd_spi_write_number(air_speed_magnitude/28, 5, 0, 0, 0) ;	// speed in km/hr
+			//osd_spi_write_number(air_speed_3DGPS/100, 5, 0, 0, 0) ;	// speed in m/s
+			osd_spi_write_number(air_speed_3DGPS/45, 5, 0, 0, 0) ;		// speed in mi/hr
+			//osd_spi_write_number(air_speed_3DGPS/28, 5, 0, 0, 0) ;	// speed in km/hr
 			
 			osd_spi_write_location(12, 4) ;
 			osd_spi_write_number(svs, 0, 0, 0, 0) ;						// Num satelites locked

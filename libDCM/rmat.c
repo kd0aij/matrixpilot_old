@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ fractional omegacorrI[] = { 0 , 0 , 0 } ;
 //  acceleration, as measured in GPS earth coordinate system
 fractional accelEarth[] = { 0 , 0 , 0 } ;
 
-union longww accelEarthFiltered[] = { { 0 } , { 0 } ,  { 0 } } ;
+//union longww accelEarthFiltered[] = { { 0 } , { 0 } ,  { 0 } } ;
 
 //	correction vector integrators ;
 union longww gyroCorrectionIntegral[] =  { { 0 } , { 0 } ,  { 0 } } ;
@@ -182,9 +182,9 @@ void read_accel()
 	accelEarth[1] = - VectorDotProduct( 3 , &rmat[3] , gplane )<<1;
 	accelEarth[2] = -((int)GRAVITY) + (VectorDotProduct( 3 , &rmat[6] , gplane )<<1);
 
-	accelEarthFiltered[0].WW += ((((long)accelEarth[0])<<16) - accelEarthFiltered[0].WW)>>5 ;
-	accelEarthFiltered[1].WW += ((((long)accelEarth[1])<<16) - accelEarthFiltered[1].WW)>>5 ;
-	accelEarthFiltered[2].WW += ((((long)accelEarth[2])<<16) - accelEarthFiltered[2].WW)>>5 ;
+//	accelEarthFiltered[0].WW += ((((long)accelEarth[0])<<16) - accelEarthFiltered[0].WW)>>5 ;
+//	accelEarthFiltered[1].WW += ((((long)accelEarth[1])<<16) - accelEarthFiltered[1].WW)>>5 ;
+//	accelEarthFiltered[2].WW += ((((long)accelEarth[2])<<16) - accelEarthFiltered[2].WW)>>5 ;
 	
 	return ;
 }
@@ -216,8 +216,8 @@ int omegaSOG ( int omega , unsigned int speed  )
 void adj_accel()
 {
 	// total (3D) airspeed in cm/sec is used to adjust for acceleration
-	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , air_speed_3D ) ;
-	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , air_speed_3D ) ;
+	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , air_speed_3DGPS ) ;
+	gplane[2]=gplane[2]+ omegaSOG( omegaAccum[0] , air_speed_3DGPS ) ;
 	gplane[1]=gplane[1]+ ((unsigned int)(ACCELSCALE))*forward_acceleration ;
 	
 	return ;

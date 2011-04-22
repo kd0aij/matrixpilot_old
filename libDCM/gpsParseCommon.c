@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ int climb_rate_previous = 0 ;
 int forward_acceleration = 0 ;
 unsigned int velocity_previous = 0 ;
 unsigned int air_speed_magnitudeXY = 0;
-unsigned int air_speed_3D = 0 ;
+unsigned int air_speed_3DGPS = 0 ;
 signed char calculated_heading ;
 int location_previous[] = { 0 , 0 , 0 } ;
 
@@ -153,13 +153,22 @@ void udb_background_callback_triggered(void)
 		// However, it seems likely much of it is simply reporting latency.
 		// This section of the code compensates for reporting latency.
 
-		cog_delta = cog_circular - cog_previous ;
-		sog_delta = sog_gps.BB - sog_previous ;
-		climb_rate_delta = climb_gps.BB - climb_rate_previous ;
-		location_deltaXY.x = location[0] - location_previous[0] ;
-		location_deltaXY.y = location[1] - location_previous[1] ;
-		location_deltaZ = location[2] - location_previous[2] ;
+		if ( dcm_flags._.gps_history_valid )
+		{
+			cog_delta = cog_circular - cog_previous ;
+			sog_delta = sog_gps.BB - sog_previous ;
+			climb_rate_delta = climb_gps.BB - climb_rate_previous ;
 
+			location_deltaXY.x = location[0] - location_previous[0] ;
+			location_deltaXY.y = location[1] - location_previous[1] ;
+			location_deltaZ = location[2] - location_previous[2] ;
+		}
+		else
+		{
+			cog_delta = sog_delta = climb_rate_delta = 0 ;
+			location_deltaXY.x = location_deltaXY.y = location_deltaZ = 0 ;
+		}
+		dcm_flags._.gps_history_valid = 1 ;
 		actual_dir = cog_circular + cog_delta ;
 		cog_previous = cog_circular ;
 
@@ -191,21 +200,21 @@ void udb_background_callback_triggered(void)
 		velocity_thru_air.x = GPSvelocity.x - estimatedWind[0] ;  
 		velocity_thru_airz = GPSvelocity.z - estimatedWind[2] ; 
 
-		air_speed_3D = vector3_mag ( velocity_thru_air.x , velocity_thru_air.y , velocity_thru_airz  ) ;
+		air_speed_3DGPS = vector3_mag ( velocity_thru_air.x , velocity_thru_air.y , velocity_thru_airz  ) ;
                                 
 		calculated_heading  = rect_to_polar( &velocity_thru_air ) ;
 		// veclocity_thru_air.x becomes XY air speed as a by product of CORDIC routine in rect_to_polar()
 		air_speed_magnitudeXY = velocity_thru_air.x; // in cm / sec
 
 #if ( GPS_RATE == 4 )
-		forward_acceleration = (air_speed_3D - velocity_previous) << 2 ; // Ublox enters code 4 times per second
+		forward_acceleration = (air_speed_3DGPS - velocity_previous) << 2 ; // Ublox enters code 4 times per second
 #elif ( GPS_RATE == 2 )
-		forward_acceleration = (air_speed_3D - velocity_previous) << 1 ; // Ublox enters code 2 times per second
+		forward_acceleration = (air_speed_3DGPS - velocity_previous) << 1 ; // Ublox enters code 2 times per second
 #else
-		forward_acceleration = air_speed_3D - velocity_previous ; // EM406 standard GPS enters code once per second
+		forward_acceleration = air_speed_3DGPS - velocity_previous ; // EM406 standard GPS enters code once per second
 #endif
 	
-		velocity_previous = air_speed_3D ;
+		velocity_previous = air_speed_3DGPS ;
 
 		estimateWind() ;
 		estYawDrift() ;	
@@ -225,6 +234,7 @@ void udb_background_callback_triggered(void)
 		dirovergndHGPS[1] = dirovergndHRmat[1] ;
 		dirovergndHGPS[2] = 0 ;
 		dcm_flags._.yaw_req = 1 ;  // request yaw drift correction 	
+		dcm_flags._.gps_history_valid = 0 ; // gps history has to be restarted
 	}
 	
 	return ;

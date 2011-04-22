@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ extern union intbb    xvg , yvg , zvg ;
 extern unsigned char  mode1 , mode2 , svs, hdop ;
 
 extern int forward_acceleration  ;
-extern unsigned int air_speed_3D ;
+extern unsigned int air_speed_3DGPS ;
 
 extern unsigned char  	lat_cir ;
 extern int				cos_lat ;

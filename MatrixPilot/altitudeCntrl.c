@@ -49,13 +49,13 @@ void normalAltitudeCntrl(void) ;
 void manualThrottle(int throttleIn) ;
 void hoverAltitudeCntrl(void) ;
 
-#define SPEEDCONTROL 1
-#define DESIREDSPEED 10.00
-#define DESIREDENERGY ( unsigned long ) ( ( 58.0 * DESIREDSPEED ) * ( 58.0 * DESIREDSPEED ) )
+#if ( SPEED_CONTROL == 1)  // speed control loop
 
-long excess_energy_height(void) 
+#define DESIRED_ENERGY ( unsigned long ) ( ( 58.0 * DESIRED_SPEED ) * ( 58.0 * DESIRED_SPEED ) )
+
+long excess_energy_height(void) // computes (1/2gravity)*( actual_speed^2 - desired_speed^2 )
 {
-	long equivalent_energy = -DESIREDENERGY ;
+	long equivalent_energy = -DESIRED_ENERGY ;
 	int speed_component ;
 	union longww accum ;
 
@@ -73,7 +73,12 @@ long excess_energy_height(void)
 
 	return equivalent_energy ;
 }
-
+#else
+long excess_energy_height(void) 
+{
+	return 0 ;
+}
+#endif
 
 void altitudeCntrl(void)
 {
@@ -143,9 +148,7 @@ void normalAltitudeCntrl(void)
 	int throttleInOffset ;
 	union longww heightError = { 0 } ;
 
-#if ( SPEEDCONTROL == 1 )
-	speed_height = excess_energy_height() ;
-#endif
+	speed_height = excess_energy_height() ; // equivalent height of the airspeed
 	
 	if ( udb_flags._.radio_on == 1 )
 	{

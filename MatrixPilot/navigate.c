@@ -277,6 +277,7 @@ void compute_bearing_to_goal( void )
 
 unsigned int wind_gain_adjustment( void )
 {
+#if ( WIND_GAIN_ADJUSTMENT == 1 )
 	unsigned int horizontal_air_speed ;
 	unsigned int horizontal_ground_speed_over_2 ;
 	unsigned int G_over_2A ;
@@ -303,6 +304,9 @@ unsigned int wind_gain_adjustment( void )
 	{
 		return 0x4000 ;
 	}
+#else
+	return 0x4000;
+#endif
 }
 
 // Values for navType:
