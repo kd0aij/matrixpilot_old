@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -128,3 +128,4 @@ int udb_gps_callback_get_byte_to_send( void ) { return 0 ; }
 void udb_serial_callback_received_byte( char rxchar ) {}
 int udb_serial_callback_get_byte_to_send( void ) { return 0 ; }
 void udb_magnetometer_callback_data_available( void ) {}
+void udb_callback_read_sensors(void) {}

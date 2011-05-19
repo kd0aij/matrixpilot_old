@@ -19,7 +19,6 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 #include "libUDB_internal.h"
 
 #if (BOARD_TYPE == UDB4_BOARD)
