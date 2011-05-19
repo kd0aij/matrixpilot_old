@@ -35,17 +35,17 @@
 // UDB3_BOARD  - Board is red, and includes a single, flat, multi-gyro daugter-board.
 // See the MatrixPilot wiki for more details on different UDB boards.
 // If building for UDB4, use the MatrixPilot-udb4.mcp project file.
-#define BOARD_TYPE 							RED_BOARD
+#define BOARD_TYPE 							UDB4_BOARD
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Select Clock Configuration (Set to CRYSTAL_CLOCK or FRC8X_CLOCK)
 // CRYSTAL_CLOCK is the 16 MHz crystal.  This is the speed used in the past, and may be
-// more compatible with other add-ons.
-// FRC8X_CLOCK is the fast RC clock (7.3728 MHz) with 8X multiplier.  Use this if you want
-// to be able to use serial baud rates above 19200.
+// more compatible with other add-ons. The CRYSTAL_CLOCK supports a maximum baud rate of 19200 bps.
+// FRC8X_CLOCK is EXPERIMENTAL only. It is the fast RC clock (7.3728 MHz) with 8X PLL  multiplier. 
+// The PLL Multiplier in the dspic30F4011 has some known faults with known workarounds. Until
+// the workarounds are implemented and fully tested, the CRYSTAL_CLOCK should be used.
 #define CLOCK_CONFIG 						FRC8X_CLOCK
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Use board orientation to change the mounting direction of the board.
@@ -74,7 +74,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, or GPS_UBX_4HZ)
-#define GPS_TYPE							GPS_STD
+#define GPS_TYPE							GPS_UBX_4HZ
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,16 +82,22 @@
 //
 // Roll, Pitch, and Yaw Stabilization
 // Set any of these to 0 to disable the stabilization in that axis.
-#define ROLL_STABILIZATION_AILERONS			1
-#define ROLL_STABILIZATION_RUDDER			0
+#define ROLL_STABILIZATION_AILERONS			0
+#define ROLL_STABILIZATION_RUDDER			1
 #define PITCH_STABILIZATION					1
 #define YAW_STABILIZATION_RUDDER			1
-#define YAW_STABILIZATION_AILERON			1
+#define YAW_STABILIZATION_AILERON			0
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
-#define AILERON_NAVIGATION					1
+#define AILERON_NAVIGATION					0
 #define RUDDER_NAVIGATION					1
+
+// Wind Gain Adjustment
+// This is an option for modulating the navigation gains in flight
+// to maintain a constant turn radius in heavy winds in waypoing mode.
+// Define WIND_GAIN_ADJUSTMENT as 1 to turn this feature on.
+#define WIND_GAIN_ADJUSTMENT				1
 
 // Altitude Hold
 // Use altitude hold in stabilized mode?  In waypoint mode?
@@ -103,8 +109,15 @@
 // altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED				AH_PITCH_ONLY
+#define ALTITUDEHOLD_STABILIZED				AH_FULL
 #define ALTITUDEHOLD_WAYPOINT				AH_FULL
+
+// Speed Control
+// If you define SPEED_CONTROL to be 1, MatrixPilot will take air speed into account
+// in the altitude controls, and will trim the throttle and pitch to maintain air speed.
+// Define DESIRED_SPEED to be the air speed that you want, in meters/second.
+#define SPEED_CONTROL						1
+#define DESIRED_SPEED						10.00 // meters/second
 
 // Inverted flight
 // Set these to 1 to enable stabilization of inverted flight in stabilized and/or waypoint modes.
@@ -127,7 +140,7 @@
 // Wind estimation is done using a mathematical model developed by William Premerlani.
 // Every time the plane performs a significant turn, the plane estimates the wind.
 // This facility only requires a working GPS and the UAV DevBoard. 
-#define WIND_ESTIMATION						0
+#define WIND_ESTIMATION						1
 
 // Camera Stabilization
 // Set this value to 1, for camera to be stabilized using camera options further below.
@@ -171,16 +184,16 @@
 // NUM_INPUTS: Set to 1-5 (or 1-8 when using PPM input)
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
-#define NUM_INPUTS							5
+#define NUM_INPUTS							4
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
 #define THROTTLE_INPUT_CHANNEL				CHANNEL_3
-#define AILERON_INPUT_CHANNEL				CHANNEL_1
+#define AILERON_INPUT_CHANNEL				CHANNEL_UNUSED
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_5
+#define RUDDER_INPUT_CHANNEL				CHANNEL_1
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -196,7 +209,7 @@
 //   5 also enables E2 as the 5th output channel
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
-#define NUM_OUTPUTS							4
+#define NUM_OUTPUTS							3
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -210,9 +223,9 @@
 // sure your board gets power.
 // 
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
-#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_UNUSED
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
-#define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
+#define RUDDER_OUTPUT_CHANNEL				CHANNEL_1
 #define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
@@ -229,11 +242,11 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
+#define AILERON_CHANNEL_REVERSED			0
 #define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
-#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
+#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_1
 #define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
-#define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
+#define THROTTLE_CHANNEL_REVERSED			HW_SWITCH_3 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_ROLL_CHANNEL_REVERSED		0
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED			0
@@ -247,8 +260,8 @@
 // Often the Flap channel will be controlled by a 3-position switch.
 // These are the thresholds for the cutoffs between low and middle, and between middle and high.
 // Normal signals should fall within about 2000 - 4000.
-#define MODE_SWITCH_THRESHOLD_LOW			2600
-#define MODE_SWITCH_THRESHOLD_HIGH			3400
+#define MODE_SWITCH_THRESHOLD_LOW			3000
+#define MODE_SWITCH_THRESHOLD_HIGH			3500
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -264,7 +277,7 @@
 //
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
-#define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
+#define FAILSAFE_INPUT_CHANNEL				MODE_SWITCH_INPUT_CHANNEL
 #define FAILSAFE_INPUT_MIN					1500
 #define FAILSAFE_INPUT_MAX					4500
 
@@ -301,18 +314,15 @@
 // SERIAL_UDB_EXTRA will add additional telemetry fields to those of SERIAL_UDB.
 // SERIAL_UDB_EXTRA can be used with the OpenLog without characters being dropped.
 // SERIAL_UDB_EXTRA may result in dropped characters if used with the XBEE wireless transmitter.
-#define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
+#define SERIAL_OUTPUT_FORMAT				SERIAL_DEBUG
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
 // OSD_VIDEO_FORMAT can be set to either OSD_NTSC, or OSD_PAL
 // To hide the callsign, set OSD_CALL_SIGN to just {0xFF}
+// The OSD works more smoothly with CLOCK_CONFIG, above, set to FRC8X_CLOCK.
 #define USE_OSD								0
-#define OSD_VIDEO_FORMAT					OSD_NTSC
-#define OSD_SHOW_HORIZON					0
-#define OSD_CALL_SIGN						{0x95, 0x8B, 0x81, 0x8C, 0x8D, 0x8E, 0xFF} // KA1BCD
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Trigger Action
@@ -374,11 +384,13 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
-#define PITCHGAIN							0.150
+//#define PITCHGAIN							0.150
+#define PITCHGAIN							0.25
 #define PITCHKD								0.0625
 #define RUDDER_ELEV_MIX						0.5
-#define ROLL_ELEV_MIX						0.1
-#define ELEVATOR_BOOST						0.5
+//#define ROLL_ELEV_MIX						0.1
+#define ROLL_ELEV_MIX						1.0
+#define ELEVATOR_BOOST						0.0
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
 // Use this to add extra "up" elevator while the plane is inverted, to avoid losing altitude.
@@ -391,10 +403,10 @@
 // MANUAL_AILERON_RUDDER_MIX is the fraction of manual aileron control to mix into the rudder when
 // in stabilized or waypoint mode.  This mainly helps aileron-initiated turning while in stabilized.
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER						0.0625
-#define YAWKD_RUDDER						0.5
-#define ROLLKP_RUDDER						0.0625
-#define MANUAL_AILERON_RUDDER_MIX			0.20
+#define YAWKP_RUDDER						0.150
+#define YAWKD_RUDDER						0.0
+#define ROLLKP_RUDDER						0.300
+#define MANUAL_AILERON_RUDDER_MIX			0.0
 #define RUDDER_BOOST						1.0
 
 // Gains for Hovering
@@ -486,16 +498,16 @@
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
 #define ALT_HOLD_THROTTLE_MIN				0.35
-#define ALT_HOLD_THROTTLE_MAX				1.0
+#define ALT_HOLD_THROTTLE_MAX				1.00
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_PITCH_MAX and ALT_HOLD_PITCH_MIN when
 // within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
-#define ALT_HOLD_PITCH_MIN					-15.0
-#define ALT_HOLD_PITCH_MAX					 15.0
-#define ALT_HOLD_PITCH_HIGH					-15.0
+#define ALT_HOLD_PITCH_MIN					-20.0
+#define ALT_HOLD_PITCH_MAX					 20.0
+#define ALT_HOLD_PITCH_HIGH					-20.0
 
 
 ////////////////////////////////////////////////////////////////////////////////

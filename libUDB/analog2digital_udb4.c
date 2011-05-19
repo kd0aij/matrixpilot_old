@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -35,12 +35,13 @@
 struct ADchannel udb_xaccel, udb_yaccel , udb_zaccel ; // x, y, and z accelerometer channels
 struct ADchannel udb_xrate , udb_yrate, udb_zrate ;  // x, y, and z gyro channels
 struct ADchannel udb_vref ; // reference voltage
+int vref_adj ;
 
 #if (RECORD_FREE_STACK_SPACE == 1)
 unsigned int maxstack = 0 ;
 #endif
 
-int sample_count = 0 ;
+unsigned int sample_count = 0 ;
 
 #define ALMOST_ENOUGH_SAMPLES 18 // there are 22 or 23 samples in a sum
 

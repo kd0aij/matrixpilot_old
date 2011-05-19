@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -33,8 +33,6 @@
 //	There is a subsequent right shift by 4 to cancel the multiply by 16.
 
 #define DR_FILTER_GAIN (int) (DR_TIMESTEP*MAX16/DR_TAU)
-
-extern fractional accelEarth[] ;
 
 int dead_reckon_clock = DR_PERIOD ;
 
@@ -83,9 +81,10 @@ void dead_reckon(void)
 			IMUlocationy.WW += __builtin_mulss( DR_FILTER_GAIN ,  locationErrorEarth[1] ) ;
 			IMUlocationz.WW += __builtin_mulss( DR_FILTER_GAIN ,  locationErrorEarth[2] ) ;
 		}
-		else
+		else  // GPS has gotten disconnected
 		{
-			errorYawground[0] = errorYawground[1] = errorYawground[2] = 0 ;
+			errorYawground[0] = errorYawground[1] = errorYawground[2] = 0 ; // turn off yaw drift
+			dcm_flags._.gps_history_valid = 0 ; // restart GPS history variables
 		}
 	
 		if ( gps_nav_valid() && ( dcm_flags._.reckon_req == 1 ) )

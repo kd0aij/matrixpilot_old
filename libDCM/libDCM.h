@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009, 2010 MatrixPilot Team
+// Copyright 2009-2011 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -90,6 +90,7 @@ extern union dcm_fbts_word { struct dcm_flag_bits _ ; int W ; } dcm_flags ;
 extern fractional rmat[] ;
 extern fractional omegaAccum[] ;
 extern fractional omegagyro[] ;
+extern fractional accelEarth[] ;
 
 extern struct relative3D GPSlocation ;
 extern struct relative3D GPSvelocity ;
