@@ -28,7 +28,7 @@
 // Used for serial debug output
 #include "stdio.h"
 
-char debug_buffer[128] ;
+char debug_buffer[256] ;
 int db_index = 0 ;
 void send_debug_line( void ) ;
 
@@ -39,7 +39,8 @@ int main (void)
 	udb_init() ;
 	dcm_init() ;
 	
-	udb_serial_set_rate(19200) ;
+//	udb_serial_set_rate(19200) ;
+	udb_serial_set_rate(115200) ;
 	
 	LED_GREEN = LED_OFF ;
 	
@@ -100,16 +101,72 @@ void dcm_servo_callback_prepare_outputs(void)
 		udb_pwOut[YAW_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1) ;
 	}
 	
-	// Serial output at 2Hz  (40Hz / 20)
-	if (udb_heartbeat_counter % 20 == 0)
+	// Serial output at 8Hz  (40Hz / 5)
+	if (udb_heartbeat_counter % 5 == 0) 
 	{
-		send_debug_line() ;
+		if ( dcm_flags._.calib_finished )
+		{
+			send_debug_line() ;
+		}
 	}
 	
 	return ;
 }
 
+extern fractional omegacorrP[3] , omegacorrI[3] ;
+extern int gplane[3] ;
+extern int udb_magOffset[3] ;
+int output_count = 0 ;
+extern unsigned int spin_rate ;
+extern int spin_axis[3] ;
+extern int ggain[3] ;
 
+// Prepare a line of serial output and start it sending
+void send_debug_line( void )
+{
+	db_index = 0 ;
+	if ( output_count == 0 )
+	{
+		output_count = 1 ;
+		sprintf( debug_buffer , "r[3] , r[4] , r[5] , "
+								"r[6] , r[7] , r[8] , "
+								"g[0] , g[1] , g[2] , "
+								"B[0] , B[1] , B[2] , "
+								 ) ;
+	}
+	else if ( output_count == 1 )
+	{
+		output_count = 2 ;
+		sprintf( debug_buffer , "B0[0] , B0[1] , B0[2] , "
+								"gyro[0] , gyro[1] , gyro[2] , "
+								"rate , n[0] , n[1] , n2] , "
+								"P[0] , P[1] , P[2] , "
+								"gain[0] , gain[1] , gain[2] , "
+								"I[0] , I[1] , I[2] \r\n" ) ;
+	}
+	else
+	{
+		sprintf( debug_buffer , "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%u,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n" , 
+		rmat[3] , rmat[4] , rmat[5] ,
+		rmat[6] , rmat[7] , rmat[8] ,
+		gplane[0] , gplane[1] , gplane[2] ,		
+		udb_magFieldBody[0] , udb_magFieldBody[1] , udb_magFieldBody[2] , 
+		udb_magOffset[0] , udb_magOffset[1] , udb_magOffset[2] , 
+		omegagyro[0] , omegagyro[1] , omegagyro[2] , 
+		spin_rate , spin_axis[0] , spin_axis[1] , spin_axis[2] , 
+		omegacorrP[0] , omegacorrP[1] , omegacorrP[2] ,
+		ggain[0] , ggain[1] , ggain[2] ,
+		omegacorrI[0] , omegacorrI[1] , omegacorrI[2] 	) ; 
+	}
+	
+	udb_serial_start_sending_data() ;
+	
+	return ;
+}
+
+
+
+/*
 // Prepare a line of serial output and start it sending
 void send_debug_line( void )
 {
@@ -124,6 +181,7 @@ void send_debug_line( void )
 	
 	return ;
 }
+*/
 
 
 // Return one character at a time, as requested.

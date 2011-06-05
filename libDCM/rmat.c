@@ -37,21 +37,25 @@
 
 #define RMAX15 0b0110000000000000	//	1.5 in 2.14 format
 
-#define GGAIN SCALEGYRO*6*(RMAX*0.025)		//	integration multiplier for gyros 15mv/degree/sec
-fractional ggain = GGAIN ;
+#define GGAIN SCALEGYRO*6*(RMAX*0.025)		//	integration multiplier for gyros
+fractional ggain[] =  { GGAIN , GGAIN , GGAIN } ;
+
+unsigned int spin_rate = 0 ;
+fractional spin_axis[] = { 0 , 0 , RMAX } ;
 
 #if ( BOARD_TYPE == UDB3_BOARD )
 //Paul's gains corrected for GGAIN
-#define KPROLLPITCH 256*5
-#define KIROLLPITCH 256
+#define KPROLLPITCH 256*50
+#define KIROLLPITCH 256*10*0
 #else
 //Paul's gains:
-#define KPROLLPITCH 256*10
-#define KIROLLPITCH 256*2
+#define KPROLLPITCH 256*100
+#define KIROLLPITCH 256*20*0
 #endif
 
-#define KPYAW 256*4
-#define KIYAW 32
+#define KPYAW 256*40
+//#define KIYAW 32
+#define KIYAW 256*10*0
 
 #define GYROSAT 15000
 // threshold at which gyros may be saturated
@@ -65,7 +69,7 @@ fractional rmat[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0 , RMAX } ;
 
 //	rup is the rotational update matrix.
 //	At each time step, the new rmat is equal to the old one, multiplied by rup.
-fractional rup[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0 , RMAX } ;
+//  fractional rup[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0 , RMAX } ;
 
 //	gyro rotation vector:
 fractional omegagyro[] = { 0 , 0 , 0 } ;
@@ -82,6 +86,7 @@ fractional accelEarth[] = { 0 , 0 , 0 } ;
 
 //	correction vector integrators ;
 union longww gyroCorrectionIntegral[] =  { { 0 } , { 0 } ,  { 0 } } ;
+union longww gyroCalibrationIntegral[] = { { 0 } , { 0 } ,  { 0 } } ;
 
 //	accumulator for computing adjusted omega:
 fractional omegaAccum[] = { 0 , 0 , 0 } ;
@@ -90,13 +95,13 @@ fractional omegaAccum[] = { 0 , 0 , 0 } ;
 fractional gplane[] = { 0 , 0 , GRAVITY } ;
 
 //	horizontal velocity over ground, as measured by GPS (Vz = 0 )
-fractional dirovergndHGPS[] = { 0 , RMAX/2 , 0 } ;
+fractional dirovergndHGPS[] = { 0 , RMAX , 0 } ;
 
 //	horizontal direction over ground, as indicated by Rmatrix
-fractional dirovergndHRmat[] = { 0 , RMAX/2 , 0 } ;
+fractional dirovergndHRmat[] = { 0 , RMAX , 0 } ;
 
 //	rotation angle equal to omega times integration factor:
-fractional theta[] = { 0 , 0 , 0 } ;
+//  fractional theta[] = { 0 , 0 , 0 } ;
 
 //	matrix buffer:
 fractional rbuff[] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 } ;
@@ -145,6 +150,7 @@ void read_gyros()
 //	fetch the gyro signals and subtract the baseline offset, 
 //	and adjust for variations in supply voltage
 {
+	unsigned spin_rate_over_2 ;
 #if ( HILSIM == 1 )
 	omegagyro[0] = q_sim.BB;
 	omegagyro[1] = p_sim.BB;
@@ -154,7 +160,17 @@ void read_gyros()
 	omegagyro[1] = YRATE_VALUE ;
 	omegagyro[2] = ZRATE_VALUE ;
 #endif
-	
+
+	spin_rate = vector3_mag( omegagyro[0] , omegagyro[1] , omegagyro[2] ) ;
+	spin_rate_over_2 = spin_rate >> 1 ;
+
+	if ( spin_rate_over_2 > 0 )
+	{
+		spin_axis[0] = __builtin_divsd( ((long)omegagyro[0]) << 13 , spin_rate_over_2 ) ;
+		spin_axis[1] = __builtin_divsd( ((long)omegagyro[1]) << 13 , spin_rate_over_2 ) ;
+		spin_axis[2] = __builtin_divsd( ((long)omegagyro[2]) << 13 , spin_rate_over_2 ) ;
+	}
+
 	return ;
 }
 
@@ -221,10 +237,15 @@ void rupdate(void)
 //	on the direction cosine matrix, based on the gyro vector and correction.
 //	It uses vector and matrix routines furnished by Microchip.
 {
+	fractional rup[9] ;
+	fractional theta[3] ;
 	VectorAdd( 3 , omegaAccum , omegagyro , omegacorrI ) ;
 	VectorAdd( 3 , omega , omegaAccum , omegacorrP ) ;
 	//	scale by the integration factor:
-	VectorScale( 3 , theta , omega , ggain ) ;	// Scalegain of 2
+//	VectorScale( 3 , theta , omega , ggain ) ;	// Scalegain of 2
+	VectorMultiply( 3 , theta , omega , ggain ) ; // Scalegain of 2 
+	// diagonal elements of the update matrix:
+	rup[0] = rup[4] = rup[8]= RMAX ;
 	//	construct the off-diagonal elements of the update matrix:
 	rup[1] = -theta[2] ;
 	rup[2] =  theta[1] ;
@@ -324,7 +345,7 @@ fractional magFieldBodyPrevious[3] ;
 
 fractional rmatPrevious[9] ;
 
-int offsetDelta[3] ;
+//int offsetDelta[3] ;
 
 void align_rmat_to_mag(void)
 {
@@ -380,17 +401,21 @@ void mag_drift()
 		{
 			int adjustment ;
 			adjustment = offsetSum[vector_index] ;
-			if ( abs( adjustment ) < 3 )
+//			if ( abs( adjustment ) < 3 )
+			if ( abs( adjustment ) < 20 )
 			{
 				offsetSum[vector_index] = 0 ;
 				adjustment = 0 ;
 			}
-			offsetDelta[vector_index] = adjustment ;
+//			offsetDelta[vector_index] = adjustment ;
 		}
 
 		if ( dcm_flags._.first_mag_reading == 0 )
 		{
-			VectorAdd ( 3 , udb_magOffset , udb_magOffset , offsetSum ) ;
+//			VectorAdd ( 3 , udb_magOffset , udb_magOffset , offsetSum ) ;
+			udb_magOffset[0] = udb_magOffset[0] + ( ( offsetSum[0] + 2 ) >> 2 ) ;
+			udb_magOffset[1] = udb_magOffset[1] + ( ( offsetSum[1] + 2 ) >> 2 ) ;
+			udb_magOffset[2] = udb_magOffset[2] + ( ( offsetSum[2] + 2 ) >> 2 ) ;
 		}
 		else
 		{
@@ -429,6 +454,19 @@ void PI_feedback(void)
 	omegacorrI[1] = gyroCorrectionIntegral[1]._.W1>>3 ;
 	omegacorrI[2] = gyroCorrectionIntegral[2]._.W1>>3 ;
 
+	return ;
+}
+
+void calibrate_gyros(void)
+{
+	fractional omegacorrPweighted[3] ;
+	if ( spin_rate > 1000 )
+	{
+		VectorMultiply( 3 , omegacorrPweighted , spin_axis , omegacorrP ) ;
+		gyroCalibrationIntegral[0].WW += omegacorrPweighted[0] ;
+		gyroCalibrationIntegral[1].WW += omegacorrPweighted[1] ;
+		gyroCalibrationIntegral[2].WW += omegacorrPweighted[2] ;
+	}
 	return ;
 }
 
@@ -474,7 +512,7 @@ void dcm_run_imu_step(void)
 {
 	dead_reckon() ;
 #if ( HILSIM != 1 )
-	adj_accel() ;
+//	adj_accel() ;
 #endif
 	rupdate() ;
 	normalize() ;
@@ -492,7 +530,7 @@ void dcm_run_imu_step(void)
 	yaw_drift() ;
 #endif
 	PI_feedback() ;
-	
+	calibrate_gyros() ;	
 	return ;
 }
 
