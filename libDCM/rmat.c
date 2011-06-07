@@ -86,7 +86,6 @@ fractional accelEarth[] = { 0 , 0 , 0 } ;
 
 //	correction vector integrators ;
 union longww gyroCorrectionIntegral[] =  { { 0 } , { 0 } ,  { 0 } } ;
-union longww gyroCalibrationIntegral[] = { { 0 } , { 0 } ,  { 0 } } ;
 
 //	accumulator for computing adjusted omega:
 fractional omegaAccum[] = { 0 , 0 , 0 } ;
@@ -457,15 +456,45 @@ void PI_feedback(void)
 	return ;
 }
 
+unsigned int adjust_gyro_gain ( unsigned int old_gain , int gain_change )
+{
+	unsigned int gain ;
+	gain = old_gain + gain_change ;
+	if ( gain > (unsigned int) ( 1.1 * GGAIN ))
+	{
+		gain = (unsigned int) ( 1.1 * GGAIN ) ;
+	}
+	if ( gain < (unsigned int) ( 0.9 * GGAIN ))
+	{
+		gain = (unsigned int) ( 0.9 * GGAIN ) ;
+	}
+	return gain ;
+}
+
+#define GYRO_CALIB_TAU 10.0
+
 void calibrate_gyros(void)
 {
 	fractional omegacorrPweighted[3] ;
+	long calib_accum ;
+	int gain_change ;
+	unsigned int spin_rate_over2 ;
 	if ( spin_rate > 1000 )
 	{
-		VectorMultiply( 3 , omegacorrPweighted , spin_axis , omegacorrP ) ;
-		gyroCalibrationIntegral[0].WW += omegacorrPweighted[0] ;
-		gyroCalibrationIntegral[1].WW += omegacorrPweighted[1] ;
-		gyroCalibrationIntegral[2].WW += omegacorrPweighted[2] ;
+		spin_rate_over2 = spin_rate>>1 ;
+		VectorMultiply( 3 , omegacorrPweighted , spin_axis , omegacorrP ) ; // includes 1/2
+
+		calib_accum = __builtin_mulsu( omegacorrPweighted[0] , (unsigned int )( 0.025*GGAIN/GYRO_CALIB_TAU ) ) ;
+		gain_change = __builtin_divsd( calib_accum , spin_rate_over2 ) ;
+		ggain[0] = adjust_gyro_gain( ggain[0] , gain_change ) ;
+
+		calib_accum = __builtin_mulsu( omegacorrPweighted[1] , (unsigned int )( 0.025*GGAIN/GYRO_CALIB_TAU ) ) ;
+		gain_change = __builtin_divsd( calib_accum , spin_rate_over2 ) ;
+		ggain[1] = adjust_gyro_gain( ggain[1] , gain_change ) ;
+
+		calib_accum = __builtin_mulsu( omegacorrPweighted[2] , (unsigned int )( 0.025*GGAIN/GYRO_CALIB_TAU ) ) ;
+		gain_change = __builtin_divsd( calib_accum , spin_rate_over2 ) ;
+		ggain[2] = adjust_gyro_gain( ggain[2] , gain_change ) ;
 	}
 	return ;
 }
