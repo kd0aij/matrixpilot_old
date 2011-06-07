@@ -45,17 +45,17 @@ fractional spin_axis[] = { 0 , 0 , RMAX } ;
 
 #if ( BOARD_TYPE == UDB3_BOARD )
 //Paul's gains corrected for GGAIN
-#define KPROLLPITCH 256*50
-#define KIROLLPITCH 256*10*0
+#define KPROLLPITCH 256*5
+#define KIROLLPITCH 256
 #else
 //Paul's gains:
-#define KPROLLPITCH 256*100
-#define KIROLLPITCH 256*20*0
+#define KPROLLPITCH 256*10
+#define KIROLLPITCH 256*2
 #endif
 
-#define KPYAW 256*40
-//#define KIYAW 32
-#define KIYAW 256*10*0
+#define KPYAW 256*4
+#define KIYAW 32
+//#define KIYAW 256*10*0
 
 #define GYROSAT 15000
 // threshold at which gyros may be saturated
@@ -238,6 +238,9 @@ void rupdate(void)
 {
 	fractional rup[9] ;
 	fractional theta[3] ;
+	unsigned long thetaSquare ;
+	unsigned nonlinearAdjust ;
+	
 	VectorAdd( 3 , omegaAccum , omegagyro , omegacorrI ) ;
 	VectorAdd( 3 , omega , omegaAccum , omegacorrP ) ;
 	//	scale by the integration factor:
@@ -245,6 +248,18 @@ void rupdate(void)
 	VectorMultiply( 3 , theta , omega , ggain ) ; // Scalegain of 2 
 	// diagonal elements of the update matrix:
 	rup[0] = rup[4] = rup[8]= RMAX ;
+
+	thetaSquare = 	__builtin_mulss ( theta[0] , theta[0] ) +
+					__builtin_mulss ( theta[1] , theta[1] ) +
+					__builtin_mulss ( theta[2] , theta[2] ) ;
+
+	nonlinearAdjust = RMAX + ((unsigned int ) ( thetaSquare >>14 ))/3 ;	
+
+
+	theta[0] = __builtin_mulsu ( theta[0] , nonlinearAdjust )>>14 ;
+	theta[1] = __builtin_mulsu ( theta[1] , nonlinearAdjust )>>14 ;
+	theta[2] = __builtin_mulsu ( theta[2] , nonlinearAdjust )>>14 ;
+
 	//	construct the off-diagonal elements of the update matrix:
 	rup[1] = -theta[2] ;
 	rup[2] =  theta[1] ;
@@ -432,22 +447,44 @@ void mag_drift()
 
 #endif
 
+#define MAXIMUM_SPIN_DCM_INTEGRAL 20.0 // degrees per second
+
+int kpyaw = KPYAW ;
+int kprollpitch = KPROLLPITCH ;
 
 void PI_feedback(void)
 {
 	fractional errorRPScaled[3] ;
-	
-	VectorScale( 3 , omegacorrP , errorYawplane , KPYAW ) ; // Scale gain = 2
-	VectorScale( 3 , errorRPScaled , errorRP , KPROLLPITCH ) ; // Scale gain = 2
-	VectorAdd( 3 , omegacorrP , omegacorrP , errorRPScaled ) ;
-	
-	gyroCorrectionIntegral[0].WW += ( __builtin_mulss( errorRP[0] , KIROLLPITCH )>>3) ;
-	gyroCorrectionIntegral[1].WW += ( __builtin_mulss( errorRP[1] , KIROLLPITCH )>>3) ;
-	gyroCorrectionIntegral[2].WW += ( __builtin_mulss( errorRP[2] , KIROLLPITCH )>>3) ;
 
-	gyroCorrectionIntegral[0].WW += ( __builtin_mulss( errorYawplane[0] , KIYAW )>>3) ;
-	gyroCorrectionIntegral[1].WW += ( __builtin_mulss( errorYawplane[1] , KIYAW )>>3) ;
-	gyroCorrectionIntegral[2].WW += ( __builtin_mulss( errorYawplane[2] , KIYAW )>>3) ;
+	if ( spin_rate < ( (unsigned int ) ( 50.0 * DEGPERSEC ) ))
+	{
+		kpyaw = KPYAW ;
+		kprollpitch = KPROLLPITCH ;
+	}
+	else if ( spin_rate < ( (unsigned int ) ( 500.0 * DEGPERSEC ) ))
+	{
+		kpyaw = ((unsigned int )( KPYAW*8.0 / ( 50.0 * DEGPERSEC )))*(spin_rate>>3) ;
+		kprollpitch = ((unsigned int )( KPROLLPITCH*8.0 / ( 50.0 * DEGPERSEC )))*(spin_rate>>3) ;
+	}
+	else
+	{
+		kpyaw = ( int ) ( 10.0 * KPYAW ) ;
+		kprollpitch = ( int ) ( 10.0 * KPROLLPITCH ) ;
+	}
+	VectorScale( 3 , omegacorrP , errorYawplane , kpyaw ) ; // Scale gain = 2
+	VectorScale( 3 , errorRPScaled , errorRP , kprollpitch ) ; // Scale gain = 2
+	VectorAdd( 3 , omegacorrP , omegacorrP , errorRPScaled ) ;
+
+	if ( spin_rate < ( (unsigned int ) ( MAXIMUM_SPIN_DCM_INTEGRAL * DEGPERSEC ) ))
+	{	
+		gyroCorrectionIntegral[0].WW += ( __builtin_mulss( errorRP[0] , KIROLLPITCH )>>3) ;
+		gyroCorrectionIntegral[1].WW += ( __builtin_mulss( errorRP[1] , KIROLLPITCH )>>3) ;
+		gyroCorrectionIntegral[2].WW += ( __builtin_mulss( errorRP[2] , KIROLLPITCH )>>3) ;
+
+		gyroCorrectionIntegral[0].WW += ( __builtin_mulss( errorYawplane[0] , KIYAW )>>3) ;
+		gyroCorrectionIntegral[1].WW += ( __builtin_mulss( errorYawplane[1] , KIYAW )>>3) ;
+		gyroCorrectionIntegral[2].WW += ( __builtin_mulss( errorYawplane[2] , KIYAW )>>3) ;
+	}
 
 	omegacorrI[0] = gyroCorrectionIntegral[0]._.W1>>3 ;
 	omegacorrI[1] = gyroCorrectionIntegral[1]._.W1>>3 ;
@@ -472,6 +509,7 @@ unsigned int adjust_gyro_gain ( unsigned int old_gain , int gain_change )
 }
 
 #define GYRO_CALIB_TAU 10.0
+#define MINIMUM_SPIN_RATE_GYRO_CALIB 50.0 // degrees/second
 
 void calibrate_gyros(void)
 {
@@ -479,7 +517,7 @@ void calibrate_gyros(void)
 	long calib_accum ;
 	int gain_change ;
 	unsigned int spin_rate_over2 ;
-	if ( spin_rate > 1000 )
+	if ( spin_rate > ( unsigned int ) ( MINIMUM_SPIN_RATE_GYRO_CALIB * DEGPERSEC ) )
 	{
 		spin_rate_over2 = spin_rate>>1 ;
 		VectorMultiply( 3 , omegacorrPweighted , spin_axis , omegacorrP ) ; // includes 1/2
