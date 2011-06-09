@@ -55,7 +55,6 @@ fractional spin_axis[] = { 0 , 0 , RMAX } ;
 
 #define KPYAW 256*4
 #define KIYAW 32
-//#define KIYAW 256*10*0
 
 #define GYROSAT 15000
 // threshold at which gyros may be saturated
@@ -66,6 +65,7 @@ fractional spin_axis[] = { 0 , 0 , RMAX } ;
 //	as measured in the earth reference frame.
 //	rmat is initialized to the identity matrix in 2.14 fractional format
 fractional rmat[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0 , RMAX } ;
+fractional rmatDelayCompensated[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0 , RMAX } ;
 
 //	rup is the rotational update matrix.
 //	At each time step, the new rmat is equal to the old one, multiplied by rup.
@@ -103,7 +103,7 @@ fractional dirovergndHRmat[] = { 0 , RMAX , 0 } ;
 //  fractional theta[] = { 0 , 0 , 0 } ;
 
 //	matrix buffer:
-fractional rbuff[] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 } ;
+//  fractional rbuff[] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 } ;
 
 //	vector buffer
 fractional errorRP[] = { 0 , 0 , 0 } ;
@@ -238,23 +238,26 @@ void rupdate(void)
 {
 	fractional rup[9] ;
 	fractional theta[3] ;
+	fractional rbuff[9] ;
 	unsigned long thetaSquare ;
 	unsigned nonlinearAdjust ;
 	
 	VectorAdd( 3 , omegaAccum , omegagyro , omegacorrI ) ;
 	VectorAdd( 3 , omega , omegaAccum , omegacorrP ) ;
-	//	scale by the integration factor:
-//	VectorScale( 3 , theta , omega , ggain ) ;	// Scalegain of 2
+	//	scale by the integration factors:
 	VectorMultiply( 3 , theta , omega , ggain ) ; // Scalegain of 2 
 	// diagonal elements of the update matrix:
 	rup[0] = rup[4] = rup[8]= RMAX ;
+
+	// compute the square of rotation
 
 	thetaSquare = 	__builtin_mulss ( theta[0] , theta[0] ) +
 					__builtin_mulss ( theta[1] , theta[1] ) +
 					__builtin_mulss ( theta[2] , theta[2] ) ;
 
-	nonlinearAdjust = RMAX + ((unsigned int ) ( thetaSquare >>14 ))/3 ;	
+	// adjust gain by rotation_squared divided by 3
 
+	nonlinearAdjust = RMAX + ((unsigned int ) ( thetaSquare >>14 ))/3 ;	
 
 	theta[0] = __builtin_mulsu ( theta[0] , nonlinearAdjust )>>14 ;
 	theta[1] = __builtin_mulsu ( theta[1] , nonlinearAdjust )>>14 ;
@@ -267,6 +270,7 @@ void rupdate(void)
 	rup[5] = -theta[0] ;
 	rup[6] = -theta[1] ;
 	rup[7] =  theta[0] ;
+
 	//	matrix multiply the rmatrix by the update matrix
 	MatrixMultiply( 3 , 3 , 3 , rbuff , rmat , rup ) ;
 	//	multiply by 2 and copy back from rbuff to rmat:
@@ -284,6 +288,7 @@ void normalize(void)
 {
 	fractional norm ; // actual magnitude
 	fractional renorm ;	// renormalization factor
+	fractional rbuff[9] ;
 	//	compute -1/2 of the dot product between rows 1 and 2
 	error =  - VectorDotProduct( 3 , &rmat[0] , &rmat[3] ) ; // note, 1/2 is built into 2.14
 	//	scale rows 1 and 2 by the error
@@ -378,23 +383,40 @@ void align_rmat_to_mag(void)
 	return ;
 }
 
+#define MAG_LATENCY 0.085 // seconds
+#define MAG_LATENCY_COUNT ( ( int ) ( MAG_LATENCY / 0.025 ) )
+
+int mag_latency_counter = 10 - MAG_LATENCY_COUNT ;
+
 void mag_drift()
 {
 	int mag_error ;
 	int vector_index ;
 	fractional rmatTransposeMagField[3] ;
 	fractional offsetSum[3] ;
+
+	// the following compensates for magnetometer drift by adjusting the timing
+	// of when rmat is read
+	mag_latency_counter -- ;
+	if ( mag_latency_counter == 0 )
+	{
+		VectorCopy ( 9 , rmatDelayCompensated , rmat ) ;
+		mag_latency_counter = 10 ; // not really needed, but its good insurance
+	}
 	
 	if ( dcm_flags._.mag_drift_req )
 	{
 		if ( dcm_flags._.first_mag_reading == 1 )
 		{
 			align_rmat_to_mag() ;
+			VectorCopy ( 9 , rmatDelayCompensated , rmat ) ;		
 		}
 
-		magFieldEarth[0] = VectorDotProduct( 3 , &rmat[0] , udb_magFieldBody )<<1 ;
-		magFieldEarth[1] = VectorDotProduct( 3 , &rmat[3] , udb_magFieldBody )<<1 ;
-		magFieldEarth[2] = VectorDotProduct( 3 , &rmat[6] , udb_magFieldBody )<<1 ;
+		mag_latency_counter = 10 - MAG_LATENCY_COUNT ; // setup for the next reading
+
+		magFieldEarth[0] = VectorDotProduct( 3 , &rmatDelayCompensated[0] , udb_magFieldBody )<<1 ;
+		magFieldEarth[1] = VectorDotProduct( 3 , &rmatDelayCompensated[3] , udb_magFieldBody )<<1 ;
+		magFieldEarth[2] = VectorDotProduct( 3 , &rmatDelayCompensated[6] , udb_magFieldBody )<<1 ;
 
 		mag_error = 100*VectorDotProduct( 2 , magFieldEarth , declinationVector ) ; // Dotgain = 1/2
 		VectorScale( 3 , errorYawplane , &rmat[6] , mag_error ) ; // Scalegain = 1/2
@@ -405,7 +427,7 @@ void mag_drift()
 			offsetSum[vector_index] >>= 1 ;
 		}
 
-		MatrixMultiply( 1 , 3 , 3 , rmatTransposeMagField , magFieldEarthPrevious , rmat ) ;
+		MatrixMultiply( 1 , 3 , 3 , rmatTransposeMagField , magFieldEarthPrevious , rmatDelayCompensated ) ;
 		VectorSubtract( 3 , offsetSum , offsetSum , rmatTransposeMagField ) ;
 
 		MatrixMultiply( 1 , 3 , 3 , rmatTransposeMagField , magFieldEarth , rmatPrevious ) ;
@@ -415,8 +437,8 @@ void mag_drift()
 		{
 			int adjustment ;
 			adjustment = offsetSum[vector_index] ;
-//			if ( abs( adjustment ) < 3 )
-			if ( abs( adjustment ) < 20 )
+			if ( abs( adjustment ) < 8 )
+//			if ( abs( adjustment ) < 20 )
 			{
 				offsetSum[vector_index] = 0 ;
 				adjustment = 0 ;
@@ -427,9 +449,9 @@ void mag_drift()
 		if ( dcm_flags._.first_mag_reading == 0 )
 		{
 //			VectorAdd ( 3 , udb_magOffset , udb_magOffset , offsetSum ) ;
-			udb_magOffset[0] = udb_magOffset[0] + ( ( offsetSum[0] + 2 ) >> 2 ) ;
-			udb_magOffset[1] = udb_magOffset[1] + ( ( offsetSum[1] + 2 ) >> 2 ) ;
-			udb_magOffset[2] = udb_magOffset[2] + ( ( offsetSum[2] + 2 ) >> 2 ) ;
+			udb_magOffset[0] = udb_magOffset[0] + ( ( offsetSum[0] + 2 ) >> 3 ) ;
+			udb_magOffset[1] = udb_magOffset[1] + ( ( offsetSum[1] + 2 ) >> 3 ) ;
+			udb_magOffset[2] = udb_magOffset[2] + ( ( offsetSum[2] + 2 ) >> 3 ) ;
 		}
 		else
 		{
@@ -438,7 +460,7 @@ void mag_drift()
 
 		VectorCopy ( 3 , magFieldEarthPrevious , magFieldEarth ) ;
 		VectorCopy ( 3 , magFieldBodyPrevious , udb_magFieldBody ) ;
-		VectorCopy ( 9 , rmatPrevious , rmat ) ;
+		VectorCopy ( 9 , rmatPrevious , rmatDelayCompensated ) ;
 
 		dcm_flags._.mag_drift_req = 0 ;
 	}
@@ -449,12 +471,14 @@ void mag_drift()
 
 #define MAXIMUM_SPIN_DCM_INTEGRAL 20.0 // degrees per second
 
-int kpyaw = KPYAW ;
-int kprollpitch = KPROLLPITCH ;
-
 void PI_feedback(void)
 {
 	fractional errorRPScaled[3] ;
+	int kpyaw ;
+	int kprollpitch ;
+
+	// boost the KPs at high spin rate, to compensate for increased error due to calibration error
+	// above 50 degrees/second, scale by rotation rate divided by 50
 
 	if ( spin_rate < ( (unsigned int ) ( 50.0 * DEGPERSEC ) ))
 	{
@@ -474,6 +498,9 @@ void PI_feedback(void)
 	VectorScale( 3 , omegacorrP , errorYawplane , kpyaw ) ; // Scale gain = 2
 	VectorScale( 3 , errorRPScaled , errorRP , kprollpitch ) ; // Scale gain = 2
 	VectorAdd( 3 , omegacorrP , omegacorrP , errorRPScaled ) ;
+
+	// turn off the offset integrator while spinning, it doesn't work in that case,
+	// and it only causes trouble.
 
 	if ( spin_rate < ( (unsigned int ) ( MAXIMUM_SPIN_DCM_INTEGRAL * DEGPERSEC ) ))
 	{	
@@ -572,11 +599,43 @@ void output_IMUvelocity(void)
 
 extern void dead_reckon(void) ;
 
+int rmat3prev ;
+
 void dcm_run_imu_step(void)
 //	update the matrix, renormalize it, 
 //	adjust for roll and pitch drift,
 //	and send it to the servos.
 {
+	if ( rmat[4] > 0 )
+	{
+		if (  abs(rmat[3]) > 5000 )
+		{
+		   LED_STROBE = LED_ON ;
+		}
+		else
+		{
+			LED_STROBE = LED_OFF ;
+		}
+		if ( rmat[3] > 0 )
+		{
+			if ( rmat3prev < 0 )
+			{
+				LED_STROBE = LED_ON ;
+			}
+		}
+		else
+		{
+			if ( rmat3prev > 0 )
+			{
+				LED_STROBE = LED_ON ;
+			}
+		}
+	}
+	else
+	{
+		LED_STROBE = LED_OFF ;
+	}
+	rmat3prev = rmat[3] ;
 	dead_reckon() ;
 #if ( HILSIM != 1 )
 //	adj_accel() ;

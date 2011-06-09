@@ -51,9 +51,13 @@
 #define MAX_INPUTS	5
 #define MAX_OUTPUTS	6
 
+extern char bitbucket ;
+
 // LED pins
 #define LED_RED				LATFbits.LATF0
-#define LED_GREEN			LATFbits.LATF1
+#define LED_GREEN	bitbucket
+//#define LED_GREEN			LATFbits.LATF1
+#define LED_STROBE 			LATFbits.LATF1
 
 // Pin locations of the hardware toggle switches
 #define HW_SWITCH_1			(PORTDbits.RD3 == 0)

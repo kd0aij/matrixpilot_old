@@ -32,6 +32,7 @@ char debug_buffer[256] ;
 int db_index = 0 ;
 void send_debug_line( void ) ;
 
+char bitbucket ;
 
 int main (void)
 {
@@ -120,6 +121,7 @@ int output_count = 0 ;
 extern unsigned int spin_rate ;
 extern int spin_axis[3] ;
 extern int ggain[3] ;
+//extern int kprollpitch , kpyaw ;
 
 // Prepare a line of serial output and start it sending
 void send_debug_line( void )
@@ -132,14 +134,15 @@ void send_debug_line( void )
 								"r[6] , r[7] , r[8] , "
 								"g[0] , g[1] , g[2] , "
 								"B[0] , B[1] , B[2] , "
+								"B0[0] , B0[1] , B0[2] , "
 								 ) ;
 	}
 	else if ( output_count == 1 )
 	{
 		output_count = 2 ;
-		sprintf( debug_buffer , "B0[0] , B0[1] , B0[2] , "
-								"gyro[0] , gyro[1] , gyro[2] , "
-								"rate , n[0] , n[1] , n2] , "
+		sprintf( debug_buffer , "gyro[0] , gyro[1] , gyro[2] , "
+								"rate , n[0] , n[1] , n[2] , "
+							//	"kpyaw , kprp , "
 								"P[0] , P[1] , P[2] , "
 								"gain[0] , gain[1] , gain[2] , "
 								"I[0] , I[1] , I[2] \r\n" ) ;
@@ -154,6 +157,7 @@ void send_debug_line( void )
 		udb_magOffset[0] , udb_magOffset[1] , udb_magOffset[2] , 
 		omegagyro[0] , omegagyro[1] , omegagyro[2] , 
 		spin_rate , spin_axis[0] , spin_axis[1] , spin_axis[2] , 
+	//	kpyaw , kprollpitch ,
 		omegacorrP[0] , omegacorrP[1] , omegacorrP[2] ,
 		ggain[0] , ggain[1] , ggain[2] ,
 		omegacorrI[0] , omegacorrI[1] , omegacorrI[2] 	) ; 
