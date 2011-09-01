@@ -38,7 +38,7 @@
 // UDB3_BOARD  - Board is red, and includes a single, flat, multi-gyro daugter-board.
 // See the MatrixPilot wiki for more details on different UDB boards.
 // If building for UDB4, use the MatrixPilot-udb4.mcp project file.
-#define BOARD_TYPE 							UDB3_BOARD
+#define BOARD_TYPE 							UDB4_BOARD
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@
 // more compatible with other add-ons. The CRYSTAL_CLOCK supports a maximum baud rate of 19200 bps.
 // FRC8X_CLOCK runs the fast RC clock (7.3728 MHz) with 8X PLL multiplier, and supports much
 // faster baud rates.
-#define CLOCK_CONFIG 						FRC8X_CLOCK
+#define CLOCK_CONFIG 						CRYSTAL_CLOCK
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,8 +77,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-// Note that if you use GPS_MTEK, you need to set CLOCK_CONFIG to FRC8X_CLOCK above.
-#define GPS_TYPE							GPS_STD
+#define GPS_TYPE							GPS_UBX_4HZ
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -177,19 +176,24 @@
 // NUM_INPUTS: Set to 1-5 (or 1-8 when using PPM input)
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
-#define NUM_INPUTS							5
+#define NUM_INPUTS							8
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
-#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
-#define AILERON_INPUT_CHANNEL				CHANNEL_1
+#define AILERON_LEFT_INPUT_CHANNEL			CHANNEL_1
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_5
-#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
+#define RUDDER_INPUT_CHANNEL				CHANNEL_4
+#define AILERON_RIGHT_INPUT_CHANNEL			CHANNEL_5
+#define FLAP_LEFT_INPUT_CHANNEL				CHANNEL_6
+#define FLAP_RIGHT_INPUT_CHANNEL			CHANNEL_7
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_8
+
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
+
 #define OSD_MODE_SWITCH_INPUT_CHANNEL		CHANNEL_UNUSED
 #define PASSTHROUGH_A_INPUT_CHANNEL			CHANNEL_UNUSED
 #define PASSTHROUGH_B_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -202,7 +206,7 @@
 //   5 also enables E2 as the 5th output channel
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
-#define NUM_OUTPUTS							4
+#define NUM_OUTPUTS							7
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -215,13 +219,17 @@
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
 // 
-#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
-#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
+#define AILERON_LEFT_OUTPUT_CHANNEL			CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
+#define AILERON_RIGHT_OUTPUT_CHANNEL		CHANNEL_5
+#define FLAP_LEFT_OUTPUT_CHANNEL			CHANNEL_6
+#define FLAP_RIGHT_OUTPUT_CHANNEL			CHANNEL_7
+
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
+
 #define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
 #define PASSTHROUGH_A_OUTPUT_CHANNEL		CHANNEL_UNUSED
 #define PASSTHROUGH_B_OUTPUT_CHANNEL		CHANNEL_UNUSED
@@ -235,11 +243,12 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
-#define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
-#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
+#define AILERON_CHANNEL_REVERSED			0
+#define ELEVATOR_CHANNEL_REVERSED			0
+#define RUDDER_CHANNEL_REVERSED				0
 #define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
 #define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
+#define CAMERA_ROLL_CHANNEL_REVERSED		0
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED			0
 
@@ -270,7 +279,7 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN					1500
+#define FAILSAFE_INPUT_MIN					2000
 #define FAILSAFE_INPUT_MAX					4500
 
 // FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
@@ -307,7 +316,7 @@
 // SERIAL_UDB_EXTRA can be used with the OpenLog without characters being dropped.
 // SERIAL_UDB_EXTRA may result in dropped characters if used with the XBEE wireless transmitter.
 // SERIAL_CAM_TRACK is used to output location data to a 2nd UDB, which will target its camera at this plane.
-#define SERIAL_OUTPUT_FORMAT				SERIAL_NONE
+#define SERIAL_OUTPUT_FORMAT				SERIAL_UDB_EXTRA
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -401,9 +410,9 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP								0.20
-#define ROLLKD								0.05
-#define YAWKP_AILERON						0.10
+#define ROLLKP								0.5	//0.20
+#define ROLLKD								0.2	//0.05
+#define YAWKP_AILERON						0.05
 #define YAWKD_AILERON						0.05
 #define AILERON_BOOST						1.00
 
@@ -413,8 +422,8 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
-#define PITCHGAIN							0.10
-#define PITCHKD								0.04
+#define PITCHGAIN							0.2		//0.10
+#define PITCHKD								0.15	//0.04
 #define RUDDER_ELEV_MIX						0.20
 #define ROLL_ELEV_MIX						0.05
 #define ELEVATOR_BOOST						0.50
@@ -430,9 +439,9 @@
 // MANUAL_AILERON_RUDDER_MIX is the fraction of manual aileron control to mix into the rudder when
 // in stabilized or waypoint mode.  This mainly helps aileron-initiated turning while in stabilized.
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER						0.05
-#define YAWKD_RUDDER						0.05
-#define ROLLKP_RUDDER						0.06
+#define YAWKP_RUDDER						0.1		//0.05
+#define YAWKD_RUDDER						0.1		//0.05
+#define ROLLKP_RUDDER						0.1		//0.06
 #define MANUAL_AILERON_RUDDER_MIX			0.00
 #define RUDDER_BOOST						1.00
 
@@ -450,7 +459,7 @@
 // HOVER_NAV_MAX_PITCH_RADIUS is the radius around a waypoint in meters, within which the HOVER_PITCH_TOWARDS_WP
 //                            value is proportionally scaled down.
 #define HOVER_ROLLKP						0.05
-#define HOVER_ROLLKD						0.05
+#define HOVER_ROLLKD						0.1
 #define HOVER_PITCHGAIN						0.2
 #define HOVER_PITCHKD						0.25
 #define HOVER_PITCH_OFFSET					0.0		// + leans towards top, - leans towards bottom
@@ -559,7 +568,7 @@
 // HILSIM_BAUD is the serial speed for communications with the X-Plane plugin.  Default is
 // 19200, but 230400 is a good speedy option.  Make sure the X-Plane plugin's Setup file has
 // its speed set to match.
-#define HILSIM 								0
+#define HILSIM 								1
 #define HILSIM_BAUD							19200
 
 

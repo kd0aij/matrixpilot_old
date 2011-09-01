@@ -141,9 +141,10 @@ extern fractional gain_limit_function(functionSetting* pSetting, fractional* pRe
 
 
 
+extern const pflexFunction flexiFunctions [];
+
+
 extern void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions );
 
-
-extern const pflexFunction flexiFunctions [];
 
 #endif

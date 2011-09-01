@@ -1,6 +1,7 @@
 #include "flexiFunctionTypes.h"
 
-//pyFEdit generated file - DO NOT EDIT
+/****************************************************************/
+//	pyFEdit generated file - DO NOT EDIT
 
 
 const pflexFunction flexiFunctions [] =

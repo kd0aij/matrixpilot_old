@@ -51,33 +51,34 @@ void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsi
 	};
 };
 
-/*
-fractional mixNULL(funcitonSetting* pSetting)
+
+fractional null_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	return 0;
 };
 
 
-fractional mixSum(MixerSetting* pSetting)
+
+fractional sum_offset_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	union longww 	ltemp;
 	fractional 		ftemp;
-	ftemp = mix_registers[pSetting->data.sum.src];
-	ftemp  -= pSetting->data.sum.srcOffset;
+	ftemp = pRegisters[pSetting->data.sum_offset.src];
+	ftemp  -= pSetting->data.sum_offset.Offset;
 	if(ftemp > 0)
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.sum.srcPosGain);
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.sum_offset.PosGain);
 	else
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.sum.srcNegGain);	
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.sum_offset.NegGain);	
 	
 	ltemp.WW <<= 2;
 	ftemp = (fractional) ltemp._.W1;
 
-	ftemp  += pSetting->data.sum.constant;
+	ftemp  += pSetting->data.sum_offset.Constant;
 
 	return ftemp;
 };
 
-
+/*
 
 fractional mixDualSum(MixerSetting* pSetting)
 {
@@ -135,15 +136,16 @@ fractional mixScaleRefOffLim(MixerSetting* pSetting)
 
 	return ftemp;
 };
+*/
 
 
-fractional mixLinearMux(MixerSetting* pSetting)
+fractional linear_mux_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	union longww 	ltemp;
 	fractional 		ftemp, ftemp2;
 	fractional 		gainTemp, gainTemp2;
 
-	gainTemp =	mix_registers[pSetting->data.linearMux.cntrlSrc];
+	gainTemp =	pRegisters[pSetting->data.linear_mux.Control];
 
 	if(gainTemp < 0)
 		gainTemp = 0;
@@ -152,12 +154,12 @@ fractional mixLinearMux(MixerSetting* pSetting)
 
 	gainTemp2 = RMAX - gainTemp; 
 
-	ftemp = mix_registers[pSetting->data.linearMux.src2];
+	ftemp = pRegisters[pSetting->data.linear_mux.src2];
 	ltemp.WW = __builtin_mulss(ftemp, gainTemp);
 	ltemp.WW <<= 2;
 	ftemp = (fractional) ltemp._.W1;
 
-	ftemp2 = mix_registers[pSetting->data.linearMux.src1];
+	ftemp2 = pRegisters[pSetting->data.linear_mux.src1];
 	ltemp.WW = __builtin_mulss(ftemp2, gainTemp2);
 	ltemp.WW <<= 2;
 	ftemp += (fractional) ltemp._.W1;
@@ -165,7 +167,7 @@ fractional mixLinearMux(MixerSetting* pSetting)
 	return ftemp;
 };
 
-
+/*
 fractional mixConditionalGain(MixerSetting* pSetting)
 {
 	union longww 	ltemp;

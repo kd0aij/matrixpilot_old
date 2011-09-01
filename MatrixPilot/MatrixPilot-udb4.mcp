@@ -286,7 +286,7 @@ file_060=flexiFunctionTypes.h
 file_061=MIXERRegisters.h
 file_062=MIXERVars.h
 file_063=mixer_options.h
-file_064=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
+file_064=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
