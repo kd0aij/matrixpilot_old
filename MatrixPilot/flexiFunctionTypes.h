@@ -14,14 +14,14 @@ typedef struct tagFuncData_NULL
 } FuncData_null;
 
 
-typedef struct tagFuncData_SUM_OFFSET
+typedef struct tagFuncData_GAIN_OFFSET
 {
 	unsigned int	src;
 	fractional	PosGain;
 	fractional	NegGain;
 	fractional	Offset;
 	fractional	Constant;
-} FuncData_sum_offset;
+} FuncData_gain_offset;
 
 
 typedef struct tagFuncData_MULTIPLY
@@ -50,6 +50,16 @@ typedef struct tagFuncData_CONDITIONAL_SET_REF
 } FuncData_conditional_set_ref;
 
 
+typedef struct tagFuncData_CONDITIONAL_SET
+{
+	unsigned int	src;
+	unsigned int	srcCond;
+	int	condMax;
+	int	condMin;
+	fractional	setValue;
+} FuncData_conditional_set;
+
+
 typedef struct tagFuncData_CONDITIONAL_GAIN
 {
 	unsigned int	src;
@@ -65,7 +75,7 @@ typedef struct tagFuncData_SCALE_TRIM_LIMIT
 {
 	unsigned int	src;
 	int	subTrim;
-	fractional	offset;
+	int	offset;
 	int	scalePos;
 	int	scaleNeg;
 	int	limitMin;
@@ -98,10 +108,11 @@ typedef struct tagFuncData_GAIN_LIMIT
 typedef union
 {
 	FuncData_null	null;
-	FuncData_sum_offset	sum_offset;
+	FuncData_gain_offset	gain_offset;
 	FuncData_multiply	multiply;
 	FuncData_linear_mux	linear_mux;
 	FuncData_conditional_set_ref	conditional_set_ref;
+	FuncData_conditional_set	conditional_set;
 	FuncData_conditional_gain	conditional_gain;
 	FuncData_scale_trim_limit	scale_trim_limit;
 	FuncData_scale_reftrim_limit	scale_reftrim_limit;
@@ -130,10 +141,11 @@ typedef int (*pflexFunction)(functionSetting*, fractional*);
 
 
 extern fractional null_function(functionSetting* pSetting, fractional* pRegisters);
-extern fractional sum_offset_function(functionSetting* pSetting, fractional* pRegisters);
+extern fractional gain_offset_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional multiply_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional linear_mux_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional conditional_set_ref_function(functionSetting* pSetting, fractional* pRegisters);
+extern fractional conditional_set_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional conditional_gain_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional scale_trim_limit_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional scale_reftrim_limit_function(functionSetting* pSetting, fractional* pRegisters);

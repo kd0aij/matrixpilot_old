@@ -59,21 +59,21 @@ fractional null_function(functionSetting* pSetting, fractional* pRegisters)
 
 
 
-fractional sum_offset_function(functionSetting* pSetting, fractional* pRegisters)
+fractional gain_offset_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	union longww 	ltemp;
 	fractional 		ftemp;
-	ftemp = pRegisters[pSetting->data.sum_offset.src];
-	ftemp  -= pSetting->data.sum_offset.Offset;
+	ftemp = pRegisters[pSetting->data.gain_offset.src];
+	ftemp  -= pSetting->data.gain_offset.Offset;
 	if(ftemp > 0)
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.sum_offset.PosGain);
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.gain_offset.PosGain);
 	else
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.sum_offset.NegGain);	
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.gain_offset.NegGain);	
 	
 	ltemp.WW <<= 2;
 	ftemp = (fractional) ltemp._.W1;
 
-	ftemp  += pSetting->data.sum_offset.Constant;
+	ftemp  += pSetting->data.gain_offset.Constant;
 
 	return ftemp;
 };
@@ -85,27 +85,29 @@ fractional mixDualSum(MixerSetting* pSetting)
 	return 0;
 };
 
+*/
+
 // Scale output, add offset and subtrim then apply full scale limit.
 // This output option is good for HILSIM or non-pre mixed RC controls.
-fractional mixScaleOffLim(MixerSetting* pSetting)
+fractional scale_trim_limit_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	union longww 	ltemp;
 	fractional 		ftemp;
-	ftemp = mix_registers[pSetting->data.scaleTrimLimit.src];
+	ftemp = pRegisters[pSetting->data.scale_trim_limit.src];
 	if(ftemp > 0)
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.scaleTrimLimit.scalePos << 2);
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.scale_trim_limit.scalePos << 2);
 	else
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.scaleTrimLimit.scaleNeg << 2);	
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.scale_trim_limit.scaleNeg << 2);	
 	
 	ftemp = (fractional) ltemp._.W1;
 
-	ftemp += pSetting->data.scaleTrimLimit.offset;
-	ftemp += pSetting->data.scaleTrimLimit.subTrim;
+	ftemp += pSetting->data.scale_trim_limit.offset;
+	ftemp += pSetting->data.scale_trim_limit.subTrim;
 
-	if(ftemp > pSetting->data.scaleTrimLimit.limitPos) 
-		ftemp = pSetting->data.scaleTrimLimit.limitPos;
-	else if (ftemp < pSetting->data.scaleTrimLimit.limitNeg) 
-		ftemp = pSetting->data.scaleTrimLimit.limitNeg;
+	if(ftemp > pSetting->data.scale_trim_limit.limitMax) 
+		ftemp = pSetting->data.scale_trim_limit.limitMax;
+	else if (ftemp < pSetting->data.scale_trim_limit.limitMin) 
+		ftemp = pSetting->data.scale_trim_limit.limitMin;
 
 	return ftemp;
 };
@@ -113,30 +115,30 @@ fractional mixScaleOffLim(MixerSetting* pSetting)
 
 // Scale output, add referenced offset and subtrim then apply full scale limit.
 // referenced offset can be a pwInTrim value or similar.
-fractional mixScaleRefOffLim(MixerSetting* pSetting)
+fractional scale_reftrim_limit_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	union longww 	ltemp;
 	fractional 		ftemp;
-	ftemp = mix_registers[pSetting->data.scaleTrimLimit.src];
+	ftemp = pRegisters[pSetting->data.scale_reftrim_limit.src];
 	if(ftemp > 0)
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.scaleTrimLimit.scalePos << 2);
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.scale_reftrim_limit.scalePos << 2);
 	else
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.scaleTrimLimit.scaleNeg << 2);	
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.scale_reftrim_limit.scaleNeg << 2);	
 	
 	ftemp = (fractional) ltemp._.W1;
 
-	ftemp += mix_registers[pSetting->data.scaleRefTrimLimit.offsetRef];
+	ftemp += pRegisters[pSetting->data.scale_reftrim_limit.refOffset];
 
-	ftemp += pSetting->data.scaleTrimLimit.subTrim;
+	ftemp += pSetting->data.scale_reftrim_limit.subTrim;
 
-	if(ftemp > pSetting->data.scaleTrimLimit.limitPos) 
-		ftemp = pSetting->data.scaleTrimLimit.limitPos;
-	else if (ftemp < pSetting->data.scaleTrimLimit.limitNeg) 
-		ftemp = pSetting->data.scaleTrimLimit.limitNeg;
+	if(ftemp > pSetting->data.scale_reftrim_limit.limitMax) 
+		ftemp = pSetting->data.scale_reftrim_limit.limitMax;
+	else if (ftemp < pSetting->data.scale_reftrim_limit.limitMin) 
+		ftemp = pSetting->data.scale_reftrim_limit.limitMin;
 
 	return ftemp;
 };
-*/
+
 
 
 fractional linear_mux_function(functionSetting* pSetting, fractional* pRegisters)
@@ -167,8 +169,8 @@ fractional linear_mux_function(functionSetting* pSetting, fractional* pRegisters
 	return ftemp;
 };
 
-/*
-fractional mixConditionalGain(MixerSetting* pSetting)
+
+fractional conditional_gain_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	union longww 	ltemp;
 	fractional 		ftemp;
@@ -176,18 +178,18 @@ fractional mixConditionalGain(MixerSetting* pSetting)
 	boolean			state;
 
 	// collect the reference condition value
-	ftemp = mix_registers[pSetting->data.conditionalGain.srcCond];
+	ftemp = pRegisters[pSetting->data.conditional_gain.srcCond];
 
-	state = ( (ftemp >= pSetting->data.conditionalGain.condMin) & 
-			(ftemp <= pSetting->data.conditionalGain.condMax) );
+	state = ( (ftemp >= pSetting->data.conditional_gain.condMin) & 
+			(ftemp <= pSetting->data.conditional_gain.condMax) );
 
 	
-	ftemp = mix_registers[pSetting->data.conditionalGain.src];
+	ftemp = pRegisters[pSetting->data.conditional_gain.src];
 
 	if(state == 0)
-		fgain = pSetting->data.conditionalGain.cond1Gain;
+		fgain = pSetting->data.conditional_gain.condInvalidGain;
 	else
-		fgain = pSetting->data.conditionalGain.cond2Gain;
+		fgain = pSetting->data.conditional_gain.condValidGain;
 
 	ltemp.WW = __builtin_mulss(ftemp, fgain);
 	ltemp.WW <<= 2;
@@ -197,52 +199,67 @@ fractional mixConditionalGain(MixerSetting* pSetting)
 
 };
 
-
-fractional mixConditionalOffset(MixerSetting* pSetting)
+fractional multiply_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	return 0;
 };
 
+fractional gain_limit_function(functionSetting* pSetting, fractional* pRegisters)
+{
+	union longww 	ltemp;
+	fractional 		ftemp;
+	ftemp = pRegisters[pSetting->data.gain_limit.src];
 
-fractional mixConditionalSet(MixerSetting* pSetting)
+	if(ftemp > 0)
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.gain_limit.posGain);
+	else
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.gain_limit.negGain);	
+	
+	ltemp.WW <<= 2;
+	ftemp = (fractional) ltemp._.W1;
+
+	if(ftemp > pSetting->data.gain_limit.limitPos)
+		ftemp = pSetting->data.gain_limit.limitPos;
+	else if(ftemp < pSetting->data.gain_limit.limitNeg)
+		ftemp = pSetting->data.gain_limit.limitNeg;
+
+	return ftemp;
+};
+
+fractional conditional_set_ref_function(functionSetting* pSetting, fractional* pRegisters)
+{
+	return 0;
+};
+
+/*
+fractional mixConditionalOffset(MixerSetting* pSetting)
+{
+	return 0;
+};
+*/
+
+fractional conditional_set_function(functionSetting* pSetting, fractional* pRegisters)
 {
 	fractional 		ctemp;
 	fractional 		ftemp;
 
 	// collect the reference condition value
-	ctemp = mix_registers[pSetting->data.conditionalSet.srcCond];
+	ctemp = pRegisters[pSetting->data.conditional_set.srcCond];
 
-	ftemp = mix_registers[pSetting->data.conditionalSet.src];
+	ftemp = pRegisters[pSetting->data.conditional_set.src];
 
-	if(( (ctemp >= pSetting->data.conditionalSet.condMin) & 
-			(ctemp <= pSetting->data.conditionalSet.condMax) ))
-		ftemp = pSetting->data.conditionalSet.setValue;
+	if(( (ctemp >= pSetting->data.conditional_set.condMin) & 
+			(ctemp <= pSetting->data.conditional_set.condMax) ))
+		ftemp = pSetting->data.conditional_set.setValue;
 	else
-		ftemp = mix_registers[pSetting->data.conditionalSet.src];
+		ftemp = pRegisters[pSetting->data.conditional_set.src];
 
 	return ftemp;
 };
 
-
+/*
 fractional mixGainLim(MixerSetting* pSetting)
 {
-	union longww 	ltemp;
-	fractional 		ftemp;
-	ftemp = mix_registers[pSetting->data.gainLimit.src];
 
-	if(ftemp > 0)
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.gainLimit.posGain);
-	else
-		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.gainLimit.negGain);	
-	
-	ltemp.WW <<= 2;
-	ftemp = (fractional) ltemp._.W1;
-
-	if(ftemp > pSetting->data.gainLimit.posLimit)
-		ftemp = pSetting->data.gainLimit.posLimit;
-	else if(ftemp < pSetting->data.gainLimit.negLimit)
-		ftemp = pSetting->data.gainLimit.negLimit;
-
-	return ftemp;
 };
 */

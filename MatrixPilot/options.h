@@ -183,6 +183,7 @@
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
 #define AILERON_LEFT_INPUT_CHANNEL			CHANNEL_1
+#define AILERON_INPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
 #define THROTTLE_INPUT_CHANNEL				CHANNEL_3
 #define RUDDER_INPUT_CHANNEL				CHANNEL_4
