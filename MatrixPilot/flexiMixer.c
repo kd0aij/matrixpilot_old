@@ -90,12 +90,22 @@ void postMix( void )
 {
 	udb_pwOut[AILERON_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_PWOUT_AILERON_LEFT];
 	udb_pwOut[ELEVATOR_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_PWOUT_ELEVATOR];
-	udb_pwOut[THROTTLE_OUTPUT_CHANNEL]		= (int) MIXER_registers[REG_MIXER_PWOUT_THROTTLE];
 	udb_pwOut[RUDDER_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_PWOUT_RUDDER];
 	udb_pwOut[AILERON_RIGHT_OUTPUT_CHANNEL] = (int) MIXER_registers[REG_MIXER_PWOUT_AILERON_RIGHT];
 	udb_pwOut[FLAP_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_PWOUT_FLAP_LEFT];
 	udb_pwOut[FLAP_RIGHT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_PWOUT_FLAP_RIGHT];
 
+	int throttle = (int) MIXER_registers[REG_MIXER_PWOUT_THROTTLE];
+
+	if(throttle < udb_pwTrim[THROTTLE_INPUT_CHANNEL])
+		throttle = udb_pwTrim[THROTTLE_INPUT_CHANNEL];
+
+	if ( udb_pwIn[THROTTLE_INPUT_CHANNEL] == 0 )
+	{
+		throttle = 0 ;
+	}
+
+	udb_pwOut[THROTTLE_OUTPUT_CHANNEL]	= throttle;
 }
 
 

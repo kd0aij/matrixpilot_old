@@ -126,8 +126,8 @@ typedef union
 
 typedef struct tagFunctionSettings
 {
-  unsigned int    functionType        : 6 ;   // The type of mixer
-  unsigned int    setValue            : 2 ;   // The destination is set to the mixer value, otherwise added
+  unsigned int    functionType        : 6 ;   // The type of function
+  unsigned int    setValue            : 2 ;   // The destination is set(0) added(1) or cleared (2)
   unsigned int    dest                : 8 ;   // The destination register
   functionData    data;
 } functionSetting;
@@ -153,10 +153,34 @@ extern fractional gain_limit_function(functionSetting* pSetting, fractional* pRe
 
 
 
+extern void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions );
+
+
 extern const pflexFunction flexiFunctions [];
 
 
-extern void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions );
+/****************************************************************/
+// Component references to support MAVlink
+
+
+typedef char registerName[16];
+
+
+typedef struct tagComponentReference
+{
+  int				componentNum;   			// The component number
+  functionSetting*	pFunctionData;				// The function data table for this component
+  registerName*	pRegNames;					// The parameter(mavlink) / register(flexifunction) name strings
+  unsigned char	maxRegs;   					// Maximum number of registers
+  unsigned char	maxFuncs;  					// Maximum number of functions
+} componentReference;
+
+
+extern const componentReference componentReferences[];
+
+
+// Helper function for finding component information from an array of component references;
+extern componentReference* findComponentRefWithID(int compID);
 
 
 #endif

@@ -7,6 +7,20 @@
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 format
 
 
+componentReference* findComponentRefWithID(int compID)
+{
+	componentReference* pScanRef = componentReferences;
+	int Index = 0;
+	
+	while(pScanRef->componentNum != -1)
+	{
+		if(pScanRef->componentNum == compID) return pScanRef;
+	}
+	
+	return 0;
+}
+
+
 void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions)
 {
 	int 				functionNo = 0;		// Index of mixer in mixer list
