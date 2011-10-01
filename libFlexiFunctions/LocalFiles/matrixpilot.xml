@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<mavlink>
+	<include>common.xml</include>
+	<!-- note that UDB specific messages should use the command id
+      range from 150 to 250, to leave plenty of room for growth
+      of common.xml 
+
+      If you prototype a message here, then you should consider if it
+      is general enough to move into common.xml later
+    -->
+	<messages>
+    <message id="150" name="FLEXIFUNCTION_SET">
+      <description>Set Flexifunction type and parameters for component at function index</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="func_index">Function index</field>
+      <field type="uint8_t" name="function_type">Function type index</field>
+      <field type="uint8_t" name="Action">Output action, 0,1,2 = set, add or clear</field>
+      <field type="uint16_t" name="out_index">Output register index</field>
+      <field type="int8_t[48]" name="settings_data">Settings data</field>
+    </message>
+    <message id="151" name="FLEXIFUNCTION_DATA">
+      <description>Set Flexifunction type and parameters for component at function index</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="func_index">Function index</field>
+      <field type="uint8_t" name="function_type">Function type index</field>
+      <field type="uint8_t" name="Action">Output action, 0,1,2 = set, add or clear</field>
+      <field type="uint16_t" name="out_index">Output register index</field>
+      <field type="int8_t[48]" name="settings_data">Settings data</field>
+    </message>
+    <message id="152" name="FLEXIFUNCTION_READ_REQ">
+      <description>Reqest reading of a flexifunction at index</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="int16_t" name="func_index">Function index</field>
+    </message>
+    <message id="153" name="FLEXIFUNCTION_READ_ALL">
+      <description>Reqest reading of all flexifunctions</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+    </message>
+  </messages>
+</mavlink>
