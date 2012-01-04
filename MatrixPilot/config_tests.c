@@ -101,8 +101,8 @@
 	#endif
 #else
 	// UDB4
-	#if (NUM_OUTPUTS > 9)
-		#error("NUM_OUTPUTS can't be more than 9.")
+	#if (NUM_OUTPUTS > 10)
+		#error("NUM_OUTPUTS can't be more than 10.")
 	#endif
 #endif
 

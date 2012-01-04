@@ -39,7 +39,7 @@
 // UDB4_BOARD  - Board is red, has 8 inputs, 8 output and no gyro daughter-board.
 // See the MatrixPilot wiki for more details on different UDB boards.
 // If building for the UDB4, use the MatrixPilot-udb4.mcw project workspace. 
-#define BOARD_TYPE 							UDB3_BOARD
+#define BOARD_TYPE 							UDB4_BOARD
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,8 @@
 //   4 also enables E0 as the 4th output channel
 //   5 also enables E2 as the 5th output channel
 //   6 also enables E4 as the 6th output channel
-//   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
+//   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.
+// 			If UDB4 then up to 10 outputs are available
 #define NUM_OUTPUTS							4
 
 // Channel numbers for each output
