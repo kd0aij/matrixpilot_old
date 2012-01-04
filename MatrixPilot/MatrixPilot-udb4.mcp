@@ -598,7 +598,7 @@ file_138=..\MAVLink\include\matrixpilot\matrixpilot.h
 file_139=..\MAVLink\include\matrixpilot\mavlink.h
 file_140=..\MAVLink\include\matrixpilot\testsuite.h
 file_141=..\MAVLink\include\matrixpilot\version.h
-file_142=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
+file_142=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
