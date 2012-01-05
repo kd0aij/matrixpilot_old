@@ -308,6 +308,20 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// FIXED TRIMPOINT
+// Instead of sampling the radio inputs at startup, use a fixed value
+// This can be used if you would prefer a static trimpoint between reboots
+// Set FIXED_TRIMPOINT to 1 to use this feature
+// Channel trimpoint is for all channel excluding throttle.  Units in microseconds
+// Throttle trimpoint is only for the throttle channel.
+// NOTE: UDB trimpoints are in 0.5us units.
+#define FIXED_TRIMPOINT					0
+#define CHANNEL_TRIMPOINT				1520
+#define THROTTLE_TRIMPOINT				1125
+
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB,
 // SERIAL_UDB_EXTRA,SERIAL_MAVLINK, SERIAL_CAM_TRACK, or SERIAL_OSD_REMZIBI)
 // This determines the format of the output sent out the spare serial port.

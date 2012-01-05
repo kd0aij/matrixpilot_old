@@ -33,8 +33,12 @@ void init_servoPrepare( void )	// initialize the PWM
 {
 	int i;
 	for (i=0; i <= NUM_INPUTS; i++)
-		udb_pwTrim[i] = udb_pwIn[i] = ((i == THROTTLE_INPUT_CHANNEL) ? 0 : 3000) ;
-	
+#if (FIXED_TRIMPOINT == 0)
+		udb_pwIn[i] = udb_pwTrim[i] = ((i == THROTTLE_INPUT_CHANNEL) ? 0 : 3000) ;	
+#else
+		udb_pwTrim[i] = udb_pwIn[i] = ((i == THROTTLE_INPUT_CHANNEL) ? (THROTTLE_TRIMPOINT * 2) : (CHANNEL_TRIMPOINT * 2) ) ;
+#endif
+
 	for (i=0; i <= NUM_OUTPUTS; i++)
 		udb_pwOut[i] = ((i == THROTTLE_OUTPUT_CHANNEL) ? 0 : 3000) ;
 	

@@ -190,10 +190,11 @@ void udb_a2d_record_offsets(void)
 
 void udb_servo_record_trims(void)
 {
+#if (FIXED_TRIMPOINT == 0)	// Do not alter trims from preset when they are fixed
 	int i;
 	for (i=0; i <= NUM_INPUTS; i++)
 		udb_pwTrim[i] = udb_pwIn[i] ;
-	
+#endif	
 	return ;
 }
 
