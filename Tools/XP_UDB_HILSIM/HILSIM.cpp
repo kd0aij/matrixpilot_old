@@ -48,15 +48,17 @@ int store_index = 0;
 
 void	(* msg_parse) (unsigned char rxChar) = &msgDefault;
 
-#define SERVO_MSG_LENGTH 16
+#define SERVO_CHANNELS		10
+
+#define SERVO_MSG_LENGTH	SERVO_CHANNELS*2
 
 // Servo offsets are a variable so that they can be actively zeroed from the real received offsets
 // This offset zero will need to be a menu add on to the plugin.
 intbb  ServoOffsets[SERVO_CHANNELS];
 
-unsigned char SERVO_IN[SERVO_CHANNELS*2];
+unsigned char SERVO_IN[SERVO_MSG_LENGTH];
 
-unsigned char SERVO_IN_[SERVO_CHANNELS*2];
+unsigned char SERVO_IN_[SERVO_MSG_LENGTH];
 
 int rxCount = 0;
 

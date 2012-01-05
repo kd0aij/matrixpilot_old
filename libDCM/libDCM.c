@@ -38,10 +38,12 @@ unsigned char SIMservoOutputs[] = {	0xFF, 0xEE,		//sync
 									0x0D, 0x0E,		//S6
 									0x0F, 0x10,		//S7
 									0x11, 0x12,		//S8
-									0x13, 0x14		//checksum
+									0x13, 0x14,		//S9
+									0x15, 0x16,		//S10
+									0x17, 0x18		//checksum
 									};
 
-#define HILSIM_NUM_SERVOS 8
+#define HILSIM_NUM_SERVOS 10
 
 void send_HILSIM_outputs( void ) ;
 #endif
