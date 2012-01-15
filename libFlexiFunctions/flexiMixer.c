@@ -34,9 +34,14 @@ void preMix( void )
 	// If radio is off, use udb_pwTrim values instead of the udb_pwIn values
 	if (udb_flags._.radio_on)
 	{
+		// Scale throttle to 0 to MIX_PWM_RANGE instead of 0 to 2 * MIX_PWM_RANGE
+		// This stops the fractional overflowing 2*RMAX
+		int tempThrottle = udb_pwIn[THROTTLE_INPUT_CHANNEL] - udb_pwTrim[THROTTLE_INPUT_CHANNEL];
+		tempThrottle = tempThrottle >> 1;
+
 		MIXER_registers[REG_MIXER_PWIN_ROLL] 			= PWM_to_frac(udb_pwIn[ROLL_INPUT_CHANNEL], 	udb_pwTrim[ROLL_INPUT_CHANNEL]);
 		MIXER_registers[REG_MIXER_PWIN_PITCH] 			= PWM_to_frac(udb_pwIn[PITCH_INPUT_CHANNEL], 	udb_pwTrim[PITCH_INPUT_CHANNEL]);
-		MIXER_registers[REG_MIXER_PWIN_THROTTLE] 		= PWM_to_frac(udb_pwIn[THROTTLE_INPUT_CHANNEL], udb_pwTrim[THROTTLE_INPUT_CHANNEL]);
+		MIXER_registers[REG_MIXER_PWIN_THROTTLE] 		= PWM_to_frac(tempThrottle, 0);
 		MIXER_registers[REG_MIXER_PWIN_YAW] 			= PWM_to_frac(udb_pwIn[YAW_INPUT_CHANNEL], 		udb_pwTrim[YAW_INPUT_CHANNEL]);
 		MIXER_registers[REG_MIXER_PWIN_CAMBER]		 	= PWM_to_frac(udb_pwIn[CAMBER_INPUT_CHANNEL], 	udb_pwTrim[CAMBER_INPUT_CHANNEL]);
 		MIXER_registers[REG_MIXER_PWIN_BRAKE]	 		= PWM_to_frac(udb_pwIn[BRAKE_INPUT_CHANNEL], 	udb_pwTrim[BRAKE_INPUT_CHANNEL]);
