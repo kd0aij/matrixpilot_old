@@ -13,5 +13,9 @@
 #define MIX_PWM_MAX	(MIX_PWM_MID+MIX_PWM_RANGE)
 */
 
+#define MAX_MIXER_FUNCS 	80
+#define MAX_MIXER_REGS 		60
+
+
 #endif
 

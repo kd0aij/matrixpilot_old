@@ -9,6 +9,11 @@
 #define PercenttoQ14(n) ((int)(n * 163.84))
 #define FloattoQ14(n) ((int)(n * 16384))
 
+
+
+functionSetting flexifunction_buffer[80] = {};
+
+
 functionSetting MIXER_data[MAX_MIXER_FUNCS] = 
 {
 	{9, 0, 21, 	{.gain_limit = { 1,PercenttoQ14(100),PercenttoQ14(-100),PercenttoQ14(0.0),PercenttoQ14(100.0)} } },

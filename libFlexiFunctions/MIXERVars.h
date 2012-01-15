@@ -5,14 +5,11 @@
 #include "flexiFunctionTypes.h"
 
 
+#include "MIXER_options.h"
+
+
 /****************************************************************/
 //	pyFEdit generated file - DO NOT EDIT
-
-
-#define MAX_MIXER_FUNCS 80
-
-
-#define MAX_MIXER_REGS 60
 
 
 extern functionSetting MIXER_data[MAX_MIXER_FUNCS];

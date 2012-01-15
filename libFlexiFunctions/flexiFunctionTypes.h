@@ -173,14 +173,21 @@ typedef struct tagComponentReference
   registerName*	pRegNames;					// The parameter(mavlink) / register(flexifunction) name strings
   unsigned char	maxRegs;   					// Maximum number of registers
   unsigned char	maxFuncs;  					// Maximum number of functions
+  unsigned char	numberRegs;   				// Number of registers used
+  unsigned char	numberFuncs;  				// Number of functions used
 } componentReference;
 
 
+// Table of flexifunction data for different MAVlinkj components
 extern const componentReference componentReferences[];
 
 
-// Helper function for finding component information from an array of component references;
+// Helper function for finding component information from an array of component references
 extern componentReference* findComponentRefWithID(int compID);
+
+
+// Declaration of flexifunction buffer for handling flexifunction modifications through mavlink
+extern functionSetting flexifunction_buffer[80];
 
 
 #endif
