@@ -14,7 +14,7 @@ fractional MIXER_registers[MAX_MIXER_REGS];
 fractional PWM_to_frac(int PWM, int offset)
 {
 	union longww temp;
-	temp.WW = ( (RMAX * 256.0) / ( MIX_PWM_MAX - MIX_PWM_MID ) );
+	temp.WW = ( (RMAX * 256.0) / ( MIX_PWM_RANGE ) );
 	temp.WW = __builtin_mulss( PWM - offset, temp._.W0);  //
 	temp.WW >>= 8;
 	return (fractional) temp._.W0;
@@ -34,23 +34,23 @@ void preMix( void )
 	// If radio is off, use udb_pwTrim values instead of the udb_pwIn values
 	if (udb_flags._.radio_on)
 	{
-		MIXER_registers[REG_MIXER_PWIN_AILERON_LEFT] 	= PWM_to_frac(udb_pwIn[AILERON_LEFT_INPUT_CHANNEL], udb_pwTrim[AILERON_LEFT_INPUT_CHANNEL]);
-		MIXER_registers[REG_MIXER_PWIN_ELEVATOR] 		= PWM_to_frac(udb_pwIn[ELEVATOR_INPUT_CHANNEL], 	udb_pwTrim[ELEVATOR_INPUT_CHANNEL]);
-		MIXER_registers[REG_MIXER_PWIN_THROTTLE] 		= PWM_to_frac(udb_pwIn[THROTTLE_INPUT_CHANNEL], 	udb_pwTrim[THROTTLE_INPUT_CHANNEL]);
-		MIXER_registers[REG_MIXER_PWIN_RUDDER] 			= PWM_to_frac(udb_pwIn[RUDDER_INPUT_CHANNEL], 		udb_pwTrim[RUDDER_INPUT_CHANNEL]);
-		MIXER_registers[REG_MIXER_PWIN_AILERON_RIGHT] 	= PWM_to_frac(udb_pwIn[AILERON_RIGHT_INPUT_CHANNEL], udb_pwTrim[AILERON_RIGHT_INPUT_CHANNEL]);
-		MIXER_registers[REG_MIXER_PWIN_FLAP_LEFT] 		= PWM_to_frac(udb_pwIn[FLAP_LEFT_INPUT_CHANNEL], 	udb_pwTrim[FLAP_LEFT_INPUT_CHANNEL]);
-		MIXER_registers[REG_MIXER_PWIN_FLAP_RIGHT]	 	= PWM_to_frac(udb_pwIn[FLAP_RIGHT_INPUT_CHANNEL], 	udb_pwTrim[FLAP_RIGHT_INPUT_CHANNEL]);
+		MIXER_registers[REG_MIXER_PWIN_ROLL] 			= PWM_to_frac(udb_pwIn[ROLL_INPUT_CHANNEL], 	udb_pwTrim[ROLL_INPUT_CHANNEL]);
+		MIXER_registers[REG_MIXER_PWIN_PITCH] 			= PWM_to_frac(udb_pwIn[PITCH_INPUT_CHANNEL], 	udb_pwTrim[PITCH_INPUT_CHANNEL]);
+		MIXER_registers[REG_MIXER_PWIN_THROTTLE] 		= PWM_to_frac(udb_pwIn[THROTTLE_INPUT_CHANNEL], udb_pwTrim[THROTTLE_INPUT_CHANNEL]);
+		MIXER_registers[REG_MIXER_PWIN_YAW] 			= PWM_to_frac(udb_pwIn[YAW_INPUT_CHANNEL], 		udb_pwTrim[YAW_INPUT_CHANNEL]);
+		MIXER_registers[REG_MIXER_PWIN_CAMBER]		 	= PWM_to_frac(udb_pwIn[CAMBER_INPUT_CHANNEL], 	udb_pwTrim[CAMBER_INPUT_CHANNEL]);
+		MIXER_registers[REG_MIXER_PWIN_BRAKE]	 		= PWM_to_frac(udb_pwIn[BRAKE_INPUT_CHANNEL], 	udb_pwTrim[BRAKE_INPUT_CHANNEL]);
+		MIXER_registers[REG_MIXER_PWIN_FLAP]		 	= PWM_to_frac(udb_pwIn[FLAP_INPUT_CHANNEL], 	udb_pwTrim[FLAP_INPUT_CHANNEL]);
 	}
 	else
 	{
-		MIXER_registers[REG_MIXER_PWIN_AILERON_LEFT] 	= 0;
-		MIXER_registers[REG_MIXER_PWIN_ELEVATOR] 		= 0;
+		MIXER_registers[REG_MIXER_PWIN_ROLL]		 	= 0;
+		MIXER_registers[REG_MIXER_PWIN_PITCH] 			= 0;
 		MIXER_registers[REG_MIXER_PWIN_THROTTLE] 		= 0;
-		MIXER_registers[REG_MIXER_PWIN_RUDDER] 			= 0;
-		MIXER_registers[REG_MIXER_PWIN_AILERON_RIGHT] 	= 0;
-		MIXER_registers[REG_MIXER_PWIN_FLAP_LEFT] 		= 0;
-		MIXER_registers[REG_MIXER_PWIN_FLAP_RIGHT] 		= 0;
+		MIXER_registers[REG_MIXER_PWIN_YAW] 			= 0;
+		MIXER_registers[REG_MIXER_PWIN_CAMBER]		 	= 0;
+		MIXER_registers[REG_MIXER_PWIN_BRAKE]	 		= 0;
+		MIXER_registers[REG_MIXER_PWIN_FLAP]	 		= 0;
 	}
 
 	MIXER_registers[REG_MIXER_APMODE_FULL] = 
@@ -76,26 +76,24 @@ void preMix( void )
 	MIXER_registers[REG_MIXER_APCON_THROTTLE]		= PWM_to_frac(throttle_control,0);
 	MIXER_registers[REG_MIXER_APCON_WAGGLE]			= PWM_to_frac(waggle,0);
 
-	MIXER_registers[REG_MIXER_TRIM_AILERON_LEFT] 	= udb_pwTrim[AILERON_LEFT_INPUT_CHANNEL];
-	MIXER_registers[REG_MIXER_TRIM_ELEVATOR] 		= udb_pwTrim[ELEVATOR_INPUT_CHANNEL];
+	MIXER_registers[REG_MIXER_TRIM_POINT] 			= udb_pwTrim[ROLL_INPUT_CHANNEL];
 	MIXER_registers[REG_MIXER_TRIM_THROTTLE] 		= udb_pwTrim[THROTTLE_INPUT_CHANNEL];
-	MIXER_registers[REG_MIXER_TRIM_RUDDER] 			= udb_pwTrim[RUDDER_INPUT_CHANNEL];
-	MIXER_registers[REG_MIXER_TRIM_AILERON_RIGHT] 	= udb_pwTrim[AILERON_RIGHT_INPUT_CHANNEL];
-	MIXER_registers[REG_MIXER_TRIM_FLAP_LEFT] 		= udb_pwTrim[FLAP_LEFT_INPUT_CHANNEL];
-	MIXER_registers[REG_MIXER_TRIM_FLAP_RIGHT] 		= udb_pwTrim[FLAP_RIGHT_INPUT_CHANNEL];
 }
 
 
 void postMix( void )
 {
-	udb_pwOut[AILERON_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_PWOUT_AILERON_LEFT];
-	udb_pwOut[ELEVATOR_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_PWOUT_ELEVATOR];
-	udb_pwOut[RUDDER_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_PWOUT_RUDDER];
-	udb_pwOut[AILERON_RIGHT_OUTPUT_CHANNEL] = (int) MIXER_registers[REG_MIXER_PWOUT_AILERON_RIGHT];
-	udb_pwOut[FLAP_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_PWOUT_FLAP_LEFT];
-	udb_pwOut[FLAP_RIGHT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_PWOUT_FLAP_RIGHT];
+	udb_pwOut[AILERON_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_AILERON_L];
+	udb_pwOut[ELEVATOR_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_ELEVATOR];
+	udb_pwOut[RUDDER_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_RUDDER];
+	udb_pwOut[AILERON_RIGHT_OUTPUT_CHANNEL] = (int) MIXER_registers[REG_MIXER_AILERON_R];
+	udb_pwOut[FLAP_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_FLAP_L];
+	udb_pwOut[FLAP_RIGHT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_FLAP_R];
+	udb_pwOut[FLAPMID_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_FLAPMID_L];
+	udb_pwOut[FLAPMID_RIGHT_OUTPUT_CHANNEL] = (int) MIXER_registers[REG_MIXER_FLAPMID_R];
+	udb_pwOut[SPOILER_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_SPOILER];
 
-	int throttle = (int) MIXER_registers[REG_MIXER_PWOUT_THROTTLE];
+	int throttle = (int) MIXER_registers[REG_MIXER_THROTTLE];
 
 	if(throttle < udb_pwTrim[THROTTLE_INPUT_CHANNEL])
 		throttle = udb_pwTrim[THROTTLE_INPUT_CHANNEL];

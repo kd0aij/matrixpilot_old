@@ -1,4 +1,17 @@
+#ifndef MIXER_OPTIONS_H
+#define MIXER_OPTIONS_H
 
-#define MIX_PWM_MIN	2000
-#define MIX_PWM_MID	3000
-#define MIX_PWM_MAX	4000
+// Fix this to your particular radio at 100% travel
+#define MIX_PWM_RANGE 800
+
+/*#if(FIXED_TRIMPOINT == 1)
+	#define MIX_PWM_MID CHANNEL_TRIMPOINT
+#else
+	#define MIX_PWM_MID	3030
+
+#define MIX_PWM_MIN	(MIX_PWM_MID-MIX_PWM_RANGE)
+#define MIX_PWM_MAX	(MIX_PWM_MID+MIX_PWM_RANGE)
+*/
+
+#endif
+
