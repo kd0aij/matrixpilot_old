@@ -1006,6 +1006,12 @@ void handleMessage(mavlink_message_t* msg)
 	#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
 	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET:
 	    {
+			// Do nothing with this funciton since it is obsolete
+			// Must keep function to be compatible with the 
+		}
+		break;
+	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET_BUFFER:
+	    {
 	        // decode
 			//send_text((unsigned char*)"Param Set\r\n");
 	        mavlink_flexifunction_set_t packet;
@@ -1015,12 +1021,12 @@ void handleMessage(mavlink_message_t* msg)
 
 	        if (packet.target_system != mavlink_system.sysid)
 			{
-				send_text((unsigned char*) "failed target system check on flexifunction set \r\n");
+				//send_text((unsigned char*) "failed target system check on flexifunction set \r\n");
 				break;
 			}
 			else if ( (pcompRef = findComponentRefWithID(packet.target_component)) == 0)
 			{
-				send_text((unsigned char*) "failed to find component index on flexifunction set \r\n");
+				//send_text((unsigned char*) "failed to find component index on flexifunction set \r\n");
 				break;
 			}
 			else
@@ -1034,8 +1040,9 @@ void handleMessage(mavlink_message_t* msg)
 				memcpy(&fSetting.data, &packet.settings_data[1], sizeof(functionData));
 
 				if(packet.func_index > pcompRef->maxFuncs) return;
+				if(packet.func_index > 80) return;
 
-				memcpy( &(pcompRef->pFunctionData[packet.func_index]), &fSetting, sizeof(fSetting));
+				memcpy( &(flexifunction_buffer[packet.func_index]), &fSetting, sizeof(fSetting));
 	        }
 	        break;
 

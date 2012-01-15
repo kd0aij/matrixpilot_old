@@ -175,24 +175,31 @@
 // NUM_INPUTS: Set to 1-5 (or 1-8 when using PPM input)
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
-#define NUM_INPUTS							5
+#define NUM_INPUTS							8
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
+#define ROLL_INPUT_CHANNEL					CHANNEL_1
+#define PITCH_INPUT_CHANNEL					CHANNEL_2
 #define THROTTLE_INPUT_CHANNEL				CHANNEL_3
-#define AILERON_INPUT_CHANNEL				CHANNEL_1
-#define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_5
-#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
+#define YAW_INPUT_CHANNEL					CHANNEL_4
+#define FLAP_INPUT_CHANNEL					CHANNEL_5
+#define CAMBER_INPUT_CHANNEL				CHANNEL_6
+#define BRAKE_INPUT_CHANNEL					CHANNEL_7
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_8
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
 #define OSD_MODE_SWITCH_INPUT_CHANNEL		CHANNEL_UNUSED
-#define PASSTHROUGH_A_INPUT_CHANNEL			CHANNEL_UNUSED
-#define PASSTHROUGH_B_INPUT_CHANNEL			CHANNEL_UNUSED
-#define PASSTHROUGH_C_INPUT_CHANNEL			CHANNEL_UNUSED
-#define PASSTHROUGH_D_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_A_INPUT_CHANNEL			CHANNEL_1
+#define PASSTHROUGH_B_INPUT_CHANNEL			CHANNEL_2
+#define PASSTHROUGH_C_INPUT_CHANNEL			CHANNEL_1
+#define PASSTHROUGH_D_INPUT_CHANNEL			CHANNEL_2
+
+#define AILERON_INPUT_CHANNEL				ROLL_INPUT_CHANNEL
+#define ELEVATOR_INPUT_CHANNEL				PITCH_INPUT_CHANNEL
+#define RUDDER_INPUT_CHANNEL				YAW_INPUT_CHANNEL
 
 // NUM_OUTPUTS: Set to 3, 4, 5, or 6
 //   3 enables only the standard 3 output channels
@@ -201,7 +208,7 @@
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.
 // 			If UDB4 then up to 10 outputs are available
-#define NUM_OUTPUTS							4
+#define NUM_OUTPUTS							10
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -214,19 +221,25 @@
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
 // 
-#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
-#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
+#define AILERON_LEFT_OUTPUT_CHANNEL			CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
+#define AILERON_RIGHT_OUTPUT_CHANNEL		CHANNEL_5
+#define FLAPMID_LEFT_OUTPUT_CHANNEL			CHANNEL_6
+#define FLAPMID_RIGHT_OUTPUT_CHANNEL		CHANNEL_7
+#define FLAP_LEFT_OUTPUT_CHANNEL			CHANNEL_8
+#define FLAP_RIGHT_OUTPUT_CHANNEL			CHANNEL_9
+#define SPOILER_OUTPUT_CHANNEL				CHANNEL_10
+
+
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
-#define PASSTHROUGH_A_OUTPUT_CHANNEL		CHANNEL_UNUSED
-#define PASSTHROUGH_B_OUTPUT_CHANNEL		CHANNEL_UNUSED
-#define PASSTHROUGH_C_OUTPUT_CHANNEL		CHANNEL_UNUSED
-#define PASSTHROUGH_D_OUTPUT_CHANNEL		CHANNEL_UNUSED
-
+#define PASSTHROUGH_A_OUTPUT_CHANNEL		CHANNEL_7
+#define PASSTHROUGH_B_OUTPUT_CHANNEL		CHANNEL_8
+#define PASSTHROUGH_C_OUTPUT_CHANNEL		CHANNEL_9
+#define PASSTHROUGH_D_OUTPUT_CHANNEL		CHANNEL_10
 
 ////////////////////////////////////////////////////////////////////////////////
 // Servo Reversing Configuration
@@ -234,9 +247,9 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
-#define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
-#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
+#define AILERON_CHANNEL_REVERSED			0
+#define ELEVATOR_CHANNEL_REVERSED			0
+#define RUDDER_CHANNEL_REVERSED				0
 #define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
 #define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
@@ -315,7 +328,7 @@
 // Channel trimpoint is for all channel excluding throttle.  Units in microseconds
 // Throttle trimpoint is only for the throttle channel.
 // NOTE: UDB trimpoints are in 0.5us units.
-#define FIXED_TRIMPOINT					0
+#define FIXED_TRIMPOINT					1
 #define CHANNEL_TRIMPOINT				1520
 #define THROTTLE_TRIMPOINT				1125
 
@@ -334,7 +347,7 @@
 // SERIAL_MAVLINK is only supported on the UDB4 to ensure that sufficient RAM is available.
 // Note that SERIAL_MAVLINK defaults to using a baud rate of 57600 baud (other formats default to 19200)
 
-#define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
+#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAVLINK
 
 // MAVLink requires an aircraft Identifier (I.D) as it is deaigned to control multiple aircraft
 // Each aircraft in the sky will need a unique I.D. in the range from 0-255
@@ -555,15 +568,15 @@
 // The range of altitude within which to linearly vary the throttle
 // and pitch to maintain altitude.  A bigger value makes altitude hold
 // smoother, and is suggested for very fast planes.
-#define HEIGHT_MARGIN						10
+#define HEIGHT_MARGIN						15
 
 // Use ALT_HOLD_THROTTLE_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_THROTTLE_MAX and ALT_HOLD_THROTTLE_MIN
 // when within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
-#define ALT_HOLD_THROTTLE_MIN				0.35
-#define ALT_HOLD_THROTTLE_MAX				1.0
+#define ALT_HOLD_THROTTLE_MIN				0.0
+#define ALT_HOLD_THROTTLE_MAX				0.6
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_PITCH_MAX and ALT_HOLD_PITCH_MIN when
@@ -591,8 +604,8 @@
 // HILSIM_BAUD is the serial speed for communications with the X-Plane plugin.  Default is
 // 19200, but 230400 is a good speedy option.  Make sure the X-Plane plugin's Setup file has
 // its speed set to match.
-#define HILSIM 								0
-#define HILSIM_BAUD							19200
+#define HILSIM 								1
+#define HILSIM_BAUD							57600
 
 
 ////////////////////////////////////////////////////////////////////////////////
