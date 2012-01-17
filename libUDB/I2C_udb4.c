@@ -37,15 +37,17 @@
 
 void I2C1_start(void) ;
 void I2C1_idle(void) ;
-void I2C1_stopReadMagData(void);
 void I2C1_doneRead(void);
 void I2C1_recstore(void);
 void I2C1_rerecen(void);
 void I2C1_recen(void);
-void I2C1_stop(void);
+void I2C1_writeStop(void);
 void I2C1_stopRead(void);
-void I2C1_writeDataByte(void);
-void I2C1_Command(void);
+void I2C1_writeData(void);
+void I2C1_readCommand(void);
+void I2C1_writeCommand(void);
+void I2C1_startWrite(void);
+
 
 
 int I2C1ERROR = 0 ;
@@ -66,6 +68,12 @@ unsigned int I2C1_rx_data_size = 0;		// rx data size
 
 unsigned char* pI2C1txBuffer = NULL;	// pointer to transmit buffer
 unsigned char* pI2C1rxBuffer = NULL;	// pointer to receive  buffer
+
+#define I2C_COMMAND_WRITE	0xA0
+#define I2C_COMMAND_READ	0xA1
+
+unsigned char I2C1_writeCommandByte = I2C_COMMAND_WRITE;
+unsigned char I2C1_readCommandByte 	= I2C_COMMAND_READ;
 
 unsigned char I2C1txBuffer[16] = {'A', '5', 'A', '5'};
 unsigned char I2C1rxBuffer[32];
@@ -121,10 +129,8 @@ void serviceI2C1(void)  // service the I2C
 		I2C1_tx_data_size = 2;
 		I2C1_rx_data_size = 0;
 
-//		I2C1CONbits.PEN = 1 ;
 
-//		I2C1TRN = 0xAA;
-		I2C1_state = &I2C1_Command;
+		I2C1_state = &I2C1_startWrite;
 		_MI2C1IF = 1 ;
 
 		I2C1Pause = 10;
@@ -135,6 +141,7 @@ void serviceI2C1(void)  // service the I2C
 	}
 	return ;
 }
+
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _MI2C1Interrupt(void)
 {
@@ -149,34 +156,71 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _MI2C1Interrupt(void)
 }
 
 
-void I2C1_Command(void)
+void I2C1_startWrite(void)
 {
 	I2C1_writeIndex = 0;  		// Reset index into the write buffer
 	I2C1_readIndex = 0; 		// Reset index into the read buffer
 
-	I2C1_state = &I2C1_writeDataByte ;
+	I2C1_state = &I2C1_writeCommand ;
 	I2C1CONbits.SEN = 1 ;
 	return ;
 }
 
-void I2C1_writeDataByte(void)
+
+// Write command byte without checking ACK first.
+void I2C1_writeCommand(void)
 {
+	I2C1_state = &I2C1_writeData ;
+	I2C1TRN = I2C1_writeCommandByte ;
+	return;
+}
+
+
+void I2C1_writeData(void)
+{
+	if ( I2C1STATbits.ACKSTAT == 1 )  	// Device not responding
+	{
+		// Put something here to reset state machine.  Make sure attached services exit nicely.
+		I2C1CONbits.PEN = 1; // stop the bus
+		I2C1_state = &I2C1_idle ; 
+		return ;
+	}
+
 	I2C1TRN = pI2C1txBuffer[I2C1_writeIndex++] ;
+
 	if ( I2C1_writeIndex >= I2C1_tx_data_size)
 	{
-		I2C1_state = &I2C1_recen ;
+		if(I2C1_rx_data_size == 0)
+			I2C1_state = &I2C1_writeStop ;
+		else
+			I2C1_state = &I2C1_recen ;			
 	}
 	return ;
 }
 
-void I2C1_stop(void)
+// Stop a write
+void I2C1_writeStop(void)
 {
 	I2C1_state = &I2C1_idle ;
 	I2C1CONbits.PEN = 1 ;
 	return ;
 }
 
+// Start a read after a write by settign the start bit again
+void I2C1_readStart(void)
+{
+	I2C1_state = &I2C1_readCommand ;
+	I2C1CONbits.SEN = 1 ;	
+}
 
+// Send the command to read
+void I2C1_readCommand(void)
+{
+	I2C1_state = &I2C1_recen ;
+	I2C1TRN = pI2C1txBuffer[I2C1_writeIndex++] ;
+}
+
+// Check for ACK.  If ok, start receive mode, otherwise abandon.
 void I2C1_recen(void)
 {
 	if ( I2C1STATbits.ACKSTAT == 1 )  	// Device not responding
@@ -187,16 +231,16 @@ void I2C1_recen(void)
 	}
 	else
 	{
-		I2C1CONbits.RCEN = 1 ;
 		I2C1_state = &I2C1_recstore ;
+		I2C1CONbits.RCEN = 1 ;
 	}
 	return ;
 }
 
 void I2C1_rerecen(void)
 {
-	I2C1CONbits.RCEN = 1 ;
 	I2C1_state = &I2C1_recstore ;
+	I2C1CONbits.RCEN = 1 ;
 	return ;
 }
 
@@ -205,13 +249,13 @@ void I2C1_recstore(void)
 	pI2C1rxBuffer[I2C1_readIndex++] = I2C1RCV ;
 	if ( I2C1_readIndex > I2C1_rx_data_size )
 	{
-		I2C1CONbits.ACKDT = 1 ;
 		I2C1_state = &I2C1_stopRead ;
+		I2C1CONbits.ACKDT = 1 ;
 	}
 	else
 	{
-		I2C1CONbits.ACKDT = 0 ;
 		I2C1_state = &I2C1_rerecen ;
+		I2C1CONbits.ACKDT = 0 ;
 	}
 	I2C1CONbits.ACKEN = 1 ;
 	return ;
