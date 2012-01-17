@@ -31,10 +31,6 @@
 
 #define _I2C1EN 		I2C1CONbits.I2CEN
 
-//const unsigned char enableMagRead[] =        { 0x3C , 0x00 , 0x10 , 0x20 , 0x00 } ;
-//const unsigned char enableMagCalibration[] = { 0x3C , 0x00 , 0x11 , 0x20 , 0x01 } ;
-//const unsigned char resetMagnetometer[]    = { 0x3C , 0x00 , 0x10 , 0x20 , 0x02 } ;
-
 void I2C1_start(void) ;
 void I2C1_idle(void) ;
 void I2C1_doneRead(void);
@@ -47,8 +43,7 @@ void I2C1_writeData(void);
 void I2C1_readCommand(void);
 void I2C1_writeCommand(void);
 void I2C1_startWrite(void);
-
-
+void I2C1_readStart(void);
 
 int I2C1ERROR = 0 ;
 int I2C1interrupts = 0 ;
@@ -75,7 +70,7 @@ unsigned char* pI2C1rxBuffer = NULL;	// pointer to receive  buffer
 unsigned char I2C1_writeCommandByte = I2C_COMMAND_WRITE;
 unsigned char I2C1_readCommandByte 	= I2C_COMMAND_READ;
 
-unsigned char I2C1txBuffer[16] = {'A', '5', 'A', '5'};
+unsigned char I2C1txBuffer[16] = {0x00, 0x00, 0xAA, 0x55, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0xAA, 0x55};
 unsigned char I2C1rxBuffer[32];
 
 // To pause a number of service cycles
@@ -127,7 +122,7 @@ void serviceI2C1(void)  // service the I2C
 		pI2C1rxBuffer = I2C1rxBuffer;
 
 		I2C1_tx_data_size = 2;
-		I2C1_rx_data_size = 0;
+		I2C1_rx_data_size = 2;
 
 
 		I2C1_state = &I2C1_startWrite;
@@ -193,7 +188,7 @@ void I2C1_writeData(void)
 		if(I2C1_rx_data_size == 0)
 			I2C1_state = &I2C1_writeStop ;
 		else
-			I2C1_state = &I2C1_recen ;			
+			I2C1_state = &I2C1_readStart ;			
 	}
 	return ;
 }
@@ -217,7 +212,7 @@ void I2C1_readStart(void)
 void I2C1_readCommand(void)
 {
 	I2C1_state = &I2C1_recen ;
-	I2C1TRN = pI2C1txBuffer[I2C1_writeIndex++] ;
+	I2C1TRN =  I2C1_readCommandByte;
 }
 
 // Check for ACK.  If ok, start receive mode, otherwise abandon.
@@ -247,7 +242,7 @@ void I2C1_rerecen(void)
 void I2C1_recstore(void)
 {
 	pI2C1rxBuffer[I2C1_readIndex++] = I2C1RCV ;
-	if ( I2C1_readIndex > I2C1_rx_data_size )
+	if ( I2C1_readIndex >= I2C1_rx_data_size )
 	{
 		I2C1_state = &I2C1_stopRead ;
 		I2C1CONbits.ACKDT = 1 ;
