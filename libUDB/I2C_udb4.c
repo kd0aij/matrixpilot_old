@@ -76,7 +76,7 @@ unsigned char* pI2C1commandBuffer = NULL;	// pointer to receive  buffer
 
 #define I2C_COMMAND	0xA0
 
-unsigned char I2C1Buffer[16] = {0x00, 0xAA, 0x55, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0xAA, 0x55};
+unsigned char I2C1Buffer[256];
 
 unsigned char I2C1_CommandByte 	= 0;
 
@@ -102,6 +102,8 @@ void udb_init_I2C1(void)
 
 void serviceI2C1(void)  // service the I2C
 {
+	unsigned int counter;
+
 	if ( _I2C1EN == 0 ) // I2C is off
 	{
 		I2C1_state = &I2C1_idle ; 	// disable response to any interrupts
@@ -129,13 +131,21 @@ void serviceI2C1(void)  // service the I2C
 
 	if ( I2C1Pause == 0 )
 	{
-		udb_nv_memory_read( I2C1Buffer, 0, 12, NULL);
+		for (counter = 0; counter < 255; counter++)
+		{
+			I2C1Buffer[counter] = 0;
+		}
+		udb_nv_memory_read( I2C1Buffer, 0, 150, NULL);
 
 		I2C1Pause = 2;
 	}
 	else if ( I2C1Pause == 1 )
 	{
-		udb_nv_memory_write( I2C1Buffer, 0, 12, NULL);
+		for (counter = 0; counter < 255; counter++)
+		{
+			I2C1Buffer[counter] = counter;
+		}
+		udb_nv_memory_write( I2C1Buffer, 0, 150, NULL);
 		I2C1Pause -- ;
 	}
 	else
@@ -211,6 +221,26 @@ boolean I2C1_Read(unsigned char command, unsigned char* pcommandData, unsigned c
 }
 
 
+// Only send command byte to check for ACK.
+boolean I2C1_checkACK(unsigned int command, I2C_callbackFunc pCallback)
+{
+	if(!I2C1_CheckAvailable()) return false;
+
+	pI2C_callback = pCallback;
+
+	I2C1_command_data_size 	= 0;
+	I2C1_CommandByte 		= command;
+	pI2C1Buffer 			= NULL;
+
+	I2C1_tx_data_size = 0;	// tx data size
+	I2C1_rx_data_size = 0;	// rx data size
+
+	// Set ISR callback and trigger the ISR
+	I2C1_state = &I2C1_startWrite;
+	_MI2C1IF = 1 ;
+	return true;
+}
+
 
 void I2C1_startWrite(void)
 {
@@ -237,6 +267,13 @@ void I2C1_writeCommandData(void)
 	{
 		I2C1_Failed(); 
 		return ;
+	}
+
+	// If there is no command data, do not send any, do a stop.
+	if(I2C1_command_data_size == 0)
+	{
+		I2C1_writeStop() ;
+		return;
 	}
 
 	I2C1TRN = pI2C1commandBuffer[I2C1_Index++] ;

@@ -264,6 +264,8 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		serviceI2C1();
 	}
 
+	udb_nv_memory_service();
+
 #endif
 	
 	interrupt_restore_corcon ;

@@ -58,8 +58,8 @@ extern boolean I2C1_Write(unsigned char command, unsigned char* pcommandData, un
 
 extern boolean I2C1_Read(unsigned char command, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* prxData, unsigned char rxSize, I2C_callbackFunc pCallback);
 
-// Declare activities with I2C finished.
-extern void I2C1_Finished(void);
+// Check for I2C ACK on command
+extern boolean I2C1_checkACK(unsigned int command, I2C_callbackFunc pCallback);
 
 
 #endif	//I2C_H
