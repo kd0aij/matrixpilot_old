@@ -21,6 +21,8 @@
 
 #include "libUDB_internal.h"
 
+#include "NV_memory.h"
+
 #if (BOARD_IS_CLASSIC_UDB == 1)
 #if ( CLOCK_CONFIG == CRYSTAL_CLOCK )
 #define CPU_LOAD_PERCENT	16*400   // = (100 / (8192 * 2)) * (256**2)
@@ -255,6 +257,14 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	udb_flags._.a2d_read = 1 ; // signal the A/D to start the next summation
 	
 	udb_servo_callback_prepare_outputs() ;
+
+#if (BOARD_TYPE == UDB4_BOARD)
+	if ( udb_heartbeat_counter % 20 == 1)
+	{
+		serviceI2C1();
+	}
+
+#endif
 	
 	interrupt_restore_corcon ;
 	return ;
