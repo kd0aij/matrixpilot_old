@@ -113,6 +113,7 @@ void serviceI2C1(void)  // service the I2C
 		return ;
 	}
 
+/*
 	if (  I2C1_NORMAL )
 	{
 	}
@@ -128,6 +129,7 @@ void serviceI2C1(void)  // service the I2C
 		// Put something here to reset state machine.  Make sure attached servies exit nicely.
 		return ;
 	}
+*/
 
 	if ( I2C1Pause == 0 )
 	{
@@ -135,7 +137,7 @@ void serviceI2C1(void)  // service the I2C
 		{
 			I2C1Buffer[counter] = 0;
 		}
-		udb_nv_memory_read( I2C1Buffer, 0, 150, NULL);
+		udb_nv_memory_read( I2C1Buffer, 0x00, 200, NULL);
 
 		I2C1Pause = 2;
 	}
@@ -188,6 +190,7 @@ boolean I2C1_Write(unsigned char command, unsigned char* pcommandData, unsigned 
 	pI2C_callback = pCallback;
 
 	I2C1_command_data_size 	= commandDataSize;
+	pI2C1commandBuffer		= pcommandData;
 	I2C1_CommandByte 		= command;
 	pI2C1Buffer 			= ptxData;
 
@@ -208,6 +211,7 @@ boolean I2C1_Read(unsigned char command, unsigned char* pcommandData, unsigned c
 	pI2C_callback = pCallback;
 
 	I2C1_command_data_size 	= commandDataSize;
+	pI2C1commandBuffer		= pcommandData;
 	I2C1_CommandByte 		= command;
 	pI2C1Buffer 			= prxData;
 
@@ -295,9 +299,7 @@ void I2C1_writeData(void)
 {
 	if ( I2C1STATbits.ACKSTAT == 1 )  	// Device not responding
 	{
-		// Put something here to reset state machine.  Make sure attached services exit nicely.
-		I2C1CONbits.PEN = 1; // stop the bus
-		I2C1_state = &I2C1_idle ; 
+		I2C1_Failed();
 		return ;
 	}
 
@@ -349,9 +351,8 @@ void I2C1_recen(void)
 {
 	if ( I2C1STATbits.ACKSTAT == 1 )  	// Device not responding
 	{
-		// Put something here to reset state machine.  Make sure attached servies exit nicely.
-		I2C1CONbits.PEN = 1; // stop the bus
-		I2C1_state = &I2C1_idle ; 
+		I2C1_Failed();
+		return;
 	}
 	else
 	{

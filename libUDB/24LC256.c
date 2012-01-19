@@ -32,7 +32,7 @@ enum MCP24LC256_STATES
 	MCP24LC256_STATE_FAILED_TRX,
 };
 
-unsigned char commandData[2] = {0x00, 0x00}; 
+unsigned char commandData[4] = {0x00, 0x00}; 
 
 unsigned int MCP24LC256_state = MCP24LC256_STATE_STOPPED;
 
@@ -67,6 +67,7 @@ void udb_nv_memory_service( void )
 		I2C1_checkACK(MCP24LC256_COMMAND, &MCP24LC256_callback);
 		break;	
 	case  MCP24LC256_STATE_FAILED_TRX:
+		I2C1_checkACK(MCP24LC256_COMMAND, &MCP24LC256_callback);
 		break;
 	}
 }
@@ -139,7 +140,7 @@ boolean MCP24LC256_write_chunk()
 
 	MCP24LC256_write_size -= writeSize;
 	MCP24LC256_write_address += writeSize;
-	MCP24LC256_pwrBuffer += writeSize;
+	MCP24LC256_pwrBuffer = &MCP24LC256_pwrBuffer[writeSize];
 	return true;
 }
 
@@ -157,6 +158,7 @@ void MCP24LC256_callback(boolean I2CtrxOK)
 		// If waiting for write ACK, continue to wait
 		if(MCP24LC256_state != MCP24LC256_STATE_WAITING_WRITE)
 			MCP24LC256_state = MCP24LC256_STATE_FAILED_TRX;
+		return;
 	}
 
 	switch(MCP24LC256_state)
@@ -165,11 +167,17 @@ void MCP24LC256_callback(boolean I2CtrxOK)
 			MCP24LC256_state = MCP24LC256_STATE_STOPPED;
 			break;
 		case MCP24LC256_STATE_WRITING:
-				MCP24LC256_Timer = 0;
-				MCP24LC256_state = MCP24LC256_STATE_WAITING_WRITE;
+			MCP24LC256_Timer = 0;
+			MCP24LC256_state = MCP24LC256_STATE_WAITING_WRITE;
 			break;
 		case MCP24LC256_STATE_WAITING_WRITE:
-			if(!MCP24LC256_write_chunk())
+			MCP24LC256_write_chunk();
+			break;
+ 		case MCP24LC256_STATE_FAILED_TRX:
+			MCP24LC256_state = MCP24LC256_STATE_STOPPED;
+			break;
+		default:
+			MCP24LC256_state = MCP24LC256_STATE_FAILED_TRX;
 			break;
 	};
 
