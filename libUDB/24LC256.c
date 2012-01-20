@@ -53,6 +53,7 @@ void NVMemory_callback(void);
 
 void MCP24LC256_callback(boolean I2CtrxOK);
 
+NVMemory_callbackFunc pcallerCallback = NULL;
 
 void udb_nv_memory_init( void )
 {
@@ -81,6 +82,8 @@ boolean udb_nv_memory_read( unsigned char* rdBuffer, unsigned int address, unsig
 	commandData[1] = (unsigned char) (address & 0xFF);
 	commandData[0] = (unsigned char) ((address >> 8) & 0xFF);
 
+	pcallerCallback = pCallback;
+
 	if(I2C1_Read( MCP24LC256_COMMAND, commandData , 2,  rdBuffer, rdSize, &MCP24LC256_callback) == false)
 	{
 		MCP24LC256_state = MCP24LC256_STATE_STOPPED;
@@ -102,6 +105,8 @@ boolean udb_nv_memory_write( unsigned char* wrBuffer, unsigned int address, unsi
 	MCP24LC256_write_address = address;
 	MCP24LC256_write_size = wrSize;
 
+	pcallerCallback = pCallback;
+
 	return MCP24LC256_write_chunk();
 }
 
@@ -117,7 +122,8 @@ boolean MCP24LC256_write_chunk()
 	if(writeSize == 0)
 	{
 		MCP24LC256_state = MCP24LC256_STATE_STOPPED;
-		// Need to put callback here
+		if(pcallerCallback != NULL)	pcallerCallback(true);
+		pcallerCallback = NULL;
 		return true;
 	}
 
@@ -157,13 +163,19 @@ void MCP24LC256_callback(boolean I2CtrxOK)
 		MCP24LC256_Timer = 0;
 		// If waiting for write ACK, continue to wait
 		if(MCP24LC256_state != MCP24LC256_STATE_WAITING_WRITE)
+		{
 			MCP24LC256_state = MCP24LC256_STATE_FAILED_TRX;
+			if(pcallerCallback != NULL)	pcallerCallback(true);
+			pcallerCallback = NULL;
+		}
 		return;
 	}
 
 	switch(MCP24LC256_state)
 	{
 		case MCP24LC256_STATE_READING:
+			if(pcallerCallback != NULL)	pcallerCallback(true);
+			pcallerCallback = NULL;
 			MCP24LC256_state = MCP24LC256_STATE_STOPPED;
 			break;
 		case MCP24LC256_STATE_WRITING:

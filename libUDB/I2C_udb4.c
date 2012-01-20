@@ -130,7 +130,7 @@ void serviceI2C1(void)  // service the I2C
 		return ;
 	}
 */
-
+/*
 	if ( I2C1Pause == 0 )
 	{
 		for (counter = 0; counter < 255; counter++)
@@ -154,6 +154,7 @@ void serviceI2C1(void)  // service the I2C
 	{
 		I2C1Pause -- ;
 	}
+*/
 	return ;
 }
 

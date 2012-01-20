@@ -22,6 +22,7 @@
 #include "libUDB_internal.h"
 
 #include "NV_memory.h"
+#include "data_storage.h"
 
 #if (BOARD_IS_CLASSIC_UDB == 1)
 #if ( CLOCK_CONFIG == CRYSTAL_CLOCK )
@@ -265,6 +266,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	}
 
 	udb_nv_memory_service();
+	udb_storage_service();
 
 #endif
 	

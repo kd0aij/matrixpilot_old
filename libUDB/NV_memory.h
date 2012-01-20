@@ -3,7 +3,7 @@
 
 #include "libUDB_internal.h"
 
-typedef void (*NVMemory_callbackFunc)(void);
+typedef void (*NVMemory_callbackFunc)(boolean);
 
 void udb_nv_memory_init( void );
 
