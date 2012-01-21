@@ -55,10 +55,6 @@ void MCP24LC256_callback(boolean I2CtrxOK);
 
 NVMemory_callbackFunc pcallerCallback = NULL;
 
-void udb_nv_memory_init( void )
-{
-	return ;
-}
 
 void udb_nv_memory_service( void )
 {

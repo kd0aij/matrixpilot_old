@@ -49,13 +49,10 @@ enum
 	DATA_STORAGE_READ_COMPLETE,
 	DATA_STORAGE_WRITE_COMPLETE,
 	DATA_STORAGE_STATUS_FAILED,
+	DATA_STORAGE_AREA_CREATE,
 } DATA_STORAGE_STATUS;
 
 unsigned int data_storage_status = DATA_STORAGE_STATUS_START;
-
-
-// Format the data storage table
-boolean data_storage_format_table(void);
 
 // store the data storage table
 boolean data_storage_store_table(void);
@@ -63,14 +60,19 @@ boolean data_storage_store_table(void);
 // Check the integrity of the data storage table
 boolean data_storage_check_table(void);
 
-// Callback from non volatile memory driver
-void data_storage_callback(boolean success);
+// Format the data storage table
+boolean data_storage_format_table(void);
 
-// Callback after format write is completed
-void data_storage_format_callback(boolean success);
+// create a new data storage area
+boolean storage_create_area(data_handle, size);
 
-// Callback specifically for the initialisation
-void data_storage_init_read_callback(boolean success);
+// Callbacks
+// The callbacks normally set the status so that the background service routine does the work.
+void data_storage_callback(boolean success);			// Callback from non volatile memory driver
+void data_storage_format_callback(boolean success);		// format write is completed
+void data_storage_init_read_callback(boolean success);	// initialisation read of storage table
+
+
 
 // A constant preamble used to determine the start of a data block
 // This also allows the data to be found if the FAT is broken
@@ -82,6 +84,11 @@ const unsigned char table_storage_preamble[] = {0x55, 0xA5, 0x5A, 0xAA};
 // Structure in ram of complete data directory including checksum.
 DATA_STORAGE_TABLE data_storage_table;
 
+// Callers data.  Used on initialisation of a user area.
+unsigned char* pdata_storage_data = NULL;
+unsigned int data_storage_type = DATA_STORAGE_NULL;
+unsigned int data_storage_size = 0;
+
 
 // Initialise the storage
 // If read has failed keep re-trying until the nv memory is ready.
@@ -91,8 +98,10 @@ void udb_storage_service(void)
 	{
 	case DATA_STORAGE_STATUS_START:
 		data_storage_table.table_preamble[0] = 0x00;		// Make sure memory contents are invalid before reading
-		data_storage_table.table_checksum = 0x1010;			// Make sure memory contents are invalid before reading
+		data_storage_table.table_checksum = 0x0000;
 
+		// Loading the data storage table.  Set status as running initialisation.
+		// If NV memory not ready, immediate return.
 		if(udb_nv_memory_read( (unsigned char*) &data_storage_table, 0, sizeof(data_storage_table), &data_storage_init_read_callback) == false) return;
 		data_storage_status = DATA_STORAGE_STATUS_INIT;
 		break;
@@ -127,6 +136,7 @@ void data_storage_init_read_callback(boolean success)
 
 	return;
 };
+
 
 boolean data_storage_check_table(void)
 {
@@ -164,6 +174,7 @@ boolean data_storage_format_table(void)
 
 	data_storage_table.table_checksum = mem_counter;
 
+	// Store the table
 	if(udb_nv_memory_write( (unsigned char*) &data_storage_table, 0, sizeof(data_storage_table), &data_storage_format_callback) == false)
 		return false;
 	return true;
@@ -183,7 +194,33 @@ void data_storage_format_callback(boolean success)
 	return;
 };
 
+boolean storage_test_handle(unsigned int data_handle)
+{
+	DATA_STORAGE_ENTRY* pEntry = &data_storage_table.table[data_handle];
+	if(pEntry->data_address == 0) 				return false;
+	if(pEntry->data_type == DATA_STORAGE_NULL) 	return false;
+	if(pEntry->data_size == 0) 					return false;
+	return true;
+}
 
+boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned int size)
+{
+	if(data_storage_status != DATA_STORAGE_STATUS_WAITING) return false;
+
+	data_storage_status = DATA_STORAGE_WRITING;
+
+	if(storage_test_handle() == false)  
+	{
+		pdata_storage_data 		= pwrData;
+		data_storage_type 		= data_handle;
+		data_storage_size 		= size;
+		storage_create_area(data_handle, size);
+	}
+}
+
+boolean storage_create_area(data_handle, size)
+{
+}
 
 void data_storage_callback(boolean success)
 {

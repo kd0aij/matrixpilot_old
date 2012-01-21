@@ -5,8 +5,7 @@
 
 typedef void (*NVMemory_callbackFunc)(boolean);
 
-void udb_nv_memory_init( void );
-
+// Service process called by background.
 void udb_nv_memory_service( void );
 
 boolean udb_nv_memory_read( unsigned char* rdBuffer, unsigned int address, unsigned int rdSize, NVMemory_callbackFunc pCallback);
