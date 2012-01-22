@@ -32,6 +32,7 @@
 
 #include "data_storage.h"
 #include "nv_memory.h"
+#include "events.h"
 #include <string.h>
 
 #include "../MAVlink/include/inttypes.h"
@@ -89,6 +90,8 @@ unsigned char* pdata_storage_data = NULL;
 unsigned int data_storage_type = DATA_STORAGE_NULL;
 unsigned int data_storage_size = 0;
 
+unsigned int data_storage_handle = INVALID_HANDLE;
+
 
 // Initialise the storage
 // If read has failed keep re-trying until the nv memory is ready.
@@ -120,6 +123,17 @@ void data_storage_service(void)
 	}
 }
 
+// Initialise the data storage
+extern void data_storage_init(void)
+{
+	data_storage_handle = register_event(&data_storage_service);
+}
+
+// Trigger storage service in low priority process.
+void storage_service_trigger(void)
+{
+	trigger_event(data_storage_handle);
+}
 
 // Callback when in intialisation
 // If init read fails, keep retrying
@@ -137,7 +151,7 @@ void data_storage_init_read_callback(boolean success)
 	return;
 };
 
-
+// Check that the data storage table is valid with the correct checksum
 boolean data_storage_check_table(void)
 {
 	unsigned int mem_checksum;

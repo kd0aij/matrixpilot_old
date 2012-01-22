@@ -76,7 +76,7 @@ void nv_memory_service( void )
 
 void nv_memory_init( void )
 {
-	register_event(&nv_memory_service);
+	nv_memory_service_handle = register_event(&nv_memory_service);
 }
 
 void nv_memory_service_trigger( void )

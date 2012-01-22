@@ -51,8 +51,9 @@ void I2C1_startWrite(void);
 void I2C1_readStart(void);
 void I2C1_Failed(void);
 void I2C1_doneWrite(void);
-
 void I2C1_writeCommandData(void);
+
+void serviceI2C1(void);  // service the I2C
 
 int I2C1ERROR = 0 ;
 
@@ -78,6 +79,8 @@ unsigned char* pI2C1commandBuffer = NULL;	// pointer to receive  buffer
 
 unsigned int I2C1_service_handle = INVALID_HANDLE;
 
+
+
 void I2C1_init(void)
 {
 //	I2C1_SDA_TRIS = I2C1_SCL_TRIS = 0 ;		// SDA and SCL as outputs
@@ -88,7 +91,7 @@ void I2C1_init(void)
 	_MI2C1IF = 0 ; 			// clear the I2C1 master interrupt
 	_MI2C1IE = 1 ; 			// enable the interrupt
 
-	register_event(&serviceI2C1);
+	I2C1_service_handle = register_event(&serviceI2C1);
 
 	I2C1_Busy = false;
 
@@ -110,7 +113,7 @@ void serviceI2C1(void)  // service the I2C
 	{
 		I2C1_state = &I2C1_idle ; 	// disable response to any interrupts
 //		I2C1_SDA = I2C1_SCL = 1 ; 	// pull SDA and SCL high
-		udb_init_I2C1() ; 			// turn the I2C back on
+		I2C1_init() ; 			// turn the I2C back on
 		// Put something here to reset state machine.  Make sure attached servies exit nicely.
 		return ;
 	}
@@ -186,7 +189,7 @@ inline boolean I2C1_CheckAvailable(void)
 }
 
 
-boolean I2C1_Write(unsigned char command, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* ptxData, unsigned char txSize, I2C_callbackFunc pCallback)
+boolean I2C1_Write(unsigned char command, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* ptxData, unsigned int txSize, I2C_callbackFunc pCallback)
 {
 	if(!I2C1_CheckAvailable()) return false;
 
@@ -207,7 +210,7 @@ boolean I2C1_Write(unsigned char command, unsigned char* pcommandData, unsigned 
 }
 
 
-boolean I2C1_Read(unsigned char command, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* prxData, unsigned char rxSize, I2C_callbackFunc pCallback)
+boolean I2C1_Read(unsigned char command, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* prxData, unsigned int rxSize, I2C_callbackFunc pCallback)
 {
 	if(!I2C1_CheckAvailable()) return false;
 
