@@ -1,9 +1,10 @@
 // See end of file for license
 
-#include "libUDB.h"
 
 #ifndef EVENTS_H
 #define EVENTS_H
+
+#include "libUDB_internal.h"
 
 #define INVALID_HANDLE 0xFFFF
 
