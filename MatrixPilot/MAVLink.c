@@ -104,7 +104,8 @@ mavlink_status_t  r_mavlink_status ;
 #define 	SERIAL_BUFFER_SIZE 			MAVLINK_MAX_PACKET_LEN
 #define 	BYTE_CIR_16_TO_RAD  ((2.0 * 3.14159265) / 65536.0 ) // Conveert 16 bit byte circular to radians
 #define 	MAVLINK_FRAME_FREQUENCY	40
-#define     MAVLINK_FREQ_ATTITUDE	 8 // Be careful if you change this. Requested frequency may not be actual freq.
+#define     MAVLINK_FREQ_ATTITUDE	 8   // Be careful if you change this. Requested frequency may not be actual freq.
+#define 	MAVLINK_WAYPOINT_TIMEOUT 120 // Dependent on frequency of calling mavlink_output_40hz. 120 is 3 second timeout.
 
 void mavlink_msg_recv(unsigned char);
 void send_text(uint8_t text[]) ;
@@ -131,6 +132,54 @@ float previous_earth_yaw    = 0.0 ;
 unsigned char streamRateRawSensors      = 0 ;
 unsigned char streamRateRCChannels      = 0 ;
 
+extern unsigned int number_of_waypoints ;
+extern int  waypointIndex ;
+uint16_t mavlink_waypoint_requested_sequence_number ;
+unsigned char mavlink_waypoint_dest_sysid ;
+unsigned char mavlink_waypoint_dest_compid ;
+unsigned int  mavlink_waypoint_timeout  = 0 ;
+unsigned char number_of_waypoint_retries = 2 ;
+uint8_t mavlink_waypoint_frame = MAV_FRAME_GLOBAL ;
+boolean mavlink_waypoint_current = false ;
+
+struct mavlink_flag_bits {
+			unsigned int unused							: 2 ;
+			unsigned int mavlink_send_specific_variable : 1 ;
+			unsigned int mavlink_send_variables 		: 1 ;
+			unsigned int mavlink_send_waypoint_count    : 1 ;
+			unsigned int mavlink_sending_waypoints		: 1 ;
+			unsigned int mavlink_receiving_waypoints	: 1 ;
+			unsigned int mavlink_send_specific_waypoint : 1 ;
+			} mavlink_flags ;
+
+
+// ONLY FOR FLEXIFUNCTIONS
+#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+
+enum FLEXIFUNCTION_SEND_STATUS
+{
+	FLEXIFUNCTION_SEND_NONE = 0,
+	FLEXIFUNCTION_SEND_BUFFER_SPECIFIC,
+	FLEXIFUNCTION_SEND_BUFFER_ALL,
+	FLEXIFUNCTION_SENDING_BUFFER_ALL,
+	FLEXIFUNCTION_SEND_STATISTICS,
+	FLEXIFUNCTION_SEND_BUFFER_COMMITED,
+	FLEXIFUNCTION_SEND_BUFFER_NOT_COMMITED,
+	FLEXIFUNCTION_SEND_REGISTER_NAMES,
+	FLEXIFUNCTION_SENDING_REGISTER_NAMES,
+};
+
+unsigned int mavlink_flexifunction_read_status = 0;
+unsigned int mavlink_flexifunction_send_status = FLEXIFUNCTION_SEND_NONE;
+
+// set the send status for flexifunctions.  Checks if already sending.
+int flexifunction_set_new_send(unsigned int newStatus)
+{
+	if(mavlink_flexifunction_send_status != FLEXIFUNCTION_SEND_NONE) return;
+	mavlink_flexifunction_send_status = newStatus;
+}
+
+#endif
 
 void init_serial()
 {
@@ -499,7 +548,7 @@ boolean mavlink_check_target( uint8_t target_system, uint8_t target_component )
 			// Note QGroundControl 0.8 may have bug in that request for list of parameters always uses component id of 25 even though we are using component id 1.
 			// However when setting parameters QGroundConrol then appears to use the correct component id of 1. So for now we do not check component Ids.
 	{
-		return true ;
+		return false ;
 	}
 	else
 	{
@@ -510,7 +559,7 @@ boolean mavlink_check_target( uint8_t target_system, uint8_t target_component )
 		mp_mavlink_transmit(( target_component >> 4 ) + 0x30 ) ;
 		mp_mavlink_transmit(( target_component & 0x0f ) + 0x30 ) ;
 		send_text( (unsigned char*) "\r\n");
-		return false ;
+		return true ;
 	}
 }
 
@@ -526,22 +575,21 @@ void handleMessage(mavlink_message_t* msg)
 	// mp_mavlink_transmit(( msg->msgid & 0x0f ) + 0x30 ) ;
 	// send_text( (unsigned char*) "\r\n");
 
-	switch (msg->msgid)	
+	switch (msg->msgid)
 	{
 	    case MAVLINK_MSG_ID_REQUEST_DATA_STREAM:  
 	    {
 	        // decode
 	        mavlink_request_data_stream_t packet;
 	        mavlink_msg_request_data_stream_decode(msg, &packet);
-			// send_text((const unsigned char*) "Action: Request data stream\r\n");
-	        if (mavlink_check_target(packet.target_system,packet.target_component) == false ) break;
+			//send_text((const unsigned char*) "Action: Request data stream\r\n");
+	        if (mavlink_check_target(packet.target_system,packet.target_component) == true ) break;
 	
 	        int freq = 0; // packet frequency
 	
 	        if (packet.start_stop == 0) freq = 0; // stop sending
 	        else if (packet.start_stop == 1) freq = packet.req_message_rate; // start sending
 	        else break;
-	
 	        switch(packet.req_stream_id)
 	        {
 	        case MAV_DATA_STREAM_ALL:
@@ -556,13 +604,14 @@ void handleMessage(mavlink_message_t* msg)
 	            // streamRateExtra3 = freq; 
 	            break;
 	        case MAV_DATA_STREAM_RAW_SENSORS:
-				// send_text((unsigned char*) "Action: Request Raw Sensors\r\n");
+			    //send_text((unsigned char*) "Action: Request Raw Sensors\r\n");
 	            streamRateRawSensors = freq ;  
 	            break;
 	        case MAV_DATA_STREAM_EXTENDED_STATUS:
 	            // streamRateExtendedStatus = freq; 
 	            break;
 	        case MAV_DATA_STREAM_RC_CHANNELS:
+				//send_text((unsigned char*) "Action: Request rc channels\r\n");
 	            streamRateRCChannels = freq; 
 	            break;
 	        case MAV_DATA_STREAM_RAW_CONTROLLER:
@@ -687,44 +736,54 @@ void handleMessage(mavlink_message_t* msg)
 	    }
 	    break;
 */
+#if (FLIGHT_PLAN_TYPE == FP_WAYPOINTS )
 	    case MAVLINK_MSG_ID_WAYPOINT_REQUEST_LIST:
 	    {
-			send_text((unsigned char*) "waypoint request list\r\n");
+			// BULDING
+			//send_text((unsigned char*) "waypoint request list\r\n");
 	
 	        // decode
-	        // mavlink_waypoint_request_list_t packet;
-	        //mavlink_msg_waypoint_request_list_decode(msg, &packet);
-	        //if (mavlink_check_target(packet.target_system,packet.target_component)) break;
-	
-	        // Start sending waypoints
-	        //mavlink_msg_waypoint_count_send(chan,msg->sysid,
-	                                        //msg->compid,get(PARAM_WP_TOTAL));
-	        //global_data.waypoint_timelast_send = millis();
-	        //global_data.waypoint_sending = true;
-	        //global_data.waypoint_receiving = false;
-	        //global_data.waypoint_dest_sysid = msg->sysid;
-	        //global_data.waypoint_dest_compid = msg->compid;
-	
+	        mavlink_waypoint_request_list_t packet;
+	        mavlink_msg_waypoint_request_list_decode(msg, &packet);
+	        if (mavlink_check_target(packet.target_system,packet.target_component)) break;
+			mavlink_waypoint_timeout  = MAVLINK_WAYPOINT_TIMEOUT ; 
+	        mavlink_flags.mavlink_sending_waypoints = true;
+	        mavlink_flags.mavlink_receiving_waypoints = false;
+	        mavlink_waypoint_dest_sysid = msg->sysid;
+	        mavlink_waypoint_dest_compid = msg->compid;
+			// Start sending waypoints
+			mavlink_flags.mavlink_send_waypoint_count = 1 ;
 	    }
 	    break;
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_REQUEST:
 	    {
-			// send_text((unsigned char*)"waypoint request\r\n");
+			//send_text((unsigned char*)"waypoint request\r\n");
 	
-	        // Check if sending waypiont
-	        //if (!global_data.waypoint_sending) break;
-	
+	        // Check if in sending waypoint mode ...
+	        if (!mavlink_flags.mavlink_sending_waypoints) 
+			{
+				send_text((unsigned char*)"ID WAYPOINT REQUEST not valid, no longer sending\r\n") ;
+				break;
+			}
 	        // decode
-	        //mavlink_waypoint_request_t packet;
-	        //mavlink_msg_waypoint_request_decode(msg, &packet);
-	        //if (mavlink_check_target(packet.target_system,packet.target_component)) break;
-	
-	        // send waypoint
-	        //tell_command = get_wp_with_index(packet.seq);
-	
-	        // set frame of waypoint
-	        //uint8_t frame = MAV_FRAME_GLOBAL; // reference frame 
+	        mavlink_waypoint_request_t packet;
+	        mavlink_msg_waypoint_request_decode(msg, &packet);
+	        if (mavlink_check_target(packet.target_system,packet.target_component)) break;
+			mavlink_waypoint_timeout  = MAVLINK_WAYPOINT_TIMEOUT ;  
+	        mavlink_waypoint_requested_sequence_number =  packet.seq ;
+	        mavlink_waypoint_frame = MAV_FRAME_GLOBAL; // reference frame 
+			if (mavlink_waypoint_requested_sequence_number == waypointIndex )
+			{
+				mavlink_waypoint_current = true ;
+			}
+			else
+			{
+				mavlink_waypoint_current = false ;
+			}
+			// send waypoint
+			mavlink_flags.mavlink_send_specific_waypoint = 1 ;
+			
 	        //uint8_t action = MAV_ACTION_NAVIGATE; // action
 	        //uint8_t orbit_direction = 0; // clockwise(0), counter-clockwise(1)
 	        //float orbit = 0; // loiter radius
@@ -777,48 +836,21 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_ACK:
 	    {
-			send_text((unsigned char*)"waypoint ack\r\n");
+			//send_text((unsigned char*)"waypoint ack\r\n");
 	
 	        // decode
-	        //mavlink_waypoint_ack_t packet;
-	        //mavlink_msg_waypoint_ack_decode(msg, &packet);
-	        //if (mavlink_check_target(packet.target_system,packet.target_component)) break;
+	        mavlink_waypoint_ack_t packet;
+	        mavlink_msg_waypoint_ack_decode(msg, &packet);
+	        if (mavlink_check_target(packet.target_system,packet.target_component)) break;
 	
-	        // check for error
-	        //uint8_t type = packet.type; // ok (0), error(1)
+	        // parse for error - although we do nothing about an error.
+	        uint8_t type = packet.type; // ok (0), error(1)
 	
 	        // turn off waypoint send
-	        //global_data.waypoint_sending = false;
+	        mavlink_flags.mavlink_sending_waypoints = false;
+			mavlink_waypoint_timeout  = 0 ;
 	    }
 	    break;
-	
-	    case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
-	    {
-			//send_text((unsigned char*)"param request list\r\n");
-	
-	        // decode
-	        mavlink_param_request_list_t packet;
-	        mavlink_msg_param_request_list_decode(msg, &packet);
-	        if ( mavlink_check_target(packet.target_system,packet.target_component) == true )
-			{
-				// Start sending parameters
-				send_variables_counter = 0 ;
-	        	udb_flags._.mavlink_send_variables = 1 ;
-			}
-	    }
-	    break;
-
-		case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
-		{
-			//send_text((unsigned char*)"Requested specific parameter\r\n");
-			mavlink_param_request_read_t packet;
-			mavlink_msg_param_request_read_decode(msg, &packet) ;
-			if ( mavlink_check_target(packet.target_system,packet.target_component) == true )
-				{
-				send_by_index = packet.param_index ;
-				udb_flags._.mavlink_send_specific_variable = 1 ;
-				}
-		} break;
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_CLEAR_ALL:
 	    {
@@ -861,7 +893,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT_COUNT:
 	    {
-			//send_text((unsigned char*)"waypoint count\r\n");
+			send_text((unsigned char*)"waypoint count\r\n");
 	
 	        // decode
 	        //mavlink_waypoint_count_t packet;
@@ -881,7 +913,7 @@ void handleMessage(mavlink_message_t* msg)
 	
 	    case MAVLINK_MSG_ID_WAYPOINT:
 	    {
-			//send_text((unsigned char*)"waypoint\r\n");
+			send_text((unsigned char*)"waypoint\r\n");
 	        // Check if receiving waypiont
 	        //if (!global_data.waypoint_receiving) break;
 	
@@ -965,14 +997,41 @@ void handleMessage(mavlink_message_t* msg)
 	        //}
 	        break;
 	    }
+
+#endif //(FLIGHT_PLAN_TYPE == FP_WAYPOINTS )
+
+		case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
+	    {
+			//send_text((unsigned char*)"param request list\r\n");
 	
+	        // decode
+	        mavlink_param_request_list_t packet;
+	        mavlink_msg_param_request_list_decode(msg, &packet);
+	        if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
+		  	// Start sending parameters
+			send_variables_counter = 0 ;
+	        mavlink_flags.mavlink_send_variables = 1 ;
+			
+	    }
+	    break;
+
+		case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
+		{
+			//send_text((unsigned char*)"Requested specific parameter\r\n");
+			mavlink_param_request_read_t packet;
+			mavlink_msg_param_request_read_decode(msg, &packet) ;
+			if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
+			send_by_index = packet.param_index ;
+			mavlink_flags.mavlink_send_specific_variable = 1 ;
+		} break;
+		
 	    case MAVLINK_MSG_ID_PARAM_SET:
 	    {
 	        // decode
 			//send_text((unsigned char*)"Param Set\r\n");
 	        mavlink_param_set_t packet;
 	        mavlink_msg_param_set_decode(msg, &packet);
-	        if (mavlink_check_target(packet.target_system,packet.target_component) == false)
+	        if (mavlink_check_target(packet.target_system,packet.target_component) == true)
 			{
 				send_text((unsigned char*) "failed target system check on parameter set \r\n");
 				break;
@@ -991,10 +1050,10 @@ void handleMessage(mavlink_message_t* msg)
 				    {
 						mavlink_parameters_list[i].set_param(packet.param_value, i) ;
 						// After setting parameter, re-send it to GCS as acknowledgement of success.
-						if( udb_flags._.mavlink_send_specific_variable == 0 )
+						if( mavlink_flags.mavlink_send_specific_variable == 0 )
 						{
 							send_by_index = i ;
-							udb_flags._.mavlink_send_specific_variable = 1 ;
+							mavlink_flags.mavlink_send_specific_variable = 1 ;
 						}
 					}
 				}
@@ -1007,45 +1066,34 @@ void handleMessage(mavlink_message_t* msg)
 	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET:
 	    {
 			// Do nothing with this funciton since it is obsolete
-			// Must keep function to be compatible with the 
+			// Must keep function defined to activate flexifunction mavlink libraries
 		}
 		break;
-	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET_BUFFER:
+	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET_BUFFER_FUNCTION:
 	    {
 	        // decode
 			//send_text((unsigned char*)"Param Set\r\n");
-	        mavlink_flexifunction_set_t packet;
-	        mavlink_msg_flexifunction_set_decode(msg, &packet);
+	        mavlink_flexifunction_set_buffer_function_t packet;
+	        mavlink_msg_flexifunction_set_buffer_function_decode(msg, &packet);
 
 			componentReference* pcompRef = NULL;
 
-	        if (packet.target_system != mavlink_system.sysid)
-			{
-				//send_text((unsigned char*) "failed target system check on flexifunction set \r\n");
-				break;
-			}
-			else if ( (pcompRef = findComponentRefWithID(packet.target_component)) == 0)
-			{
-				//send_text((unsigned char*) "failed to find component index on flexifunction set \r\n");
-				break;
-			}
-			else
-			{
-				functionSetting fSetting;
+	        if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
+
+			functionSetting fSetting;
 	
-				fSetting.functionType = packet.function_type;
-				fSetting.setValue = packet.Action;
-				fSetting.dest = packet.out_index;
-				if(packet.settings_data[0] != 's') return;
-				memcpy(&fSetting.data, &packet.settings_data[1], sizeof(functionData));
+			fSetting.functionType = packet.function_type;
+			fSetting.setValue = packet.Action;
+			fSetting.dest = packet.out_index;
+			if(packet.settings_data[0] != 's') return;
+			memcpy(&fSetting.data, &packet.settings_data[1], sizeof(functionData));
 
-				if(packet.func_index > pcompRef->maxFuncs) return;
-				if(packet.func_index > 80) return;
+			if(packet.func_index > pcompRef->maxFuncs) return;
+			if(packet.func_index > 80) return;
 
-				memcpy( &(flexifunction_buffer[packet.func_index]), &fSetting, sizeof(fSetting));
-	        }
-	        break;
+			memcpy( &(flexifunction_buffer[packet.func_index]), &fSetting, sizeof(fSetting));
 
+			
 	    } // end case
 	#endif
 
@@ -1058,7 +1106,7 @@ void handleMessage(mavlink_message_t* msg)
 			mavlink_msg_param_value_decode(msg, &packet) ;
 			if (mavlink_check_target(packet.target_system,packet.target_component))break;
 			send_by_index = packet.param_index ;
-			udb_flags._.mavlink_send_specific_variable = 1 ;
+			mavlink_flags.mavlink_send_specific_variable = 1 ;
 			break ;
 		} // end case
 		*/
@@ -1199,7 +1247,7 @@ void mavlink_output_40hz( void )
 		alt_float =  ((float)(IMUlocationz._.W1)) + (float)(alt_origin.WW / 100.0) ;
 		mavlink_msg_global_position_send(MAVLINK_COMM_0, usec, 
 			lat_float , lon_float, alt_float ,
-			// Devide IMUVelocity by 50 as it's normal units are in 2cm intervals. 
+			// Devide IMUVelocity by 100 as it's normal units are in cm / second.
 		   ((float) (-IMUvelocityy._.W1)/ 100.0) , ((float) (IMUvelocityx._.W1)/ 100.0),
 		   ((float) (- IMUvelocityz._.W1) )/ 100.0) ; // meters per second
 	}
@@ -1319,7 +1367,7 @@ void mavlink_output_40hz( void )
 	}
 
 	// SEND VALUES OF PARAMETERS IF THE LIST HAS BEEN REQUESTED
-	if 	( udb_flags._.mavlink_send_variables == 1 )
+	if 	( mavlink_flags.mavlink_send_variables == 1 )
 	{
 		if ( send_variables_counter < count_of_parameters_list)
 		{
@@ -1329,17 +1377,63 @@ void mavlink_output_40hz( void )
 		else 
 		{
 			send_variables_counter = 0 ;
-			udb_flags._.mavlink_send_variables = 0 ;
+			mavlink_flags.mavlink_send_variables = 0 ;
 		}	
 	}
 
 	// SEND SPECIFICALLY REQUESTED PARAMETER
-	if ( udb_flags._.mavlink_send_specific_variable == 1 )
+	if ( mavlink_flags.mavlink_send_specific_variable == 1 )
 	{
 		mavlink_parameters_list[send_by_index].send_param( send_by_index ) ;
-		udb_flags._.mavlink_send_specific_variable = 0 ;
-	}	
-		
+		mavlink_flags.mavlink_send_specific_variable = 0 ;
+	}
+
+	// CHECK WHETHER WAYPOINT PROTOCOL HAS TIMED OUT WAITING ON A RESPONSE
+	if ( mavlink_waypoint_timeout  <= 0 )
+	{
+		if ( mavlink_flags.mavlink_sending_waypoints ||  mavlink_flags.mavlink_receiving_waypoints )
+		{
+			send_text((unsigned char *)"Timeout on waypoint protocol.\r\n");
+		}
+		mavlink_flags.mavlink_sending_waypoints   = false ;
+	    mavlink_flags.mavlink_receiving_waypoints = false ;
+	}
+
+	// SEND NUMBER OF WAYPOINTS IN WAYPOINTS LIST
+	if ( mavlink_flags.mavlink_send_waypoint_count == 1 )
+	{
+		//send_text((unsigned char *)"Sending waypoint count\r\n") ;
+		mavlink_msg_waypoint_count_send(MAVLINK_COMM_0,	mavlink_waypoint_dest_sysid, mavlink_waypoint_dest_compid, number_of_waypoints) ;
+		mavlink_flags.mavlink_send_waypoint_count = 0 ;
+	}
+
+	// SEND DETAILS OF A SPECIFIC WAYPOINT
+	if ( mavlink_flags.mavlink_send_specific_waypoint == 1 )
+	{
+			//send_text((unsigned char *)"Time to send a specific waypoint\r\n") ;
+			/*
+            mavlink_msg_waypoint_send(mavlink_channel_t chan, uint8_t target_system, uint8_t target_component, \
+					uint16_t seq, uint8_t frame, uint8_t command, uint8_t current, uint8_t autocontinue,       \
+					float param1, float param2, float param3, float param4,                                    \
+                    float x, float y, float z) ;
+            */
+			//BUILDING 
+
+			float lat_float, lon_float, alt_float = 0.0 ;
+			//accum_long = IMUlocationy._.W1 + ( lat_origin.WW / 90 ) ; //  meters North from Equator
+			//lat_float  = (float) (( accum_long * 90 ) / 10000000.0) ; // degrees North from Equator
+			//lon_float = (float) ((float) long_origin.WW  + ((float)(IMUlocationx._.W1) * 90.0 ) / ( float )( cos_lat / 16384.0 )) / 10000000.0 ;
+			//	extern struct relWaypointDef wp_to_relative(struct waypointDef wp) ;
+			//struct relWaypointDef current_waypoint = wp_to_relative( waypoints[waypointIndex] ) ;
+			alt_float =  ((float)(IMUlocationz._.W1)) + (float)(alt_origin.WW / 100.0) ;
+			 mavlink_msg_waypoint_send(MAVLINK_COMM_0, mavlink_waypoint_dest_sysid, mavlink_waypoint_dest_compid, \
+					mavlink_waypoint_requested_sequence_number, mavlink_waypoint_frame, 0, mavlink_waypoint_current, true,       \
+					0.0, 0.0, 0.0, 0.0,                                    \
+                    2.0, 54.0, 500.0) ;
+            
+			mavlink_flags.mavlink_send_specific_waypoint = 0 ;
+	}
+	if ( mavlink_waypoint_timeout  > 0 ) mavlink_waypoint_timeout-- ;
 	return ;
 }
 #endif // ( MAVLINK_TEST_ENCODE_DECODE == 1 )

@@ -11,6 +11,8 @@
 	<messages>
     <message id="150" name="FLEXIFUNCTION_SET">
       <description>Depreciated but used as a compiler flag.  Do not remove</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
     </message>
     <message id="151" name="FLEXIFUNCTION_READ_REQ">
       <description>Reqest reading of flexifunction data</description>
@@ -19,8 +21,8 @@
       <field type="int16_t" name="read_req_type">Type of flexifunction data requested</field>
       <field type="int16_t" name="data_index">index into data where needed</field>
     </message>
-    <message id="152" name="FLEXIFUNCTION_SET_BUFFER">
-      <description>Set Flexifunction type and parameters for component at function index in buffer</description>
+    <message id="152" name="FLEXIFUNCTION_SET_BUFFER_FUNCTION">
+      <description>Flexifunction type and parameters for component at function index from buffer</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint16_t" name="func_index">Function index</field>
@@ -29,17 +31,7 @@
       <field type="uint16_t" name="out_index">Output register index</field>
       <field type="int8_t[48]" name="settings_data">Settings data</field>
     </message>
-    <message id="153" name="FLEXIFUNCTION_BUFFER_DATA">
-      <description>Read Flexifunction type and parameters for component at function index from buffer</description>
-      <field type="uint8_t" name="target_system">System ID</field>
-      <field type="uint8_t" name="target_component">Component ID</field>
-      <field type="uint16_t" name="func_index">Function index</field>
-      <field type="uint8_t" name="function_type">Function type index</field>
-      <field type="uint8_t" name="Action">Output action, 0,1,2 = set, add or clear</field>
-      <field type="uint16_t" name="out_index">Output register index</field>
-      <field type="int8_t[48]" name="settings_data">Settings data</field>
-    </message>
-    <message id="154" name="FLEXIFUNCTION_COMMIT_BUFFER">
+    <message id="153" name="FLEXIFUNCTION_COMMIT_BUFFER">
       <description>Commit buffer to the active settings.  Controlled by buffer checksum</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
@@ -47,7 +39,7 @@
       <field type="uint16_t" name="function_count">Number of functions</field>
       <field type="uint16_t" name="buffer_checksum">Buffer checksum for commit</field>
     </message>
-    <message id="155" name="FLEXIFUNCTION_STATISTICS_DATA">
+    <message id="154" name="FLEXIFUNCTION_STATISTICS">
       <description>Count statistics of the system</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
@@ -58,13 +50,13 @@
       <field type="uint16_t" name="function_byte_size">Size of function in bytes</field>
       <field type="uint16_t" name="buffer_checksum">Buffer checksum for commit</field>
     </message>
-    <message id="156" name="FLEXIFUNCTION_REGISTER_NAME">
+    <message id="155" name="FLEXIFUNCTION_REGISTER_NAME">
       <description>Set or read flexifunction register name</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint16_t" name="register_index">Register index</field>
       <field type="uint16_t" name="register_name_length">Register name length</field>
       <field type="uint8_t[16]" name="register_name">Register name</field>
-      
     </message>
+   	</messages>
 </mavlink>
