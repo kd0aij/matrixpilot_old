@@ -21,8 +21,12 @@
 
 #include "libUDB_internal.h"
 
+#if (BOARD_TYPE == UDB4_BOARD)
+#include "I2C.h"
 #include "NV_memory.h"
 #include "data_storage.h"
+#include "events.h"
+#endif
 
 #if (BOARD_IS_CLASSIC_UDB == 1)
 #if ( CLOCK_CONFIG == CRYSTAL_CLOCK )
@@ -70,6 +74,12 @@ void udb_init_clock(void)	/* initialize timers */
 {
 	TRISF = 0b1111111111101100 ;
 	
+#if (BOARD_TYPE == UDB4_BOARD)
+	init_events();
+	I2C1_init();
+	nv_memory_init();
+	data_storage_init();
+#endif
 	
 	// Initialize timer1, used as the 40Hz heartbeat of libUDB.
 	TMR1 = 0 ;
@@ -260,14 +270,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	udb_servo_callback_prepare_outputs() ;
 
 #if (BOARD_TYPE == UDB4_BOARD)
-	if ( udb_heartbeat_counter % 20 == 1)
-	{
-		serviceI2C1();
-	}
-
-	udb_nv_memory_service();
-	udb_storage_service();
-
+	I2C1_trigger_service();
+	nv_memory_service_trigger();
+	storage_service_trigger();
 #endif
 	
 	interrupt_restore_corcon ;

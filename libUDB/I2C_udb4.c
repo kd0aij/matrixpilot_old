@@ -22,6 +22,7 @@
 #include "libUDB_internal.h"
 #include "I2C.h"
 #include "NV_memory.h"
+#include "events.h"
 
 #if (BOARD_TYPE == UDB4_BOARD)
 
@@ -67,6 +68,7 @@ void (* I2C1_state ) ( void ) = &I2C1_idle ;
 
 unsigned int I2C1_Index = 0;  		// index into the write buffer
 
+unsigned char I2C1_CommandByte 	= 0;
 unsigned int I2C1_tx_data_size = 0;		// tx data size
 unsigned int I2C1_rx_data_size = 0;		// rx data size
 unsigned int I2C1_command_data_size = 0;	// command data size
@@ -74,17 +76,9 @@ unsigned int I2C1_command_data_size = 0;	// command data size
 unsigned char* pI2C1Buffer = NULL;	// pointer to buffer
 unsigned char* pI2C1commandBuffer = NULL;	// pointer to receive  buffer
 
-#define I2C_COMMAND	0xA0
+unsigned int I2C1_service_handle = INVALID_HANDLE;
 
-unsigned char I2C1Buffer[256];
-
-unsigned char I2C1_CommandByte 	= 0;
-
-// To pause a number of service cycles
-unsigned int I2C1Pause = 0 ;
-
-
-void udb_init_I2C1(void)
+void I2C1_init(void)
 {
 //	I2C1_SDA_TRIS = I2C1_SCL_TRIS = 0 ;		// SDA and SCL as outputs
 	I2C1BRG = I2C1BRGVAL ; 
@@ -94,10 +88,18 @@ void udb_init_I2C1(void)
 	_MI2C1IF = 0 ; 			// clear the I2C1 master interrupt
 	_MI2C1IE = 1 ; 			// enable the interrupt
 
+	register_event(&serviceI2C1);
+
 	I2C1_Busy = false;
 
 	return ;
 }
+
+// Trigger the I2C1 service routine to run at low priority
+void I2C1_trigger_service(void)
+{
+	trigger_event(I2C1_service_handle);
+};
 
 
 void serviceI2C1(void)  // service the I2C

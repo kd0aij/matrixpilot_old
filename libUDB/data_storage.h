@@ -122,8 +122,11 @@ typedef struct tagDATA_STORAGE_HEADER
 	unsigned int 	data_checksum;
 } DATA_STORAGE_HEADER;
 
-// Storage service loop
-extern void udb_storage_service(void);
+// Trigger storage service in low priority process.
+extern void storage_service_trigger(void);
+
+// Initialise the data storage
+extern void data_storage_init(void);
 
 // For access to a checksummed structure data area
 extern boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned int size);

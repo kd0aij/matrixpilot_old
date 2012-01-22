@@ -64,7 +64,7 @@ boolean data_storage_check_table(void);
 boolean data_storage_format_table(void);
 
 // create a new data storage area
-boolean storage_create_area(data_handle, size);
+boolean storage_create_area(unsigned int data_handle, unsigned int size);
 
 // Callbacks
 // The callbacks normally set the status so that the background service routine does the work.
@@ -92,7 +92,7 @@ unsigned int data_storage_size = 0;
 
 // Initialise the storage
 // If read has failed keep re-trying until the nv memory is ready.
-void udb_storage_service(void)
+void data_storage_service(void)
 {
 	switch(data_storage_status)
 	{
@@ -209,17 +209,19 @@ boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned
 
 	data_storage_status = DATA_STORAGE_WRITING;
 
-	if(storage_test_handle() == false)  
+	if(storage_test_handle(data_handle) == false)  
 	{
 		pdata_storage_data 		= pwrData;
 		data_storage_type 		= data_handle;
 		data_storage_size 		= size;
 		storage_create_area(data_handle, size);
 	}
+	return true;
 }
 
-boolean storage_create_area(data_handle, size)
+boolean storage_create_area(unsigned int data_handle, unsigned int size)
 {
+	return false;
 }
 
 void data_storage_callback(boolean success)

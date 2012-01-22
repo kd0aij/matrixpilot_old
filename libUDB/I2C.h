@@ -43,8 +43,8 @@
 
 #include "libUDB_internal.h"
 
+// callback type for I2C user
 typedef void (*I2C_callbackFunc)(boolean);
-
 
 // Start a transaction and take ownership of I2C bus.
 // returns false if I2C is busy or not initialized
@@ -61,6 +61,11 @@ extern boolean I2C1_Read(unsigned char command, unsigned char* pcommandData, uns
 // Check for I2C ACK on command
 extern boolean I2C1_checkACK(unsigned int command, I2C_callbackFunc pCallback);
 
+// Trigger the I2C1 service routine to run at low priority
+extern void I2C1_trigger_service(void);
+
+// Trigger the I2C1 service routine to run at low priority
+extern void I2C1_init(void);
 
 #endif	//I2C_H
 

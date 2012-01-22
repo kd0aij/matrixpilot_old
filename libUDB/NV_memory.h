@@ -5,8 +5,11 @@
 
 typedef void (*NVMemory_callbackFunc)(boolean);
 
-// Service process called by background.
-void udb_nv_memory_service( void );
+// Trigger service of nv memory in low priority process
+void nv_memory_service_trigger( void );
+
+// Initialise non volatile memory service
+void nv_memory_init( void );
 
 boolean udb_nv_memory_read( unsigned char* rdBuffer, unsigned int address, unsigned int rdSize, NVMemory_callbackFunc pCallback);
 

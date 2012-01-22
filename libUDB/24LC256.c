@@ -20,6 +20,7 @@
 
 #include "NV_memory.h"
 #include "I2C.h"
+#include "events.h"
 
 #define MCP24LC256_COMMAND	0xA0
 
@@ -31,6 +32,7 @@ enum MCP24LC256_STATES
 	MCP24LC256_STATE_WAITING_WRITE,
 	MCP24LC256_STATE_FAILED_TRX,
 };
+
 
 unsigned char commandData[4] = {0x00, 0x00}; 
 
@@ -55,8 +57,10 @@ void MCP24LC256_callback(boolean I2CtrxOK);
 
 NVMemory_callbackFunc pcallerCallback = NULL;
 
+unsigned int nv_memory_service_handle = INVALID_HANDLE;
 
-void udb_nv_memory_service( void )
+
+void nv_memory_service( void )
 {
 	switch(MCP24LC256_state)
 	{
@@ -67,6 +71,17 @@ void udb_nv_memory_service( void )
 		I2C1_checkACK(MCP24LC256_COMMAND, &MCP24LC256_callback);
 		break;
 	}
+}
+
+
+void nv_memory_init( void )
+{
+	register_event(&nv_memory_service);
+}
+
+void nv_memory_service_trigger( void )
+{
+	trigger_event(nv_memory_service_handle);
 }
 
 
