@@ -166,15 +166,20 @@ extern const pflexFunction flexiFunctions [];
 typedef char registerName[16];
 
 
-typedef struct tagComponentReference
+typedef struct tagflexiFunctionComponentData
 {
-  int				componentNum;   			// The component number
-  functionSetting*	pFunctionData;				// The function data table for this component
-  registerName*	pRegNames;					// The parameter(mavlink) / register(flexifunction) name strings
-  unsigned char	maxRegs;   					// Maximum number of registers
-  unsigned char	maxFuncs;  					// Maximum number of functions
   unsigned char	numberRegs;   				// Number of registers used
   unsigned char	numberFuncs;  				// Number of functions used
+} flexiFunctionComponentData;
+
+
+typedef struct tagComponentReference
+{
+  int	componentNum;   							// The component number
+  functionSetting*	pFunctionData;				// The function data table for this component
+  flexiFunctionComponentData* pComponentData;		// The function data table for this component
+  unsigned char	maxRegs;   					// Maximum number of registers
+  unsigned char	maxFuncs;  					// Maximum number of functions
 } componentReference;
 
 
@@ -184,10 +189,6 @@ extern const componentReference componentReferences[];
 
 // Helper function for finding component information from an array of component references
 extern componentReference* findComponentRefWithID(int compID);
-
-
-// Declaration of flexifunction buffer for handling flexifunction modifications through mavlink
-extern functionSetting flexifunction_buffer[80];
 
 
 #endif

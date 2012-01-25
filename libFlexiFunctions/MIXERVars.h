@@ -16,4 +16,6 @@ extern functionSetting MIXER_data[MAX_MIXER_FUNCS];
 
 extern fractional MIXER_registers[MAX_MIXER_REGS];
 
+extern flexiFunctionComponentData MIXER_componentData ;
+
 #endif

@@ -11,9 +11,6 @@
 
 
 
-functionSetting flexifunction_buffer[80] = {};
-
-
 functionSetting MIXER_data[MAX_MIXER_FUNCS] = 
 {
 	{9, 0, 21, 	{.gain_limit = { 1,PercenttoQ14(100),PercenttoQ14(-100),PercenttoQ14(0.0),PercenttoQ14(100.0)} } },
@@ -71,3 +68,8 @@ functionSetting MIXER_data[MAX_MIXER_FUNCS] =
 	{0, 2, 0, 	{.null = { } } },
 
 };
+
+
+flexiFunctionComponentData MIXER_componentData = { 53 , 42 };
+
+

@@ -7,6 +7,7 @@
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 format
 
 
+// Finds the right function component reference from identifier.
 componentReference* findComponentRefWithID(int compID)
 {
 	componentReference* pScanRef = componentReferences;
@@ -21,6 +22,8 @@ componentReference* findComponentRefWithID(int compID)
 }
 
 
+
+// Run the flexifunction by stepping through the list of functions one-by-one.
 void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions)
 {
 	int 				functionNo = 0;		// Index of mixer in mixer list

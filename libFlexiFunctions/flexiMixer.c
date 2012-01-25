@@ -88,15 +88,15 @@ void preMix( void )
 
 void postMix( void )
 {
-	udb_pwOut[AILERON_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_AILERON_L];
-	udb_pwOut[ELEVATOR_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_ELEVATOR];
-	udb_pwOut[RUDDER_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_RUDDER];
-	udb_pwOut[AILERON_RIGHT_OUTPUT_CHANNEL] = (int) MIXER_registers[REG_MIXER_AILERON_R];
-	udb_pwOut[FLAP_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_FLAP_L];
-	udb_pwOut[FLAP_RIGHT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_FLAP_R];
-	udb_pwOut[FLAPMID_LEFT_OUTPUT_CHANNEL] 	= (int) MIXER_registers[REG_MIXER_FLAPMID_L];
-	udb_pwOut[FLAPMID_RIGHT_OUTPUT_CHANNEL] = (int) MIXER_registers[REG_MIXER_FLAPMID_R];
-	udb_pwOut[SPOILER_OUTPUT_CHANNEL] 		= (int) MIXER_registers[REG_MIXER_SPOILER];
+	udb_pwOut[AILERON_LEFT_OUTPUT_CHANNEL] 	= udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_AILERON_L] );
+	udb_pwOut[ELEVATOR_OUTPUT_CHANNEL] 		= udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_ELEVATOR] );
+	udb_pwOut[RUDDER_OUTPUT_CHANNEL] 		= udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_RUDDER] );
+	udb_pwOut[AILERON_RIGHT_OUTPUT_CHANNEL] = udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_AILERON_R] );
+	udb_pwOut[FLAP_LEFT_OUTPUT_CHANNEL] 	= udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_FLAP_L] );
+	udb_pwOut[FLAP_RIGHT_OUTPUT_CHANNEL] 	= udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_FLAP_R] );
+	udb_pwOut[FLAPMID_LEFT_OUTPUT_CHANNEL] 	= udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_FLAPMID_L] );
+	udb_pwOut[FLAPMID_RIGHT_OUTPUT_CHANNEL] = udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_FLAPMID_R] );
+	udb_pwOut[SPOILER_OUTPUT_CHANNEL] 		= udb_servo_pulsesat( (int) MIXER_registers[REG_MIXER_SPOILER] );
 
 	int throttle = (int) MIXER_registers[REG_MIXER_THROTTLE];
 

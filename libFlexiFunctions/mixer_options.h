@@ -1,6 +1,8 @@
 #ifndef MIXER_OPTIONS_H
 #define MIXER_OPTIONS_H
 
+#include "flexifunction_options.h"
+
 // Fix this to your particular radio at 100% travel
 #define MIX_PWM_RANGE 800
 
@@ -16,6 +18,9 @@
 #define MAX_MIXER_FUNCS 	80
 #define MAX_MIXER_REGS 		60
 
+#if(MAX_BUFFER_FUNCS < MAX_MIXER_FUNCS)
+ #error("Maximum mixer function count does not fit in the buffer")
+#endif
 
 #endif
 
