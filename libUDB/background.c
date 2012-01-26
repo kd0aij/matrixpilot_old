@@ -26,6 +26,7 @@
 #include "NV_memory.h"
 #include "data_storage.h"
 #include "events.h"
+ #include "../libflexifunctions/flexifunctionservices.h"
 #endif
 
 #if (BOARD_IS_CLASSIC_UDB == 1)
@@ -79,6 +80,7 @@ void udb_init_clock(void)	/* initialize timers */
 	I2C1_init();
 	nv_memory_init();
 	data_storage_init();
+	flexiFunctionServiceInit();
 #endif
 	
 	// Initialize timer1, used as the 40Hz heartbeat of libUDB.
@@ -273,6 +275,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	I2C1_trigger_service();
 	nv_memory_service_trigger();
 	storage_service_trigger();
+	flexiFunctionServiceTrigger();
 #endif
 	
 	interrupt_restore_corcon ;

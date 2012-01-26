@@ -97,8 +97,7 @@ mavlink_status_t  r_mavlink_status ;
 #endif
 
 #ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
-	#include "../libFlexiFunctions/MIXERVars.h"
-	#include "../libFlexiFunctions/flexiFunctionTypes.h"
+	#include "../libFlexiFunctions/flexiFunctionServices.h"
 #endif
 
 #define 	SERIAL_BUFFER_SIZE 			MAVLINK_MAX_PACKET_LEN
@@ -151,35 +150,6 @@ struct mavlink_flag_bits {
 			unsigned int mavlink_receiving_waypoints	: 1 ;
 			unsigned int mavlink_send_specific_waypoint : 1 ;
 			} mavlink_flags ;
-
-
-// ONLY FOR FLEXIFUNCTIONS
-#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
-
-enum FLEXIFUNCTION_SEND_STATUS
-{
-	FLEXIFUNCTION_SEND_NONE = 0,
-	FLEXIFUNCTION_SEND_BUFFER_SPECIFIC,
-	FLEXIFUNCTION_SEND_BUFFER_ALL,
-	FLEXIFUNCTION_SENDING_BUFFER_ALL,
-	FLEXIFUNCTION_SEND_STATISTICS,
-	FLEXIFUNCTION_SEND_BUFFER_COMMITED,
-	FLEXIFUNCTION_SEND_BUFFER_NOT_COMMITED,
-	FLEXIFUNCTION_SEND_REGISTER_NAMES,
-	FLEXIFUNCTION_SENDING_REGISTER_NAMES,
-};
-
-unsigned int mavlink_flexifunction_read_status = 0;
-unsigned int mavlink_flexifunction_send_status = FLEXIFUNCTION_SEND_NONE;
-
-// set the send status for flexifunctions.  Checks if already sending.
-int flexifunction_set_new_send(unsigned int newStatus)
-{
-	if(mavlink_flexifunction_send_status != FLEXIFUNCTION_SEND_NONE) return;
-	mavlink_flexifunction_send_status = newStatus;
-}
-
-#endif
 
 void init_serial()
 {
@@ -1061,42 +1031,6 @@ void handleMessage(mavlink_message_t* msg)
 	        break;
 	    } // end case
 
-	// Test for flexifunction messages being defined.  Only include the libraries if required
-	#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
-	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET:
-	    {
-			// Do nothing with this funciton since it is obsolete
-			// Must keep function defined to activate flexifunction mavlink libraries
-		}
-		break;
-	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET_BUFFER_FUNCTION:
-	    {
-	        // decode
-			//send_text((unsigned char*)"Param Set\r\n");
-	        mavlink_flexifunction_set_buffer_function_t packet;
-	        mavlink_msg_flexifunction_set_buffer_function_decode(msg, &packet);
-
-			componentReference* pcompRef = NULL;
-
-	        if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
-
-			functionSetting fSetting;
-	
-			fSetting.functionType = packet.function_type;
-			fSetting.setValue = packet.Action;
-			fSetting.dest = packet.out_index;
-			if(packet.settings_data[0] != 's') return;
-			memcpy(&fSetting.data, &packet.settings_data[1], sizeof(functionData));
-
-			if(packet.func_index > pcompRef->maxFuncs) return;
-			if(packet.func_index > 80) return;
-
-			memcpy( &(flexifunction_buffer[packet.func_index]), &fSetting, sizeof(fSetting));
-
-			
-	    } // end case
-	#endif
-
 
 		/* Following case statement now out of date and needs re-writing for new parameter structures  - PDH
 		case MAVLINK_MSG_ID_PARAM_VALUE :
@@ -1111,6 +1045,12 @@ void handleMessage(mavlink_message_t* msg)
 		} // end case
 		*/
   	} // end switch
+
+	// Test for flexifunction messages being defined.  If so, do the flexifunction recieve message parsing
+	#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+	flexiFunctionReceiveParser(msg);
+	#endif
+
 } // end handle mavlink
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1433,6 +1373,11 @@ void mavlink_output_40hz( void )
             
 			mavlink_flags.mavlink_send_specific_waypoint = 0 ;
 	}
+
+#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+	flexiFunctionTransmitService( MAVLINK_COMM_0 );
+#endif
+
 	if ( mavlink_waypoint_timeout  > 0 ) mavlink_waypoint_timeout-- ;
 	return ;
 }
