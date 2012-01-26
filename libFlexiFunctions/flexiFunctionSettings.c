@@ -1,7 +1,5 @@
 #include "flexiFunctionTypes.h"
 
-#include "MIXERVars.h"
-
 #define RMAX15 0b0110000000000000  //  1.5 in 2.14 format
 #define RMAX   0b0100000000000000  //  1.0 in 2.14 format
 
@@ -11,7 +9,7 @@
 
 
 
-functionSetting MIXER_data[MAX_MIXER_FUNCS] = 
+functionSetting flexiFunction_data [FLEXIFUNCTION_MAX_FUNCS] = 
 {
 	{9, 0, 21, 	{.gain_limit = { 1,PercenttoQ14(100),PercenttoQ14(-100),PercenttoQ14(0.0),PercenttoQ14(100.0)} } },
 	{9, 0, 22, 	{.gain_limit = { 2,PercenttoQ14(100.0),PercenttoQ14(-100.0),PercenttoQ14(0.0),PercenttoQ14(100.0)} } },
@@ -70,6 +68,6 @@ functionSetting MIXER_data[MAX_MIXER_FUNCS] =
 };
 
 
-flexiFunctionComponentData MIXER_componentData = { 53 , 42 };
+unsigned int flexiFunctionsUsed = 53;
 
 

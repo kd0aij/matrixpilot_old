@@ -3,7 +3,7 @@
 
 
 #include <dsp.h>
-
+#include "flexifunction_options.h"
 
 /****************************************************************/
 // pyFEdit generated file - DO NOT EDIT
@@ -159,36 +159,13 @@ extern void runFlexiFunctions( functionSetting* pSettings, fractional* pRegister
 extern const pflexFunction flexiFunctions [];
 
 
-/****************************************************************/
-// Component references to support MAVlink
+extern functionSetting flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
 
 
-typedef char registerName[16];
+extern fractional flexiFunction_registers[FLEXIFUNCTION_MAX_REGS];
 
 
-typedef struct tagflexiFunctionComponentData
-{
-  unsigned char	numberRegs;   				// Number of registers used
-  unsigned char	numberFuncs;  				// Number of functions used
-} flexiFunctionComponentData;
-
-
-typedef struct tagComponentReference
-{
-  int	componentNum;   							// The component number
-  functionSetting*	pFunctionData;				// The function data table for this component
-  flexiFunctionComponentData* pComponentData;		// The function data table for this component
-  unsigned char	maxRegs;   					// Maximum number of registers
-  unsigned char	maxFuncs;  					// Maximum number of functions
-} componentReference;
-
-
-// Table of flexifunction data for different MAVlinkj components
-extern const componentReference componentReferences[];
-
-
-// Helper function for finding component information from an array of component references
-extern componentReference* findComponentRefWithID(int compID);
+extern unsigned int flexiFunctionsUsed;
 
 
 #endif

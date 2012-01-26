@@ -15,7 +15,7 @@ typedef struct tagComponentReference
 
 const componentReference componentReferences[] =
 {
-	{0, &MIXER_data, &MIXER_componentData, MAX_MIXER_REGS, MAX_MIXER_FUNCS },
+	{0, &MIXER_data, &MIXER_componentData, MAX_MIXER_REGS, MAX_MIXER_FUNCS, sizeof(functionData) },
 	{-1, 0, 0, 0, 0 },
 };
 

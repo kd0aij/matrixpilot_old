@@ -7,22 +7,6 @@
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 format
 
 
-// Finds the right function component reference from identifier.
-componentReference* findComponentRefWithID(int compID)
-{
-	componentReference* pScanRef = componentReferences;
-	int Index = 0;
-	
-	while(pScanRef->componentNum != -1)
-	{
-		if(pScanRef->componentNum == compID) return pScanRef;
-	}
-	
-	return 0;
-}
-
-
-
 // Run the flexifunction by stepping through the list of functions one-by-one.
 void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions)
 {
