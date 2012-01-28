@@ -17,7 +17,7 @@ void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsi
 	pSetting = &(pSettings[functionNo]);
 
 	// Step through each mixer and run it
-	while( (functionNo < max_functions) & (pSetting->functionType != 0) )
+	while( (functionNo < flexiFunctionsUsed) & (pSetting->functionType != 0) )
 	{	
 		pRegisters[0] = 0;	// reset the NULL register to make sure
 

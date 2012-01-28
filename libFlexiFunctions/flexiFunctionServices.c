@@ -48,6 +48,19 @@ enum FLEXIFUNCTION_SERVICES_STATUS
 };
 
 
+enum FLEXIFUNCTION_COMMANDS
+{
+	FLEXIFUNCTION_COMMAND_NULL,
+	FLEXIFUNCTION_COMMAND_FUNCTIONS_ALL,
+	FLEXIFUNCTION_COMMAND_FUNCTION_SPECIFIC,
+	FLEXIFUNCTION_COMMAND_COMMIT_BUFFER,
+	FLEXIFUNCTION_COMMAND_READ_EEPROM,
+	FLEXIFUNCTION_COMMAND_WRITE_EEPROM,
+	FLEXIFUNCTION_COMMAND_RELOAD_FROM_EEPROM,
+	FLEXIFUNCTION_COMMAND_READ_SETTINGS_TO_BUFFER,
+};
+
+
 // Buffer of all flexifunction data including used register and funciton count
 NVMEM_FLEXIFUNCTION_DATA flexiFunctionBuffer;
 
@@ -184,7 +197,7 @@ void flexiFunction_commit_buffer(unsigned int checksum)
 		return;
 	}
 
-	flexifunction_ref_command	= MAVLINK_MSG_ID_FLEXIFUNCTION_COMMIT_BUFFER;
+	flexifunction_ref_command	= MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND;
 	flexifunction_ref_checksum	= checksum;
 //	flexifunction_ref_compID	= compID;
 //	flexifunction_ref_sysID		= sysID;
@@ -220,6 +233,20 @@ void flexiFunction_commit_buffer_check()
 	unsigned int byteSize = flexiFunctionBuffer.componentData.numberFuncs * pcompRef->functionSize;
 	memcpy(pcompRef->pFunctionData,  flexiFunctionBuffer.flexiFunction_data, byteSize );
 */
+	unsigned int index;
+	functionSetting* pTarget;
+	functionSetting* pSource;
+
+	for( index = 0; index < flexiFunctionBuffer.flexiFunctionsUsed; index++)
+	{
+		pTarget = &flexiFunction_data[index];
+		pSource = &flexiFunctionBuffer.flexiFunction_data[index];
+
+		memcpy((unsigned char*) pTarget, (unsigned char*) pSource, sizeof(functionSetting));
+	}
+
+	flexiFunctionsUsed = flexiFunctionBuffer.flexiFunctionsUsed;
+
 	flexiFunction_ACK();
 }
 
@@ -249,12 +276,12 @@ void flexiFunctionReceiveParser(mavlink_message_t* msg)
 			// Must keep function defined to activate flexifunction mavlink libraries
 		}
 		break;
-	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET_BUFFER_FUNCTION:
+	    case MAVLINK_MSG_ID_FLEXIFUNCTION_BUFFER_FUNCTION:
 	    {
 	        // decode
 			//send_text((unsigned char*)"Param Set\r\n");
-	        mavlink_flexifunction_set_buffer_function_t packet;
-	        mavlink_msg_flexifunction_set_buffer_function_decode(msg, &packet);
+	        mavlink_flexifunction_buffer_function_t packet;
+	        mavlink_msg_flexifunction_buffer_function_decode(msg, &packet);
 
 	        if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
 
