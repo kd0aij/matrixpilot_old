@@ -56,6 +56,10 @@
 #define MAVLINK_SEND_UART_BYTES mavlink_serial_send
 #endif
 
+#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+	#include "../libFlexiFunctions/flexiFunctionServices.h"
+#endif
+
 #include "../MAVLink/include/matrixpilot_mavlink_bridge_header.h"
 
 int mavlink_serial_send(mavlink_channel_t chan, uint8_t buf[], uint16_t len);
@@ -92,8 +96,7 @@ mavlink_status_t  r_mavlink_status ;
 #endif
 
 #ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
-	#include "../libFlexiFunctions/MIXERVars.h"
-	#include "../libFlexiFunctions/flexiFunctionTypes.h"
+	#include "../libFlexiFunctions/flexiFunctionServices.h"
 #endif
 
 #define 	SERIAL_BUFFER_SIZE 			MAVLINK_MAX_PACKET_LEN
@@ -1033,46 +1036,6 @@ void handleMessage(mavlink_message_t* msg)
 	        break;
 	    } // end case
 
-	// Test for flexifunction messages being defined.  Only include the libraries if required
-	#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
-	    case MAVLINK_MSG_ID_FLEXIFUNCTION_SET:
-	    {
-	        // decode
-			//send_text((unsigned char*)"Param Set\r\n");
-	        mavlink_flexifunction_set_t packet;
-	        mavlink_msg_flexifunction_set_decode(msg, &packet);
-
-			componentReference* pcompRef = NULL;
-
-	        if (packet.target_system != mavlink_system.sysid)
-			{
-				send_text((unsigned char*) "failed target system check on flexifunction set \r\n");
-				break;
-			}
-			else if ( (pcompRef = findComponentRefWithID(packet.target_component)) == 0)
-			{
-				send_text((unsigned char*) "failed to find component index on flexifunction set \r\n");
-				break;
-			}
-			else
-			{
-				functionSetting fSetting;
-	
-				fSetting.functionType = packet.function_type;
-				fSetting.setValue = packet.Action;
-				fSetting.dest = packet.out_index;
-				if(packet.settings_data[0] != 's') return;
-				memcpy(&fSetting.data, &packet.settings_data[1], sizeof(functionData));
-
-				if(packet.func_index > pcompRef->maxFuncs) return;
-
-				memcpy( &(pcompRef->pFunctionData[packet.func_index]), &fSetting, sizeof(fSetting));
-	        }
-	        break;
-
-	    } // end case
-	#endif
-
 		/* Following case statement now out of date and needs re-writing for new parameter structures  - PDH
 		case MAVLINK_MSG_ID_PARAM_VALUE :
 		{
@@ -1087,6 +1050,12 @@ void handleMessage(mavlink_message_t* msg)
 		*/
 
    }   // end switch
+
+	// Test for flexifunction messages being defined.  If so, do the flexifunction recieve message parsing
+	#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+	flexiFunctionReceiveParser(msg);
+	#endif
+
 } // end handle mavlink
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1455,6 +1424,10 @@ void mavlink_output_40hz( void )
 	if ( mavlink_waypoint_timeout  > 0 ) mavlink_waypoint_timeout-- ;
 
    ************End of section not yet converted to 1.0 wire protocol ***********************/
+
+#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+	flexiFunctionTransmitService( MAVLINK_COMM_0 );
+#endif
 
 #endif  // (FLIGHT_PLAN_TYPE == FP_WAYPOINTS )
     

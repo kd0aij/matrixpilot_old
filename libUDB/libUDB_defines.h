@@ -208,7 +208,7 @@ struct udb_flag_bits {
 #define CHANNEL_7		7
 #define CHANNEL_8		8
 #define CHANNEL_9		9
-
+#define CHANNEL_10		10
 
 // Constants
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format

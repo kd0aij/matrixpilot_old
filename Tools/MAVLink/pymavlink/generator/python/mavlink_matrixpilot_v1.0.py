@@ -382,6 +382,12 @@ MAV_MISSION_RESULT_ENUM_END = 15 #
 
 # message IDs
 MAVLINK_MSG_ID_BAD_DATA = -1
+MAVLINK_MSG_ID_FLEXIFUNCTION_SET = 150
+MAVLINK_MSG_ID_FLEXIFUNCTION_READ_REQ = 151
+MAVLINK_MSG_ID_FLEXIFUNCTION_BUFFER_FUNCTION = 152
+MAVLINK_MSG_ID_FLEXIFUNCTION_STATISTICS = 153
+MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND = 154
+MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_ACK = 155
 MAVLINK_MSG_ID_HEARTBEAT = 0
 MAVLINK_MSG_ID_SYS_STATUS = 1
 MAVLINK_MSG_ID_SYSTEM_TIME = 2
@@ -454,6 +460,97 @@ MAVLINK_MSG_ID_NAMED_VALUE_INT = 252
 MAVLINK_MSG_ID_STATUSTEXT = 253
 MAVLINK_MSG_ID_DEBUG = 254
 MAVLINK_MSG_ID_EXTENDED_MESSAGE = 255
+
+class MAVLink_flexifunction_set_message(MAVLink_message):
+        '''
+        Depreciated but used as a compiler flag.  Do not remove
+        '''
+        def __init__(self, target_system, target_component):
+                MAVLink_message.__init__(self, MAVLINK_MSG_ID_FLEXIFUNCTION_SET, 'FLEXIFUNCTION_SET')
+                self._fieldnames = ['target_system', 'target_component']
+                self.target_system = target_system
+                self.target_component = target_component
+
+        def pack(self, mav):
+                return MAVLink_message.pack(self, mav, 181, struct.pack('<BB', self.target_system, self.target_component))
+
+class MAVLink_flexifunction_read_req_message(MAVLink_message):
+        '''
+        Reqest reading of flexifunction data
+        '''
+        def __init__(self, target_system, target_component, read_req_type, data_index):
+                MAVLink_message.__init__(self, MAVLINK_MSG_ID_FLEXIFUNCTION_READ_REQ, 'FLEXIFUNCTION_READ_REQ')
+                self._fieldnames = ['target_system', 'target_component', 'read_req_type', 'data_index']
+                self.target_system = target_system
+                self.target_component = target_component
+                self.read_req_type = read_req_type
+                self.data_index = data_index
+
+        def pack(self, mav):
+                return MAVLink_message.pack(self, mav, 26, struct.pack('<hhBB', self.read_req_type, self.data_index, self.target_system, self.target_component))
+
+class MAVLink_flexifunction_buffer_function_message(MAVLink_message):
+        '''
+        Flexifunction type and parameters for component at function
+        index from buffer
+        '''
+        def __init__(self, target_system, target_component, func_index, function_type, Action, out_index, settings_data):
+                MAVLink_message.__init__(self, MAVLINK_MSG_ID_FLEXIFUNCTION_BUFFER_FUNCTION, 'FLEXIFUNCTION_BUFFER_FUNCTION')
+                self._fieldnames = ['target_system', 'target_component', 'func_index', 'function_type', 'Action', 'out_index', 'settings_data']
+                self.target_system = target_system
+                self.target_component = target_component
+                self.func_index = func_index
+                self.function_type = function_type
+                self.Action = Action
+                self.out_index = out_index
+                self.settings_data = settings_data
+
+        def pack(self, mav):
+                return MAVLink_message.pack(self, mav, 66, struct.pack('<HHBBBB48s', self.func_index, self.out_index, self.target_system, self.target_component, self.function_type, self.Action, self.settings_data))
+
+class MAVLink_flexifunction_statistics_message(MAVLink_message):
+        '''
+        Count statistics of the system
+        '''
+        def __init__(self, target_system, target_component, register_count, function_count, register_max_count, function_max_count):
+                MAVLink_message.__init__(self, MAVLINK_MSG_ID_FLEXIFUNCTION_STATISTICS, 'FLEXIFUNCTION_STATISTICS')
+                self._fieldnames = ['target_system', 'target_component', 'register_count', 'function_count', 'register_max_count', 'function_max_count']
+                self.target_system = target_system
+                self.target_component = target_component
+                self.register_count = register_count
+                self.function_count = function_count
+                self.register_max_count = register_max_count
+                self.function_max_count = function_max_count
+
+        def pack(self, mav):
+                return MAVLink_message.pack(self, mav, 254, struct.pack('<HHHHBB', self.register_count, self.function_count, self.register_max_count, self.function_max_count, self.target_system, self.target_component))
+
+class MAVLink_flexifunction_command_message(MAVLink_message):
+        '''
+        Acknowldge sucess or failure of a flexifunction command
+        '''
+        def __init__(self, target_system, target_component, command_type):
+                MAVLink_message.__init__(self, MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND, 'FLEXIFUNCTION_COMMAND')
+                self._fieldnames = ['target_system', 'target_component', 'command_type']
+                self.target_system = target_system
+                self.target_component = target_component
+                self.command_type = command_type
+
+        def pack(self, mav):
+                return MAVLink_message.pack(self, mav, 133, struct.pack('<BBB', self.target_system, self.target_component, self.command_type))
+
+class MAVLink_flexifunction_command_ack_message(MAVLink_message):
+        '''
+        Acknowldge sucess or failure of a flexifunction command
+        '''
+        def __init__(self, command_type, result):
+                MAVLink_message.__init__(self, MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_ACK, 'FLEXIFUNCTION_COMMAND_ACK')
+                self._fieldnames = ['command_type', 'result']
+                self.command_type = command_type
+                self.result = result
+
+        def pack(self, mav):
+                return MAVLink_message.pack(self, mav, 208, struct.pack('<HH', self.command_type, self.result))
 
 class MAVLink_heartbeat_message(MAVLink_message):
         '''
@@ -1825,6 +1922,12 @@ class MAVLink_extended_message_message(MAVLink_message):
 
 
 mavlink_map = {
+        MAVLINK_MSG_ID_FLEXIFUNCTION_SET : ( '<BB', MAVLink_flexifunction_set_message, [0, 1], 181 ),
+        MAVLINK_MSG_ID_FLEXIFUNCTION_READ_REQ : ( '<hhBB', MAVLink_flexifunction_read_req_message, [2, 3, 0, 1], 26 ),
+        MAVLINK_MSG_ID_FLEXIFUNCTION_BUFFER_FUNCTION : ( '<HHBBBB48s', MAVLink_flexifunction_buffer_function_message, [2, 3, 0, 4, 5, 1, 6], 66 ),
+        MAVLINK_MSG_ID_FLEXIFUNCTION_STATISTICS : ( '<HHHHBB', MAVLink_flexifunction_statistics_message, [4, 5, 0, 1, 2, 3], 254 ),
+        MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND : ( '<BBB', MAVLink_flexifunction_command_message, [0, 1, 2], 133 ),
+        MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_ACK : ( '<HH', MAVLink_flexifunction_command_ack_message, [0, 1], 208 ),
         MAVLINK_MSG_ID_HEARTBEAT : ( '<IBBBBB', MAVLink_heartbeat_message, [1, 2, 3, 0, 4, 5], 50 ),
         MAVLINK_MSG_ID_SYS_STATUS : ( '<IIIHHhHHHHHHb', MAVLink_sys_status_message, [0, 1, 2, 3, 4, 5, 12, 6, 7, 8, 9, 10, 11], 124 ),
         MAVLINK_MSG_ID_SYSTEM_TIME : ( '<QI', MAVLink_system_time_message, [0, 1], 137 ),
@@ -2086,6 +2189,164 @@ class MAVLink(object):
                 m._crc = crc
                 m._header = MAVLink_header(msgId, mlen, seq, srcSystem, srcComponent)
                 return m
+        def flexifunction_set_encode(self, target_system, target_component):
+                '''
+                Depreciated but used as a compiler flag.  Do not remove
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+
+                '''
+                msg = MAVLink_flexifunction_set_message(target_system, target_component)
+                msg.pack(self)
+                return msg
+            
+        def flexifunction_set_send(self, target_system, target_component):
+                '''
+                Depreciated but used as a compiler flag.  Do not remove
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+
+                '''
+                return self.send(self.flexifunction_set_encode(target_system, target_component))
+            
+        def flexifunction_read_req_encode(self, target_system, target_component, read_req_type, data_index):
+                '''
+                Reqest reading of flexifunction data
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                read_req_type             : Type of flexifunction data requested (int16_t)
+                data_index                : index into data where needed (int16_t)
+
+                '''
+                msg = MAVLink_flexifunction_read_req_message(target_system, target_component, read_req_type, data_index)
+                msg.pack(self)
+                return msg
+            
+        def flexifunction_read_req_send(self, target_system, target_component, read_req_type, data_index):
+                '''
+                Reqest reading of flexifunction data
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                read_req_type             : Type of flexifunction data requested (int16_t)
+                data_index                : index into data where needed (int16_t)
+
+                '''
+                return self.send(self.flexifunction_read_req_encode(target_system, target_component, read_req_type, data_index))
+            
+        def flexifunction_buffer_function_encode(self, target_system, target_component, func_index, function_type, Action, out_index, settings_data):
+                '''
+                Flexifunction type and parameters for component at function index from
+                buffer
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                func_index                : Function index (uint16_t)
+                function_type             : Function type index (uint8_t)
+                Action                    : Output action, 0,1,2 = set, add or clear (uint8_t)
+                out_index                 : Output register index (uint16_t)
+                settings_data             : Settings data (int8_t)
+
+                '''
+                msg = MAVLink_flexifunction_buffer_function_message(target_system, target_component, func_index, function_type, Action, out_index, settings_data)
+                msg.pack(self)
+                return msg
+            
+        def flexifunction_buffer_function_send(self, target_system, target_component, func_index, function_type, Action, out_index, settings_data):
+                '''
+                Flexifunction type and parameters for component at function index from
+                buffer
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                func_index                : Function index (uint16_t)
+                function_type             : Function type index (uint8_t)
+                Action                    : Output action, 0,1,2 = set, add or clear (uint8_t)
+                out_index                 : Output register index (uint16_t)
+                settings_data             : Settings data (int8_t)
+
+                '''
+                return self.send(self.flexifunction_buffer_function_encode(target_system, target_component, func_index, function_type, Action, out_index, settings_data))
+            
+        def flexifunction_statistics_encode(self, target_system, target_component, register_count, function_count, register_max_count, function_max_count):
+                '''
+                Count statistics of the system
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                register_count            : Number of registers (uint16_t)
+                function_count            : Number of functions (uint16_t)
+                register_max_count        : Maximum number of registers (uint16_t)
+                function_max_count        : Maximum number of functions (uint16_t)
+
+                '''
+                msg = MAVLink_flexifunction_statistics_message(target_system, target_component, register_count, function_count, register_max_count, function_max_count)
+                msg.pack(self)
+                return msg
+            
+        def flexifunction_statistics_send(self, target_system, target_component, register_count, function_count, register_max_count, function_max_count):
+                '''
+                Count statistics of the system
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                register_count            : Number of registers (uint16_t)
+                function_count            : Number of functions (uint16_t)
+                register_max_count        : Maximum number of registers (uint16_t)
+                function_max_count        : Maximum number of functions (uint16_t)
+
+                '''
+                return self.send(self.flexifunction_statistics_encode(target_system, target_component, register_count, function_count, register_max_count, function_max_count))
+            
+        def flexifunction_command_encode(self, target_system, target_component, command_type):
+                '''
+                Acknowldge sucess or failure of a flexifunction command
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                command_type              : Flexifunction command type (uint8_t)
+
+                '''
+                msg = MAVLink_flexifunction_command_message(target_system, target_component, command_type)
+                msg.pack(self)
+                return msg
+            
+        def flexifunction_command_send(self, target_system, target_component, command_type):
+                '''
+                Acknowldge sucess or failure of a flexifunction command
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                command_type              : Flexifunction command type (uint8_t)
+
+                '''
+                return self.send(self.flexifunction_command_encode(target_system, target_component, command_type))
+            
+        def flexifunction_command_ack_encode(self, command_type, result):
+                '''
+                Acknowldge sucess or failure of a flexifunction command
+
+                command_type              : Command acknowledged (uint16_t)
+                result                    : result of acknowledge (uint16_t)
+
+                '''
+                msg = MAVLink_flexifunction_command_ack_message(command_type, result)
+                msg.pack(self)
+                return msg
+            
+        def flexifunction_command_ack_send(self, command_type, result):
+                '''
+                Acknowldge sucess or failure of a flexifunction command
+
+                command_type              : Command acknowledged (uint16_t)
+                result                    : result of acknowledge (uint16_t)
+
+                '''
+                return self.send(self.flexifunction_command_ack_encode(command_type, result))
+            
         def heartbeat_encode(self, type, autopilot, base_mode, custom_mode, system_status, mavlink_version=3):
                 '''
                 The heartbeat message shows that a system is present and responding.
