@@ -5,23 +5,42 @@
 // have one state at once.  If memory transfers are in progress, mavlink
 // can't have access.
 
+#include <string.h>
+#include "defines.h"
+#include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM value
 
 #include "../libUDB/events.h"
 #include "flexifunction_options.h"
-// buffer for communications or memory store/restore
+
+
+// This testing section of code only compiles if you set the C-Compiler to use the "Large memory code model"
+// In MPLAB IDE, select "Project / Build Options / Project", then select Tab MPLAB C30. Then select the
+// drop down menu called "Categores" and select "Memory Model". Tick "Large Code Model" instead of 
+// "Default Code Model". i.e. The test code will need more than 28K of ROM.
+#define MAVLINK_TEST_ENCODE_DECODE	0
+
+#if ( MAVLINK_TEST_ENCODE_DECODE == 0 )
+// The following Macro enables MAVLink packets to be sent in one call to the serial driver
+// rather than character by character.
+#define MAVLINK_SEND_UART_BYTES mavlink_serial_send
+#endif
+
+
+#include "../MAVLink/include/matrixpilot/mavlink.h"
+
+#include "flexiFunctionServices.h"
 
 // Include MAVlink
 //#include "../MAVLink/include/matrixpilot/version.h"
-#define 	MAVLINK_MAX_PAYLOAD_LEN 	MAVLINK_MAX_DIALECT_PAYLOAD_SIZE
-#include "../MAVLink/include/inttypes.h"
+//#define 	MAVLINK_MAX_PAYLOAD_LEN 	MAVLINK_MAX_DIALECT_PAYLOAD_SIZE
+//#include "../MAVLink/include/inttypes.h"
 //   #include "../MAVlink/include/mavlink_types.h"
 //#include "../MAVLink/include/matrixpilot_mavlink_bridge_header.h"
-#include "../MAVlink/include/matrixpilot/mavlink.h"
+//#include "../MAVlink/include/matrixpilot/mavlink.h"
 
 // Include MAVlink library for checksums
 #include "../MAVlink/include/checksum.h"
 
-#include "flexiFunctionServices.h"
 
 void flexifunction_commit_buffer_crc( void );
 
@@ -283,7 +302,7 @@ void flexiFunctionReceiveParser(mavlink_message_t* msg)
 	        mavlink_flexifunction_buffer_function_t packet;
 	        mavlink_msg_flexifunction_buffer_function_decode(msg, &packet);
 
-	        if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
+//	        if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
 
 			functionSetting fSetting;
 	
