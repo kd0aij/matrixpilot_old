@@ -1,6 +1,6 @@
 // MESSAGE FLEXIFUNCTION_COMMAND_ACK PACKING
 
-#define MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_ACK 155
+#define MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_ACK 158
 
 typedef struct __mavlink_flexifunction_command_ack_t
 {
@@ -9,7 +9,7 @@ typedef struct __mavlink_flexifunction_command_ack_t
 } mavlink_flexifunction_command_ack_t;
 
 #define MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_ACK_LEN 4
-#define MAVLINK_MSG_ID_155_LEN 4
+#define MAVLINK_MSG_ID_158_LEN 4
 
 
 

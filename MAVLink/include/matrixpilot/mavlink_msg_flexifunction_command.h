@@ -1,6 +1,6 @@
 // MESSAGE FLEXIFUNCTION_COMMAND PACKING
 
-#define MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND 154
+#define MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND 157
 
 typedef struct __mavlink_flexifunction_command_t
 {
@@ -10,7 +10,7 @@ typedef struct __mavlink_flexifunction_command_t
 } mavlink_flexifunction_command_t;
 
 #define MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_LEN 3
-#define MAVLINK_MSG_ID_154_LEN 3
+#define MAVLINK_MSG_ID_157_LEN 3
 
 
 

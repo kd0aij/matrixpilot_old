@@ -1,6 +1,6 @@
 // MESSAGE FLEXIFUNCTION_STATISTICS PACKING
 
-#define MAVLINK_MSG_ID_FLEXIFUNCTION_STATISTICS 153
+#define MAVLINK_MSG_ID_FLEXIFUNCTION_STATISTICS 154
 
 typedef struct __mavlink_flexifunction_statistics_t
 {
@@ -13,7 +13,7 @@ typedef struct __mavlink_flexifunction_statistics_t
 } mavlink_flexifunction_statistics_t;
 
 #define MAVLINK_MSG_ID_FLEXIFUNCTION_STATISTICS_LEN 10
-#define MAVLINK_MSG_ID_153_LEN 10
+#define MAVLINK_MSG_ID_154_LEN 10
 
 
 

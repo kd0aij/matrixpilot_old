@@ -31,7 +31,14 @@
       <field type="uint16_t" name="out_index">Output register index</field>
       <field type="int8_t[48]" name="settings_data">Settings data</field>
     </message>
-    <message id="153" name="FLEXIFUNCTION_STATISTICS">
+    <message id="153" name="FLEXIFUNCTION_BUFFER_FUNCTION_ACK">
+      <description>Flexifunction type and parameters for component at function index from buffer</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="func_index">Function index</field>
+      <field type="uint16_t" name="result">result of acknowledge, 0=fail, 1=good</field>
+    </message>
+    <message id="154" name="FLEXIFUNCTION_STATISTICS">
       <description>Count statistics of the system</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
@@ -40,14 +47,29 @@
       <field type="uint16_t" name="register_max_count">Maximum number of registers</field>
       <field type="uint16_t" name="function_max_count">Maximum number of functions</field>
     </message>
-    <message id="154" name="FLEXIFUNCTION_COMMAND">
+    <message id="155" name="FLEXIFUNCTION_SIZES">
+      <description>Count statistics of the system</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="register_count">Number of registers</field>
+      <field type="uint16_t" name="function_count">Number of functions</field>
+    </message>
+    <message id="156" name="FLEXIFUNCTION_SIZES_ACK">
+      <description>Count statistics of the system</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="register_count">Number of registers</field>
+      <field type="uint16_t" name="function_count">Number of functions</field>
+      <field type="uint16_t" name="result">result of acknowledge, 0=fail, 1=good</field>
+    </message>
+    <message id="157" name="FLEXIFUNCTION_COMMAND">
       <description>Acknowldge sucess or failure of a flexifunction command</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint8_t" name="command_type">Flexifunction command type</field>
  
     </message>
-    <message id="155" name="FLEXIFUNCTION_COMMAND_ACK">
+    <message id="158" name="FLEXIFUNCTION_COMMAND_ACK">
       <description>Acknowldge sucess or failure of a flexifunction command</description>
       <field type="uint16_t" name="command_type">Command acknowledged</field>
       <field type="uint16_t" name="result">result of acknowledge</field>
