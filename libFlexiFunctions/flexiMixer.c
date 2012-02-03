@@ -36,7 +36,13 @@ void preMix( void )
 	{
 		// Scale throttle to 0 to MIX_PWM_RANGE instead of 0 to 2 * MIX_PWM_RANGE
 		// This stops the fractional overflowing 2*RMAX
-		int tempThrottle = udb_pwIn[THROTTLE_INPUT_CHANNEL] - udb_pwTrim[THROTTLE_INPUT_CHANNEL];
+		int tempThrottle = 0;
+
+		if(udb_pwIn[THROTTLE_INPUT_CHANNEL] < udb_pwTrim[THROTTLE_INPUT_CHANNEL])
+			tempThrottle = 0;
+		else
+			tempThrottle = udb_pwIn[THROTTLE_INPUT_CHANNEL] - udb_pwTrim[THROTTLE_INPUT_CHANNEL];
+
 		tempThrottle = tempThrottle >> 1;
 
 		flexiFunction_registers[REG_PWIN_ROLL] 			= PWM_to_frac(udb_pwIn[ROLL_INPUT_CHANNEL], 	udb_pwTrim[ROLL_INPUT_CHANNEL]);
@@ -50,10 +56,10 @@ void preMix( void )
 	else
 	{
 		flexiFunction_registers[REG_PWIN_ROLL]		 	= 0;
-		flexiFunction_registers[REG_PWIN_PITCH] 			= 0;
+		flexiFunction_registers[REG_PWIN_PITCH] 		= 0;
 		flexiFunction_registers[REG_PWIN_THROTTLE] 		= 0;
 		flexiFunction_registers[REG_PWIN_YAW] 			= 0;
-		flexiFunction_registers[REG_PWIN_CAMBER]		 	= 0;
+		flexiFunction_registers[REG_PWIN_CAMBER]		= 0;
 		flexiFunction_registers[REG_PWIN_BRAKE]	 		= 0;
 		flexiFunction_registers[REG_PWIN_FLAP]	 		= 0;
 	}
