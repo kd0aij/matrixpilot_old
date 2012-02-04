@@ -12,6 +12,7 @@
 #include "../libUDB/events.h"
 #include "flexifunction_options.h"
 #include "flexiFunctionServices.h"
+#include "../libUDB/data_storage.h"
 
 // Include MAVlink library for checksums
 #include "../MAVlink/include/mavlink_types.h"
@@ -19,6 +20,10 @@
 
 
 void flexifunction_commit_buffer_crc( void );
+void flexifunction_write_nvmemory(void);
+void nv_write_callback(boolean success);
+void nv_init_callback(boolean success);
+void nv_reload_callback(boolean success);
 
 inline void flexiFunction_NAK( void ); 		// Called to flag a negative acknowlege
 inline void flexiFunction_ACK( void ); 		// Called to flag a positive acknowlege
@@ -44,10 +49,29 @@ void flexiFunctionService(void)
 {
 	switch(flexiFunctionState)
 	{
-	case FLEXIFUNCTION_READ_EEPROM:
-		break;
 	case FLEXIFUNCTION_COMMIT_BUFFER:
 		flexifunction_commit_buffer_crc();
+		break;
+	case FLEXIFUNCTION_WRITE_NVMEMORY:
+		flexifunction_write_nvmemory();
+		break;
+	case FLEXIFUNCTION_INIT:
+		if(storage_services_started() == true)
+		{
+			if(storage_check_area_exists(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_CHECKSUM_STRUCT) == true)
+				flexiFunctionState = FLEXIFUNCTION_LOAD_NVMEMORY;
+			else
+			{
+				if(storage_create_area(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_CHECKSUM_STRUCT, &nv_init_callback) == true)
+					flexiFunctionState = FLEXIFUNCTION_INIT_NVMEMORY;
+				else
+					flexiFunctionState = FLEXIFUNCTION_WAITING;
+			}
+		}
+
+	case FLEXIFUNCTION_LOAD_NVMEMORY:
+		if(storage_read(DATA_HANDLE_MIXER_SETTINGS, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_reload_callback) == true)
+			flexiFunctionState = FLEXIFUNCTION_LOADING_NVMEMORY;
 		break;
 	}
 }
@@ -56,7 +80,7 @@ void flexiFunctionService(void)
 void flexiFunctionServiceInit(void)
 {
 	flexiFunctionServiceHandle = register_event(&flexiFunctionService);
-	flexiFunctionState = FLEXIFUNCTION_WAITING;
+	flexiFunctionState = FLEXIFUNCTION_INIT;
 }
 
 // Trigger the flexifunction service to run
@@ -198,6 +222,48 @@ void flexifunction_commit_buffer_crc( void )
 	flexiFunctionState = FLEXIFUNCTION_COMMITTING_BUFFER;
 //	else
 //		flexiFunction_NAK();
+}
+
+void flexifunction_write_nvmemory(void)
+{
+	flexifunction_ref_command = FLEXIFUNCTION_COMMAND_WRITE_NVMEMORY;
+
+	if( storage_write(DATA_HANDLE_MIXER_SETTINGS, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_write_callback) == true)
+	{
+		flexiFunctionState = FLEXIFUNCTION_WRITING_NVMEMORY;
+	}
+	else
+	{
+		flexiFunction_NAK();
+	}
+
+	return;
+}
+
+
+void nv_write_callback(boolean success)
+{
+	if(success)
+		flexiFunction_ACK();
+	else
+		flexiFunction_NAK();
+}
+
+
+void nv_init_callback(boolean success)
+{
+	if(success == true)
+		flexiFunctionState = FLEXIFUNCTION_WAITING;
+	else
+		flexiFunctionState = FLEXIFUNCTION_INIT;
+}
+
+void nv_reload_callback(boolean success)
+{
+	if(success == true)
+		flexiFunctionState = FLEXIFUNCTION_COMMIT_BUFFER;
+	else
+		flexiFunctionState = FLEXIFUNCTION_WAITING;
 }
 
 
