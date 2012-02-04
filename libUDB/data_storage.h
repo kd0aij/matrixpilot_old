@@ -48,6 +48,9 @@
 // Maximum number of data areas
 #define MAX_DATA_HANDLES		30
 
+// callback type for data storage user
+typedef void (*DS_callbackFunc)(boolean);
+
 // A constant preamble used to determine the start of a data block
 // This also allows the data to be found if the FAT is broken
 extern const unsigned char data_storage_preamble[DATA_PREAMBLE_SIZE];
@@ -129,19 +132,31 @@ extern void storage_service_trigger(void);
 extern void data_storage_init(void);
 
 // For access to a checksummed structure data area
-extern boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned int size);
-extern boolean storage_read(unsigned int data_handle, unsigned char* prdData, unsigned int size);
+extern boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned int size, DS_callbackFunc callback);
+extern boolean storage_read(unsigned int data_handle, unsigned char* prdData, unsigned int size, DS_callbackFunc callback);
 
+// Create a storage area
+// Size = size in bytes
+// type = data management type
+// callback = user callback for when process finished
+extern boolean storage_create_area(unsigned int data_handle, unsigned int size, unsigned int type, DS_callbackFunc callback);
+
+// Lookup the data storage table to see if an area exists
+// Does not require callback.  Always has immediate return
+extern boolean storage_check_area_exists(unsigned int data_handle, unsigned int size, unsigned int type);
+
+// Status of sotage services
+boolean storage_services_started();
 
 // For access to a checksummed array data area
-extern boolean storage_write_array(unsigned int data_handle, unsigned char* pwrData, unsigned int size);
-extern boolean storage_read_array(unsigned int data_handle, unsigned char* prdData, unsigned int size);
+extern boolean storage_write_array(unsigned int data_handle, unsigned char* pwrData, unsigned int size, DS_callbackFunc callback);
+extern boolean storage_read_array(unsigned int data_handle, unsigned char* prdData, unsigned int size, DS_callbackFunc callback);
 
 
 // For random access to a self managed area
-extern boolean storage_write_part(unsigned int data_handle, unsigned char* pwrData, unsigned int offset, unsigned int size);
-extern boolean storage_read_part(unsigned int data_handle, unsigned char* prdData, unsigned int offset, unsigned int size);
+extern boolean storage_write_part(unsigned int data_handle, unsigned char* pwrData, unsigned int offset, unsigned int size, DS_callbackFunc callback);
+extern boolean storage_read_part(unsigned int data_handle, unsigned char* prdData, unsigned int offset, unsigned int size, DS_callbackFunc callback);
 
-extern boolean storage_resize(unsigned int data_handle, unsigned int size);
+extern boolean storage_resize(unsigned int data_handle, unsigned int size, DS_callbackFunc callback);
 
 #endif

@@ -328,7 +328,7 @@
 // Channel trimpoint is for all channel excluding throttle.  Units in microseconds
 // Throttle trimpoint is only for the throttle channel.
 // NOTE: UDB trimpoints are in 0.5us units.
-#define FIXED_TRIMPOINT					0
+#define FIXED_TRIMPOINT					1
 #define CHANNEL_TRIMPOINT				3040
 #define THROTTLE_TRIMPOINT				2250
 

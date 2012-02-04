@@ -1104,6 +1104,9 @@ void handleMessage(mavlink_message_t* msg)
 			case FLEXIFUNCTION_COMMAND_COMMIT_BUFFER:
 				flexiFunctionState = FLEXIFUNCTION_COMMIT_BUFFER;
 				break;
+			case FLEXIFUNCTION_COMMAND_WRITE_NVMEMORY:
+				flexiFunctionState = FLEXIFUNCTION_WRITE_NVMEMORY;
+				break;
 			}
 		}
 		break;
