@@ -25,7 +25,7 @@
 #include "I2C.h"
 #include "NV_memory.h"
 #include "data_storage.h"
-#include "events.h"
+#include "data_services.h"
 #include "../libflexifunctions/flexifunctionservices.h"
 #endif
 
@@ -80,6 +80,7 @@ void udb_init_clock(void)	/* initialize timers */
 	I2C1_init();
 	nv_memory_init();
 	data_storage_init();
+	data_services_init();
 	flexiFunctionServiceInit();
 #endif
 	
@@ -275,6 +276,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	I2C1_trigger_service();
 	nv_memory_service_trigger();
 	storage_service_trigger();
+	data_services_trigger();
 	flexiFunctionServiceTrigger();
 #endif	
 

@@ -45,6 +45,8 @@ enum
 	DATA_STORAGE_CHECK_TABLE,
 	DATA_STORAGE_FORMAT_TABLE,
 	DATA_STORAGE_STATUS_WAITING,
+	DATA_STORAGE_READ_HEADER,
+	DATA_STORAGE_READING_HEADER,
 	DATA_STORAGE_READ,
 	DATA_STORAGE_READING,
 	DATA_STORAGE_WRITE,
@@ -204,7 +206,9 @@ void data_storage_service(void)
 void data_storage_write_table_callback(boolean success)
 {
 	if(data_storage_user_callback != NULL)
-		data_storage_user_callback(success);	
+		data_storage_user_callback(success);
+
+	data_storage_status = DATA_STORAGE_STATUS_WAITING;	
 }
 
 // Initialise the data storage
