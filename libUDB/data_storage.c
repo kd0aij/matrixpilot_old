@@ -35,7 +35,8 @@
 #include "events.h"
 #include <string.h>
 
-#include "../MAVlink/include/inttypes.h"
+// Include MAVlink library for checksums
+#include "../MAVlink/include/mavlink_types.h"
 #include "../MAVlink/include/checksum.h"
 
 enum
@@ -45,13 +46,15 @@ enum
 	DATA_STORAGE_CHECK_TABLE,
 	DATA_STORAGE_FORMAT_TABLE,
 	DATA_STORAGE_STATUS_WAITING,
-	DATA_STORAGE_READ_HEADER,
-	DATA_STORAGE_READING_HEADER,
+
 	DATA_STORAGE_READ,
-	DATA_STORAGE_READING,
+	DATA_STORAGE_READING_HEADER,
+	DATA_STORAGE_READ_HEADER_COMPLETE,
+	DATA_STORAGE_READING_DATA,
+	DATA_STORAGE_READ_DATA_COMPLETE,
+
 	DATA_STORAGE_WRITE,
 	DATA_STORAGE_WRITING,
-	DATA_STORAGE_READ_COMPLETE,
 	DATA_STORAGE_WRITE_COMPLETE,
 	DATA_STORAGE_STATUS_FAILED,
 	DATA_STORAGE_AREA_CREATE,
@@ -59,6 +62,7 @@ enum
 } DATA_STORAGE_STATUS;
 
 unsigned int data_storage_status = DATA_STORAGE_STATUS_START;
+
 
 // store the data storage table
 boolean data_storage_store_table(void);
@@ -77,8 +81,13 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size);
 void data_storage_callback(boolean success);			// Callback from non volatile memory driver
 void data_storage_format_callback(boolean success);		// format write is completed
 void data_storage_init_read_callback(boolean success);	// initialisation read of storage table
+
 void storage_write_callback(boolean success);			// Data write callback
-void storage_read_callback(boolean success);			// Data read callback
+void storage_write_header_callback(boolean success);	// Header write callback
+
+void storage_read_header_callback(boolean success);		// Header read callback
+void storage_read_data_callback(boolean success);		// Data read callback
+
 void data_storage_write_table_callback(boolean success);// Table write callback
 
 // A constant preamble used to determine the start of a data block
@@ -94,9 +103,12 @@ DATA_STORAGE_TABLE data_storage_table;
 // Callers data.  Used on initialisation, readinng or writing an area.
 unsigned char* 	pdata_storage_data 	= NULL;
 unsigned int 	data_storage_type 	= DATA_STORAGE_NULL;
-unsigned int 	data_storage_size 	= 0;
+unsigned int 	data_storage_size 		= 0;	// Storage size including header
+unsigned int 	data_storage_data_size 	= 0;	// Storage size excluding header
 unsigned int 	data_storage_handle = INVALID_HANDLE;
 DS_callbackFunc data_storage_user_callback = NULL;
+
+DATA_STORAGE_HEADER data_storage_header;	// Buffer for header information
 
 unsigned int 	data_storage_event_handle = INVALID_HANDLE;
 
@@ -153,17 +165,78 @@ void data_storage_service(void)
 		data_storage_status = DATA_STORAGE_WRITING;	
 		break;
 
+
 	case DATA_STORAGE_READ:
-		// Read data from nv memory
-		// If NV memory not ready, immediate return.
-		if(udb_nv_memory_read( pdata_storage_data, data_storage_table.table[data_storage_handle].data_address, data_storage_size, &storage_read_callback) == false)
+		data_storage_type = data_storage_table.table[data_storage_handle].data_type;
+
+		switch(data_storage_type)
 		{
-			if(data_storage_user_callback != NULL)
-				data_storage_user_callback(false);
+		case DATA_STORAGE_CHECKSUM_STRUCT:
+			if(udb_nv_memory_read( pdata_storage_data, 
+						data_storage_table.table[data_storage_handle].data_address, 
+						sizeof(DATA_STORAGE_HEADER),
+						&storage_read_header_callback) == false)
+			{
+				if(data_storage_user_callback != NULL)
+					data_storage_user_callback(false);
+			}
+			data_storage_status = DATA_STORAGE_READING_HEADER;	
+			break;
+		case DATA_STORAGE_SELF_MANAGED:
+			if(udb_nv_memory_read( pdata_storage_data, 
+						data_storage_table.table[data_storage_handle].data_address, 
+						data_storage_size,
+						&storage_read_data_callback) == false)
+			{
+				if(data_storage_user_callback != NULL)
+					data_storage_user_callback(false);
+			}
+			data_storage_status = DATA_STORAGE_READING_DATA;
+			break;
 		}
 
-		data_storage_status = DATA_STORAGE_READING;	
 		break;
+
+
+	case DATA_STORAGE_READ_HEADER_COMPLETE:
+	{
+		if(udb_nv_memory_read( pdata_storage_data, 
+					data_storage_table.table[data_storage_handle].data_address + sizeof(DATA_STORAGE_HEADER), 
+					data_storage_size, 
+					&storage_read_data_callback) == false)
+		{
+			if(data_storage_user_callback != NULL) data_storage_user_callback(false);
+		}
+
+		data_storage_status = DATA_STORAGE_READING_DATA;	
+	}	break;
+
+	case DATA_STORAGE_READ_DATA_COMPLETE:
+	{
+		boolean success = true;
+		unsigned char* pData = (unsigned char*) 
+									(data_storage_table.table[data_storage_handle].data_address + 
+																		sizeof(DATA_STORAGE_HEADER));
+
+		if(data_storage_type == DATA_STORAGE_CHECKSUM_STRUCT)
+		{
+			// If handle is incorrect then fail
+			if(data_storage_header.data_handle != data_storage_handle)  success = false;
+	
+			// If preamble is incorrect then fail
+			if(memcmp(data_storage_header.data_preamble, data_storage_preamble, 4) == 0)  success = false;
+	
+			// If checksum is incorrect then fail.
+
+			if(data_storage_header.data_checksum != crc_calculate( (uint8_t*) pData, data_storage_size) )
+					success = false;
+		}
+
+		// Status to waiting and callback the user with result
+		data_storage_status = DATA_STORAGE_STATUS_WAITING;
+		if(	data_storage_user_callback != NULL) data_storage_user_callback(success);
+	}	break;
+
 
 	case DATA_STORAGE_AREA_CREATE:
 		if( (data_storage_table.table[data_storage_handle].data_address = data_storage_find_hole(data_storage_size)) == 0)
@@ -316,13 +389,25 @@ boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned
 	if(storage_test_handle(data_handle) == false)
 		return false;
 
-	// If the allocated storage area is the wrong size, return false
-	if(data_storage_table.table[data_handle].data_size != size) return false;
-
 	pdata_storage_data 	= pwrData;
-	data_storage_size 	= size;
 	data_storage_handle = data_handle;
 	data_storage_user_callback = callback;
+	data_storage_data_size = size;
+
+	switch(data_storage_table.table[data_handle].data_type)
+	{
+	case DATA_STORAGE_CHECKSUM_STRUCT:
+		data_storage_size 	= size + sizeof(DATA_STORAGE_HEADER);
+		break;
+	case DATA_STORAGE_SELF_MANAGED:
+		data_storage_size 	= size;
+		break;
+	default:
+		return false;
+		break;
+	}
+
+	if(data_storage_table.table[data_handle].data_size != data_storage_size) return false;
 
 	data_storage_status = DATA_STORAGE_WRITE;
 
@@ -331,7 +416,7 @@ boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned
 
 void storage_write_callback(boolean success)
 {
-	data_storage_user_callback(success);
+	if(	data_storage_user_callback != NULL) data_storage_user_callback(success);
 	data_storage_status = DATA_STORAGE_STATUS_WAITING;
 }
 
@@ -344,23 +429,53 @@ boolean storage_read(unsigned int data_handle, unsigned char* pwrData, unsigned 
 	if(storage_test_handle(data_handle) == false)
 		return false;
 
-	// If the allocated storage area is the wrong size, return false
-	if(data_storage_table.table[data_handle].data_size != size) return false;
-
-	pdata_storage_data 	= pwrData;
-	data_storage_size 	= size;
-	data_storage_handle = data_handle;
+	pdata_storage_data 		= pwrData;
+	data_storage_data_size 	= size;
+	data_storage_handle 	= data_handle;
 	data_storage_user_callback = callback;
+
+	switch(data_storage_table.table[data_handle].data_type)
+	{
+	case DATA_STORAGE_CHECKSUM_STRUCT:
+		data_storage_size 	= size + sizeof(DATA_STORAGE_HEADER);
+		break;
+	case DATA_STORAGE_SELF_MANAGED:
+		data_storage_size 	= size;
+		break;
+	default:
+		return false;
+		break;
+	}
+
+	if(data_storage_table.table[data_handle].data_size != data_storage_size) return false;
 
 	data_storage_status = DATA_STORAGE_READ;
 
 	return true;
 }
 
-void storage_read_callback(boolean success)
+
+void storage_read_data_callback(boolean success)
 {
-	data_storage_user_callback(success);
-	data_storage_status = DATA_STORAGE_STATUS_WAITING;
+	if(success)
+		data_storage_status = DATA_STORAGE_READ_DATA_COMPLETE;
+	else
+	{
+		if(data_storage_user_callback != NULL) data_storage_user_callback(false);
+		data_storage_status = DATA_STORAGE_STATUS_WAITING;
+	}
+}
+
+
+void storage_read_header_callback(boolean success)
+{
+	if(success)
+		data_storage_status = DATA_STORAGE_READ_HEADER_COMPLETE;
+	else
+	{
+		if(data_storage_user_callback != NULL) data_storage_user_callback(false);
+		data_storage_status = DATA_STORAGE_STATUS_WAITING;
+	}
 }
 
 
@@ -386,9 +501,21 @@ boolean storage_create_area(unsigned int data_handle, unsigned int size, unsigne
 
 	pdata_storage_data 			= NULL;
 	data_storage_type 			= type;
-	data_storage_size 			= size;
 	data_storage_handle 		= data_handle;
 	data_storage_user_callback 	= callback;
+
+	switch(data_storage_type)
+	{
+	case DATA_STORAGE_CHECKSUM_STRUCT:
+		data_storage_size 	= size + sizeof(DATA_STORAGE_HEADER);
+		break;
+	case DATA_STORAGE_SELF_MANAGED:
+		data_storage_size 	= size;
+		break;
+	default:
+		return false;
+		break;
+	}
 
 	data_storage_status = DATA_STORAGE_AREA_CREATE;
 	return true;

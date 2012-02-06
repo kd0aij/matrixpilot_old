@@ -10,6 +10,8 @@
 // Data buffer used for services
 unsigned char data_services_buffer[DATA_SERVICE_BUFFER_SIZE];
 
+
+
 // All the states of the service
 typedef enum 
 {
@@ -20,13 +22,14 @@ typedef enum
 	DATA_SERVICE_STATE_WAITING,				// Ready and waiting
 	DATA_SERVICE_STATE_WRITE,				// A single write
 	DATA_SERVICE_STATE_WRITING,				// Waiting for single write to complete
-	DATA_SERVICE_STATE_READ,				// A single read
-	DATA_SERVICE_STATE_READING,				// Waiting for single read to complete
-	DATA_SERVICE_STATE_READ_ALL,			// Start of read all
-	DATA_SERVICE_STATE_WAITING_READ_ALL,	// Waiting for a read all to complete
-	DATA_SERVICE_STATE_READ_ALL_DONE_AREA,	// Done reading an area during read all, commit it to ram.
-	DATA_SERVICE_STATE_READING_ALL,			// Do the next read of read all
+	DATA_SERVICE_STATE_READ,				// Start a read of a single area in the table
+	DATA_SERVICE_STATE_READ_ALL,			// Start a read of all areas in the table
+	DATA_SERVICE_STATE_READING,				// Waiting for read to complete
+	DATA_SERVICE_STATE_READ_DONE,			// Done reading, check and then commit it to ram.
 } DATA_SERVICE_STATE;
+
+// Flag to show that the action is being done with all areas.
+boolean data_services_do_all_areas = false;
 
 // service state variable
 unsigned int data_service_state = DATA_SERVICE_STATE_NOT_STARTED;
@@ -49,14 +52,14 @@ void data_services_init_all_callback(boolean success);
 // Start of reading all areas in the table
 void data_services_read_all( void );
 
-// Read data area at index for reading all areas
-void data_services_read_all_index( void );
+// Start of read a single area at index
+void data_services_read_index( void );
 
-// callback for reading all areas in the table
-void data_services_read_all_callback(boolean success);
+// callback for reading areas in the table
+void data_services_read_callback(boolean success);
 
 // When finished reading an area, call to commit area to ram
-void data_services_read_all_done_area( void );
+void data_services_read_done( void );
 
 // Serialise a list of data items/variables to the buffer
 void serialise_items_to_buffer(unsigned int table_index);
@@ -101,11 +104,11 @@ void data_services(void)
 	case DATA_SERVICE_STATE_READ_ALL:
 		data_services_read_all();
 		break;
-	case DATA_SERVICE_STATE_READING_ALL:
-		data_services_read_all_index();
+	case DATA_SERVICE_STATE_READING:
+		data_services_read_index();
 		break;
-	case DATA_SERVICE_STATE_READ_ALL_DONE_AREA:
-		data_services_read_all_done_area();
+	case DATA_SERVICE_STATE_READ_DONE:
+		data_services_read_done();
 		break;
 	}
 }
@@ -113,6 +116,7 @@ void data_services(void)
 void data_services_init_all(void)
 {
 	data_services_table_index = 0;
+	data_services_do_all_areas = true;
 	data_service_state =	DATA_SERVICE_STATE_INIT_ALL;
 }
 
@@ -177,8 +181,8 @@ unsigned int data_services_calc_item_size(unsigned int table_index)
 }
 
 
-// Read data area at index for reading all areas
-void data_services_read_all_index( void )
+// Read data area at index
+void data_services_read_index( void )
 {
 	// If beyond end of table return to waiting.
 	if(data_services_table_index >= data_service_table_count)
@@ -193,10 +197,13 @@ void data_services_read_all_index( void )
 
 	if(type == DATA_STORAGE_CHECKSUM_STRUCT)
 	{
-		if(storage_read(handle, data_services_buffer, size, &data_services_read_all_callback) == true)
-			data_service_state =	DATA_SERVICE_STATE_WAITING_READ_ALL;
+		if(storage_read(handle, data_services_buffer, size, &data_services_read_callback) == true)
+			data_service_state =	DATA_SERVICE_STATE_READING;
 		else
-			data_services_table_index++;
+			if(data_services_do_all_areas == true)
+				data_services_table_index++;
+			else
+				data_service_state = DATA_SERVICE_STATE_WAITING;
 		return;
 	}
 	data_services_table_index++;
@@ -209,24 +216,34 @@ void data_services_read_all( void )
 	if(data_service_state !=	DATA_SERVICE_STATE_WAITING) return;
 
 	data_services_table_index = 0;
-	data_service_state =	DATA_SERVICE_STATE_READ_ALL;
+	data_services_do_all_areas = true;
+	data_service_state =	DATA_SERVICE_STATE_READ;
 }
 
 // Test data and commit it
-void data_services_read_all_done_area( void )
+void data_services_read_done( void )
 {
+	
 	data_services_table_index++;
-	data_service_state =	DATA_SERVICE_STATE_READ_ALL;
+	data_service_state =	DATA_SERVICE_STATE_READ;
 }
 
+
 // Called when storage manager data read has finished
-void data_services_read_all_callback(boolean success)
+void data_services_read_callback(boolean success)
 {
 	if(success)
-		data_service_state =	DATA_SERVICE_STATE_READ_ALL_DONE_AREA;
+		data_service_state =	DATA_SERVICE_STATE_READ_DONE;
 	else
-		data_services_table_index++;
-		data_service_state =	DATA_SERVICE_STATE_READ_ALL;
+		if(data_services_do_all_areas == true)
+		{
+//			data_services_table_index++;
+			data_service_state =	DATA_SERVICE_STATE_READ;
+		}
+		else
+		{
+			data_service_state =	DATA_SERVICE_STATE_WAITING;
+		}
 }
 
 
