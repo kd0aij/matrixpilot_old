@@ -202,6 +202,16 @@ void data_services_read_all_index( void )
 	data_services_table_index++;
 }
 
+
+// Reset the 
+void data_services_read_all( void )
+{
+	if(data_service_state !=	DATA_SERVICE_STATE_WAITING) return;
+
+	data_services_table_index = 0;
+	data_service_state =	DATA_SERVICE_STATE_READ_ALL;
+}
+
 // Test data and commit it
 void data_services_read_all_done_area( void )
 {
