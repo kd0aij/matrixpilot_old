@@ -1,0 +1,29 @@
+Index: libUDB/libUDB_defines.h
+===================================================================
+--- libUDB/libUDB_defines.h	(revision 1206)
++++ libUDB/libUDB_defines.h	(working copy)
+@@ -208,8 +208,8 @@
+ #define CHANNEL_7		7
+ #define CHANNEL_8		8
+ #define CHANNEL_9		9
++#define CHANNEL_10		10
+ 
+-
+ // Constants
+ #define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
+ #define GRAVITY ((long)(5280.0/SCALEACCEL))  // gravity in AtoD/2 units
+Index: MatrixPilot/config_tests.c
+===================================================================
+--- MatrixPilot/config_tests.c	(revision 1206)
++++ MatrixPilot/config_tests.c	(working copy)
+@@ -101,8 +101,8 @@
+ 	#endif
+ #else
+ 	// UDB4
+-	#if (NUM_OUTPUTS > 9)
+-		#error("NUM_OUTPUTS can't be more than 9.")
++	#if (NUM_OUTPUTS > 10)
++		#error("NUM_OUTPUTS can't be more than 10.")
+ 	#endif
+ #endif
+ 
