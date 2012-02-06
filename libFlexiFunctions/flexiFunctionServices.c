@@ -20,7 +20,9 @@
 
 
 void flexifunction_commit_buffer_crc( void );
+void flexifunction_commit_reloaded_buffer_crc( void );
 void flexifunction_write_nvmemory(void);
+
 void nv_write_callback(boolean success);
 void nv_init_callback(boolean success);
 void nv_reload_callback(boolean success);
@@ -32,6 +34,8 @@ inline void flexiFunction_ACK( void ); 		// Called to flag a positive acknowlege
 // Buffer of all flexifunction data including used register and funciton count
 NVMEM_FLEXIFUNCTION_DATA flexiFunctionBuffer;
 
+// A constant preamble used to determine the start of flexifunction storage
+const unsigned char flexifunction_storage_preamble[] = {0x5A, 0xAA, 0x55, 0xA5};
 
 unsigned int flexiFunctionServiceHandle = INVALID_HANDLE;
 
@@ -49,6 +53,9 @@ void flexiFunctionService(void)
 {
 	switch(flexiFunctionState)
 	{
+	case FLEXIFUNCTION_COMMIT_RELOADED_BUFFER:
+		flexifunction_commit_reloaded_buffer_crc();	
+		break;
 	case FLEXIFUNCTION_COMMIT_BUFFER:
 		flexifunction_commit_buffer_crc();
 		break;
@@ -58,11 +65,11 @@ void flexiFunctionService(void)
 	case FLEXIFUNCTION_INIT:
 		if(storage_services_started() == true)
 		{
-			if(storage_check_area_exists(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_CHECKSUM_STRUCT) == true)
+			if(storage_check_area_exists(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_SELF_MANAGED) == true)
 				flexiFunctionState = FLEXIFUNCTION_LOAD_NVMEMORY;
 			else
 			{
-				if(storage_create_area(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_CHECKSUM_STRUCT, &nv_init_callback) == true)
+				if(storage_create_area(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_SELF_MANAGED, &nv_init_callback) == true)
 					flexiFunctionState = FLEXIFUNCTION_INIT_NVMEMORY;
 				else
 					flexiFunctionState = FLEXIFUNCTION_WAITING;
@@ -218,15 +225,38 @@ void flexiFunction_commit_buffer()
 // A place to do checksums if it is ever implemented
 void flexifunction_commit_buffer_crc( void )
 {
-//	if(flexifunction_ref_checksum == crc_calculate( (uint8_t*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer) ) )
 	flexiFunctionState = FLEXIFUNCTION_COMMITTING_BUFFER;
-//	else
-//		flexiFunction_NAK();
+}
+
+
+void flexifunction_commit_reloaded_buffer_crc( void )
+{
+	// If preamble is not valid, do not commit values and return to wait.
+	if(memcmp(flexifunction_storage_preamble, flexiFunctionBuffer.preamble, 4) != 0)
+	{
+		flexiFunctionState = FLEXIFUNCTION_WAITING;
+		return;
+	}
+
+	// If checksum is not correct, do not commit values and return to wait.
+	if(flexiFunctionBuffer.checksum != crc_calculate( (uint8_t*) flexiFunctionBuffer.flexiFunction_data, sizeof(flexiFunctionBuffer.flexiFunction_data) ) )
+	{
+		flexiFunctionState = FLEXIFUNCTION_WAITING;
+		return;
+	}
+
+	flexiFunctionState = FLEXIFUNCTION_COMMITTING_BUFFER;
 }
 
 void flexifunction_write_nvmemory(void)
 {
 	flexifunction_ref_command = FLEXIFUNCTION_COMMAND_WRITE_NVMEMORY;
+
+	// Make sure the preamble is set correctly
+	memcpy(flexiFunctionBuffer.preamble, flexifunction_storage_preamble, 4);
+
+	// Calculate data checksum
+	flexiFunctionBuffer.checksum = crc_calculate( (uint8_t*) flexiFunctionBuffer.flexiFunction_data, sizeof(flexiFunctionBuffer.flexiFunction_data) );
 
 	if( storage_write(DATA_HANDLE_MIXER_SETTINGS, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_write_callback) == true)
 	{
@@ -261,7 +291,7 @@ void nv_init_callback(boolean success)
 void nv_reload_callback(boolean success)
 {
 	if(success == true)
-		flexiFunctionState = FLEXIFUNCTION_COMMIT_BUFFER;
+		flexiFunctionState = FLEXIFUNCTION_COMMIT_RELOADED_BUFFER;
 	else
 		flexiFunctionState = FLEXIFUNCTION_WAITING;
 }

@@ -27,6 +27,7 @@ enum FLEXIFUNCTION_SERVICES_STATUS
 	FLEXIFUNCTION_READING_NVMEMORY,
 	FLEXIFUNCTION_LOAD_NVMEMORY,		// Read NV memory and then commit it
 	FLEXIFUNCTION_LOADING_NVMEMORY,
+	FLEXIFUNCTION_COMMIT_RELOADED_BUFFER, // Request to commit buffer reloaded from memory
 	FLEXIFUNCTION_WRITE_NVMEMORY,
 	FLEXIFUNCTION_WRITING_NVMEMORY,
 	FLEXIFUNCTION_INIT_NVMEMORY,		// Waiting for nv memory to initialise
@@ -53,8 +54,10 @@ enum FLEXIFUNCTION_COMMANDS
 
 typedef struct tagNVMEM_FLEXIFUNCTION_DATA
 {
-	unsigned int				flexiFunctionsUsed;
-	functionSetting 			flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
+	unsigned char		preamble[4];
+	unsigned int		flexiFunctionsUsed;
+	unsigned int 		checksum;
+	functionSetting 	flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
 } NVMEM_FLEXIFUNCTION_DATA;
 
 // Initialise the flexifunction low priority service
