@@ -1,16 +1,44 @@
-#include "data_services.h"
-#include "events.h"
-#include <string.h>
+// This file is part of MatrixPilot.
+//
+//    http://code.google.com/p/gentlenav/
+//
+// Copyright 2009-2011 MatrixPilot Team
+// See the AUTHORS.TXT file for a list of authors of MatrixPilot.
+//
+// MatrixPilot is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// MatrixPilot is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
+
+//******************************************************************/
+// DATA SERVICES
+// 
 // Data Services
 // Responsible for serialisation of sets of variables
 // Reponsible for recalling sets data storage on startup
 // Reponsible for initialising data storage at startup
+// 
+//
+
+#include "data_services.h"
+#include "events.h"
+#include <string.h>
+
 
 // Data buffer used for services
 unsigned char data_services_buffer[DATA_SERVICE_BUFFER_SIZE];
 
-
+// callback type for data services user
+DSRV_callbackFunc data_services_user_callback = NULL;
 
 // All the states of the service
 typedef enum 
@@ -21,10 +49,10 @@ typedef enum
 	DATA_SERVICE_STATE_INIT ,				// Initialise the next area
 	DATA_SERVICE_STATE_WAITING,				// Ready and waiting
 	DATA_SERVICE_STATE_WRITE,				// A single write
-	DATA_SERVICE_STATE_WRITING,				// Waiting for single write to complete
-	DATA_SERVICE_STATE_READ,				// Start a read of a single area in the table
+	DATA_SERVICE_STATE_WRITE_WAITING,		// Waiting for write to complete
+	DATA_SERVICE_STATE_READ,				// Start a read of an area
 	DATA_SERVICE_STATE_READ_ALL,			// Start a read of all areas in the table
-	DATA_SERVICE_STATE_READING,				// Waiting for read to complete
+	DATA_SERVICE_STATE_READ_WAITING,		// Waiting for read to complete
 	DATA_SERVICE_STATE_READ_DONE,			// Done reading, check and then commit it to ram.
 } DATA_SERVICE_STATE;
 
@@ -67,6 +95,11 @@ void serialise_items_to_buffer(unsigned int table_index);
 // Serialise the buffer to a list of data items/variables
 void serialise_buffer_to_items(unsigned int table_index);
 
+// Start the write
+void data_services_write( void );
+
+// Write callback
+void data_services_write_callback( boolean success );
 
 
 // Calculate the size of the complete list of variable items in bytes
@@ -104,11 +137,14 @@ void data_services(void)
 	case DATA_SERVICE_STATE_READ_ALL:
 		data_services_read_all();
 		break;
-	case DATA_SERVICE_STATE_READING:
+	case DATA_SERVICE_STATE_READ:
 		data_services_read_index();
 		break;
 	case DATA_SERVICE_STATE_READ_DONE:
 		data_services_read_done();
+		break;
+	case DATA_SERVICE_STATE_WRITE:
+		data_services_write();
 		break;
 	}
 }
@@ -119,6 +155,7 @@ void data_services_init_all(void)
 	data_services_do_all_areas = true;
 	data_service_state =	DATA_SERVICE_STATE_INIT_ALL;
 }
+
 
 void data_services_init_table_index(void)
 {
@@ -142,21 +179,23 @@ void data_services_init_table_index(void)
 										&data_services_init_all_callback) == true)
 				{
 					// If the request succeeds, wait for it to complete
-					data_service_state = DATA_SERVICE_STATE_READ_ALL;
+					data_service_state = DATA_SERVICE_STATE_INIT_WAIT;
 					return;
 				}
 				else
 				{
-					// if the request failed, try again.
-					return;					
+					// if the request failed, try again later.
+					return;
 				}
-			}			
+			}	
 		}
-
-		return;
+		else return;
 	}
 
-	data_service_state = DATA_SERVICE_STATE_WAITING;
+	data_services_table_index = 0;
+	data_services_do_all_areas = true;
+	data_services_user_callback = NULL;
+	data_service_state = DATA_SERVICE_STATE_READ;
 }
 
 
@@ -192,18 +231,17 @@ void data_services_read_index( void )
 	}
 
 	unsigned int handle = data_services_table[data_services_table_index].data_storage_handle;
-	unsigned int size = data_services_calc_item_size(handle);
+	unsigned int size = data_services_calc_item_size(data_services_table_index);
 	unsigned int type = data_services_table[data_services_table_index].data_type;
+
+	// TODO: Check here if data handle is ok 
 
 	if(type == DATA_STORAGE_CHECKSUM_STRUCT)
 	{
 		if(storage_read(handle, data_services_buffer, size, &data_services_read_callback) == true)
-			data_service_state =	DATA_SERVICE_STATE_READING;
-		else
-			if(data_services_do_all_areas == true)
-				data_services_table_index++;
-			else
-				data_service_state = DATA_SERVICE_STATE_WAITING;
+		{
+			data_service_state =	DATA_SERVICE_STATE_READ_WAITING;
+		}
 		return;
 	}
 	data_services_table_index++;
@@ -220,10 +258,12 @@ void data_services_read_all( void )
 	data_service_state =	DATA_SERVICE_STATE_READ;
 }
 
-// Test data and commit it
+
+// Data is correct so serialise it from the buffer to the live data
 void data_services_read_done( void )
 {
-	
+	serialise_buffer_to_items(data_services_table_index);
+
 	data_services_table_index++;
 	data_service_state =	DATA_SERVICE_STATE_READ;
 }
@@ -233,15 +273,16 @@ void data_services_read_done( void )
 void data_services_read_callback(boolean success)
 {
 	if(success)
-		data_service_state =	DATA_SERVICE_STATE_READ_DONE;
+		data_service_state = DATA_SERVICE_STATE_READ_DONE;
 	else
 		if(data_services_do_all_areas == true)
 		{
-//			data_services_table_index++;
+			data_services_table_index++;
 			data_service_state =	DATA_SERVICE_STATE_READ;
 		}
 		else
 		{
+			/// TODO: PUT DATA SERVICES CALLBACK HERE
 			data_service_state =	DATA_SERVICE_STATE_WAITING;
 		}
 }
@@ -296,4 +337,69 @@ void serialise_buffer_to_items(unsigned int table_index)
 		memcpy(pDataItem, &data_services_buffer[buffer_index], item_size);
 		buffer_index += item_size;
 	}
+}
+
+
+inline unsigned int data_services_get_table_index(unsigned int data_storage_handle)
+{
+	int index;
+
+	for(index = 0; index < data_service_table_count; index++)
+	{
+		if(data_services_table[index].data_storage_handle == data_storage_handle)
+		{
+			return index;
+		}
+	}
+
+	return INVALID_HANDLE;
+}
+
+
+boolean data_services_save_specific(unsigned int data_storage_handle, DSRV_callbackFunc pcallback)
+{
+	if(data_service_state != DATA_SERVICE_STATE_WAITING) return false;
+
+	data_services_table_index = data_services_get_table_index(data_storage_handle);
+	if(data_services_table_index == INVALID_HANDLE) return false;
+	
+	data_services_user_callback = pcallback;
+
+	data_service_state = DATA_SERVICE_STATE_WRITE;
+	
+	return false;
+}
+
+
+// Start the write
+void data_services_write( void )
+{
+	serialise_items_to_buffer(data_services_table_index);
+
+//	DATA_SERVICE_TABLE_ENTRY* 	pTableEntry = &data_services_table[data_services_table_index];
+
+	unsigned int handle = data_services_table[data_services_table_index].data_storage_handle;
+	unsigned int size = data_services_calc_item_size(data_services_table_index);
+	unsigned int type = data_services_table[data_services_table_index].data_type;
+
+	// TODO: Check here if data handle is ok 
+
+	if(type == DATA_STORAGE_CHECKSUM_STRUCT)
+	{
+		if(storage_write(handle, data_services_buffer, size, &data_services_write_callback) == true)
+		{
+			data_service_state =	DATA_SERVICE_STATE_WRITE_WAITING;
+			return;
+		}
+	}
+
+	if(data_services_user_callback != NULL) data_services_user_callback(false);	
+}
+
+
+// Write callback
+void data_services_write_callback( boolean success )
+{
+	if(data_services_user_callback != NULL) data_services_user_callback(success);
+	data_service_state = DATA_SERVICE_STATE_WAITING;
 }

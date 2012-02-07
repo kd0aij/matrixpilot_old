@@ -18,9 +18,6 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-// If set to 1, does manual erase of table when it runs.
-// USed for testing only
-#define MANUAL_ERASE_TABLE 0
 
 //******************************************************************/
 // DATA STORAGE
@@ -32,6 +29,11 @@
 // Uses X.25 checksum from MAVink libraries
 //
 //
+
+// If set to 1, does manual erase of memory table when it runs.
+// Used for testing only
+#define MANUAL_ERASE_TABLE 0
+
 
 #include "data_storage.h"
 #include "nv_memory.h"
