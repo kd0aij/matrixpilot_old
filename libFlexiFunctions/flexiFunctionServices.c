@@ -72,9 +72,10 @@ void flexiFunctionService(void)
 				if(storage_create_area(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_SELF_MANAGED, &nv_init_callback) == true)
 					flexiFunctionState = FLEXIFUNCTION_INIT_NVMEMORY;
 				else
-					flexiFunctionState = FLEXIFUNCTION_WAITING;
+					flexiFunctionState = FLEXIFUNCTION_INIT;
 			}
 		}
+		break;
 
 	case FLEXIFUNCTION_LOAD_NVMEMORY:
 		if(storage_read(DATA_HANDLE_MIXER_SETTINGS, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_reload_callback) == true)
