@@ -24,8 +24,8 @@
 // A lightweight file system that allows data versioning
 // Does checksums on data structures or data arrays
 // Has a basic directory/FAT table describing data areas
-// Data areas do not have names, only the handles defined below
-// 
+// Data areas do not have names, only the handles defined in the header
+//
 // Uses X.25 checksum from MAVink libraries
 //
 //
@@ -54,9 +54,14 @@ enum
 	DATA_STORAGE_READ_DATA_COMPLETE,
 
 	DATA_STORAGE_WRITE,
-	DATA_STORAGE_WRITING,
+	DATA_STORAGE_WRITING_DATA,
+	DATA_STORAGE_WRITING_DATA_COMPLETE,
+	DATA_STORAGE_WRITING_HEADER,
+	DATA_STORAGE_WRITING_HEADER_COMPLETE,
 	DATA_STORAGE_WRITE_COMPLETE,
+
 	DATA_STORAGE_STATUS_FAILED,
+
 	DATA_STORAGE_AREA_CREATE,
 	DATA_STORAGE_AREA_CREATING,
 } DATA_STORAGE_STATUS;
@@ -156,13 +161,36 @@ void data_storage_service(void)
 	case DATA_STORAGE_WRITE:
 		// Write data to nv memory
 		// If NV memory not ready, immediate return.
-		if(udb_nv_memory_write( pdata_storage_data, data_storage_table.table[data_storage_handle].data_address, data_storage_size, &storage_write_callback) == false)
+
+		switch(data_storage_type)
 		{
-			if(data_storage_user_callback != NULL)
-				data_storage_user_callback(false);
+		case DATA_STORAGE_CHECKSUM_STRUCT:
+			if(udb_nv_memory_write( pdata_storage_data, 
+						data_storage_table.table[data_storage_handle].data_address + sizeof(DATA_STORAGE_HEADER), 
+						data_storage_data_size, 
+						&storage_write_callback) == false)
+			{
+				if(data_storage_user_callback != NULL)
+					data_storage_user_callback(false);
+			}
+			data_storage_status = DATA_STORAGE_READING_HEADER;	
+			break;
+		case DATA_STORAGE_SELF_MANAGED:
+			if(udb_nv_memory_write( pdata_storage_data, 
+						data_storage_table.table[data_storage_handle].data_address, 
+						data_storage_size, 
+						&storage_write_callback) == false)
+			{
+				if(data_storage_user_callback != NULL)
+					data_storage_user_callback(false);
+			}
+
+			break;
 		}
 
-		data_storage_status = DATA_STORAGE_WRITING;	
+
+
+		data_storage_status = DATA_STORAGE_WRITING_DATA;	
 		break;
 
 
@@ -173,7 +201,7 @@ void data_storage_service(void)
 		{
 		case DATA_STORAGE_CHECKSUM_STRUCT:
 			if(udb_nv_memory_read( pdata_storage_data, 
-						data_storage_table.table[data_storage_handle].data_address, 
+						&data_storage_header, 
 						sizeof(DATA_STORAGE_HEADER),
 						&storage_read_header_callback) == false)
 			{
