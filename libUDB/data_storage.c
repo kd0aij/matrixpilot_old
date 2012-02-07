@@ -18,6 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
+// If set to 1, does manual erase of table when it runs.
+// USed for testing only
+#define MANUAL_ERASE_TABLE 0
 
 //******************************************************************/
 // DATA STORAGE
@@ -70,7 +73,7 @@ unsigned int data_storage_status = DATA_STORAGE_STATUS_START;
 
 
 // store the data storage table
-boolean data_storage_store_table(void);
+//boolean data_storage_store_table(void);
 
 // Check the integrity of the data storage table
 boolean data_storage_check_table(void);
@@ -83,7 +86,6 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size);
 
 // Callbacks
 // The callbacks normally set the status so that the background service routine does the work.
-void data_storage_callback(boolean success);			// Callback from non volatile memory driver
 void data_storage_format_callback(boolean success);		// format write is completed
 void data_storage_init_read_callback(boolean success);	// initialisation read of storage table
 
@@ -105,15 +107,15 @@ const unsigned char table_storage_preamble[] = {0x55, 0xA5, 0x5A, 0xAA};
 // Structure in ram of complete data directory including checksum.
 DATA_STORAGE_TABLE data_storage_table;
 
-// Callers data.  Used on initialisation, readinng or writing an area.
-unsigned char* 	pdata_storage_data 	= NULL;
-unsigned int 	data_storage_type 	= DATA_STORAGE_NULL;
+// Callers data.  Used on initialisation, reading or writing an area.
+unsigned char* 	pdata_storage_data 		= NULL;
+unsigned int 	data_storage_type 		= DATA_STORAGE_NULL;
 unsigned int 	data_storage_size 		= 0;	// Storage size including header
-unsigned int 	data_storage_data_size 	= 0;	// Storage size excluding header
+unsigned int 	data_storage_data_size 	= 0;	// Storage size of data only
 unsigned int 	data_storage_handle = INVALID_HANDLE;
 DS_callbackFunc data_storage_user_callback = NULL;
 
-DATA_STORAGE_HEADER data_storage_header;	// Buffer for header information
+DATA_STORAGE_HEADER data_storage_header;		// Buffer for header information
 
 unsigned int 	data_storage_event_handle = INVALID_HANDLE;
 
@@ -146,7 +148,13 @@ void data_storage_service(void)
 		if(udb_nv_memory_read( (unsigned char*) &data_storage_table, 0, sizeof(data_storage_table), &data_storage_init_read_callback) == false) return;
 		data_storage_status = DATA_STORAGE_STATUS_INIT;
 		break;
+
 	case DATA_STORAGE_CHECK_TABLE:
+
+#if(MANUAL_ERASE_TABLE  == 1)
+		if(!data_storage_format_table())
+			data_storage_status = DATA_STORAGE_STATUS_START;
+#else
 		if(data_storage_check_table() == false)
 		{
 			// If table check fails then format the table
@@ -157,7 +165,9 @@ void data_storage_service(void)
 		{
 			data_storage_status = DATA_STORAGE_STATUS_WAITING;
 		}
+#endif
 		break;
+
 	case DATA_STORAGE_WRITE:
 		// Write data to nv memory
 		// If NV memory not ready, immediate return.
@@ -173,7 +183,6 @@ void data_storage_service(void)
 				if(data_storage_user_callback != NULL)
 					data_storage_user_callback(false);
 			}
-			data_storage_status = DATA_STORAGE_READING_HEADER;	
 			break;
 		case DATA_STORAGE_SELF_MANAGED:
 			if(udb_nv_memory_write( pdata_storage_data, 
@@ -184,14 +193,38 @@ void data_storage_service(void)
 				if(data_storage_user_callback != NULL)
 					data_storage_user_callback(false);
 			}
-
 			break;
 		}
 
-
-
 		data_storage_status = DATA_STORAGE_WRITING_DATA;	
 		break;
+
+		case DATA_STORAGE_WRITING_DATA_COMPLETE:
+		{
+			switch(data_storage_type)
+			{
+			case DATA_STORAGE_CHECKSUM_STRUCT:
+			{
+				data_storage_header.data_checksum 	= crc_calculate( (uint8_t*) pdata_storage_data, data_storage_data_size);
+				data_storage_header.data_handle 	= data_storage_handle;
+				data_storage_header.data_version 	= 0;
+				memcpy(data_storage_header.data_preamble, data_storage_preamble, sizeof(data_storage_preamble));
+
+				if(udb_nv_memory_write( &data_storage_header,
+										data_storage_table.table[data_storage_handle].data_address,
+										sizeof(DATA_STORAGE_HEADER),
+										&storage_write_header_callback) == false)
+				{
+					if(data_storage_user_callback != NULL)
+						data_storage_user_callback(false);
+				}
+			}	break;
+			case DATA_STORAGE_SELF_MANAGED:
+				if(data_storage_user_callback != NULL)
+									data_storage_user_callback(true);
+				break;
+			}
+		} break;
 
 
 	case DATA_STORAGE_READ:
@@ -230,7 +263,7 @@ void data_storage_service(void)
 	{
 		if(udb_nv_memory_read( pdata_storage_data, 
 					data_storage_table.table[data_storage_handle].data_address + sizeof(DATA_STORAGE_HEADER), 
-					data_storage_size, 
+					data_storage_data_size,
 					&storage_read_data_callback) == false)
 		{
 			if(data_storage_user_callback != NULL) data_storage_user_callback(false);
@@ -242,9 +275,6 @@ void data_storage_service(void)
 	case DATA_STORAGE_READ_DATA_COMPLETE:
 	{
 		boolean success = true;
-		unsigned char* pData = (unsigned char*) 
-									(data_storage_table.table[data_storage_handle].data_address + 
-																		sizeof(DATA_STORAGE_HEADER));
 
 		if(data_storage_type == DATA_STORAGE_CHECKSUM_STRUCT)
 		{
@@ -256,7 +286,7 @@ void data_storage_service(void)
 	
 			// If checksum is incorrect then fail.
 
-			if(data_storage_header.data_checksum != crc_calculate( (uint8_t*) pData, data_storage_size) )
+			if(data_storage_header.data_checksum != crc_calculate( (uint8_t*) pdata_storage_data, data_storage_size) )
 					success = false;
 		}
 
@@ -422,6 +452,8 @@ boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned
 	data_storage_user_callback = callback;
 	data_storage_data_size = size;
 
+	data_storage_type = data_storage_table.table[data_handle].data_type;
+
 	switch(data_storage_table.table[data_handle].data_type)
 	{
 	case DATA_STORAGE_CHECKSUM_STRUCT:
@@ -444,8 +476,20 @@ boolean storage_write(unsigned int data_handle, unsigned char* pwrData, unsigned
 
 void storage_write_callback(boolean success)
 {
-	if(	data_storage_user_callback != NULL) data_storage_user_callback(success);
+	if(success == false)
+	{
+		if(	data_storage_user_callback != NULL) data_storage_user_callback(false);
+		data_storage_status = DATA_STORAGE_STATUS_WAITING;
+	}
+	data_storage_status = DATA_STORAGE_WRITING_DATA_COMPLETE;
+
+}
+
+
+void storage_write_header_callback(boolean success)
+{
 	data_storage_status = DATA_STORAGE_STATUS_WAITING;
+	if(	data_storage_user_callback != NULL) data_storage_user_callback(success);
 }
 
 
@@ -510,11 +554,28 @@ void storage_read_header_callback(boolean success)
 
 // Lookup the data storage table to see if an area exists
 // Does not require callback.  Always has immediate return
+// Correct for allocated size dependent on data type
 boolean storage_check_area_exists(unsigned int data_handle, unsigned int size, unsigned int type)
 {
+	unsigned int check_size;
 	if(data_storage_table.table[data_handle].data_address == 0) return false;
-	if(data_storage_table.table[data_handle].data_size != size) return false;
 	if(data_storage_table.table[data_handle].data_type != type) return false;
+
+	switch(type)
+	{
+	case DATA_STORAGE_CHECKSUM_STRUCT:
+		check_size = size + sizeof(DATA_STORAGE_HEADER);
+		break;
+	case DATA_STORAGE_SELF_MANAGED:
+		check_size = size;
+		break;
+	default:
+		return false;
+		break;
+	}
+
+	if(data_storage_table.table[data_handle].data_size != check_size) return false;
+
 	return true;
 }
 
@@ -560,20 +621,75 @@ inline unsigned int find_next_page_address(unsigned int address)
 
 
 // Find a hole of size data_storage_size and return its address.
+//  returns zero address if space is not found
 //
 // TEMPORARY:  Finds next available space after all areas.
-// TEMPORARY:  Does not find holes yet.  Does not check max size
+// TEMPORARY:  Does not check max size
+//
+//
 //
 unsigned int data_storage_find_hole(unsigned int data_storage_size)
 {
+	// Start search at the next page address above the storage table
 	unsigned int lowestAddr = find_next_page_address(sizeof(data_storage_table));
-	
-	unsigned int scanAddr 	= 0;
-	unsigned int maxAddr 	= 0;
+	unsigned int highestAddr = lowestAddr + data_storage_size;
 
+	unsigned int scanMaxAddr 	= 0;
+	unsigned int scanMinAddr 	= 0;
+	
 	unsigned int handle 	= 0;
 	
-	for(handle = 0; handle <= DATA_HANDLE_MAX; handle++)
+	boolean found_space;
+	boolean overlap;
+
+	// go around this loop checking if any of the assigned data areas in the table overlap
+	// the proposed data area (lowestAddr-highestAddr).
+	// If an overlap is found, move the proposed area to the end of the assigned area, if the
+	// assigned area is at a higher address.
+	// Scanned addresses are the address ranges registered in the table
+	// Repeat the loop until the whole table is passed without a data overlap
+
+	do
+	{
+		found_space = true;
+
+		for(handle = 0; handle <= DATA_HANDLE_MAX; handle++)
+		{
+			overlap = false;
+
+			scanMinAddr = data_storage_table.table[handle].data_address;
+			scanMaxAddr = scanMinAddr + data_storage_table.table[handle].data_size;
+
+			// If the lowest address is inside the scanned range, data areas overlap
+			if( (scanMinAddr <= lowestAddr) & (scanMaxAddr >= lowestAddr) ) overlap = true;
+
+			// If the highest address is inside the scanned range, data areas overlap
+			if( (scanMinAddr <= highestAddr) & (scanMaxAddr >= highestAddr) ) overlap = true;
+
+			// If the scanned range is inside the proposed range, data areas ovverlap
+			if( (scanMinAddr >= lowestAddr) & (scanMinAddr <= highestAddr) ) overlap = true;
+
+
+			// If there has been an overlap of any kind, move the lowest proposed address
+			// to the start of the next page above the highest scanned address
+			if(overlap == true)
+			{
+				if(scanMaxAddr > lowestAddr)
+				{
+					lowestAddr =  find_next_page_address(scanMaxAddr);
+					highestAddr = lowestAddr + data_storage_size;
+				}
+
+				found_space = false;		// flag space not found for this round of the search
+			}
+		}
+
+	} while(found_space == false);
+
+	return lowestAddr;
+
+
+/*	for(handle = 0; handle <= DATA_HANDLE_MAX; handle++)
 	{
 		scanAddr = data_storage_table.table[handle].data_address;
 		maxAddr = scanAddr + data_storage_table.table[handle].data_size;
@@ -581,7 +697,7 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size)
 
 		if(maxAddr > lowestAddr)
 			lowestAddr = maxAddr;
-	}
+	}*/
 
 	return lowestAddr;
 }
