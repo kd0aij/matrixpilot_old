@@ -20,6 +20,7 @@
 
 
 #include "defines.h"
+#include "../libUDB/data_services.h"
 
 union fbts_int flags ;
 union fbts_int old_rtl_flags ;

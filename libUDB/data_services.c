@@ -90,10 +90,12 @@ void data_services_read_callback(boolean success);
 void data_services_read_done( void );
 
 // Serialise a list of data items/variables to the buffer
-void serialise_items_to_buffer(unsigned int table_index);
+// returns size of items serialised
+unsigned int serialise_items_to_buffer(unsigned int table_index);
 
 // Serialise the buffer to a list of data items/variables
-void serialise_buffer_to_items(unsigned int table_index);
+// returns size of items serialised
+unsigned int serialise_buffer_to_items(unsigned int table_index);
 
 // Start the write
 void data_services_write( void );
@@ -214,7 +216,7 @@ unsigned int data_services_calc_item_size(unsigned int table_index)
 
 	for(item_index = 0; item_index < data_services_table[table_index].item_count; item_index++)
 	{
-		size += data_services_table[table_index].pData[item_index].size;
+		size += data_services_table[table_index].pItem[item_index].size;
 	}
 	return size;
 }
@@ -289,54 +291,62 @@ void data_services_read_callback(boolean success)
 
 
 // Serialise a list of data items/variables to the buffer
-void serialise_items_to_buffer(unsigned int table_index)
+// returns total size of the items
+unsigned int serialise_items_to_buffer(unsigned int table_index)
 {
-	if(table_index >= data_service_table_count) return;
+	if(table_index >= data_service_table_count) return 0;
 
-	DATA_SERVICE_TABLE_ENTRY* 	pTableEntry = &data_services_table[table_index];
-	DATA_SERVICE_ITEM* 			pDataItem;
-	unsigned char*				pData;
+//	DATA_SERVICE_TABLE_ENTRY* 	pTableEntry = &data_services_table[table_index];
+	const DATA_SERVICE_ITEM* 	pDataItem;
+	const unsigned char*		pData;
 
 	unsigned int 	item_index;
-	unsigned int 	buffer_index;
+	unsigned int 	buffer_index = 0;
 	unsigned int 	item_size;
 
-	for(item_index = 0; item_index < pTableEntry->item_count; item_index++)
+	for(item_index = 0; item_index < data_services_table[table_index].item_count; item_index++)
 	{
-		pDataItem 	= &(pTableEntry->pData[item_index]);
+		pDataItem 	= (DATA_SERVICE_ITEM*) &(data_services_table[table_index].pItem[item_index]);
+//		pDataItem 	= pDataItem && 0x7FFF;
+//		pData	 	= data_services_table[table_index].Item[item_index].pData;
 		pData 		= pDataItem->pData;
 		item_size 	= pDataItem->size;
 		if( (buffer_index + item_size) > DATA_SERVICE_BUFFER_SIZE )
-			return;
-		memcpy(&data_services_buffer[buffer_index], pDataItem, item_size);
+			return 0;
+		memcpy(&data_services_buffer[buffer_index], pData, item_size);
 		buffer_index += item_size;
 	}
+	return buffer_index;
 }
 
 
 // Serialise the buffer to a list of data items/variables
-void serialise_buffer_to_items(unsigned int table_index)
+// returns total size of the items
+unsigned int  serialise_buffer_to_items(unsigned int table_index)
 {
-	if(table_index >= data_service_table_count) return;
+	if(table_index >= data_service_table_count) return 0;
 
-	DATA_SERVICE_TABLE_ENTRY* 	pTableEntry = &data_services_table[table_index];
+//	DATA_SERVICE_TABLE_ENTRY* 	pTableEntry = &data_services_table[table_index];
 	DATA_SERVICE_ITEM* 			pDataItem;
 	unsigned char*				pData;
 
 	unsigned int 	item_index;
-	unsigned int 	buffer_index;
+	unsigned int 	buffer_index = 0;
 	unsigned int 	item_size;
 
-	for(item_index = 0; item_index < pTableEntry->item_count; item_index++)
+	for(item_index = 0; item_index < data_services_table[table_index].item_count; item_index++)
 	{
-		pDataItem 	= &(pTableEntry->pData[item_index]);
-		pData 		= pDataItem->pData;
+		pDataItem 	= (DATA_SERVICE_ITEM*) &(data_services_table[table_index].pItem[item_index]);
+//		pDataItem 	= pDataItem && 0x7FFF;
+		pData	 	= pDataItem->pData;
+//		pData 		= pDataItem->pData;
 		item_size 	= pDataItem->size;
 		if( (buffer_index + item_size) > DATA_SERVICE_BUFFER_SIZE )
-			return;
-		memcpy(pDataItem, &data_services_buffer[buffer_index], item_size);
+			return 0;
+		memcpy(pData, &data_services_buffer[buffer_index], item_size);
 		buffer_index += item_size;
 	}
+	return buffer_index;
 }
 
 
@@ -374,12 +384,13 @@ boolean data_services_save_specific(unsigned int data_storage_handle, DSRV_callb
 // Start the write
 void data_services_write( void )
 {
-	serialise_items_to_buffer(data_services_table_index);
+	unsigned int size = serialise_items_to_buffer(data_services_table_index);
 
-//	DATA_SERVICE_TABLE_ENTRY* 	pTableEntry = &data_services_table[data_services_table_index];
+	if(size == 0)
+		if(data_services_user_callback != NULL) data_services_user_callback(false);
 
 	unsigned int handle = data_services_table[data_services_table_index].data_storage_handle;
-	unsigned int size = data_services_calc_item_size(data_services_table_index);
+	//data_services_calc_item_size(data_services_table_index);
 	unsigned int type = data_services_table[data_services_table_index].data_type;
 
 	// TODO: Check here if data handle is ok 
@@ -393,7 +404,7 @@ void data_services_write( void )
 		}
 	}
 
-	if(data_services_user_callback != NULL) data_services_user_callback(false);	
+
 }
 
 

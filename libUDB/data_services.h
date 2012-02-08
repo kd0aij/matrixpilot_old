@@ -42,10 +42,10 @@ typedef DATA_SERVICE_ITEM DATA_SERVICE_ITEMS[];
 // 
 typedef struct tagDATA_SERVICE_TABLE_ENTRY
 {
-	unsigned int 		data_storage_handle;
-	DATA_SERVICE_ITEM*	pData;
-	unsigned int 		item_count;
-	unsigned int 		data_type;
+	unsigned int 					data_storage_handle;
+	const DATA_SERVICE_ITEM* const	pItem;
+	unsigned int 					item_count;
+	unsigned int 					data_type;
 } DATA_SERVICE_TABLE_ENTRY;
 
 

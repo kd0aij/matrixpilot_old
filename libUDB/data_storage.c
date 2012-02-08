@@ -235,8 +235,8 @@ void data_storage_service(void)
 		switch(data_storage_type)
 		{
 		case DATA_STORAGE_CHECKSUM_STRUCT:
-			if(udb_nv_memory_read( pdata_storage_data, 
-						&data_storage_header, 
+			if(udb_nv_memory_read( &data_storage_header, 
+						data_storage_table.table[data_storage_handle].data_address, 
 						sizeof(DATA_STORAGE_HEADER),
 						&storage_read_header_callback) == false)
 			{
@@ -284,11 +284,11 @@ void data_storage_service(void)
 			if(data_storage_header.data_handle != data_storage_handle)  success = false;
 	
 			// If preamble is incorrect then fail
-			if(memcmp(data_storage_header.data_preamble, data_storage_preamble, 4) == 0)  success = false;
+			if(memcmp(data_storage_header.data_preamble, data_storage_preamble, 4) != 0)  success = false;
 	
 			// If checksum is incorrect then fail.
 
-			if(data_storage_header.data_checksum != crc_calculate( (uint8_t*) pdata_storage_data, data_storage_size) )
+			if(data_storage_header.data_checksum != crc_calculate( (uint8_t*) pdata_storage_data, data_storage_data_size) )
 					success = false;
 		}
 
