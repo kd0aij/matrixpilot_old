@@ -33,7 +33,6 @@
 #include "events.h"
 #include <string.h>
 
-
 // Data buffer used for services
 unsigned char data_services_buffer[DATA_SERVICE_BUFFER_SIZE];
 
@@ -109,6 +108,9 @@ unsigned int data_services_calc_item_size(unsigned int table_index);
 
 // Tracking index into table
 unsigned int data_services_table_index = 0;
+
+// Flags that determine how and when to do serialisation
+unsigned int data_services_serialize_flags = 0;
 
 
 void data_services_init(void)
@@ -197,6 +199,12 @@ void data_services_init_table_index(void)
 	data_services_table_index = 0;
 	data_services_do_all_areas = true;
 	data_services_user_callback = NULL;
+
+	if(_SWR == 0)
+		data_services_serialize_flags = DS_LOAD_AT_STARTUP;
+	else
+		data_services_serialize_flags = DS_LOAD_AT_REBOOT;
+
 	data_service_state = DATA_SERVICE_STATE_READ;
 }
 
@@ -225,6 +233,7 @@ unsigned int data_services_calc_item_size(unsigned int table_index)
 // Read data area at index
 void data_services_read_index( void )
 {
+
 	// If beyond end of table return to waiting.
 	if(data_services_table_index >= data_service_table_count)
 	{
@@ -232,20 +241,27 @@ void data_services_read_index( void )
 		return;
 	}
 
-	unsigned int handle = data_services_table[data_services_table_index].data_storage_handle;
-	unsigned int size = data_services_calc_item_size(data_services_table_index);
-	unsigned int type = data_services_table[data_services_table_index].data_type;
+	unsigned int service_flags = data_services_table[data_services_table_index].service_flags;
 
-	// TODO: Check here if data handle is ok 
-
-	if(type == DATA_STORAGE_CHECKSUM_STRUCT)
+	// Check the serialise flags to see if this table entry should be loaded
+	if( (service_flags & data_services_serialize_flags) | (service_flags & DS_LOAD_ALL) )
 	{
-		if(storage_read(handle, data_services_buffer, size, &data_services_read_callback) == true)
+		unsigned int handle = data_services_table[data_services_table_index].data_storage_handle;
+		unsigned int size = data_services_calc_item_size(data_services_table_index);
+		unsigned int type = data_services_table[data_services_table_index].data_type;
+	
+		// TODO: Check here if data handle is ok 
+	
+		if(type == DATA_STORAGE_CHECKSUM_STRUCT)
 		{
-			data_service_state =	DATA_SERVICE_STATE_READ_WAITING;
+			if(storage_read(handle, data_services_buffer, size, &data_services_read_callback) == true)
+			{
+				data_service_state =	DATA_SERVICE_STATE_READ_WAITING;
+			}
+			return;
 		}
-		return;
 	}
+
 	data_services_table_index++;
 }
 
@@ -296,7 +312,6 @@ unsigned int serialise_items_to_buffer(unsigned int table_index)
 {
 	if(table_index >= data_service_table_count) return 0;
 
-//	DATA_SERVICE_TABLE_ENTRY* 	pTableEntry = &data_services_table[table_index];
 	const DATA_SERVICE_ITEM* 	pDataItem;
 	const unsigned char*		pData;
 
@@ -307,8 +322,6 @@ unsigned int serialise_items_to_buffer(unsigned int table_index)
 	for(item_index = 0; item_index < data_services_table[table_index].item_count; item_index++)
 	{
 		pDataItem 	= (DATA_SERVICE_ITEM*) &(data_services_table[table_index].pItem[item_index]);
-//		pDataItem 	= pDataItem && 0x7FFF;
-//		pData	 	= data_services_table[table_index].Item[item_index].pData;
 		pData 		= pDataItem->pData;
 		item_size 	= pDataItem->size;
 		if( (buffer_index + item_size) > DATA_SERVICE_BUFFER_SIZE )
@@ -326,9 +339,8 @@ unsigned int  serialise_buffer_to_items(unsigned int table_index)
 {
 	if(table_index >= data_service_table_count) return 0;
 
-//	DATA_SERVICE_TABLE_ENTRY* 	pTableEntry = &data_services_table[table_index];
-	DATA_SERVICE_ITEM* 			pDataItem;
-	unsigned char*				pData;
+	const DATA_SERVICE_ITEM*	pDataItem;
+	const unsigned char*		pData;
 
 	unsigned int 	item_index;
 	unsigned int 	buffer_index = 0;
@@ -337,9 +349,7 @@ unsigned int  serialise_buffer_to_items(unsigned int table_index)
 	for(item_index = 0; item_index < data_services_table[table_index].item_count; item_index++)
 	{
 		pDataItem 	= (DATA_SERVICE_ITEM*) &(data_services_table[table_index].pItem[item_index]);
-//		pDataItem 	= pDataItem && 0x7FFF;
 		pData	 	= pDataItem->pData;
-//		pData 		= pDataItem->pData;
 		item_size 	= pDataItem->size;
 		if( (buffer_index + item_size) > DATA_SERVICE_BUFFER_SIZE )
 			return 0;
@@ -374,6 +384,8 @@ boolean data_services_save_specific(unsigned int data_storage_handle, DSRV_callb
 	if(data_services_table_index == INVALID_HANDLE) return false;
 	
 	data_services_user_callback = pcallback;
+
+	data_services_serialize_flags = DS_SAVE_ALL;
 
 	data_service_state = DATA_SERVICE_STATE_WRITE;
 	

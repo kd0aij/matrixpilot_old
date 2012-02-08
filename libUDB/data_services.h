@@ -29,6 +29,15 @@
 // callback type for data services user
 typedef void (*DSRV_callbackFunc)(boolean);
 
+typedef enum
+{
+	DS_LOAD_ALL		 	= 0x0001,
+	DS_SAVE_ALL		 	= 0x0002,
+	DS_LOAD_AT_STARTUP	= 0x0004,
+	DS_LOAD_AT_REBOOT 	= 0x0008,
+	DS_SAVE_AFTER_CAL 	= 0x0010,
+} DATA_SERVICE_FLAGS;
+
 // reference to a RAM variable/item and its size.
 typedef struct tagDATA_SERVICE_ITEM
 {
@@ -46,6 +55,7 @@ typedef struct tagDATA_SERVICE_TABLE_ENTRY
 	const DATA_SERVICE_ITEM* const	pItem;
 	unsigned int 					item_count;
 	unsigned int 					data_type;
+	unsigned int 					service_flags;
 } DATA_SERVICE_TABLE_ENTRY;
 
 
@@ -62,7 +72,7 @@ void data_services_init(void);
 void data_services_trigger(void);
 
 // Request to load all memory areas from the table
-void data_services_load_all(void);
+void data_services_load_all( unsigned int serialize_flags);
 
 // Load a data area to nv memory with the given handle.
 // Return true if services available to take request, otherwise return false

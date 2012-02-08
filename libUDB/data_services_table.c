@@ -26,8 +26,8 @@ const DATA_SERVICE_ITEM data_service_trim_calib_items[] =
 
 const DATA_SERVICE_TABLE_ENTRY data_services_table[] = 
 {
-	{DATA_HANDLE_IMU_CALIB, 	&data_service_imu_calib_items[0], 	DATA_SERVICE_IMU_CALIB_COUNT , 	DATA_STORAGE_CHECKSUM_STRUCT},
-	{DATA_HANDLE_TRIM_CALIB, 	&data_service_trim_calib_items[0], 	1, 								DATA_STORAGE_CHECKSUM_STRUCT},
+	{DATA_HANDLE_IMU_CALIB, 	&data_service_imu_calib_items[0], 	DATA_SERVICE_IMU_CALIB_COUNT , 	DATA_STORAGE_CHECKSUM_STRUCT,	DS_LOAD_AT_REBOOT},
+	{DATA_HANDLE_TRIM_CALIB, 	&data_service_trim_calib_items[0], 	1, 								DATA_STORAGE_CHECKSUM_STRUCT,	DS_LOAD_AT_STARTUP | DS_LOAD_AT_REBOOT},
 };
 
 const unsigned int data_service_table_count = sizeof(data_services_table) / sizeof(DATA_SERVICE_TABLE_ENTRY);
