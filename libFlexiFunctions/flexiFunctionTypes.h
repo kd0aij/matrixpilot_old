@@ -3,6 +3,7 @@
 
 
 #include <dsp.h>
+
 #include "flexifunction_options.h"
 
 /****************************************************************/
@@ -105,6 +106,18 @@ typedef struct tagFuncData_GAIN_LIMIT
 } FuncData_gain_limit;
 
 
+typedef struct tagFuncData_THREE_POINT
+{
+	unsigned int	src;
+	fractional	inputLow;
+	fractional	outputLow;
+	fractional	inputMid;
+	fractional	outputMid;
+	fractional	inputHigh;
+	fractional	outputHigh;
+} FuncData_three_point;
+
+
 typedef union
 {
 	FuncData_null	null;
@@ -117,6 +130,7 @@ typedef union
 	FuncData_scale_trim_limit	scale_trim_limit;
 	FuncData_scale_reftrim_limit	scale_reftrim_limit;
 	FuncData_gain_limit	gain_limit;
+	FuncData_three_point	three_point;
 } functionData;
 
 
@@ -150,6 +164,7 @@ extern fractional conditional_gain_function(functionSetting* pSetting, fractiona
 extern fractional scale_trim_limit_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional scale_reftrim_limit_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional gain_limit_function(functionSetting* pSetting, fractional* pRegisters);
+extern fractional three_point_function(functionSetting* pSetting, fractional* pRegisters);
 
 
 
@@ -159,13 +174,14 @@ extern void runFlexiFunctions( functionSetting* pSettings, fractional* pRegister
 extern const pflexFunction flexiFunctions [];
 
 
+extern unsigned int flexiFunctionsUsed;
+
+
 extern functionSetting flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
 
 
 extern fractional flexiFunction_registers[FLEXIFUNCTION_MAX_REGS];
 
-
-extern unsigned int flexiFunctionsUsed;
 
 
 #endif

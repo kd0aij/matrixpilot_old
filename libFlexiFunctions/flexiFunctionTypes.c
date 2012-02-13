@@ -16,4 +16,5 @@ const pflexFunction flexiFunctions[] =
     &scale_trim_limit_function,
     &scale_reftrim_limit_function,
     &gain_limit_function,
+    &three_point_function,
 	};

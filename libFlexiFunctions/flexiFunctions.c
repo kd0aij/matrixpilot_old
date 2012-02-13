@@ -258,6 +258,67 @@ fractional conditional_set_function(functionSetting* pSetting, fractional* pRegi
 	return ftemp;
 };
 
+
+fractional three_point_function(functionSetting* pSetting, fractional* pRegisters)
+{
+	fractional output;
+	fractional X1;
+	fractional X2;
+	fractional Y1;
+	fractional Y2;
+	fractional 		delta;
+	union longww 	ltemp;
+
+	unsigned int 	gain = 0;
+
+	fractional input = pRegisters[pSetting->data.three_point.src];
+
+	if(input <= pSetting->data.three_point.inputLow)
+		return pSetting->data.three_point.outputLow;
+
+	if(input >= pSetting->data.three_point.inputHigh)
+		return pSetting->data.three_point.outputHigh;
+
+	if(input >= pSetting->data.three_point.inputMid)
+	{
+		X1 = pSetting->data.three_point.inputMid;
+		X2 = pSetting->data.three_point.inputHigh;
+		Y1 = pSetting->data.three_point.outputMid;
+		Y2 = pSetting->data.three_point.outputHigh;
+	}
+	else
+	{
+		X1 = pSetting->data.three_point.inputLow;
+		X2 = pSetting->data.three_point.inputMid;
+		Y1 = pSetting->data.three_point.outputLow;
+		Y2 = pSetting->data.three_point.outputMid;
+	}
+	
+	input -= X1;
+	if(X2 == X1) return pSetting->data.three_point.outputLow;
+	if(Y1 == Y2) return pSetting->data.three_point.outputLow;
+
+	delta = X2 - X1;
+
+	// Find the gain required to increase delta >= RMAX
+	while(delta < RMAX)
+	{
+		gain++;
+		delta <<= 1;
+	}
+
+	ltemp.WW = 0;
+	ltemp._.W1 = (Y2 - Y1);
+
+	output = (fractional) __builtin_divsd( ltemp.WW,  (int) delta );
+	
+	ltemp.WW = __builtin_mulss(output, input);	
+	ltemp.WW <<= 2;
+	output = (fractional) ltemp._.W1;
+
+	return output;
+}
+
 /*
 fractional mixGainLim(MixerSetting* pSetting)
 {
