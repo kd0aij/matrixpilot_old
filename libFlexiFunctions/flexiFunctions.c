@@ -269,7 +269,7 @@ fractional three_point_function(functionSetting* pSetting, fractional* pRegister
 	fractional 		delta;
 	union longww 	ltemp;
 
-	unsigned int 	gain = 0;
+	int 			gain = 0;
 
 	fractional input = pRegisters[pSetting->data.three_point.src];
 
@@ -295,26 +295,53 @@ fractional three_point_function(functionSetting* pSetting, fractional* pRegister
 	}
 	
 	input -= X1;
-	if(X2 == X1) return pSetting->data.three_point.outputLow;
+	if(X2 <= X1) return pSetting->data.three_point.outputLow;
 	if(Y1 == Y2) return pSetting->data.three_point.outputLow;
 
 	delta = X2 - X1;
 
-	// Find the gain required to increase delta >= RMAX
-	while(delta < RMAX)
+	// Find the gain required to increase delta to be in range RMAX to RMAX/2
+	while(delta < RMAX/2)
 	{
 		gain++;
 		delta <<= 1;
 	}
 
-	ltemp.WW = 0;
-	ltemp._.W1 = (Y2 - Y1);
+	if(delta > RMAX)
+	{
+		gain--;
+		delta >>= 1;
+	}
 
-	output = (fractional) __builtin_divsd( ltemp.WW,  (int) delta );
+	ltemp.WW = 0;
+	ltemp._.W1 = (Y2 - Y1);		//  does this need to be inverted???
+
+
+	// Limit numerator to +-RMAX/4 and adjust gain
+	if(ltemp.WW > 0)
+	{
+		while(ltemp._.W1 > RMAX/4)
+		{
+			gain++;
+			ltemp.WW >>= 1;
+		}
+	}
+	else
+	{
+		while(ltemp._.W1 < -RMAX/4)
+		{
+			gain++;
+			ltemp.WW >>= 1;
+		}
+	}
+
+	output = __builtin_divsd( ltemp.WW,  delta ); //(int) (fractional)
+
 	
 	ltemp.WW = __builtin_mulss(output, input);	
-	ltemp.WW <<= 2;
-	output = (fractional) ltemp._.W1;
+//	ltemp.WW <<= 1;									// To correct for input RMAX
+	ltemp.WW <<= gain;
+	output = (fractional) (ltemp._.W1 + Y1);
 
 	return output;
 }
