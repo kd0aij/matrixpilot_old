@@ -89,10 +89,15 @@ mavlink_status_t  r_mavlink_status ;
 #include "../MAVLink/include/matrixpilot/mavlink.h"
 
 
-#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
-	#include "../libFlexiFunctions/flexiFunctionServices.h"
+#if (USE_FLEXIFUNCTION_MIXING == 1)
+	#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+		#include "../libflexifunctions/flexifunctionservices.h"
+	#else
+		#error(" Flexifunctions must be defined in MAVlink to use them")
+	#endif
 #endif
 
+#if( (USE_FLEXIFUNCTION_MIXING == 1) &&
 
 #if ( MAVLINK_TEST_ENCODE_DECODE == 1 )
 #include "../MAVLink/include/matrixpilot/testsuite.h"
@@ -1036,7 +1041,7 @@ void handleMessage(mavlink_message_t* msg)
 	        break;
 	    } // end case
 
-#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+#if(USE_FLEXIFUNCTION_MIXING == 1)
 		/* Following case statement now out of date and needs re-writing for new parameter structures  - PDH
 		case MAVLINK_MSG_ID_PARAM_VALUE :
 		{
@@ -1110,7 +1115,7 @@ void handleMessage(mavlink_message_t* msg)
 			}
 		}
 		break;
-#endif	//MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+#endif	// #if(USE_FLEXIFUNCTION_MIXING == 1)
 
    }   // end switch
 
@@ -1483,7 +1488,7 @@ void mavlink_output_40hz( void )
 
    ************End of section not yet converted to 1.0 wire protocol ***********************/
 
-#ifdef MAVLINK_MSG_ID_FLEXIFUNCTION_SET
+#if(USE_FLEXIFUNCTION_MIXING == 1)
 	switch(flexiFunctionState)
 	{
 	case FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE:
@@ -1500,7 +1505,7 @@ void mavlink_output_40hz( void )
 		break;
 
 	}
-#endif
+#endif	//#if(USE_FLEXIFUNCTION_MIXING == 1)
 
 #endif  // (FLIGHT_PLAN_TYPE == FP_WAYPOINTS )
     

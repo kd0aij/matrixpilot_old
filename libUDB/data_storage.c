@@ -30,6 +30,9 @@
 //
 //
 
+// Only include these services if using NV memory
+#if (USE_NV_MEMORY == 1)
+
 // If set to 1, does manual erase of memory table when it runs.
 // Used for testing only
 #define MANUAL_ERASE_TABLE 0
@@ -703,3 +706,6 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size)
 
 	return lowestAddr;
 }
+
+#endif 	// #if (USE_NV_MEMORY == 1)
+

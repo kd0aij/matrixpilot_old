@@ -614,6 +614,18 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Use non volatile memory to store and recall settings
+// Set to 1 to include non volatile memory service in compilation
+// WARNING: Use on UDB4+ only
+#define USE_NV_MEMORY								0
+
+////////////////////////////////////////////////////////////////////////////////
+// Use flexifunctions for mixing instead of standard servomix
+// Setting to 1 to enable, 0 to use standard servomix.
+// WARNING: Must use MAVlink and NV memory on UDB4+ only
+#define USE_FLEXIFUNCTION_MIXING					0
+
+////////////////////////////////////////////////////////////////////////////////
 // Hardware In the Loop Simulation
 // Only set this to 1 for testing in the simulator.  Do not try to fly with this set to 1!
 // See the MatrixPilot wiki for more info on using HILSIM.

@@ -29,6 +29,9 @@
 // 
 //
 
+// Only include these services if using NV memory
+#if (USE_NV_MEMORY == 1)
+
 #include "data_services.h"
 #include "events.h"
 #include <string.h>
@@ -282,6 +285,14 @@ void data_services_read_done( void )
 {
 	serialise_buffer_to_items(data_services_table_index);
 
+	if(data_service_flags & (DS_LOAD_AT_STARTUP | DS_LOAD_AT_REBOOT))
+	{
+		if(data_services_table[data_services_table_index].ploadCallback != NULL)
+		{
+			data_services_table[data_services_table_index].ploadCallback(true);
+		}
+	}
+
 	data_services_table_index++;
 	data_service_state =	DATA_SERVICE_STATE_READ;
 }
@@ -426,3 +437,6 @@ void data_services_write_callback( boolean success )
 	if(data_services_user_callback != NULL) data_services_user_callback(success);
 	data_service_state = DATA_SERVICE_STATE_WAITING;
 }
+
+#endif 	// #if (USE_NV_MEMORY == 1)
+

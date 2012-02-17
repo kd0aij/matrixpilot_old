@@ -56,6 +56,7 @@ typedef struct tagDATA_SERVICE_TABLE_ENTRY
 	unsigned int 					item_count;
 	unsigned int 					data_type;
 	unsigned int 					service_flags;
+	DSRV_callbackFunc				ploadCallback;
 } DATA_SERVICE_TABLE_ENTRY;
 
 

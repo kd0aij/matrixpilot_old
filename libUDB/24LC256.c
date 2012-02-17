@@ -16,6 +16,9 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// Don't use this unless using the NV memory serives
+#if (USE_NV_MEMORY == 1)
+
 #include "libUDB_internal.h"
 
 #include "NV_memory.h"
@@ -205,3 +208,5 @@ void MCP24LC256_callback(boolean I2CtrxOK)
 	};
 
 }
+
+#endif //#if (USE_NV_MEMORY == 1)

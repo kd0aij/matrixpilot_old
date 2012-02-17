@@ -423,4 +423,4 @@ void I2C1_Failed(void)
 		pI2C_callback(false);
 }
 
-#endif
+#endif  // UDB4 BOARD

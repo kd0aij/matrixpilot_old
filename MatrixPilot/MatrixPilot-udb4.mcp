@@ -714,7 +714,7 @@ file_167=..\MAVLink\include\matrixpilot\mavlink_msg_flexifunction_read_req.h
 file_168=..\MAVLink\include\matrixpilot\mavlink_msg_flexifunction_set.h
 file_169=..\MAVLink\include\matrixpilot\mavlink_msg_flexifunction_statistics.h
 file_170=..\libUDB\data_services.h
-file_171=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
+file_171=C:\Program Files\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
