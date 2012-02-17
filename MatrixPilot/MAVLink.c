@@ -97,8 +97,6 @@ mavlink_status_t  r_mavlink_status ;
 	#endif
 #endif
 
-#if( (USE_FLEXIFUNCTION_MIXING == 1) &&
-
 #if ( MAVLINK_TEST_ENCODE_DECODE == 1 )
 #include "../MAVLink/include/matrixpilot/testsuite.h"
 #endif

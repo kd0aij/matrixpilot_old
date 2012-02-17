@@ -195,7 +195,8 @@ file_167=MAVLink
 file_168=MAVLink
 file_169=MAVLink
 file_170=libUDB
-file_171=.
+file_171=libUDB
+file_172=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -369,6 +370,7 @@ file_168=no
 file_169=no
 file_170=no
 file_171=no
+file_172=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -542,6 +544,7 @@ file_168=no
 file_169=no
 file_170=no
 file_171=no
+file_172=no
 [FILE_INFO]
 file_000=config_tests.c
 file_001=..\libUDB\background.c
@@ -714,7 +717,8 @@ file_167=..\MAVLink\include\matrixpilot\mavlink_msg_flexifunction_read_req.h
 file_168=..\MAVLink\include\matrixpilot\mavlink_msg_flexifunction_set.h
 file_169=..\MAVLink\include\matrixpilot\mavlink_msg_flexifunction_statistics.h
 file_170=..\libUDB\data_services.h
-file_171=C:\Program Files\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
+file_171=..\libUDB\nv_memory_options.h
+file_172=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

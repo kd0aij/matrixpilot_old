@@ -237,4 +237,5 @@
 // Check non volatile memory services are not being used with classic UDB
 #if( (USE_NV_MEMORY == 1) && ( BOARD_IS_CLASSIC_UDB == 1 ) )
 	#error("Non volatile memory servces can't be used with classic UDB types")
-#endif	
+#endif
+

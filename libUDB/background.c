@@ -21,15 +21,16 @@
 
 #include "libUDB_internal.h"
 
-#if (USE_FLEXIFUNCTION_MIXING == 1)
-#include "../libflexifunctions/flexifunctionservices.h"
-#endif
-
 #if (USE_NV_MEMORY == 1)
 #include "I2C.h"
 #include "NV_memory.h"
 #include "data_storage.h"
 #include "data_services.h"
+#endif
+
+
+#if (USE_FLEXIFUNCTION_MIXING == 1)
+#include "../libflexifunctions/flexifunctionservices.h"
 #endif
 
 #if (BOARD_IS_CLASSIC_UDB == 1)

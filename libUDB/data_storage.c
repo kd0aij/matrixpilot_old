@@ -30,13 +30,9 @@
 //
 //
 
-// Only include these services if using NV memory
-#if (USE_NV_MEMORY == 1)
+#include "libUDB.h"
 
-// If set to 1, does manual erase of memory table when it runs.
-// Used for testing only
-#define MANUAL_ERASE_TABLE 0
-
+#if(USE_NV_MEMORY == 1)
 
 #include "data_storage.h"
 #include "nv_memory.h"
@@ -707,5 +703,5 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size)
 	return lowestAddr;
 }
 
-#endif 	// #if (USE_NV_MEMORY == 1)
+#endif 		//#if(USE_NV_MEMORY == 1)
 

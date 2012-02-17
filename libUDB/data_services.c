@@ -29,8 +29,9 @@
 // 
 //
 
-// Only include these services if using NV memory
-#if (USE_NV_MEMORY == 1)
+#include "libUDB.h"
+
+#if(USE_NV_MEMORY == 1)
 
 #include "data_services.h"
 #include "events.h"
@@ -285,7 +286,7 @@ void data_services_read_done( void )
 {
 	serialise_buffer_to_items(data_services_table_index);
 
-	if(data_service_flags & (DS_LOAD_AT_STARTUP | DS_LOAD_AT_REBOOT))
+	if(data_services_serialize_flags & (DS_LOAD_AT_STARTUP | DS_LOAD_AT_REBOOT))
 	{
 		if(data_services_table[data_services_table_index].ploadCallback != NULL)
 		{
@@ -438,5 +439,6 @@ void data_services_write_callback( boolean success )
 	data_service_state = DATA_SERVICE_STATE_WAITING;
 }
 
-#endif 	// #if (USE_NV_MEMORY == 1)
+#endif	//#if(USE_NV_MEMORY == 1)
+
 
