@@ -181,7 +181,8 @@ file_153=libUDB
 file_154=libUDB
 file_155=libUDB
 file_156=libUDB
-file_157=.
+file_157=libUDB
+file_158=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -341,6 +342,7 @@ file_154=no
 file_155=no
 file_156=no
 file_157=no
+file_158=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -500,6 +502,7 @@ file_154=no
 file_155=no
 file_156=no
 file_157=no
+file_158=no
 [FILE_INFO]
 file_000=config_tests.c
 file_001=..\libUDB\background.c
@@ -658,7 +661,8 @@ file_153=..\libUDB\events.h
 file_154=..\libUDB\I2C.h
 file_155=..\libUDB\NV_memory.h
 file_156=..\libUDB\nv_memory_options.h
-file_157=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
+file_157=..\libUDB\barometer.h
+file_158=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
