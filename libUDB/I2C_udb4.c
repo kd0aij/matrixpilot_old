@@ -45,15 +45,18 @@ void I2C1_recen(void);
 void I2C1_writeStop(void);
 void I2C1_stopRead(void);
 void I2C1_writeData(void);
-void I2C1_readCommand(void);
-void I2C1_writeCommand(void);
+void I2C1_readAddress(void);
+void I2C1_writeAddress(void);
 void I2C1_startWrite(void);
 void I2C1_readStart(void);
 void I2C1_Failed(void);
 void I2C1_doneWrite(void);
 void I2C1_writeCommandData(void);
 
-void serviceI2C1(void);  // service the I2C
+void serviceI2C1(void);  	// service the I2C
+
+// The mode for read or write.
+unsigned int I2C1_mode;
 
 int I2C1ERROR = 0 ;
 
@@ -69,7 +72,7 @@ void (* I2C1_state ) ( void ) = &I2C1_idle ;
 
 unsigned int I2C1_Index = 0;  		// index into the write buffer
 
-unsigned char I2C1_CommandByte 	= 0;
+unsigned char I2C1_AddressByte 	= 0;
 unsigned int I2C1_tx_data_size = 0;		// tx data size
 unsigned int I2C1_rx_data_size = 0;		// rx data size
 unsigned int I2C1_command_data_size = 0;	// command data size
@@ -107,59 +110,14 @@ void I2C1_trigger_service(void)
 
 void serviceI2C1(void)  // service the I2C
 {
-	unsigned int counter;
-
 	if ( _I2C1EN == 0 ) // I2C is off
 	{
 		I2C1_state = &I2C1_idle ; 	// disable response to any interrupts
-//		I2C1_SDA = I2C1_SCL = 1 ; 	// pull SDA and SCL high
 		I2C1_init() ; 			// turn the I2C back on
 		// Put something here to reset state machine.  Make sure attached servies exit nicely.
 		return ;
 	}
 
-/*
-	if (  I2C1_NORMAL )
-	{
-	}
-	else
-	{
-		I2C1_Busy = true;
-		I2C1_state = &I2C1_idle ;	// disable the response to any more interrupts
-		I2C1ERROR = I2C1STAT ; 		// record the error for diagnostics
-		_I2C1EN = 0 ;  				// turn off the I2C
-		_MI2C1IF = 0 ; 				// clear the I2C master interrupt
-		_MI2C1IE = 0 ; 				// disable the interrupt
-//		I2C1_SDA = I2C1_SCL = 0 ;	// pull SDA and SCL low
-		// Put something here to reset state machine.  Make sure attached servies exit nicely.
-		return ;
-	}
-*/
-/*
-	if ( I2C1Pause == 0 )
-	{
-		for (counter = 0; counter < 255; counter++)
-		{
-			I2C1Buffer[counter] = 0;
-		}
-		udb_nv_memory_read( I2C1Buffer, 0x00, 200, NULL);
-
-		I2C1Pause = 2;
-	}
-	else if ( I2C1Pause == 1 )
-	{
-		for (counter = 0; counter < 255; counter++)
-		{
-			I2C1Buffer[counter] = counter;
-		}
-		udb_nv_memory_write( I2C1Buffer, 0, 150, NULL);
-		I2C1Pause -- ;
-	}
-	else
-	{
-		I2C1Pause -- ;
-	}
-*/
 	return ;
 }
 
@@ -189,15 +147,15 @@ inline boolean I2C1_CheckAvailable(void)
 }
 
 
-boolean I2C1_Write(unsigned char command, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* ptxData, unsigned int txSize, I2C_callbackFunc pCallback)
+boolean I2C1_Write(unsigned char address, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* ptxData, unsigned int txSize, I2C_callbackFunc pCallback)
 {
 	if(!I2C1_CheckAvailable()) return false;
 
-	pI2C_callback = pCallback;
+	pI2C_callback 	= pCallback;
 
 	I2C1_command_data_size 	= commandDataSize;
 	pI2C1commandBuffer		= pcommandData;
-	I2C1_CommandByte 		= command;
+	I2C1_AddressByte 		= address;
 	pI2C1Buffer 			= ptxData;
 
 	I2C1_tx_data_size = txSize;		// tx data size
@@ -210,15 +168,16 @@ boolean I2C1_Write(unsigned char command, unsigned char* pcommandData, unsigned 
 }
 
 
-boolean I2C1_Read(unsigned char command, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* prxData, unsigned int rxSize, I2C_callbackFunc pCallback)
+boolean I2C1_Read(unsigned char address, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* prxData, unsigned int rxSize, I2C_callbackFunc pCallback, unsigned int I2C_mode)
 {
 	if(!I2C1_CheckAvailable()) return false;
 
 	pI2C_callback = pCallback;
+	I2C1_mode		= I2C_mode;
 
 	I2C1_command_data_size 	= commandDataSize;
 	pI2C1commandBuffer		= pcommandData;
-	I2C1_CommandByte 		= command;
+	I2C1_AddressByte 		= address;
 	pI2C1Buffer 			= prxData;
 
 	I2C1_tx_data_size = 0;			// tx data size
@@ -232,14 +191,15 @@ boolean I2C1_Read(unsigned char command, unsigned char* pcommandData, unsigned c
 
 
 // Only send command byte to check for ACK.
-boolean I2C1_checkACK(unsigned int command, I2C_callbackFunc pCallback)
+boolean I2C1_checkACK(unsigned int address, I2C_callbackFunc pCallback)
 {
 	if(!I2C1_CheckAvailable()) return false;
 
-	pI2C_callback = pCallback;
+	pI2C_callback 	= pCallback;
+	I2C1_mode		= I2C_MODE_WRITE;
 
 	I2C1_command_data_size 	= 0;
-	I2C1_CommandByte 		= command;
+	I2C1_AddressByte 		= address;
 	pI2C1Buffer 			= NULL;
 
 	I2C1_tx_data_size = 0;	// tx data size
@@ -256,15 +216,18 @@ void I2C1_startWrite(void)
 {
 	I2C1_Index = 0;  			// Reset index into buffer
 
-	I2C1_state = &I2C1_writeCommand ;
+	if(I2C1_mode == I2C_MODE_READ_ONLY)
+		I2C1_state = &I2C1_readAddress ;	
+	else
+		I2C1_state = &I2C1_writeAddress ;
 	I2C1CONbits.SEN = 1 ;
 	return ;
 }
 
 // Write command byte without checking ACK first.
-void I2C1_writeCommand(void)
+void I2C1_writeAddress(void)
 {
-	I2C1TRN = I2C1_CommandByte & 0xFE ;
+	I2C1TRN = I2C1_AddressByte & 0xFE ;
 	I2C1_state = &I2C1_writeCommandData ;
 	return;
 }
@@ -341,15 +304,26 @@ void I2C1_doneWrite(void)
 void I2C1_readStart(void)
 {
 	I2C1_Index = 0;  			// Reset index into buffer
-	I2C1_state = &I2C1_readCommand ;
+	I2C1_state = &I2C1_readAddress ;
 	I2C1CONbits.SEN = 1 ;	
 }
 
-// Send the command to read
-void I2C1_readCommand(void)
+// Send the address to read
+void I2C1_readAddress(void)
 {
-	I2C1_state = &I2C1_recen ;
-	I2C1TRN =  I2C1_CommandByte | 0x01;
+	I2C1TRN =  I2C1_AddressByte | 0x01;
+
+	if(I2C1_mode == I2C_MODE_READ_ONLY)
+	{
+		I2C1_Index = 0; 							// Reset index into the buffer
+
+		if(I2C1_command_data_size == 0)
+			I2C1_state = &I2C1_recen ;				// Read the data
+		else
+			I2C1_state = &I2C1_writeCommandData ;	// Write the command data
+	}
+	else
+		I2C1_state = &I2C1_recen ;
 }
 
 // Check for ACK.  If ok, start receive mode, otherwise abandon.

@@ -6,7 +6,7 @@
 // Set to 1 to include non volatile memory service in compilation
 // WARNING: THIS FEATURE IS UNDER DEVELOPMENT
 // WARNING: Use on UDB4+ only
-#define USE_NV_MEMORY					0
+#define USE_NV_MEMORY					1
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,11 @@
 // WARNING: THIS FEATURE IS UNDER DEVELOPMENT
 // WARNING: Must use MAVlink and NV memory on UDB4+ only
 #define USE_FLEXIFUNCTION_MIXING		0
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Use the I2C shared device driver on the second I2C port
+#define USE_I2C_SECOND_PORT_DRIVER		1
 
 
 #endif //NV_MEMORY_OPTIONS_H
