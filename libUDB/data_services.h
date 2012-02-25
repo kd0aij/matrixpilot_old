@@ -36,6 +36,9 @@ typedef enum
 	DS_LOAD_AT_STARTUP	= 0x0004,
 	DS_LOAD_AT_REBOOT 	= 0x0008,
 	DS_SAVE_AFTER_CAL 	= 0x0010,
+	DS_SAVE_PARAM		= 0x0020,
+	DS_SAVE_WAYPOINT	= 0x0040,
+	DS_SAVE_MISSION		= 0x0080,
 } DATA_SERVICE_FLAGS;
 
 // reference to a RAM variable/item and its size.
@@ -72,7 +75,7 @@ void data_services_init(void);
 // Trigger the event which calls low priority service routine
 void data_services_trigger(void);
 
-// Request to load all memory areas from the table
+// Request to load all memory areas from the table which match the serialize flags
 void data_services_load_all( unsigned int serialize_flags);
 
 // Load a data area to nv memory with the given handle.
@@ -83,7 +86,8 @@ void data_services_load_specific(unsigned int data_storage_handle, DSRV_callback
 // Return true if services available to take request, otherwise return false
 boolean data_services_save_specific(unsigned int data_storage_handle, DSRV_callbackFunc pcallback);
 
-//void data_services_init_specific(unsigned int data_storage_handle);
+// Request to save all memory areas from the table which match the serialize flags
+void data_services_save_all( unsigned int serialize_flags);
 
 #endif	// DATA_SERVICES_H
 

@@ -101,7 +101,7 @@ extern int udb_pwIn[];		// pulse widths of radio inputs
 // function.
 // Each channel will be a value between approximately 2000 and 4000.
 // Treat udb_pwTrim values as readonly.
-extern int udb_pwTrim[];	// initial pulse widths for trimming
+extern int udb_pwTrim[NUM_INPUTS+1];	// initial pulse widths for trimming
 
 // These are the servo channel values that will be sent out to the servos.
 // Set these values in your implementation of the udb_servo_callback_prepare_outputs()

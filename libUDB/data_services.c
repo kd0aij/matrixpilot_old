@@ -57,6 +57,7 @@ typedef enum
 	DATA_SERVICE_STATE_READ_ALL,			// Start a read of all areas in the table
 	DATA_SERVICE_STATE_READ_WAITING,		// Waiting for read to complete
 	DATA_SERVICE_STATE_READ_DONE,			// Done reading, check and then commit it to ram.
+	DATA_SERVICE_STATE_WRITE_ALL,			// Write all
 } DATA_SERVICE_STATE;
 
 // Flag to show that the action is being done with all areas.
@@ -80,8 +81,11 @@ void data_services_init_table_index(void);
 // Callback for completetion of memory area init
 void data_services_init_all_callback(boolean success);
 
-// Start of reading all areas in the table
+// Start of reading all areas in the table matching serialize flags
 void data_services_read_all( void );
+
+// Start of writing all areas in the table matching serialize flags
+void data_services_write_all( void );
 
 // Start of read a single area at index
 void data_services_read_index( void );
@@ -153,6 +157,8 @@ void data_services(void)
 		break;
 	case DATA_SERVICE_STATE_WRITE:
 		data_services_write();
+	case DATA_SERVICE_STATE_WRITE_ALL:
+		data_services_write_all();
 		break;
 	}
 }
@@ -269,8 +275,18 @@ void data_services_read_index( void )
 	data_services_table_index++;
 }
 
+// Request to save all memory areas from the table which match the serialize flags
+void data_services_save_all( unsigned int serialize_flags)
+{
+	if(data_service_state !=	DATA_SERVICE_STATE_WAITING) return;
 
-// Reset the 
+	data_services_table_index = 0;
+	data_services_do_all_areas = true;
+	data_service_state =	DATA_SERVICE_STATE_WRITE;
+}
+
+
+// Request to load all memory areas from the table which match the serialize flags
 void data_services_read_all( void )
 {
 	if(data_service_state !=	DATA_SERVICE_STATE_WAITING) return;
@@ -280,6 +296,10 @@ void data_services_read_all( void )
 	data_service_state =	DATA_SERVICE_STATE_READ;
 }
 
+void data_services_write_all(void)
+{
+	data_service_state =	DATA_SERVICE_STATE_WAITING;
+}
 
 // Data is correct so serialise it from the buffer to the live data
 void data_services_read_done( void )

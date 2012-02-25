@@ -183,6 +183,8 @@ void data_storage_service(void)
 			{
 				if(data_storage_user_callback != NULL)
 					data_storage_user_callback(false);
+				data_storage_status = DATA_STORAGE_STATUS_WAITING;
+				return;
 			}
 			break;
 		case DATA_STORAGE_SELF_MANAGED:
@@ -193,6 +195,8 @@ void data_storage_service(void)
 			{
 				if(data_storage_user_callback != NULL)
 					data_storage_user_callback(false);
+				data_storage_status = DATA_STORAGE_STATUS_WAITING;
+				return;
 			}
 			break;
 		}
@@ -218,11 +222,16 @@ void data_storage_service(void)
 				{
 					if(data_storage_user_callback != NULL)
 						data_storage_user_callback(false);
+					data_storage_status = DATA_STORAGE_STATUS_WAITING;
 				}
+				else
+					data_storage_status = DATA_STORAGE_WRITING_HEADER;
 			}	break;
+
 			case DATA_STORAGE_SELF_MANAGED:
 				if(data_storage_user_callback != NULL)
 									data_storage_user_callback(true);
+				data_storage_status = DATA_STORAGE_STATUS_WAITING;
 				break;
 			}
 		} break;
@@ -241,8 +250,10 @@ void data_storage_service(void)
 			{
 				if(data_storage_user_callback != NULL)
 					data_storage_user_callback(false);
+				data_storage_status = DATA_STORAGE_STATUS_WAITING;
 			}
-			data_storage_status = DATA_STORAGE_READING_HEADER;	
+			else
+				data_storage_status = DATA_STORAGE_READING_HEADER;	
 			break;
 		case DATA_STORAGE_SELF_MANAGED:
 			if(udb_nv_memory_read( pdata_storage_data, 
@@ -252,8 +263,10 @@ void data_storage_service(void)
 			{
 				if(data_storage_user_callback != NULL)
 					data_storage_user_callback(false);
+				data_storage_status = DATA_STORAGE_STATUS_WAITING;
 			}
-			data_storage_status = DATA_STORAGE_READING_DATA;
+			else
+				data_storage_status = DATA_STORAGE_READING_DATA;
 			break;
 		}
 
@@ -268,9 +281,10 @@ void data_storage_service(void)
 					&storage_read_data_callback) == false)
 		{
 			if(data_storage_user_callback != NULL) data_storage_user_callback(false);
+			data_storage_status = DATA_STORAGE_STATUS_WAITING;
 		}
-
-		data_storage_status = DATA_STORAGE_READING_DATA;	
+		else
+			data_storage_status = DATA_STORAGE_READING_DATA;	
 	}	break;
 
 	case DATA_STORAGE_READ_DATA_COMPLETE:
@@ -303,6 +317,8 @@ void data_storage_service(void)
 			// Failed to find space for new data area
 			if(data_storage_user_callback != NULL)
 				data_storage_user_callback(false);
+			data_storage_status = DATA_STORAGE_STATUS_WAITING;
+			break;
 		}
 		
 		data_storage_table.table[data_storage_handle].data_size = data_storage_size;
@@ -325,8 +341,8 @@ void data_storage_service(void)
 
 			data_storage_status = DATA_STORAGE_STATUS_WAITING;	
 		}
-
-		data_storage_status = DATA_STORAGE_AREA_CREATING;	
+		else
+			data_storage_status = DATA_STORAGE_AREA_CREATING;	
 
 		break;
 

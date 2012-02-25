@@ -95,6 +95,10 @@ mavlink_status_t  r_mavlink_status ;
 	#endif
 #endif
 
+#if(USE_NV_MEMORY == 1)
+#include "../libUDB/data_services.h"
+#endif
+
 #if ( MAVLINK_TEST_ENCODE_DECODE == 1 )
 #include "../MAVLink/include/matrixpilot/testsuite.h"
 #endif
@@ -606,7 +610,27 @@ void handleMessage(mavlink_message_t* msg)
 	        default:
 	            break;
 	        }
-	    }
+
+			break;
+	    } 
+
+	    case MAVLINK_MSG_ID_COMMAND_LONG:
+		{
+	        mavlink_command_long_t packet;
+	        mavlink_msg_command_long_decode(msg, &packet);
+	        //if (mavlink_check_target(packet.target,packet.target_component) == false ) break;
+			
+			switch(packet.command)
+			{
+			case MAV_CMD_PREFLIGHT_STORAGE:
+				if(packet.param1 == 0)
+					data_services_save_all(DS_SAVE_ALL);
+			}
+			break;
+		} 
+
+//	    case MAVLINK_MSG_ID_COMMAND:
+//			break;
 /*
 	    case MAVLINK_MSG_ID_ACTION:
 	    {
