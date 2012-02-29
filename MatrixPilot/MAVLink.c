@@ -156,6 +156,13 @@ struct mavlink_flag_bits {
 			unsigned int mavlink_send_specific_waypoint : 1 ;
 			} mavlink_flags ;
 
+unsigned int 	mavlink_command_ack_command 	= 0;
+boolean 		mavlink_send_command_ack		= false;
+unsigned int 	mavlink_command_ack_result		= 0;
+
+// callback for when nv memory storage is compelte
+void preflight_storage_complete_callback(boolean success);
+
 
 void init_serial()
 {
@@ -624,7 +631,8 @@ void handleMessage(mavlink_message_t* msg)
 			{
 			case MAV_CMD_PREFLIGHT_STORAGE:
 				if(packet.param1 == 0)
-					data_services_save_all(DS_SAVE_ALL);
+					if(data_services_save_all(DS_SAVE_PREFLIGHT, &preflight_storage_complete_callback) == false)
+						return;
 			}
 			break;
 		} 
@@ -1099,7 +1107,7 @@ void handleMessage(mavlink_message_t* msg)
 	        mavlink_flexifunction_buffer_function_t packet;
 	        mavlink_msg_flexifunction_buffer_function_decode(msg, &packet);
 
-//	        if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
+	        if (mavlink_check_target(packet.target_system,packet.target_component)) break ;
 
 			functionSetting fSetting;
 	
@@ -1154,6 +1162,19 @@ void handleMessage(mavlink_message_t* msg)
 
    }   // end switch
 } // end handle mavlink
+
+
+void preflight_storage_complete_callback(boolean success)
+{
+	if(mavlink_send_command_ack == false)
+	{
+		mavlink_command_ack_result = success;
+		mavlink_command_ack_command = MAV_CMD_PREFLIGHT_STORAGE;
+		mavlink_send_command_ack = true;
+	}	
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
@@ -1543,6 +1564,14 @@ void mavlink_output_40hz( void )
 
 	}
 #endif	//#if(USE_FLEXIFUNCTION_MIXING == 1)
+
+	// Acknowledge a command if flaged to do so.
+	if(mavlink_send_command_ack == true)
+	{
+		mavlink_msg_command_ack_send(MAVLINK_COMM_0, mavlink_command_ack_command, mavlink_command_ack_result);
+		mavlink_send_command_ack = false;
+	}
+
 
 	return ;
 }

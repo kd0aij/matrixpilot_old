@@ -329,7 +329,7 @@ void data_storage_service(void)
 		// Calculate the checksum
 		data_storage_table.table_checksum = crc_calculate( (uint8_t*) data_storage_table.table, sizeof(*data_storage_table.table) );
 
-		// Store the table
+		// Store the table.  If storage area create fails, put the services in wait.
 		if(udb_nv_memory_write( (unsigned char*) &data_storage_table, 0, sizeof(data_storage_table), &data_storage_write_table_callback) == false)
 		{
 			data_storage_table.table[data_storage_handle].data_size = 0;
@@ -339,7 +339,8 @@ void data_storage_service(void)
 			if(data_storage_user_callback != NULL)
 				data_storage_user_callback(false);
 
-			data_storage_status = DATA_STORAGE_STATUS_WAITING;	
+			data_storage_status = DATA_STORAGE_STATUS_WAITING;
+			return;
 		}
 		else
 			data_storage_status = DATA_STORAGE_AREA_CREATING;	

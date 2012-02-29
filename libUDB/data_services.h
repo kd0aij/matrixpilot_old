@@ -39,6 +39,7 @@ typedef enum
 	DS_SAVE_PARAM		= 0x0020,
 	DS_SAVE_WAYPOINT	= 0x0040,
 	DS_SAVE_MISSION		= 0x0080,
+	DS_SAVE_PREFLIGHT	= 0x0100,
 } DATA_SERVICE_FLAGS;
 
 // reference to a RAM variable/item and its size.
@@ -87,7 +88,8 @@ void data_services_load_specific(unsigned int data_storage_handle, DSRV_callback
 boolean data_services_save_specific(unsigned int data_storage_handle, DSRV_callbackFunc pcallback);
 
 // Request to save all memory areas from the table which match the serialize flags
-void data_services_save_all( unsigned int serialize_flags);
+// return true if services not busy and request can be serviced
+boolean data_services_save_all( unsigned int serialize_flags, DSRV_callbackFunc pcallback);
 
 #endif	// DATA_SERVICES_H
 
