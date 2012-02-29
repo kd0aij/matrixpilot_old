@@ -1,10 +1,10 @@
 #ifndef FLEXIFUNCTION_TYPES_H
 #define FLEXIFUNCTION_TYPES_H
 
-
 #include <dsp.h>
 
 #include "flexifunction_options.h"
+
 
 /****************************************************************/
 // pyFEdit generated file - DO NOT EDIT
