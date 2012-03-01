@@ -68,6 +68,9 @@ enum
 
 	DATA_STORAGE_AREA_CREATE,
 	DATA_STORAGE_AREA_CREATING,
+
+	DATA_STORAGE_AREA_CLEAR,
+	DATA_STORAGE_AREA_CLEARING,	
 } DATA_STORAGE_STATUS;
 
 unsigned int data_storage_status = DATA_STORAGE_STATUS_START;
@@ -85,6 +88,10 @@ boolean data_storage_format_table(void);
 // Find a hole of size data_storage_size and return its address.
 unsigned int data_storage_find_hole(unsigned int data_storage_size);
 
+// Clear a specific data area by invalidating the checksum and writing it to eeprom table
+void storage_clear_specific_area( void );
+
+
 // Callbacks
 // The callbacks normally set the status so that the background service routine does the work.
 void data_storage_format_callback(boolean success);		// format write is completed
@@ -98,12 +105,18 @@ void storage_read_data_callback(boolean success);		// Data read callback
 
 void data_storage_write_table_callback(boolean success);// Table write callback
 
+void storage_clear_specific_area_callback(boolean success);		// Clear specific data area finished callback
+
 // A constant preamble used to determine the start of a data block
 // This also allows the data to be found if the FAT is broken
 const unsigned char data_storage_preamble[] = {0xAA, 0x5A, 0xA5, 0x55};
 
 // A constant preamble used to determine the start of the data storage table
 const unsigned char table_storage_preamble[] = {0x55, 0xA5, 0x5A, 0xAA};
+
+// Constant for invalid data
+const unsigned char table_invalid_preamble[] = {0x01, 0x10, 0x01, 0x10};
+
 
 // Structure in ram of complete data directory including checksum.
 DATA_STORAGE_TABLE data_storage_table;
@@ -347,7 +360,8 @@ void data_storage_service(void)
 
 		break;
 
-	case DATA_STORAGE_STATUS_INIT:
+	case DATA_STORAGE_AREA_CLEAR:
+		storage_clear_specific_area();
 		break;
 	}
 }
@@ -721,4 +735,62 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size)
 }
 
 #endif 		//#if(USE_NV_MEMORY == 1)
+
+
+// Clear specific data storage area by invalidating data
+boolean storage_clear_area(unsigned int data_handle, DS_callbackFunc callback)
+{
+	if(data_storage_status != DATA_STORAGE_STATUS_WAITING) return false;
+
+	data_storage_user_callback 	= callback;
+	data_storage_handle 		= data_handle;
+
+	data_storage_status = DATA_STORAGE_AREA_CLEAR;
+
+	return true;
+}
+
+	
+void storage_clear_specific_area( void )
+{
+	// If the data storage area has not been created, return false
+	if(storage_test_handle(data_storage_handle) == false)
+	{
+		if(data_storage_user_callback != NULL)
+			data_storage_user_callback(false);
+		return;
+	}
+
+	memcpy(data_storage_header.data_preamble, table_invalid_preamble, 4);
+	data_storage_header.data_handle   = 0;
+	data_storage_header.data_version  = 0;
+	data_storage_header.data_checksum = 0;
+	
+	int size = 4;
+
+	// trap the unlikley scenario that the data size is smaller than the preamble
+	if(4 > data_storage_table.table[data_storage_handle].data_size)
+		size = data_storage_table.table[data_storage_handle].data_size;
+
+	// Invalidate the data preamble but do not change any of the data.
+	if(udb_nv_memory_write( (unsigned char*) &data_storage_header, data_storage_table.table[data_storage_handle].data_address, size, &storage_clear_specific_area_callback) == false)
+	{
+		if(data_storage_user_callback != NULL)
+			data_storage_user_callback(false);
+		data_storage_status = DATA_STORAGE_STATUS_WAITING;
+		return;
+	}
+	else
+		data_storage_status = DATA_STORAGE_AREA_CLEARING;	
+}
+
+
+// Clear specific storage area callback
+void storage_clear_specific_area_callback(boolean success)
+{
+	if(data_storage_user_callback != NULL)
+		data_storage_user_callback(success);
+
+	data_storage_status = DATA_STORAGE_STATUS_WAITING;
+}
 

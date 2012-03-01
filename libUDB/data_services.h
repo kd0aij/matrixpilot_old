@@ -77,7 +77,7 @@ void data_services_init(void);
 void data_services_trigger(void);
 
 // Request to load all memory areas from the table which match the serialize flags
-void data_services_load_all( unsigned int serialize_flags);
+void data_services_load_all(  unsigned int serialize_flags, DSRV_callbackFunc pcallback );
 
 // Load a data area to nv memory with the given handle.
 // Return true if services available to take request, otherwise return false

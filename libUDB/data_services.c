@@ -146,8 +146,8 @@ void data_services(void)
 	case  DATA_SERVICE_STATE_INIT_ALL:
 		data_services_init_table_index();
 		break;
-	case DATA_SERVICE_STATE_READ_ALL:
-		data_services_read_all();
+//	case DATA_SERVICE_STATE_READ_ALL:
+//		data_services_read_all();
 		break;
 	case DATA_SERVICE_STATE_READ:
 		data_services_read_index();
@@ -292,11 +292,11 @@ boolean data_services_save_all( unsigned int serialize_flags, DSRV_callbackFunc 
 
 
 // Request to load all memory areas from the table which match the serialize flags
-void data_services_read_all( void )
+void data_services_load_all(  unsigned int serialize_flags, DSRV_callbackFunc pcallback )
 {
 	if(data_service_state !=	DATA_SERVICE_STATE_WAITING) return;
 
-	data_services_user_callback = NULL;
+	data_services_user_callback = pcallback;
 	data_services_table_index = 0;
 	data_services_do_all_areas = true;
 	data_service_state =	DATA_SERVICE_STATE_READ;

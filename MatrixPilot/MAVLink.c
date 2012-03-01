@@ -160,9 +160,11 @@ unsigned int 	mavlink_command_ack_command 	= 0;
 boolean 		mavlink_send_command_ack		= false;
 unsigned int 	mavlink_command_ack_result		= 0;
 
-// callback for when nv memory storage is compelte
-void preflight_storage_complete_callback(boolean success);
+// callback for when nv memory storage is complete
+inline void preflight_storage_complete_callback(boolean success);
 
+// callback for when nv memory storage area has been cleared
+inline void storage_clear_done_callback(boolean success);
 
 void init_serial()
 {
@@ -630,9 +632,13 @@ void handleMessage(mavlink_message_t* msg)
 			switch(packet.command)
 			{
 			case MAV_CMD_PREFLIGHT_STORAGE:
-				if(packet.param1 == 0)
-					if(data_services_save_all(DS_SAVE_PREFLIGHT, &preflight_storage_complete_callback) == false)
-						return;
+				if(packet.param1 == 1)
+					data_services_save_all(DS_SAVE_PREFLIGHT, &preflight_storage_complete_callback);
+				else if(packet.param1 == 0)
+					data_services_load_all(DS_LOAD_AT_STARTUP, &preflight_storage_complete_callback);
+				else if(packet.param5 != 0)
+					storage_clear_area(packet.param5, &preflight_storage_complete_callback);
+				break;
 			}
 			break;
 		} 
@@ -1164,7 +1170,14 @@ void handleMessage(mavlink_message_t* msg)
 } // end handle mavlink
 
 
-void preflight_storage_complete_callback(boolean success)
+
+
+////////////////////////////////////////////////////////////////////////////////
+// 
+// Callbacks for triggering command complete messaging
+//
+
+inline void preflight_storage_complete_callback(boolean success)
 {
 	if(mavlink_send_command_ack == false)
 	{
@@ -1173,7 +1186,6 @@ void preflight_storage_complete_callback(boolean success)
 		mavlink_send_command_ack = true;
 	}	
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
