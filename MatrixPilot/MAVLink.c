@@ -631,14 +631,16 @@ void handleMessage(mavlink_message_t* msg)
 			
 			switch(packet.command)
 			{
+#if(USE_NV_MEMORY == 1)
 			case MAV_CMD_PREFLIGHT_STORAGE:
 				if(packet.param1 == 1)
-					data_services_save_all(DS_SAVE_PREFLIGHT, &preflight_storage_complete_callback);
+					data_services_save_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
 				else if(packet.param1 == 0)
-					data_services_load_all(DS_LOAD_AT_STARTUP, &preflight_storage_complete_callback);
+					data_services_load_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
 				else if(packet.param5 != 0)
 					storage_clear_area(packet.param5, &preflight_storage_complete_callback);
 				break;
+#endif
 			}
 			break;
 		} 

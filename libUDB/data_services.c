@@ -57,7 +57,7 @@ typedef enum
 	DATA_SERVICE_STATE_READ_ALL,			// Start a read of all areas in the table
 	DATA_SERVICE_STATE_READ_WAITING,		// Waiting for read to complete
 	DATA_SERVICE_STATE_READ_DONE,			// Done reading, check and then commit it to ram.
-	DATA_SERVICE_STATE_WRITE_ALL,			// Write all
+//	DATA_SERVICE_STATE_WRITE_ALL,			// Write all
 } DATA_SERVICE_STATE;
 
 // Flag to show that the action is being done with all areas.
@@ -158,8 +158,8 @@ void data_services(void)
 	case DATA_SERVICE_STATE_WRITE:
 		data_services_write();
 		break;
-	case DATA_SERVICE_STATE_WRITE_ALL:
-		data_services_write_all();
+//	case DATA_SERVICE_STATE_WRITE_ALL:
+//		data_services_write_all();
 		break;
 	}
 }
@@ -249,6 +249,8 @@ void data_services_read_index( void )
 	if(data_services_table_index >= data_service_table_count)
 	{
 		data_service_state =	DATA_SERVICE_STATE_WAITING;
+		if(data_services_user_callback != NULL) data_services_user_callback(true);
+		data_services_user_callback = NULL;
 		return;
 	}
 
@@ -282,10 +284,11 @@ boolean data_services_save_all( unsigned int serialize_flags, DSRV_callbackFunc 
 {
 	if(data_service_state !=	DATA_SERVICE_STATE_WAITING) return false;
 
-	data_services_user_callback = pcallback;
-	data_services_table_index = 0;
-	data_services_do_all_areas = true;
-	data_service_state =	DATA_SERVICE_STATE_WRITE;
+	data_services_serialize_flags 	= serialize_flags;
+	data_services_user_callback 	= pcallback;
+	data_services_table_index 		= 0;
+	data_services_do_all_areas 		= true;
+	data_service_state 				= DATA_SERVICE_STATE_WRITE;
 
 	return true;
 }
@@ -296,16 +299,18 @@ void data_services_load_all(  unsigned int serialize_flags, DSRV_callbackFunc pc
 {
 	if(data_service_state !=	DATA_SERVICE_STATE_WAITING) return;
 
-	data_services_user_callback = pcallback;
-	data_services_table_index = 0;
-	data_services_do_all_areas = true;
-	data_service_state =	DATA_SERVICE_STATE_READ;
+	data_services_serialize_flags 	= serialize_flags;
+	data_services_user_callback		= pcallback;
+	data_services_table_index 		= 0;
+	data_services_do_all_areas 		= true;
+	data_service_state 				= DATA_SERVICE_STATE_READ;
 }
 
-void data_services_write_all(void)
-{
-	data_service_state =	DATA_SERVICE_STATE_WAITING;
-}
+//
+//void data_services_write_all(void)
+//{
+//	data_service_state =	DATA_SERVICE_STATE_WAITING;
+//}
 
 // Data is correct so serialise it from the buffer to the live data
 void data_services_read_done( void )
@@ -437,7 +442,8 @@ void data_services_write( void )
 	if(data_services_table_index >= data_service_table_count)
 	{
 		if(data_services_user_callback != NULL) data_services_user_callback(true);
-		data_service_state =	DATA_SERVICE_STATE_WRITE_WAITING;
+		data_services_user_callback = NULL;
+		data_service_state =	DATA_SERVICE_STATE_WAITING;
 		return;
 	}
 	
