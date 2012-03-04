@@ -20,19 +20,21 @@
 
 #include "parameter_table.h"
 
+#include "gain_variables.h" // Needed for access to internal DCM value
+
 const mavlink_parameter mavlink_parameters_list[] =
 	{
 #if ( RECORD_FREE_STACK_SPACE ==  1)
 	{"MAXSTACK", 0.0 , 4096.0 ,  &mavlink_send_param_maxstack, &mavlink_set_maxstack , READWRITE },
 #endif
-	{"ROLLKP"         , 0.0 , 0.4    ,  &mavlink_send_param_rollkp     ,  &mavlink_set_rollkp       , PARAMETER_READWRITE },
-	{"ROLLKD"         , 0.0 , 0.4    ,  &mavlink_send_param_rollkd     ,  &mavlink_set_rollkd       , PARAMETER_READWRITE },
-	{"YAWKPAIL"       , 0.0 , 0.4    ,  &mavlink_send_param_yawkpail   ,  &mavlink_set_yawkpail     , PARAMETER_READWRITE },
-	{"YAWKDAIL"       , 0.0 , 0.4    ,  &mavlink_send_param_yawkdail   ,  &mavlink_set_yawkdail     , PARAMETER_READWRITE },
-	{"YAWKPRUD"       , 0.0 , 0.4    ,  &mavlink_send_param_yawkprud   ,  &mavlink_set_yawkprud     , PARAMETER_READWRITE },
-	{"ROLLKPRUD"      , 0.0 , 0.4    ,  &mavlink_send_param_rollkprud  ,  &mavlink_set_rollkprud    , PARAMETER_READWRITE },
-	{"PITCHGAIN"      , 0.0 , 0.4    ,  &mavlink_send_param_pitchgain  ,  &mavlink_set_pitchgain    , PARAMETER_READWRITE },
-	{"RUDELEVMIXGAIN" , 0.0 , 0.7    ,  &mavlink_send_param_rudelevgain,  &mavlink_set_rudelevgain  , PARAMETER_READWRITE }
+	{"ROLLKP"         , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float   			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rollkp },
+	{"ROLLKD"         , 0.0 , 0.4    ,  &mavlink_send_param_gyroscale_Q14_as_float	,	&mavlink_set_param_float_to_gyroscale_Q14	, PARAMETER_READWRITE,	(void*) &rollkd },
+	{"YAWKPAIL"       , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float   			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &yawkpail  },
+	{"YAWKDAIL"       , 0.0 , 0.4    ,  &mavlink_send_param_gyroscale_Q14_as_float	,	&mavlink_set_param_float_to_gyroscale_Q14	, PARAMETER_READWRITE,	(void*) &yawkdail  },
+	{"YAWKPRUD"       , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &yawkprud  },
+	{"ROLLKPRUD"      , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rollkprud  },
+	{"PITCHGAIN"      , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &pitchgain  },
+	{"RUDELEVMIXGAIN" , 0.0 , 0.7    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rudderElevMixGain  }
 	} ;    
 
 const int count_of_parameters_list =  sizeof mavlink_parameters_list / sizeof mavlink_parameters_list[0] ;

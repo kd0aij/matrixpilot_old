@@ -49,26 +49,29 @@ typedef enum
 } PARAMETER_ACCESS;
 	
 
-void mavlink_send_param_rollkp( int16_t i ) ;
-void mavlink_set_rollkp( float setting, int16_t i) ;
+//void mavlink_send_param_rollkp( int16_t i ) ;
+//void mavlink_set_rollkp( float setting, int16_t i) ;
 //void mavlink_send_param_rollkd( int16_t i ) ;
 //void mavlink_set_rollkd(float setting,  int16_t i)  ;
-void mavlink_send_param_yawkpail( int16_t i ) ;
-void mavlink_set_yawkpail(float setting, int16_t i ) ;
+//void mavlink_send_param_yawkpail( int16_t i ) ;
+//void mavlink_set_yawkpail(float setting, int16_t i ) ;
 //void mavlink_send_param_yawkdail( int16_t i ) ;
 //void mavlink_set_yawkdail(float setting,int16_t i ) ;
 //void mavlink_send_param_yawkprud( int16_t i ) ;
 //void mavlink_set_yawkprud(float setting,  int16_t i) ;
-void mavlink_send_param_rollkprud( int16_t i ) ;
-void mavlink_set_rollkprud(float setting,  int16_t i) ;
-void mavlink_send_param_pitchgain( int16_t i ) ;
-void mavlink_set_pitchgain(float setting,int16_t i ) ;
-void mavlink_send_param_rudelevgain( int16_t i ) ;
-void mavlink_set_rudelevgain(float setting,int16_t i ) ;
+//void mavlink_send_param_rollkprud( int16_t i ) ;
+//void mavlink_set_rollkprud(float setting,  int16_t i) ;
+//void mavlink_send_param_pitchgain( int16_t i ) ;
+//void mavlink_set_pitchgain(float setting,int16_t i ) ;
+//void mavlink_send_param_rudelevgain( int16_t i ) ;
+//void mavlink_set_rudelevgain(float setting,int16_t i ) ;
 
 
-void mavlink_send_param_gyroscale_int_as_float( int16_t i ) ;
-void mavlink_set_param_float_to_gyroscale_int(float setting, int16_t i ) ;
+void mavlink_send_param_gyroscale_Q14_as_float( int16_t i ) ;
+void mavlink_set_param_float_to_gyroscale_Q14(float setting, int16_t i ) ;
+
+void mavlink_send_param_Q14_as_float( int16_t i ) ;
+void mavlink_set_param_float_to_Q14(float setting, int16_t i ) ;
 
 extern const mavlink_parameter mavlink_parameters_list[];
 extern const int count_of_parameters_list;
