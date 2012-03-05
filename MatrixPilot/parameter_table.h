@@ -31,6 +31,7 @@
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM valueconst struct mavlink_parameter mavlink_parameters_list[] =
 #include "../MAVlink/include/mavlink_types.h"
 
+
 typedef struct tag_mavlink_parameter 
 { 	const char name[15] ;                       // Name that will be displayed in the GCS
 	float min ;               					// Minimum allowed (float) value for parameter
@@ -39,6 +40,7 @@ typedef struct tag_mavlink_parameter
 	void (*set_param)(float, int16_t) ;         // Routine to convert from float to local type and set
 	char readonly ; 							// Parameter is readonly (true) or Read / Write (false)
 	void* pparam ;								// Reference to variable
+	unsigned int param_size ;					// parameter size in ram
 } mavlink_parameter ;       					
 
 
@@ -49,32 +51,36 @@ typedef enum
 } PARAMETER_ACCESS;
 	
 
-//void mavlink_send_param_rollkp( int16_t i ) ;
-//void mavlink_set_rollkp( float setting, int16_t i) ;
-//void mavlink_send_param_rollkd( int16_t i ) ;
-//void mavlink_set_rollkd(float setting,  int16_t i)  ;
-//void mavlink_send_param_yawkpail( int16_t i ) ;
-//void mavlink_set_yawkpail(float setting, int16_t i ) ;
-//void mavlink_send_param_yawkdail( int16_t i ) ;
-//void mavlink_set_yawkdail(float setting,int16_t i ) ;
-//void mavlink_send_param_yawkprud( int16_t i ) ;
-//void mavlink_set_yawkprud(float setting,  int16_t i) ;
-//void mavlink_send_param_rollkprud( int16_t i ) ;
-//void mavlink_set_rollkprud(float setting,  int16_t i) ;
-//void mavlink_send_param_pitchgain( int16_t i ) ;
-//void mavlink_set_pitchgain(float setting,int16_t i ) ;
-//void mavlink_send_param_rudelevgain( int16_t i ) ;
-//void mavlink_set_rudelevgain(float setting,int16_t i ) ;
-
-
 void mavlink_send_param_gyroscale_Q14_as_float( int16_t i ) ;
 void mavlink_set_param_float_to_gyroscale_Q14(float setting, int16_t i ) ;
 
 void mavlink_send_param_Q14_as_float( int16_t i ) ;
 void mavlink_set_param_float_to_Q14(float setting, int16_t i ) ;
 
+void mavlink_send_param_pwm_as_float( int16_t i ) ;
+void mavlink_set_param_float_to_pwm(float setting, int16_t i ) ;
+
+void mavlink_send_param_int_as_float( int16_t i ) ;
+void mavlink_set_param_float_to_int(float setting, int16_t i ) ;
+
+
+
 extern const mavlink_parameter mavlink_parameters_list[];
 extern const int count_of_parameters_list;
+
+
+typedef struct tag_mavlink_parameter_block
+{
+	const mavlink_parameter* const 	parameters;
+	const unsigned int 				list_size ;
+	const unsigned int 				data_storage_area ;
+	const unsigned int 				data_storage_flags ;
+} mavlink_parameter_block;
+
+extern const mavlink_parameter_block mavlink_parameter_blocks[];
+extern const int count_of_parameter_blocks;
+
+
 
 
 #endif 	//PARAMETER_TABLE_H

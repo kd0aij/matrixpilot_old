@@ -27,14 +27,55 @@ const mavlink_parameter mavlink_parameters_list[] =
 #if ( RECORD_FREE_STACK_SPACE ==  1)
 	{"MAXSTACK", 0.0 , 4096.0 ,  &mavlink_send_param_maxstack, &mavlink_set_maxstack , READWRITE },
 #endif
-	{"ROLLKP"         , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float   			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rollkp },
-	{"ROLLKD"         , 0.0 , 0.4    ,  &mavlink_send_param_gyroscale_Q14_as_float	,	&mavlink_set_param_float_to_gyroscale_Q14	, PARAMETER_READWRITE,	(void*) &rollkd },
-	{"YAWKPAIL"       , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float   			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &yawkpail  },
-	{"YAWKDAIL"       , 0.0 , 0.4    ,  &mavlink_send_param_gyroscale_Q14_as_float	,	&mavlink_set_param_float_to_gyroscale_Q14	, PARAMETER_READWRITE,	(void*) &yawkdail  },
-	{"YAWKPRUD"       , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &yawkprud  },
-	{"ROLLKPRUD"      , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rollkprud  },
-	{"PITCHGAIN"      , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &pitchgain  },
-	{"RUDELEVMIXGAIN" , 0.0 , 0.7    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rudderElevMixGain  }
+	{"ROLLKP"         , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float   			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rollkp , sizeof(rollkp) },
+	{"ROLLKD"         , 0.0 , 0.4    ,  &mavlink_send_param_gyroscale_Q14_as_float	,	&mavlink_set_param_float_to_gyroscale_Q14	, PARAMETER_READWRITE,	(void*) &rollkd , sizeof(rollkd) },
+	{"YAWKPAIL"       , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float   			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &yawkpail , sizeof(yawkpail)  },
+	{"YAWKDAIL"       , 0.0 , 0.4    ,  &mavlink_send_param_gyroscale_Q14_as_float	,	&mavlink_set_param_float_to_gyroscale_Q14	, PARAMETER_READWRITE,	(void*) &yawkdail , sizeof(yawkdail)  },
+	{"YAWKPRUD"       , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &yawkprud , sizeof(yawkprud)  },
+	{"ROLLKPRUD"      , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rollkprud , sizeof(rollkprud)  },
+	{"PITCHGAIN"      , 0.0 , 0.4    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &pitchgain , sizeof(pitchgain)  },
+	{"RUDELEVMIXGAIN" , 0.0 , 0.7    ,  &mavlink_send_param_Q14_as_float			,	&mavlink_set_param_float_to_Q14				, PARAMETER_READWRITE,	(void*) &rudderElevMixGain , sizeof(rudderElevMixGain)  },
+
+
+//	{"RC_NUM_INPUTS"    , 0.0 	, 32.0    ,  &mavlink_send_param_int_as_float	,	&mavlink_set_param_float_to_int		, PARAMETER_READ	,	(void*) &udb_pwTrim[1], sizeof(udb_pwTrim[0]) },
+	{"RC_TRIM1"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[1], sizeof(udb_pwTrim[0]) },
+	{"RC_TRIM2"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[2], sizeof(udb_pwTrim[0]) },
+	{"RC_TRIM3"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[3], sizeof(udb_pwTrim[0]) },
+	{"RC_TRIM4"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[4], sizeof(udb_pwTrim[0]) },
+	{"RC_TRIM5"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[5], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 5)
+	{"RC_TRIM6"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[6], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 6)
+	{"RC_TRIM7"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[7], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 7)
+	{"RC_TRIM8"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[8], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 8)
+	{"RC_TRIM9"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[9], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 9)
+	{"RC_TRIM10"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[10], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 10)
+	{"RC_TRIM11"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[11], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 11)
+	{"RC_TRIM12"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[12], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 12)
+	{"RC_TRIM13"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[13], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 13)
+	{"RC_TRIM14"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[14], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 14)
+	{"RC_TRIM15"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[15], sizeof(udb_pwTrim[0]) },
+#if(NUM_INPUTS > 15)
+	{"RC_TRIM16"         , 800.0 , 2500.0  ,  &mavlink_send_param_pwm_as_float	,	&mavlink_set_param_float_to_pwm		, PARAMETER_READWRITE,	(void*) &udb_pwTrim[16], sizeof(udb_pwTrim[0]) },
+#endif 		// 5
+#endif 		// 6
+#endif 		// 7
+#endif 		// 8
+#endif 		// 9
+#endif 		// 10
+#endif 		// 11
+#endif 		// 12
+#endif 		// 13
+#endif 		// 14
+#endif 		// 15
 	} ;    
 
-const int count_of_parameters_list =  sizeof mavlink_parameters_list / sizeof mavlink_parameters_list[0] ;
+const int count_of_parameters_list = sizeof(mavlink_parameters_list) / sizeof(mavlink_parameter);

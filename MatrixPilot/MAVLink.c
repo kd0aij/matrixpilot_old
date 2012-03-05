@@ -387,6 +387,36 @@ void mavlink_set_param_float_to_Q14(float setting, int16_t i )
 	return ;
 }
 
+void mavlink_send_param_pwm_as_float( int16_t i )
+{
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		(float) ( *((int*) mavlink_parameters_list[i].pparam) / 2.0 ) , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ; // 16384.0 is RMAX defined as a float.	
+	return ;
+}
+
+void mavlink_set_param_float_to_pwm(float setting, int16_t i )
+{
+	if (( mavlink_parameters_list[i].readonly == true ) || 
+			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
+	*((int*) mavlink_parameters_list[i].pparam) = (int) ( setting * 2.0 ) ;
+	return ;
+}
+
+void mavlink_send_param_int_as_float( int16_t i )
+{
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		(float) ( *((int*) mavlink_parameters_list[i].pparam) ) , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ; // 16384.0 is RMAX defined as a float.	
+	return ;
+}
+
+void mavlink_set_param_float_to_int(float setting, int16_t i )
+{
+	if (( mavlink_parameters_list[i].readonly == true ) || 
+			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
+	*((int*) mavlink_parameters_list[i].pparam) = (int) setting ;
+	return ;
+}
+
 
 
 
