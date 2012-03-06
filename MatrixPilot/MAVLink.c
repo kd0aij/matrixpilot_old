@@ -419,6 +419,16 @@ void mavlink_set_param_float_to_int(float setting, int16_t i )
 
 
 
+void mavlink_send_param_null( int16_t i )
+{
+	return ;
+}
+
+void mavlink_set_param_null(float setting, int16_t i )
+{
+	return ;
+}
+
 
 
 // END OF GENERAL ROUTINES FOR CHANGING UAV ONBOARD PARAMETERS
@@ -963,7 +973,7 @@ void handleMessage(mavlink_message_t* msg)
 		            // compare key with parameter name
 		            if (!strcmp(key,(const char *) mavlink_parameters_list[i].name))
 				    {
-						mavlink_parameters_list[i].set_param(packet.param_value, i) ;
+						mavlink_parameter_parsers[mavlink_parameters_list[i].udb_param_type].set_param(packet.param_value, i) ;
 						// After setting parameter, re-send it to GCS as acknowledgement of success.
 						if( mavlink_flags.mavlink_send_specific_variable == 0 )
 						{
@@ -1384,7 +1394,7 @@ void mavlink_output_40hz( void )
 	{
 		if ( send_variables_counter < count_of_parameters_list)
 		{
-			mavlink_parameters_list[send_variables_counter].send_param( send_variables_counter) ;
+			mavlink_parameter_parsers[mavlink_parameters_list[send_variables_counter].udb_param_type].send_param( send_variables_counter) ;
 			send_variables_counter++ ;
 		}
 		else 
@@ -1397,7 +1407,7 @@ void mavlink_output_40hz( void )
 	// SEND SPECIFICALLY REQUESTED PARAMETER
 	if ( mavlink_flags.mavlink_send_specific_variable == 1 )
 	{
-		mavlink_parameters_list[send_by_index].send_param( send_by_index ) ;
+		mavlink_parameter_parsers[mavlink_parameters_list[send_by_index].udb_param_type].send_param( send_by_index ) ;
 		mavlink_flags.mavlink_send_specific_variable = 0 ;
 	}
 

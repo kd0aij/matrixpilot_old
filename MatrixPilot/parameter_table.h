@@ -31,13 +31,31 @@
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM valueconst struct mavlink_parameter mavlink_parameters_list[] =
 #include "../MAVlink/include/mavlink_types.h"
 
+typedef enum
+{
+	UDB_TYPE_NONE,
+	UDB_TYPE_INT,
+	UDB_TYPE_Q14,
+	UDB_TYPE_PWM,
+	UDB_TYPE_GYROSCALE_Q14
+} udb_internal_type_t;
+
+
+typedef struct tag_mavlink_parameter_parser
+{
+	void (*send_param)(int16_t) ;
+	void (*set_param)(float, int16_t) ;
+	const mavlink_message_type_t mavlink_type ;
+} mavlink_parameter_parser;
+
+extern const mavlink_parameter_parser	mavlink_parameter_parsers[];
+
 
 typedef struct tag_mavlink_parameter 
 { 	const char name[15] ;                       // Name that will be displayed in the GCS
 	float min ;               					// Minimum allowed (float) value for parameter
 	float max ;               					// Maximum allowed (float) value for parameter
-	void (*send_param)(int16_t) ; 			    // Routine to send parameter to GCS after converting to float.
-	void (*set_param)(float, int16_t) ;         // Routine to convert from float to local type and set
+	udb_internal_type_t udb_param_type ;		// The internal UDB type for parsing
 	char readonly ; 							// Parameter is readonly (true) or Read / Write (false)
 	void* pparam ;								// Reference to variable
 	unsigned int param_size ;					// parameter size in ram
@@ -63,7 +81,8 @@ void mavlink_set_param_float_to_pwm(float setting, int16_t i ) ;
 void mavlink_send_param_int_as_float( int16_t i ) ;
 void mavlink_set_param_float_to_int(float setting, int16_t i ) ;
 
-
+void mavlink_send_param_null( int16_t i ) ;
+void mavlink_set_param_null(float setting, int16_t i ) ;
 
 extern const mavlink_parameter mavlink_parameters_list[];
 extern const int count_of_parameters_list;
