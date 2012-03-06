@@ -75,8 +75,8 @@ void mavlink_set_param_float_to_gyroscale_Q14(float setting, int16_t i ) ;
 void mavlink_send_param_Q14_as_float( int16_t i ) ;
 void mavlink_set_param_float_to_Q14(float setting, int16_t i ) ;
 
-void mavlink_send_param_pwm_as_float( int16_t i ) ;
-void mavlink_set_param_float_to_pwm(float setting, int16_t i ) ;
+void mavlink_send_param_pwtrim_as_float( int16_t i ) ;
+void mavlink_set_param_float_to_pwtrim(float setting, int16_t i ) ;
 
 void mavlink_send_param_int_as_float( int16_t i ) ;
 void mavlink_set_param_float_to_int(float setting, int16_t i ) ;
