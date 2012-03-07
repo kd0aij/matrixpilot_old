@@ -322,16 +322,39 @@ void mavlink_send_param_maxstack( int16_t ) ;
 void mavlink_set_maxstack(float setting, int16_t i ) ;
 #endif
 
-boolean mavlink_parameter_out_of_bounds( float parm, int16_t i ) ;
+boolean mavlink_parameter_out_of_bounds( mavlink_param_union_t parm, int16_t i ) ;
 
 
-boolean mavlink_parameter_out_of_bounds( float parm, int16_t i )
+boolean mavlink_parameter_out_of_bounds( mavlink_param_union_t parm, int16_t i )
 {
-	if (( parm < mavlink_parameters_list[i].min ) || ( parm > mavlink_parameters_list[i].max ))
-    {
-		return  true ;
+	switch(parm.type)
+	{
+	case MAVLINK_TYPE_FLOAT:
+		if(parm.param_float < mavlink_parameters_list[i].min.param_float)
+			return true;
+		if(parm.param_float > mavlink_parameters_list[i].max.param_float)
+			return true;
+		break;
+
+	case MAVLINK_TYPE_UINT32_T:
+		if(parm.param_int32 < mavlink_parameters_list[i].min.param_int32)
+			return true;
+		if(parm.param_int32 > mavlink_parameters_list[i].max.param_int32)
+			return true;
+		break;
+
+	case MAVLINK_TYPE_INT32_T:
+		if(parm.param_int32 < mavlink_parameters_list[i].min.param_int32)
+			return true;
+		if(parm.param_int32 > mavlink_parameters_list[i].max.param_int32)
+			return true;
+		break;
+	default:
+		return true;
+		break;
 	}
-	else { return false ; }
+
+	return false ;
 }
 
 #if ( RECORD_FREE_STACK_SPACE ==  1)
@@ -355,23 +378,23 @@ void mavlink_set_maxstack( float setting , int16_t i )
 #endif
 
 
-void mavlink_send_param_gyroscale_Q14_as_float( int16_t i)
+void mavlink_send_param_gyroscale_Q14( int16_t i)
 {
 	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
 		(float) ( *((int*) mavlink_parameters_list[i].pparam) / ( SCALEGYRO * 16384.0 )) , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ; // 16384.0 is RMAX defined as a float.	
 	return ;
 }
 
-void mavlink_set_param_float_to_gyroscale_Q14(float setting, int16_t i )
+void mavlink_set_param_gyroscale_Q14(mavlink_param_union_t setting, int16_t i )
 {
-	if (( mavlink_parameters_list[i].readonly == true ) || 
-			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
-	*((int*) mavlink_parameters_list[i].pparam) = (int) ( setting * ( SCALEGYRO * 16384.0 ) ) ;
+	if(setting.type != MAVLINK_TYPE_FLOAT) return;
+
+	*((int*) mavlink_parameters_list[i].pparam) = (int) ( setting.param_float * ( SCALEGYRO * 16384.0 ) ) ;
 	return ;
 }
 
 
-void mavlink_send_param_Q14_as_float( int16_t i )
+void mavlink_send_param_Q14( int16_t i )
 {
 	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
 		(float) ( *((int*) mavlink_parameters_list[i].pparam) / 16384.0 ) , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ; // 16384.0 is RMAX defined as a float.	
@@ -379,50 +402,56 @@ void mavlink_send_param_Q14_as_float( int16_t i )
 }
 
 
-void mavlink_set_param_float_to_Q14(float setting, int16_t i )
+void mavlink_set_param_Q14(mavlink_param_union_t setting, int16_t i )
 {
-	if (( mavlink_parameters_list[i].readonly == true ) || 
-			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
-	*((int*) mavlink_parameters_list[i].pparam) = (int) ( setting * 16384.0 ) ;
+	if(setting.type != MAVLINK_TYPE_FLOAT) return;
+
+	*((int*) mavlink_parameters_list[i].pparam) = (int) ( setting.param_float * 16384.0 ) ;
 	return ;
 }
 
-void mavlink_send_param_pwtrim_as_float( int16_t i )
-{
-	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
-		(float) ( *((int*) mavlink_parameters_list[i].pparam) / 2.0 ) , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ; // 16384.0 is RMAX defined as a float.	
-	return ;
-}
 
-void mavlink_set_param_float_to_pwtrim(float setting, int16_t i )
-{
-	if (( mavlink_parameters_list[i].readonly == true ) || 
-			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;
-
-	// Check that the size of the ubb_pwtrim array is not exceeded
-	if(mavlink_parameters_list[i].pparam >=  (void*) (&udb_pwTrim + sizeof(udb_pwTrim)) )
-		return;
-						
-	*((int*) mavlink_parameters_list[i].pparam) = (int) ( setting * 2.0 ) ;
-	return ;
-}
-
-void mavlink_send_param_int_as_float( int16_t i )
+void mavlink_send_param_pwtrim( int16_t i )
 {
 	// Check that the size of the udb_pwtrim array is not exceeded
 	if(mavlink_parameters_list[i].pparam >=  (void*) (&udb_pwTrim + sizeof(udb_pwTrim)) )
 		return;
 
 	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
-		(float) ( *((int*) mavlink_parameters_list[i].pparam) ) , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ; // 16384.0 is RMAX defined as a float.	
+		(float) ( *((int*) mavlink_parameters_list[i].pparam) / 2.0 ) , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ; // 16384.0 is RMAX defined as a float.	
 	return ;
 }
 
-void mavlink_set_param_float_to_int(float setting, int16_t i )
+
+void mavlink_set_param_pwtrim(mavlink_param_union_t setting, int16_t i )
 {
-	if (( mavlink_parameters_list[i].readonly == true ) || 
-			( mavlink_parameter_out_of_bounds( setting, i ) == true )) return ;							
-	*((int*) mavlink_parameters_list[i].pparam) = (int) setting ;
+	if(setting.type != MAVLINK_TYPE_FLOAT) return;
+
+	// Check that the size of the ubb_pwtrim array is not exceeded
+	if(mavlink_parameters_list[i].pparam >=  (void*) (&udb_pwTrim + sizeof(udb_pwTrim)) )
+		return;
+						
+	*((int*) mavlink_parameters_list[i].pparam) = (int) ( setting.param_float * 2.0 ) ;
+	return ;
+}
+
+
+void mavlink_send_param_int16( int16_t i )
+{
+	param_union_t param ;
+	param.param_int32 = *((int*) mavlink_parameters_list[i].pparam);
+
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		param.param_float , MAVLINK_TYPE_INT32_T, count_of_parameters_list, i ) ; // 16384.0 is RMAX defined as a float.	
+	return ;
+}
+
+
+void mavlink_set_param_int16(mavlink_param_union_t setting, int16_t i )
+{
+	if(setting.type != MAVLINK_TYPE_INT32_T) return;
+
+	*((int*) mavlink_parameters_list[i].pparam) = (int) setting.param_int32 ;
 	return ;
 }
 
@@ -982,12 +1011,21 @@ void handleMessage(mavlink_message_t* msg)
 		            // compare key with parameter name
 		            if (!strcmp(key,(const char *) mavlink_parameters_list[i].name))
 				    {
-						mavlink_parameter_parsers[mavlink_parameters_list[i].udb_param_type].set_param(packet.param_value, i) ;
-						// After setting parameter, re-send it to GCS as acknowledgement of success.
-						if( mavlink_flags.mavlink_send_specific_variable == 0 )
+						mavlink_param_union_t param;
+						param.type = packet.param_type;
+						param.param_float = packet.param_value;
+
+						if (( mavlink_parameters_list[i].readonly == false ) && 
+								( mavlink_parameter_out_of_bounds( param, i ) == false ))
 						{
-							send_by_index = i ;
-							mavlink_flags.mavlink_send_specific_variable = 1 ;
+
+							mavlink_parameter_parsers[mavlink_parameters_list[i].udb_param_type].set_param(param, i) ;
+							// After setting parameter, re-send it to GCS as acknowledgement of success.
+							if( mavlink_flags.mavlink_send_specific_variable == 0 )
+							{
+								send_by_index = i ;
+								mavlink_flags.mavlink_send_specific_variable = 1 ;
+							}
 						}
 					}
 				}

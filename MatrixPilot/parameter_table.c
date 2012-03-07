@@ -24,11 +24,11 @@
 
 const mavlink_parameter_parser	mavlink_parameter_parsers[] =
 	{
-	{&mavlink_send_param_null, 						&mavlink_set_param_null, 					MAVLINK_TYPE_FLOAT},
-	{&mavlink_send_param_int_as_float, 				&mavlink_set_param_float_to_int, 			MAVLINK_TYPE_FLOAT},
-	{&mavlink_send_param_Q14_as_float, 				&mavlink_set_param_float_to_Q14, 			MAVLINK_TYPE_FLOAT},
-	{&mavlink_send_param_pwtrim_as_float, 			&mavlink_set_param_float_to_pwtrim,			MAVLINK_TYPE_FLOAT},
-	{&mavlink_send_param_gyroscale_Q14_as_float, 	&mavlink_set_param_float_to_gyroscale_Q14, 	MAVLINK_TYPE_FLOAT},
+	{&mavlink_send_param_null, 				&mavlink_set_param_null, 			MAVLINK_TYPE_FLOAT},
+	{&mavlink_send_param_int16,				&mavlink_set_param_int16, 			MAVLINK_TYPE_FLOAT},
+	{&mavlink_send_param_Q14, 				&mavlink_set_param_Q14, 			MAVLINK_TYPE_FLOAT},
+	{&mavlink_send_param_pwtrim, 			&mavlink_set_param_pwtrim,			MAVLINK_TYPE_FLOAT},
+	{&mavlink_send_param_gyroscale_Q14, 	&mavlink_set_param_gyroscale_Q14, 	MAVLINK_TYPE_FLOAT},
 	};
 
 const mavlink_parameter mavlink_parameters_list[] =
@@ -36,18 +36,18 @@ const mavlink_parameter mavlink_parameters_list[] =
 #if ( RECORD_FREE_STACK_SPACE ==  1)
 	{"MAXSTACK", 0.0 , 4096.0 ,  &mavlink_send_param_maxstack, &mavlink_set_maxstack , READWRITE },
 #endif
-	{"ROLLKP"         , 0.0 , 0.4    ,  UDB_TYPE_Q14			, PARAMETER_READWRITE,	(void*) &rollkp , sizeof(rollkp) },
-	{"ROLLKD"         , 0.0 , 0.4    ,  UDB_TYPE_GYROSCALE_Q14	, PARAMETER_READWRITE,	(void*) &rollkd , sizeof(rollkd) },
-	{"YAWKPAIL"       , 0.0 , 0.4    ,  UDB_TYPE_Q14			, PARAMETER_READWRITE,	(void*) &yawkpail , sizeof(yawkpail)  },
-	{"YAWKDAIL"       , 0.0 , 0.4    ,  UDB_TYPE_GYROSCALE_Q14	, PARAMETER_READWRITE,	(void*) &yawkdail , sizeof(yawkdail)  },
-	{"YAWKPRUD"       , 0.0 , 0.4    ,  UDB_TYPE_Q14			, PARAMETER_READWRITE,	(void*) &yawkprud , sizeof(yawkprud)  },
-	{"ROLLKPRUD"      , 0.0 , 0.4    ,  UDB_TYPE_Q14			, PARAMETER_READWRITE,	(void*) &rollkprud , sizeof(rollkprud)  },
-	{"PITCHGAIN"      , 0.0 , 0.4    ,  UDB_TYPE_Q14			, PARAMETER_READWRITE,	(void*) &pitchgain , sizeof(pitchgain)  },
-	{"RUDELEVMIXGAIN" , 0.0 , 0.7    ,  UDB_TYPE_Q14			, PARAMETER_READWRITE,	(void*) &rudderElevMixGain , sizeof(rudderElevMixGain)  },
+	{"ROLLKP"         , {.param_float=0.0} , {.param_float=0.4}	,	MAVLINK_TYPE_FLOAT  ,	UDB_TYPE_Q14			,	PARAMETER_READWRITE,	(void*) &rollkp , sizeof(rollkp) },
+	{"ROLLKD"         , {.param_float=0.0} , {.param_float=0.4}	,	MAVLINK_TYPE_FLOAT  ,	UDB_TYPE_GYROSCALE_Q14	,	PARAMETER_READWRITE,	(void*) &rollkd , sizeof(rollkd) },
+	{"YAWKPAIL"       , {.param_float=0.0} , {.param_float=0.4}	,  	MAVLINK_TYPE_FLOAT	,	UDB_TYPE_Q14			, 	PARAMETER_READWRITE,	(void*) &yawkpail , sizeof(yawkpail)  },
+	{"YAWKDAIL"       , {.param_float=0.0} , {.param_float=0.4}	,	MAVLINK_TYPE_FLOAT	,	UDB_TYPE_GYROSCALE_Q14	,	PARAMETER_READWRITE,	(void*) &yawkdail , sizeof(yawkdail)  },
+	{"YAWKPRUD"       , {.param_float=0.0} , {.param_float=0.4}	,	MAVLINK_TYPE_FLOAT	,	UDB_TYPE_Q14			,	PARAMETER_READWRITE,	(void*) &yawkprud , sizeof(yawkprud)  },
+	{"ROLLKPRUD"      , {.param_float=0.0} , {.param_float=0.4}	,	MAVLINK_TYPE_FLOAT	,	UDB_TYPE_Q14			,	PARAMETER_READWRITE,	(void*) &rollkprud , sizeof(rollkprud)  },
+	{"PITCHGAIN"      , {.param_float=0.0} , {.param_float=0.4}	,	MAVLINK_TYPE_FLOAT	,	UDB_TYPE_Q14			,	PARAMETER_READWRITE,	(void*) &pitchgain , sizeof(pitchgain)  },
+	{"RUDELEVMIXGAIN" , {.param_float=0.0} , {.param_float=0.4}	,	MAVLINK_TYPE_FLOAT	,	UDB_TYPE_Q14			,	PARAMETER_READWRITE,	(void*) &rudderElevMixGain , sizeof(rudderElevMixGain)  },
 
 
 //	{"RC_NUM_INPUTS"    , 0.0 	, 32.0    ,  &mavlink_send_param_int_as_float	,	&mavlink_set_param_float_to_int		, PARAMETER_READ	,	(void*) &udb_pwTrim[1], sizeof(udb_pwTrim[0]) },
-	{"RC_TRIM1"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[1], sizeof(udb_pwTrim[0]) },
+/*	{"RC_TRIM1"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[1], sizeof(udb_pwTrim[0]) },
 	{"RC_TRIM2"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[2], sizeof(udb_pwTrim[0]) },
 	{"RC_TRIM3"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[3], sizeof(udb_pwTrim[0]) },
 	{"RC_TRIM4"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[4], sizeof(udb_pwTrim[0]) },
@@ -63,6 +63,7 @@ const mavlink_parameter mavlink_parameters_list[] =
 	{"RC_TRIM14"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[14], sizeof(udb_pwTrim[0]) },
 	{"RC_TRIM15"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[15], sizeof(udb_pwTrim[0]) },
 	{"RC_TRIM16"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[16], sizeof(udb_pwTrim[0]) },
+*/
 	} ;    
 
 const int count_of_parameters_list = sizeof(mavlink_parameters_list) / sizeof(mavlink_parameter);
