@@ -19,8 +19,14 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "parameter_table.h"
-
 #include "gain_variables.h" // Needed for access to internal DCM value
+
+
+#if ( MAG_YAW_DRIFT == 1)
+extern int udb_magOffset[];  // magnetic offset in the body frame of reference
+extern int magGain[]; // magnetometer calibration gains
+extern int rawMagCalib[];
+#endif
 
 const mavlink_parameter_parser	mavlink_parameter_parsers[] =
 	{
@@ -64,6 +70,21 @@ const mavlink_parameter mavlink_parameters_list[] =
 	{"RC_TRIM15"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[15], sizeof(udb_pwTrim[0]) },
 	{"RC_TRIM16"         , 800.0 , 2500.0  ,  UDB_TYPE_PWM	, PARAMETER_READWRITE,	(void*) &udb_pwTrim[16], sizeof(udb_pwTrim[0]) },
 */
+
+#if ( MAG_YAW_DRIFT == 1)
+	{"MAG_CAL_RAW0"   , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &rawMagCalib[0] , sizeof(rawMagCalib[0])  },
+	{"MAG_CAL_RAW1"   , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &rawMagCalib[1] , sizeof(rawMagCalib[1])  },
+	{"MAG_CAL_RAW2"   , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &rawMagCalib[2] , sizeof(rawMagCalib[2])  },
+
+	{"MAG_CAL_GAIN0"  , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &magGain[0] , sizeof(magGain[0])  },
+	{"MAG_CAL_GAIN1"  , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &magGain[1] , sizeof(magGain[1])  },
+	{"MAG_CAL_GAIN2"  , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &magGain[2] , sizeof(magGain[2])  },
+
+	{"MAG_OFFSET0"      , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &udb_magOffset[0] , sizeof(udb_magOffset[0])  },
+	{"MAG_OFFSET1"      , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &udb_magOffset[1] , sizeof(udb_magOffset[1])  },
+	{"MAG_OFFSET2"      , {.param_int32=32767.0} , {.param_int32=32767.0}	,	MAVLINK_TYPE_INT32_T	,	UDB_TYPE_INT	,	PARAMETER_READONLY,	(void*) &udb_magOffset[2] , sizeof(udb_magOffset[2])  },
+#endif
+
 	} ;    
 
 const int count_of_parameters_list = sizeof(mavlink_parameters_list) / sizeof(mavlink_parameter);
