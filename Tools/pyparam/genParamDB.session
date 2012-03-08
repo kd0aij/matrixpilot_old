@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <session>
-    <input_schema>/home/matt/Documents/pyFEdit/pyFEditSettings.xsd</input_schema>
-    <output_superclass>/home/matt/Documents/pyFEdit/pyFEditSettings.py</output_superclass>
-    <output_subclass>/home/matt/Documents/pyFEdit/SubpyFEditSettings.py</output_subclass>
+    <input_schema>ParameterDatabase.xsd</input_schema>
+    <output_superclass>ParameterDatabase.py</output_superclass>
+    <output_subclass>SubParameterDatabase.py</output_subclass>
     <force>true</force>
     <prefix></prefix>
     <namespace_prefix></namespace_prefix>
@@ -10,8 +10,8 @@
     <behavior_filename></behavior_filename>
     <properties>false</properties>
     <subclass_suffix></subclass_suffix>
-    <root_element>Settings</root_element>
-    <superclass_module>pyFEditSettings</superclass_module>
+    <root_element>ParameterDatabase</root_element>
+    <superclass_module>ParameterDatabase</superclass_module>
     <auto_super>false</auto_super>
     <old_getters_setters>false</old_getters_setters>
     <validator_bodies></validator_bodies>
@@ -19,7 +19,7 @@
     <no_dates>false</no_dates>
     <no_versions>false</no_versions>
     <no_process_includes>false</no_process_includes>
-    <silence>false</silence>
+    <silence>true</silence>
     <namespace_defs></namespace_defs>
     <external_encoding></external_encoding>
     <member_specs>none</member_specs>
