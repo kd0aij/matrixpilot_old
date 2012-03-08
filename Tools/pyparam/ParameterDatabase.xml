@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- New document created with EditiX at Tue Aug 09 20:53:50 CEST 2011 -->
+
+
+<ParameterDatabase
+xmlns="ParameterDB"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
+
+<serialisationFlags>
+	<serialisationFlag>DS_LOAD_ALL</serialisationFlag>
+	<serialisationFlag>DS_SAVE_ALL</serialisationFlag>
+	<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
+	<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
+	<serialisationFlag>DS_SAVE_AFTER_CAL</serialisationFlag>
+	<serialisationFlag>DS_STORE_WAYPOINTS</serialisationFlag>
+	<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+	<serialisationFlag>DS_SAVE_MISSION</serialisationFlag>
+</serialisationFlags>
+
+<parameterBlocks>
+	<parameterBlock>
+		<blockName>PID_SETTINGS</blockName>
+		<storage_area>DATA_HANDLE_CONTROL_LOOP_SETTINGS</storage_area>
+		<serialisationFlags>
+			<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+		</serialisationFlags>
+		<load_callback>NULL</load_callback>
+		<in_mavlink_parameters>true</in_mavlink_parameters>
+		<parameters>
+			<parameter>
+				<parameterName>PID_ROLLKP</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>rollkp</variable_name>
+				<description>Roll proporational gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_ROLLKD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>rollkd</variable_name>
+				<description>Roll differential gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_YAWKPAIL</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>yawkpail</variable_name>
+				<description>Roll differential gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
+		</parameters>
+		<description>Block </description>
+	</parameterBlock>
+</parameterBlocks>
+
+
+</ParameterDatabase>
