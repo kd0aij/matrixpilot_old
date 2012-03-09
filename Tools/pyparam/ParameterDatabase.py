@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Generated Fri Mar  9 07:05:47 2012 by generateDS.py version 2.7b.
+# Generated Fri Mar  9 07:35:54 2012 by generateDS.py version 2.7b.
 #
 
 import sys
@@ -440,20 +440,19 @@ class SerialisationFlags(GeneratedsSuper):
 # end class SerialisationFlags
 
 
-class udb_type(GeneratedsSuper):
+class UDBType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, typeName=None, sendFunction=None, setFunction=None, mavlinkType=None):
         self.typeName = typeName
         self.sendFunction = sendFunction
         self.setFunction = setFunction
-        self.setFunction = setFunction
         self.mavlinkType = mavlinkType
     def factory(*args_, **kwargs_):
-        if udb_type.subclass:
-            return udb_type.subclass(*args_, **kwargs_)
+        if UDBType.subclass:
+            return UDBType.subclass(*args_, **kwargs_)
         else:
-            return udb_type(*args_, **kwargs_)
+            return UDBType(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_typeName(self): return self.typeName
     def set_typeName(self, typeName): self.typeName = typeName
@@ -461,15 +460,13 @@ class udb_type(GeneratedsSuper):
     def set_sendFunction(self, sendFunction): self.sendFunction = sendFunction
     def get_setFunction(self): return self.setFunction
     def set_setFunction(self, setFunction): self.setFunction = setFunction
-    def get_setFunction(self): return self.setFunction
-    def set_setFunction(self, setFunction): self.setFunction = setFunction
     def get_mavlinkType(self): return self.mavlinkType
     def set_mavlinkType(self, mavlinkType): self.mavlinkType = mavlinkType
-    def export(self, outfile, level, namespace_='', name_='udb_type', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='UDBType', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
-        self.exportAttributes(outfile, level, already_processed, namespace_, name_='udb_type')
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='UDBType')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -477,18 +474,15 @@ class udb_type(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='udb_type'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='UDBType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='udb_type', fromsubclass_=False):
+    def exportChildren(self, outfile, level, namespace_='', name_='UDBType', fromsubclass_=False):
         if self.typeName is not None:
             showIndent(outfile, level)
             outfile.write('<%stypeName>%s</%stypeName>\n' % (namespace_, self.gds_format_string(quote_xml(self.typeName).encode(ExternalEncoding), input_name='typeName'), namespace_))
         if self.sendFunction is not None:
             showIndent(outfile, level)
             outfile.write('<%ssendFunction>%s</%ssendFunction>\n' % (namespace_, self.gds_format_string(quote_xml(self.sendFunction).encode(ExternalEncoding), input_name='sendFunction'), namespace_))
-        if self.setFunction is not None:
-            showIndent(outfile, level)
-            outfile.write('<%ssetFunction>%s</%ssetFunction>\n' % (namespace_, self.gds_format_string(quote_xml(self.setFunction).encode(ExternalEncoding), input_name='setFunction'), namespace_))
         if self.setFunction is not None:
             showIndent(outfile, level)
             outfile.write('<%ssetFunction>%s</%ssetFunction>\n' % (namespace_, self.gds_format_string(quote_xml(self.setFunction).encode(ExternalEncoding), input_name='setFunction'), namespace_))
@@ -500,13 +494,12 @@ class udb_type(GeneratedsSuper):
             self.typeName is not None or
             self.sendFunction is not None or
             self.setFunction is not None or
-            self.setFunction is not None or
             self.mavlinkType is not None
             ):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='udb_type'):
+    def exportLiteral(self, outfile, level, name_='UDBType'):
         level += 1
         self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
@@ -520,9 +513,6 @@ class udb_type(GeneratedsSuper):
         if self.sendFunction is not None:
             showIndent(outfile, level)
             outfile.write('sendFunction=%s,\n' % quote_python(self.sendFunction).encode(ExternalEncoding))
-        if self.setFunction is not None:
-            showIndent(outfile, level)
-            outfile.write('setFunction=%s,\n' % quote_python(self.setFunction).encode(ExternalEncoding))
         if self.setFunction is not None:
             showIndent(outfile, level)
             outfile.write('setFunction=%s,\n' % quote_python(self.setFunction).encode(ExternalEncoding))
@@ -549,15 +539,88 @@ class udb_type(GeneratedsSuper):
             setFunction_ = child_.text
             setFunction_ = self.gds_validate_string(setFunction_, node, 'setFunction')
             self.setFunction = setFunction_
-        elif nodeName_ == 'setFunction':
-            setFunction_ = child_.text
-            setFunction_ = self.gds_validate_string(setFunction_, node, 'setFunction')
-            self.setFunction = setFunction_
         elif nodeName_ == 'mavlinkType':
             mavlinkType_ = child_.text
             mavlinkType_ = self.gds_validate_string(mavlinkType_, node, 'mavlinkType')
             self.mavlinkType = mavlinkType_
-# end class udb_type
+# end class UDBType
+
+
+class UDBTypes(GeneratedsSuper):
+    subclass = None
+    superclass = None
+    def __init__(self, udbType=None):
+        if udbType is None:
+            self.udbType = []
+        else:
+            self.udbType = udbType
+    def factory(*args_, **kwargs_):
+        if UDBTypes.subclass:
+            return UDBTypes.subclass(*args_, **kwargs_)
+        else:
+            return UDBTypes(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_udbType(self): return self.udbType
+    def set_udbType(self, udbType): self.udbType = udbType
+    def add_udbType(self, value): self.udbType.append(value)
+    def insert_udbType(self, index, value): self.udbType[index] = value
+    def export(self, outfile, level, namespace_='', name_='UDBTypes', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        already_processed = []
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='UDBTypes')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='UDBTypes'):
+        pass
+    def exportChildren(self, outfile, level, namespace_='', name_='UDBTypes', fromsubclass_=False):
+        for udbType_ in self.udbType:
+            udbType_.export(outfile, level, namespace_, name_='udbType')
+    def hasContent_(self):
+        if (
+            self.udbType
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='UDBTypes'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, [], name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        pass
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('udbType=[\n')
+        level += 1
+        for udbType_ in self.udbType:
+            showIndent(outfile, level)
+            outfile.write('model_.UDBType(\n')
+            udbType_.exportLiteral(outfile, level, name_='UDBType')
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+    def build(self, node):
+        self.buildAttributes(node, node.attrib, [])
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, node, nodeName_)
+    def buildAttributes(self, node, attrs, already_processed):
+        pass
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        if nodeName_ == 'udbType':
+            obj_ = UDBType.factory()
+            obj_.build(child_)
+            self.udbType.append(obj_)
+# end class UDBTypes
 
 
 class Parameter(GeneratedsSuper):
@@ -1029,8 +1092,9 @@ class ParameterBlocks(GeneratedsSuper):
 class ParameterDatabase(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, serialisationFlags=None, parameterBlocks=None):
+    def __init__(self, serialisationFlags=None, udbTypes=None, parameterBlocks=None):
         self.serialisationFlags = serialisationFlags
+        self.udbTypes = udbTypes
         self.parameterBlocks = parameterBlocks
     def factory(*args_, **kwargs_):
         if ParameterDatabase.subclass:
@@ -1040,6 +1104,8 @@ class ParameterDatabase(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_serialisationFlags(self): return self.serialisationFlags
     def set_serialisationFlags(self, serialisationFlags): self.serialisationFlags = serialisationFlags
+    def get_udbTypes(self): return self.udbTypes
+    def set_udbTypes(self, udbTypes): self.udbTypes = udbTypes
     def get_parameterBlocks(self): return self.parameterBlocks
     def set_parameterBlocks(self, parameterBlocks): self.parameterBlocks = parameterBlocks
     def export(self, outfile, level, namespace_='', name_='ParameterDatabase', namespacedef_=''):
@@ -1059,11 +1125,14 @@ class ParameterDatabase(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='ParameterDatabase', fromsubclass_=False):
         if self.serialisationFlags is not None:
             self.serialisationFlags.export(outfile, level, namespace_, name_='serialisationFlags', )
+        if self.udbTypes is not None:
+            self.udbTypes.export(outfile, level, namespace_, name_='udbTypes', )
         if self.parameterBlocks is not None:
             self.parameterBlocks.export(outfile, level, namespace_, name_='parameterBlocks', )
     def hasContent_(self):
         if (
             self.serialisationFlags is not None or
+            self.udbTypes is not None or
             self.parameterBlocks is not None
             ):
             return True
@@ -1081,6 +1150,12 @@ class ParameterDatabase(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('serialisationFlags=model_.SerialisationFlags(\n')
             self.serialisationFlags.exportLiteral(outfile, level, name_='serialisationFlags')
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        if self.udbTypes is not None:
+            showIndent(outfile, level)
+            outfile.write('udbTypes=model_.UDBTypes(\n')
+            self.udbTypes.exportLiteral(outfile, level, name_='udbTypes')
             showIndent(outfile, level)
             outfile.write('),\n')
         if self.parameterBlocks is not None:
@@ -1101,6 +1176,10 @@ class ParameterDatabase(GeneratedsSuper):
             obj_ = SerialisationFlags.factory()
             obj_.build(child_)
             self.set_serialisationFlags(obj_)
+        elif nodeName_ == 'udbTypes':
+            obj_ = UDBTypes.factory()
+            obj_.build(child_)
+            self.set_udbTypes(obj_)
         elif nodeName_ == 'parameterBlocks':
             obj_ = ParameterBlocks.factory()
             obj_.build(child_)
@@ -1197,5 +1276,6 @@ __all__ = [
     "ParameterDatabase",
     "Parameters",
     "SerialisationFlags",
-    "udb_type"
+    "UDBType",
+    "UDBTypes"
     ]

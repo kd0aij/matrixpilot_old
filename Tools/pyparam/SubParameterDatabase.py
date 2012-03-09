@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Fri Mar  9 07:05:47 2012 by generateDS.py version 2.7b.
+# Generated Fri Mar  9 07:35:54 2012 by generateDS.py version 2.7b.
 #
 
 import sys
@@ -77,11 +77,18 @@ supermod.SerialisationFlags.subclass = SerialisationFlagsSub
 # end class SerialisationFlagsSub
 
 
-class udb_typeSub(supermod.udb_type):
+class UDBTypeSub(supermod.UDBType):
     def __init__(self, typeName=None, sendFunction=None, setFunction=None, mavlinkType=None):
-        super(udb_typeSub, self).__init__(typeName, sendFunction, setFunction, mavlinkType, )
-supermod.udb_type.subclass = udb_typeSub
-# end class udb_typeSub
+        super(UDBTypeSub, self).__init__(typeName, sendFunction, setFunction, mavlinkType, )
+supermod.UDBType.subclass = UDBTypeSub
+# end class UDBTypeSub
+
+
+class UDBTypesSub(supermod.UDBTypes):
+    def __init__(self, udbType=None):
+        super(UDBTypesSub, self).__init__(udbType, )
+supermod.UDBTypes.subclass = UDBTypesSub
+# end class UDBTypesSub
 
 
 class ParameterSub(supermod.Parameter):
@@ -113,8 +120,8 @@ supermod.ParameterBlocks.subclass = ParameterBlocksSub
 
 
 class ParameterDatabaseSub(supermod.ParameterDatabase):
-    def __init__(self, serialisationFlags=None, parameterBlocks=None):
-        super(ParameterDatabaseSub, self).__init__(serialisationFlags, parameterBlocks, )
+    def __init__(self, serialisationFlags=None, udbTypes=None, parameterBlocks=None):
+        super(ParameterDatabaseSub, self).__init__(serialisationFlags, udbTypes, parameterBlocks, )
 supermod.ParameterDatabase.subclass = ParameterDatabaseSub
 # end class ParameterDatabaseSub
 
