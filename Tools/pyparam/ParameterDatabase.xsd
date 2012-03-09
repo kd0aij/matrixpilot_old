@@ -10,16 +10,21 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="udb_type">
+	<xs:complexType name="UDBType">
 		<xs:sequence>
 			<xs:element name="typeName" type="xs:string"/>
 			<xs:element name="sendFunction" type="xs:string"/>
-			<xs:element name="setFunction" type="xs:string"/>
 			<xs:element name="setFunction" type="xs:string"/>
 			<xs:element name="mavlinkType" type="xs:string"/>
 		</xs:sequence>
 	</xs:complexType>
 
+  <xs:complexType name="UDBTypes">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="255" name="udbType" type="UDBType"/>
+    </xs:sequence>
+  </xs:complexType>
+  
 	<xs:complexType name="Parameter">
 		<xs:sequence>
 			<xs:element name="parameterName" type="xs:string"/>
@@ -66,6 +71,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element  name="serialisationFlags" type="SerialisationFlags"/>
+        				<xs:element  name="udbTypes" type="UDBTypes"/>
 				<xs:element  name="parameterBlocks" type="ParameterBlocks"/>
 			</xs:sequence>
 		</xs:complexType>

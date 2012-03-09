@@ -9,6 +9,17 @@ Released under GNU GPL version 3 or later
 
 import os, sys, glob, re
 
+import SubParameterDatabase as ParameterDB
+
 # allow import from the MAVlink/pymavlink directory, where mavutil.py is
 #sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '../MAVLink/pymavlink'))
 
+
+ParamDBMain = ParameterDB.parse("ParameterDatabase.xml")
+paramBlocks = ParamDBMain.get_parameterBlocks().get_parameterBlock()
+
+
+for paramBlock in paramBlocks:
+    print(paramBlock.get_blockName());
+    for parameter in paramBlock.get_parameters().get_parameter():
+        print("  " + parameter.get_parameterName());

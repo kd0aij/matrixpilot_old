@@ -19,6 +19,35 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 	<serialisationFlag>DS_SAVE_MISSION</serialisationFlag>
 </serialisationFlags>
 
+
+<udbTypes>
+	<udbType>
+	<typeName>UDB_TYPE_INT</typeName>
+	<sendFunction>mavlink_send_param_int16</sendFunction>
+	<setFunction>mavlink_set_param_int16</setFunction>
+	<mavlinkType>MAVLINK_TYPE_INT32_T</mavlinkType>
+	</udbType>
+	<udbType>
+	<typeName>UDB_TYPE_Q14</typeName>
+	<sendFunction>mavlink_send_param_Q14</sendFunction>
+	<setFunction>mavlink_set_param_Q14</setFunction>
+	<mavlinkType>MAVLINK_TYPE_FLOAT</mavlinkType>
+	</udbType>
+	<udbType>
+	<typeName>UDB_TYPE_PWTRIM</typeName>
+	<sendFunction>mavlink_send_param_pwtrim</sendFunction>
+	<setFunction>mavlink_set_param_pwtrim</setFunction>
+	<mavlinkType>MAVLINK_TYPE_FLOAT</mavlinkType>
+	</udbType>
+	<udbType>
+	<typeName>UDB_TYPE_GYROSCALE</typeName>
+	<sendFunction>mavlink_send_param_gyroscale_Q14</sendFunction>
+	<setFunction>mavlink_set_param_gyroscale_Q14</setFunction>
+	<mavlinkType>MAVLINK_TYPE_FLOAT</mavlinkType>
+	</udbType>
+
+</udbTypes>
+
 <parameterBlocks>
 	<parameterBlock>
 		<blockName>PID_SETTINGS</blockName>
