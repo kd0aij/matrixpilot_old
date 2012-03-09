@@ -30,15 +30,7 @@
 
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM valueconst struct mavlink_parameter mavlink_parameters_list[] =
 #include "../MAVlink/include/mavlink_types.h"
-
-typedef enum
-{
-	UDB_TYPE_NONE,
-	UDB_TYPE_INT,
-	UDB_TYPE_Q14,
-	UDB_TYPE_PWM,
-	UDB_TYPE_GYROSCALE_Q14
-} udb_internal_type_t;
+#include "parameter_datatypes.h"
 
 typedef union 
 {
@@ -61,7 +53,6 @@ typedef struct tag_mavlink_parameter
 { 	const char name[15] ;                       // Name that will be displayed in the GCS
 	param_union_t min ;    						// Minimum allowed value for parameter
 	param_union_t max ;            				// Maximum allowed value for parameter
-	mavlink_message_type_t mavlink_type ;		// The internal UDB type for parsing
 	udb_internal_type_t udb_param_type ;		// The internal UDB type for parsing
 	char readonly ; 							// Parameter is readonly (true) or Read / Write (false)
 	void* pparam ;								// Reference to variable
@@ -74,22 +65,7 @@ typedef enum
 	PARAMETER_READWRITE = 0,
 	PARAMETER_READONLY,
 } PARAMETER_ACCESS;
-	
 
-void mavlink_send_param_gyroscale_Q14( int16_t i ) ;
-void mavlink_set_param_gyroscale_Q14(mavlink_param_union_t setting, int16_t i ) ;
-
-void mavlink_send_param_Q14( int16_t i ) ;
-void mavlink_set_param_Q14(mavlink_param_union_t setting, int16_t i ) ;
-
-void mavlink_send_param_pwtrim( int16_t i ) ;
-void mavlink_set_param_pwtrim(mavlink_param_union_t setting, int16_t i ) ;
-
-void mavlink_send_param_int16( int16_t i ) ;
-void mavlink_set_param_int16(mavlink_param_union_t setting, int16_t i ) ;
-
-void mavlink_send_param_null( int16_t i ) ;
-void mavlink_set_param_null(float setting, int16_t i ) ;
 
 extern const mavlink_parameter mavlink_parameters_list[];
 extern const int count_of_parameters_list;

@@ -310,8 +310,8 @@ int16_t send_variables_counter = 0;
 int16_t send_by_index = 0 ;
 
 // ROUTINES FOR CHANGING UAV ONBOARD PARAMETERS
-// All paramaters are sent as type (float) between Ground Control Station and MatrixPilot.
-// So paramaters have to be converted between type (float) and their normal representation.
+// All paramaters are sent as type (mavlink_param_union_t) between Ground Control Station and MatrixPilot.
+// So paramaters have to be converted between type (mavlink_param_union_t) and their normal representation.
 // An explanation of the MAVLink protocol for changing paramaters can be found at:
 // http://www.qgroundcontrol.org/parameter_interface
 
@@ -327,7 +327,7 @@ boolean mavlink_parameter_out_of_bounds( mavlink_param_union_t parm, int16_t i )
 
 boolean mavlink_parameter_out_of_bounds( mavlink_param_union_t parm, int16_t i )
 {
-	switch(parm.type)
+	switch(  mavlink_parameter_parsers[mavlink_parameters_list[i].udb_param_type].mavlink_type  )
 	{
 	case MAVLINK_TYPE_FLOAT:
 		if(parm.param_float < mavlink_parameters_list[i].min.param_float)

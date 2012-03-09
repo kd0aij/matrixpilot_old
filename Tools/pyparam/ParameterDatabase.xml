@@ -40,7 +40,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 	<mavlinkType>MAVLINK_TYPE_FLOAT</mavlinkType>
 	</udbType>
 	<udbType>
-	<typeName>UDB_TYPE_GYROSCALE</typeName>
+	<typeName>UDB_TYPE_GYROSCALE_Q14</typeName>
 	<sendFunction>mavlink_send_param_gyroscale_Q14</sendFunction>
 	<setFunction>mavlink_set_param_gyroscale_Q14</setFunction>
 	<mavlinkType>MAVLINK_TYPE_FLOAT</mavlinkType>
@@ -71,7 +71,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			</parameter>
 			<parameter>
 				<parameterName>PID_ROLLKD</parameterName>
-				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<udb_param_type>UDB_TYPE_GYROSCALE_Q14</udb_param_type>
 				<variable_name>rollkd</variable_name>
 				<description>Roll differential gain</description>
 				<min>0.0</min>
@@ -87,10 +87,170 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<max>0.4</max>
 				<readonly>false</readonly>
 			</parameter>
+			<parameter>
+				<parameterName>PID_YAWKDAIL</parameterName>
+				<udb_param_type>UDB_TYPE_GYROSCALE_Q14</udb_param_type>
+				<variable_name>yawkdail</variable_name>
+				<description>Roll differential gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_YAWKPRUD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>yawkprud</variable_name>
+				<description>Roll differential gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_ROLLKPRUD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>rollkprud</variable_name>
+				<description>Roll differential gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_PITCHGAIN</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>pitchgain</variable_name>
+				<description>Roll differential gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_RUDELEVMIXGAIN</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>rudderElevMixGain</variable_name>
+				<description>Roll differential gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
 		</parameters>
-		<description>Block </description>
+		<description>PID Settings Block </description>
 	</parameterBlock>
+
+
+	<parameterBlock>
+		<blockName>MAG_CALIB</blockName>
+		<storage_area>DATA_HANDLE_MAG_CALIB</storage_area>
+		<serialisationFlags>
+			<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+		</serialisationFlags>
+		<load_callback>NULL</load_callback>
+		<in_mavlink_parameters>true</in_mavlink_parameters>
+		<parameters>
+			<parameter>
+				<parameterName>PID_ROLLKP</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>rollkp</variable_name>
+				<description>Roll proporational gain</description>
+				<min>0.0</min>
+				<max>0.4</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>MAG_CAL_RAW0</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>rawMagCalib[0]</variable_name>
+				<description>magnetometer calibration raw 0</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+	
+			<parameter>
+				<parameterName>MAG_CAL_RAW1</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>rawMagCalib[1]</variable_name>
+				<description>magnetometer calibration raw 0</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+	
+			<parameter>
+				<parameterName>MAG_CAL_RAW2</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>rawMagCalib[2]</variable_name>
+				<description>magnetometer calibration raw 0</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>MAG_GAIN0</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>magGain[0]</variable_name>
+				<description>magnetometer gain 0</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+	
+			<parameter>
+				<parameterName>MAG_GAIN1</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>magGain[1]</variable_name>
+				<description>magnetometer gain 1</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+	
+			<parameter>
+				<parameterName>MAG_GAIN2</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>magGain[2]</variable_name>
+				<description>magnetometer gain 2</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>MAG_OFFSET0</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_magOffset[0]</variable_name>
+				<description>magnetometer offset 0</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+	
+			<parameter>
+				<parameterName>MAG_OFFSET1</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_magOffset[1]</variable_name>
+				<description>magnetometer offset 1</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+	
+			<parameter>
+				<parameterName>MAG_OFFSET2</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_magOffset[2]</variable_name>
+				<description>magnetometer offset 2</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+		</parameters>
+		<description>Magnetometer parameters</description>
+	</parameterBlock>
+
 </parameterBlocks>
+
+
 
 
 </ParameterDatabase>

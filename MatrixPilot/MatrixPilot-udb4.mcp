@@ -190,7 +190,8 @@ file_162=libFlexiFunctions
 file_163=libFlexiFunctions
 file_164=libFlexiFunctions
 file_165=MatrixPilot
-file_166=.
+file_166=MatrixPilot
+file_167=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -359,6 +360,7 @@ file_163=no
 file_164=no
 file_165=no
 file_166=no
+file_167=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -527,6 +529,7 @@ file_163=no
 file_164=no
 file_165=no
 file_166=no
+file_167=no
 [FILE_INFO]
 file_000=config_tests.c
 file_001=..\libUDB\background.c
@@ -694,7 +697,8 @@ file_162=..\libFlexiFunctions\flexifunction_options.h
 file_163=..\libFlexiFunctions\flexiFunctionServices.h
 file_164=..\libFlexiFunctions\flexiFunctionTypes.h
 file_165=parameter_table.h
-file_166=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
+file_166=parameter_datatypes.h
+file_167=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
