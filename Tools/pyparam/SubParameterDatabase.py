@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Mar  8 22:40:24 2012 by generateDS.py version 2.7b.
+# Generated Fri Mar  9 07:05:47 2012 by generateDS.py version 2.7b.
 #
 
 import sys
@@ -139,9 +139,9 @@ def parse(inFilename):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-##     sys.stdout.write('<?xml version="1.0" ?>\n')
-##     rootObj.export(sys.stdout, 0, name_=rootTag,
-##         namespacedef_='')
+    sys.stdout.write('<?xml version="1.0" ?>\n')
+    rootObj.export(sys.stdout, 0, name_=rootTag,
+        namespacedef_='')
     doc = None
     return rootObj
 
@@ -158,9 +158,9 @@ def parseString(inString):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-##     sys.stdout.write('<?xml version="1.0" ?>\n')
-##     rootObj.export(sys.stdout, 0, name_=rootTag,
-##         namespacedef_='')
+    sys.stdout.write('<?xml version="1.0" ?>\n')
+    rootObj.export(sys.stdout, 0, name_=rootTag,
+        namespacedef_='')
     return rootObj
 
 
@@ -175,11 +175,11 @@ def parseLiteral(inFilename):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-##     sys.stdout.write('#from ParameterDatabase import *\n\n')
-##     sys.stdout.write('import ParameterDatabase as model_\n\n')
-##     sys.stdout.write('rootObj = model_.SerialisationFlags(\n')
-##     rootObj.exportLiteral(sys.stdout, 0, name_="SerialisationFlags")
-##     sys.stdout.write(')\n')
+    sys.stdout.write('#from ParameterDatabase import *\n\n')
+    sys.stdout.write('import ParameterDatabase as model_\n\n')
+    sys.stdout.write('rootObj = model_.SerialisationFlags(\n')
+    rootObj.exportLiteral(sys.stdout, 0, name_="SerialisationFlags")
+    sys.stdout.write(')\n')
     return rootObj
 
 
