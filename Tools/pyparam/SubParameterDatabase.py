@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Fri Mar  9 07:35:54 2012 by generateDS.py version 2.7b.
+# Generated Sun Mar 11 22:58:08 2012 by generateDS.py version 2.7b.
 #
 
 import sys
@@ -106,8 +106,8 @@ supermod.Parameters.subclass = ParametersSub
 
 
 class ParameterBlockSub(supermod.ParameterBlock):
-    def __init__(self, blockName=None, storage_area='None', serialisationFlags=None, load_callback=None, in_mavlink_parameters=None, parameters=None, description='no description'):
-        super(ParameterBlockSub, self).__init__(blockName, storage_area, serialisationFlags, load_callback, in_mavlink_parameters, parameters, description, )
+    def __init__(self, blockName=None, storage_area='None', serialisationFlags=None, externs=None, load_callback=None, in_mavlink_parameters=None, parameters=None, description='no description'):
+        super(ParameterBlockSub, self).__init__(blockName, storage_area, serialisationFlags, externs, load_callback, in_mavlink_parameters, parameters, description, )
 supermod.ParameterBlock.subclass = ParameterBlockSub
 # end class ParameterBlockSub
 
@@ -124,6 +124,13 @@ class ParameterDatabaseSub(supermod.ParameterDatabase):
         super(ParameterDatabaseSub, self).__init__(serialisationFlags, udbTypes, parameterBlocks, )
 supermod.ParameterDatabase.subclass = ParameterDatabaseSub
 # end class ParameterDatabaseSub
+
+
+class ExternsSub(supermod.Externs):
+    def __init__(self, externString=None):
+        super(ExternsSub, self).__init__(externString, )
+supermod.Externs.subclass = ExternsSub
+# end class ExternsSub
 
 
 

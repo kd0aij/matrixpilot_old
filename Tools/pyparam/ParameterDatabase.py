@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Generated Fri Mar  9 07:35:54 2012 by generateDS.py version 2.7b.
+# Generated Sun Mar 11 22:58:08 2012 by generateDS.py version 2.7b.
 #
 
 import sys
@@ -857,10 +857,11 @@ class Parameters(GeneratedsSuper):
 class ParameterBlock(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, blockName=None, storage_area='None', serialisationFlags=None, load_callback=None, in_mavlink_parameters=None, parameters=None, description='no description'):
+    def __init__(self, blockName=None, storage_area='None', serialisationFlags=None, externs=None, load_callback=None, in_mavlink_parameters=None, parameters=None, description='no description'):
         self.blockName = blockName
         self.storage_area = storage_area
         self.serialisationFlags = serialisationFlags
+        self.externs = externs
         self.load_callback = load_callback
         self.in_mavlink_parameters = in_mavlink_parameters
         self.parameters = parameters
@@ -877,6 +878,8 @@ class ParameterBlock(GeneratedsSuper):
     def set_storage_area(self, storage_area): self.storage_area = storage_area
     def get_serialisationFlags(self): return self.serialisationFlags
     def set_serialisationFlags(self, serialisationFlags): self.serialisationFlags = serialisationFlags
+    def get_externs(self): return self.externs
+    def set_externs(self, externs): self.externs = externs
     def get_load_callback(self): return self.load_callback
     def set_load_callback(self, load_callback): self.load_callback = load_callback
     def get_in_mavlink_parameters(self): return self.in_mavlink_parameters
@@ -908,6 +911,8 @@ class ParameterBlock(GeneratedsSuper):
             outfile.write('<%sstorage_area>%s</%sstorage_area>\n' % (namespace_, self.gds_format_string(quote_xml(self.storage_area).encode(ExternalEncoding), input_name='storage_area'), namespace_))
         if self.serialisationFlags is not None:
             self.serialisationFlags.export(outfile, level, namespace_, name_='serialisationFlags', )
+        if self.externs is not None:
+            self.externs.export(outfile, level, namespace_, name_='externs')
         if self.load_callback is not None:
             showIndent(outfile, level)
             outfile.write('<%sload_callback>%s</%sload_callback>\n' % (namespace_, self.gds_format_string(quote_xml(self.load_callback).encode(ExternalEncoding), input_name='load_callback'), namespace_))
@@ -924,6 +929,7 @@ class ParameterBlock(GeneratedsSuper):
             self.blockName is not None or
             self.storage_area is not None or
             self.serialisationFlags is not None or
+            self.externs is not None or
             self.load_callback is not None or
             self.in_mavlink_parameters is not None or
             self.parameters is not None or
@@ -950,6 +956,12 @@ class ParameterBlock(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('serialisationFlags=model_.SerialisationFlags(\n')
             self.serialisationFlags.exportLiteral(outfile, level, name_='serialisationFlags')
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        if self.externs is not None:
+            showIndent(outfile, level)
+            outfile.write('externs=model_.Externs(\n')
+            self.externs.exportLiteral(outfile, level, name_='externs')
             showIndent(outfile, level)
             outfile.write('),\n')
         if self.load_callback is not None:
@@ -987,6 +999,10 @@ class ParameterBlock(GeneratedsSuper):
             obj_ = SerialisationFlags.factory()
             obj_.build(child_)
             self.set_serialisationFlags(obj_)
+        elif nodeName_ == 'externs':
+            obj_ = Externs.factory()
+            obj_.build(child_)
+            self.set_externs(obj_)
         elif nodeName_ == 'load_callback':
             load_callback_ = child_.text
             load_callback_ = self.gds_validate_string(load_callback_, node, 'load_callback')
@@ -1187,6 +1203,81 @@ class ParameterDatabase(GeneratedsSuper):
 # end class ParameterDatabase
 
 
+class Externs(GeneratedsSuper):
+    subclass = None
+    superclass = None
+    def __init__(self, externString=None):
+        if externString is None:
+            self.externString = []
+        else:
+            self.externString = externString
+    def factory(*args_, **kwargs_):
+        if Externs.subclass:
+            return Externs.subclass(*args_, **kwargs_)
+        else:
+            return Externs(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_externString(self): return self.externString
+    def set_externString(self, externString): self.externString = externString
+    def add_externString(self, value): self.externString.append(value)
+    def insert_externString(self, index, value): self.externString[index] = value
+    def export(self, outfile, level, namespace_='', name_='Externs', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        already_processed = []
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='Externs')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='Externs'):
+        pass
+    def exportChildren(self, outfile, level, namespace_='', name_='Externs', fromsubclass_=False):
+        for externString_ in self.externString:
+            showIndent(outfile, level)
+            outfile.write('<%sexternString>%s</%sexternString>\n' % (namespace_, self.gds_format_string(quote_xml(externString_).encode(ExternalEncoding), input_name='externString'), namespace_))
+    def hasContent_(self):
+        if (
+            self.externString
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='Externs'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, [], name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        pass
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('externString=[\n')
+        level += 1
+        for externString_ in self.externString:
+            showIndent(outfile, level)
+            outfile.write('%s,\n' % quote_python(externString_).encode(ExternalEncoding))
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+    def build(self, node):
+        self.buildAttributes(node, node.attrib, [])
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, node, nodeName_)
+    def buildAttributes(self, node, attrs, already_processed):
+        pass
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        if nodeName_ == 'externString':
+            externString_ = child_.text
+            externString_ = self.gds_validate_string(externString_, node, 'externString')
+            self.externString.append(externString_)
+# end class Externs
+
+
 USAGE_TEXT = """
 Usage: python <Parser>.py [ -s ] <in_xml_file>
 """
@@ -1270,6 +1361,7 @@ if __name__ == '__main__':
 
 
 __all__ = [
+    "Externs",
     "Parameter",
     "ParameterBlock",
     "ParameterBlocks",

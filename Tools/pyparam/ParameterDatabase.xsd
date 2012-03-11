@@ -48,13 +48,19 @@
 	
 	<xs:complexType name="ParameterBlock" >
 		<xs:sequence>
-			<xs:element name="blockName" type="xs:string"/>
-			<xs:element name="storage_area" type="xs:string" default="None"/>
-			<xs:element name="serialisationFlags" type="SerialisationFlags"/>
-			<xs:element name="load_callback" type="xs:string"/>
-			<xs:element name="in_mavlink_parameters" type="xs:boolean"/>
-			<xs:element name="parameters" type="Parameters"/>
-			<xs:element name="description" type="xs:string" default="no description" />
+			<xs:element name="blockName" type="xs:string" />
+			<xs:element name="storage_area" type="xs:string"
+				default="None" />
+			<xs:element name="serialisationFlags"
+				type="SerialisationFlags" />
+			<xs:element name="externs" type="Externs" maxOccurs="1"
+				minOccurs="0">
+			</xs:element>
+			<xs:element name="load_callback" type="xs:string" />
+			<xs:element name="in_mavlink_parameters" type="xs:boolean" />
+			<xs:element name="parameters" type="Parameters" />
+			<xs:element name="description" type="xs:string"
+				default="no description" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -77,4 +83,10 @@
 		</xs:complexType>
 	</xs:element>
 	
+
+	<xs:complexType name="Externs">
+		<xs:sequence>
+			<xs:element name="externString" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
 </xs:schema>

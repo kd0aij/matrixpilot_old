@@ -19,7 +19,7 @@
     <no_dates>false</no_dates>
     <no_versions>false</no_versions>
     <no_process_includes>false</no_process_includes>
-    <silence>true</silence>
+    <silence>false</silence>
     <namespace_defs></namespace_defs>
     <external_encoding></external_encoding>
     <member_specs>none</member_specs>
