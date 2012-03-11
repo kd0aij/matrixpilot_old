@@ -69,12 +69,23 @@ class ParameterTableGenerator():
         tableFile.write("// pyparam generated file - DO NOT EDIT\n\n\n")
         
         tableFile.write('#include "parameter_table.h"\n')
-        tableFile.write('#include "data_storage.h"\n')
+        tableFile.write('#include "data_storage.h"\n\n\n')
         
         dataTypes = self.ParamDBMain.get_udbTypes().get_udbType()
         paramBlocks = self.ParamDBMain.get_parameterBlocks().get_parameterBlock()
         
-        
+        for paramBlock in paramBlocks:
+#            print(paramBlock.get_blockName());
+            if(paramBlock.get_in_mavlink_parameters() == True):
+                externs = paramBlock.get_externs()
+            
+                if(externs):
+                    for extern in externs.get_externString():
+                        tableFile.write('extern ' + extern + ' ;\n')        
+
+        tableFile.write('\n\n')
+   
+       
         tableFile.write('const mavlink_parameter_parser    mavlink_parameter_parsers[] = {\n')
         
         for dataType in dataTypes:

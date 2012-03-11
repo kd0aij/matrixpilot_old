@@ -3,6 +3,16 @@
 
 #include "parameter_table.h"
 #include "data_storage.h"
+
+
+extern struct ADchannel udb_xaccel ;
+extern struct ADchannel udb_yaccel ;
+extern struct ADchannel udb_zaccel ;
+extern struct ADchannel udb_xrate ;
+extern struct ADchannel udb_yrate ;
+extern struct ADchannel udb_zrate ;
+
+
 const mavlink_parameter_parser    mavlink_parameter_parsers[] = {
     { &mavlink_send_param_int16, &mavlink_set_param_int16, MAVLINK_TYPE_INT32_T},
     { &mavlink_send_param_Q14, &mavlink_set_param_Q14, MAVLINK_TYPE_FLOAT},
@@ -20,6 +30,14 @@ const mavlink_parameter mavlink_parameters_list[] = {
     {"PID_PITCHGAIN" , {.param_float=0.0} , {.param_float=0.4} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &pitchgain, sizeof(pitchgain) },
     {"PID_RUDELEVMIXGAIN" , {.param_float=0.0} , {.param_float=0.4} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &rudderElevMixGain, sizeof(rudderElevMixGain) },
 
+
+
+    {"IMU_XACCEL_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_xaccel.offset, sizeof(udb_xaccel.offset) },
+    {"IMU_YACCEL_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_yaccel.offset, sizeof(udb_yaccel.offset) },
+    {"IMU_ZACCEL_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_zaccel.offset, sizeof(udb_zaccel.offset) },
+    {"IMU_XGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_xrate.offset, sizeof(udb_xrate.offset) },
+    {"IMU_YGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_yrate.offset, sizeof(udb_yrate.offset) },
+    {"IMU_ZGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_zrate.offset, sizeof(udb_zrate.offset) },
 
     };
 

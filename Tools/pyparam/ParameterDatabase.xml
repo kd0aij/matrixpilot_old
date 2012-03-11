@@ -239,6 +239,176 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 		<description>Magnetometer parameters</description>
 	</parameterBlock>
 
+
+	<parameterBlock>
+		<blockName>MAG_CALIB</blockName>
+		<storage_area>DATA_HANDLE_TRIM_CALIB</storage_area>
+		<serialisationFlags>
+			<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+		</serialisationFlags>
+		<load_callback>NULL</load_callback>
+		<in_mavlink_parameters>false</in_mavlink_parameters>
+		<parameters>
+			<parameter>
+				<parameterName>PWTRIM_CH1</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwtrim[1]</variable_name>
+				<description>RC trim channel 1</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CH2</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwtrim[2]</variable_name>
+				<description>RC trim channel 2</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CH3</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwtrim[3]</variable_name>
+				<description>RC trim channel 3</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CH4</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwtrim[4]</variable_name>
+				<description>RC trim channel 4</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CH5</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwtrim[5]</variable_name>
+				<description>RC trim channel 5</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CH6</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwtrim[6]</variable_name>
+				<description>RC trim channel 6</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CH7</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwtrim[7]</variable_name>
+				<description>RC trim channel 7</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CH8</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwtrim[8]</variable_name>
+				<description>RC trim channel 8</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+		</parameters>
+		<description>Radio input pulse width offset calibration</description>
+	</parameterBlock>
+
+
+
+	<parameterBlock>
+		<blockName>IMU_CALIB</blockName>
+		<storage_area>DATA_HANDLE_IMU_CALIB</storage_area>
+		<serialisationFlags>
+			<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+		</serialisationFlags>
+		<externs>
+			<externString>struct ADchannel udb_xaccel</externString>
+			<externString>struct ADchannel udb_yaccel</externString>
+			<externString>struct ADchannel udb_zaccel</externString>
+			<externString>struct ADchannel udb_xrate</externString>
+			<externString>struct ADchannel udb_yrate</externString>
+			<externString>struct ADchannel udb_zrate</externString>
+		</externs>
+		<load_callback>NULL</load_callback>
+		<in_mavlink_parameters>true</in_mavlink_parameters>
+		<parameters>
+			<parameter>
+				<parameterName>IMU_XACCEL_OFF</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_xaccel.offset</variable_name>
+				<description>X Accelerometer offset</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>IMU_YACCEL_OFF</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_yaccel.offset</variable_name>
+				<description>Y Accelerometer offset</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>IMU_ZACCEL_OFF</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_zaccel.offset</variable_name>
+				<description>Z Accelerometer offset</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+			
+	
+		<parameter>
+				<parameterName>IMU_XGYRO_OFF</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_xrate.offset</variable_name>
+				<description>X gyro rate offset</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>IMU_YGYRO_OFF</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_yrate.offset</variable_name>
+				<description>Ygyro rate offset</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>IMU_ZGYRO_OFF</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_zrate.offset</variable_name>
+				<description>Z gyro rate offset</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+	
+	</parameters>
+		<description>Radio input pulse width offset calibration</description>
+	</parameterBlock>
+
 </parameterBlocks>
 
 
