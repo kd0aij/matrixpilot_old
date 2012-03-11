@@ -149,15 +149,6 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 		<in_mavlink_parameters>true</in_mavlink_parameters>
 		<parameters>
 			<parameter>
-				<parameterName>PID_ROLLKP</parameterName>
-				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
-				<variable_name>rollkp</variable_name>
-				<description>Roll proporational gain</description>
-				<min>0.0</min>
-				<max>0.4</max>
-				<readonly>false</readonly>
-			</parameter>
-			<parameter>
 				<parameterName>MAG_CAL_RAW0</parameterName>
 				<udb_param_type>UDB_TYPE_INT</udb_param_type>
 				<variable_name>rawMagCalib[0]</variable_name>

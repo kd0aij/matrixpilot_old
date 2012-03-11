@@ -96,7 +96,7 @@ mavlink_status_t  r_mavlink_status ;
 #endif
 
 #if(USE_NV_MEMORY == 1)
-#include "../libUDB/data_services.h"
+#include "data_services.h"
 #endif
 
 #if ( MAVLINK_TEST_ENCODE_DECODE == 1 )

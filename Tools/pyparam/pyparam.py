@@ -24,7 +24,7 @@ class ParameterTableGenerator():
 
 
     def writeUDBTypesHeader( self ):
-        headerFile = open(self.filePath + "parameter_datatypes.h", "w")
+        headerFile = open(self.filePath + "../../MatrixPilot/parameter_datatypes.h", "w")
         
         headerFile.write("#ifndef PARAMETER_DATATYPES_H\n")
         headerFile.write("#define PARAMETER_DATATYPES_H\n")
@@ -51,6 +51,9 @@ class ParameterTableGenerator():
     
         headerFile.write("#endif    // PARAMETER_DATATYPES_H\n")
         
+        headerFile.close()
+
+        
     def findMAVlinkParamType(self, udb_type):
         dataTypes = self.ParamDBMain.get_udbTypes().get_udbType()
         for dataType in dataTypes:
@@ -61,72 +64,121 @@ class ParameterTableGenerator():
 
 
     def writeParameterTable( self ):
-        headerFile = open(self.filePath + "parameter_table.c", "w")
+        tableFile = open(self.filePath + "../../MatrixPilot/parameter_table.c", "w")
         
-        headerFile.write("// pyparam generated file - DO NOT EDIT\n\n\n")
+        tableFile.write("// pyparam generated file - DO NOT EDIT\n\n\n")
         
-        headerFile.write('#include "parameter_table.h"\n')
-        headerFile.write('#include "parameter_datatypes.h"\n')
-        headerFile.write('#include "gain_variables.h"        // Needed for access to internal DCM value"\n\n\n')
-
+        tableFile.write('#include "parameter_table.h"\n')
+        tableFile.write('#include "data_storage.h"\n')
         
         dataTypes = self.ParamDBMain.get_udbTypes().get_udbType()
         paramBlocks = self.ParamDBMain.get_parameterBlocks().get_parameterBlock()
         
         
-        headerFile.write('const mavlink_parameter_parser    mavlink_parameter_parsers[] = {\n')
+        tableFile.write('const mavlink_parameter_parser    mavlink_parameter_parsers[] = {\n')
         
         for dataType in dataTypes:
-            headerFile.write("    { &" + dataType.get_sendFunction() + ", &" + dataType.get_setFunction() + ", " + dataType.get_mavlinkType() + "},\n")
+            tableFile.write("    { &" + dataType.get_sendFunction() + ", &" + dataType.get_setFunction() + ", " + dataType.get_mavlinkType() + "},\n")
             
-        headerFile.write("    };\n\n")
+        tableFile.write("    };\n\n")
 
 
-        headerFile.write("const mavlink_parameter mavlink_parameters_list[] = {\n ")
+        tableFile.write("const mavlink_parameter mavlink_parameters_list[] = {\n ")
 
         for paramBlock in paramBlocks:
 #            print(paramBlock.get_blockName());
             if(paramBlock.get_in_mavlink_parameters() == True):
                 for parameter in paramBlock.get_parameters().get_parameter():
-                    headerFile.write('    {"' + parameter.get_parameterName() + '" , {.')
+                    tableFile.write('    {"' + parameter.get_parameterName() + '" , {.')
                     mavlinkType = self.findMAVlinkParamType(parameter.get_udb_param_type())
                     
                     if(mavlinkType == "MAVLINK_TYPE_FLOAT"):
-                        headerFile.write('param_float=')
+                        tableFile.write('param_float=')
                     if(mavlinkType == "MAVLINK_TYPE_INT32_T"):
-                        headerFile.write('param_int32=')
+                        tableFile.write('param_int32=')
                     if(mavlinkType == "MAVLINK_TYPE_UINT32_T"):
-                        headerFile.write('param_uint32=')
+                        tableFile.write('param_uint32=')
     
-                    headerFile.write( parameter.get_min() + '} , {.')
+                    tableFile.write( parameter.get_min() + '} , {.')
     
                     if(mavlinkType == "MAVLINK_TYPE_FLOAT"):
-                        headerFile.write('param_float=')
+                        tableFile.write('param_float=')
                     if(mavlinkType == "MAVLINK_TYPE_INT32_T"):
-                        headerFile.write('param_int32=')
+                        tableFile.write('param_int32=')
                     if(mavlinkType == "MAVLINK_TYPE_UINT32_T"):
-                        headerFile.write('param_uint32=')
+                        tableFile.write('param_uint32=')
                         
-                    headerFile.write( parameter.get_max() + '} , ' + parameter.get_udb_param_type() + ', ')
+                    tableFile.write( parameter.get_max() + '} , ' + parameter.get_udb_param_type() + ', ')
                     
                     if(parameter.get_readonly() == "true"):
-                        headerFile.write('PARAMETER_READONLY')
+                        tableFile.write('PARAMETER_READONLY')
                     else:
-                        headerFile.write('PARAMETER_READWRITE')
+                        tableFile.write('PARAMETER_READWRITE')
                     
-                    headerFile.write(', (void*) &' + parameter.get_variable_name() + ', sizeof(' + parameter.get_variable_name() + ') },\n')
-            headerFile.write('\n')
-        headerFile.write("    };\n\n")
+                    tableFile.write(', (void*) &' + parameter.get_variable_name() + ', sizeof(' + parameter.get_variable_name() + ') },\n')
+            tableFile.write('\n')
+        tableFile.write("    };\n\n")
 
-        headerFile.write("const int count_of_parameters_list = sizeof(mavlink_parameters_list) / sizeof(mavlink_parameter);\n\n\n")
+        tableFile.write("const int count_of_parameters_list = sizeof(mavlink_parameters_list) / sizeof(mavlink_parameter);\n\n\n")
+
+        tableFile.close()
 
 
-             
+    def writeStorageTable( self ):
+        tableFile = open(self.filePath + "../../MatrixPilot/nv_memory_table.c", "w")
+        
+        tableFile.write("// pyparam generated file - DO NOT EDIT\n\n\n")
+        
+        tableFile.write('#include "parameter_table.h"\n')
+        tableFile.write('#include "data_services.h"\n\n\n')
+        
+        dataTypes = self.ParamDBMain.get_udbTypes().get_udbType()
+        paramBlocks = self.ParamDBMain.get_parameterBlocks().get_parameterBlock()
+        
+        param_index = 0;
+        
+        # Sizes of parameter blocks  
+        paramBlockSizes = []
+
+        tableFile.write('const mavlink_parameter_block    mavlink_parameter_blocks[] = {\n')
+
+        for paramBlock in paramBlocks:
+#            print(paramBlock.get_blockName());
+            if(paramBlock.get_in_mavlink_parameters() == True):
+                
+                end_index = param_index + len(paramBlock.get_parameters().get_parameter())
+                
+                tableFile.write("    { " + paramBlock.get_storage_area() + " , " + str(param_index)  + " , " + str(end_index - param_index) + " , ")
+                
+                first = True
+                
+                for serialisationFlag in paramBlock.get_serialisationFlags().get_serialisationFlag():
+                    if(first == False):
+                        tableFile.write(" | ")
+                            
+                    tableFile.write(serialisationFlag)
+                    first = False
+
+                if(paramBlock.get_load_callback() != "NULL"):
+                    tableFile.write( " , &" + paramBlock.get_load_callback() + ' },\n')
+                else:
+                    tableFile.write( " , NULL },\n")
+                
+                param_index = end_index
+            
+        tableFile.write("    };\n\n\n")    
+
+        tableFile.write("const unsigned int mavlink_parameter_block_count = sizeof(mavlink_parameter_blocks) / sizeof(mavlink_parameter_block);\n\n\n")
+
+
+        tableFile.close()
+
 
 paramGen = ParameterTableGenerator()
 paramGen.openXMLDatabase()
 paramGen.writeUDBTypesHeader()
 paramGen.writeParameterTable()
+paramGen.writeStorageTable()
 
 
         

@@ -2,15 +2,7 @@
 
 
 #include "parameter_table.h"
-#include "parameter_datatypes.h"
-#include "gain_variables.h"        // Needed for access to internal DCM value"
-
-#if ( MAG_YAW_DRIFT == 1)
-extern int udb_magOffset[];  // magnetic offset in the body frame of reference
-extern int magGain[]; // magnetometer calibration gains
-extern int rawMagCalib[];
-#endif
-
+#include "data_storage.h"
 const mavlink_parameter_parser    mavlink_parameter_parsers[] = {
     { &mavlink_send_param_int16, &mavlink_set_param_int16, MAVLINK_TYPE_INT32_T},
     { &mavlink_send_param_Q14, &mavlink_set_param_Q14, MAVLINK_TYPE_FLOAT},
@@ -28,7 +20,6 @@ const mavlink_parameter mavlink_parameters_list[] = {
     {"PID_PITCHGAIN" , {.param_float=0.0} , {.param_float=0.4} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &pitchgain, sizeof(pitchgain) },
     {"PID_RUDELEVMIXGAIN" , {.param_float=0.0} , {.param_float=0.4} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &rudderElevMixGain, sizeof(rudderElevMixGain) },
 
-    {"PID_ROLLKP" , {.param_float=0.0} , {.param_float=0.4} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &rollkp, sizeof(rollkp) },
     {"MAG_CAL_RAW0" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &rawMagCalib[0], sizeof(rawMagCalib[0]) },
     {"MAG_CAL_RAW1" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &rawMagCalib[1], sizeof(rawMagCalib[1]) },
     {"MAG_CAL_RAW2" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &rawMagCalib[2], sizeof(rawMagCalib[2]) },

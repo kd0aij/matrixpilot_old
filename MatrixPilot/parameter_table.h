@@ -32,6 +32,18 @@
 #include "../MAVlink/include/mavlink_types.h"
 #include "parameter_datatypes.h"
 
+// Includes of all the data references required to build the parameter table.
+#include "gain_variables.h"        // Needed for access to internal DCM value"
+
+#if ( MAG_YAW_DRIFT == 1)
+extern int udb_magOffset[];  // magnetic offset in the body frame of reference
+extern int magGain[]; // magnetometer calibration gains
+extern int rawMagCalib[];
+#endif
+
+// callback type for data services user
+typedef void (*PT_callbackFunc)(boolean);
+
 typedef union 
 {
 	float param_float;
@@ -55,7 +67,7 @@ typedef struct tag_mavlink_parameter
 	param_union_t max ;            				// Maximum allowed value for parameter
 	udb_internal_type_t udb_param_type ;		// The internal UDB type for parsing
 	char readonly ; 							// Parameter is readonly (true) or Read / Write (false)
-	void* pparam ;								// Reference to variable
+	unsigned char* pparam ;						// Reference to variable
 	unsigned int param_size ;					// parameter size in ram
 } mavlink_parameter ;       					
 
@@ -71,18 +83,29 @@ extern const mavlink_parameter mavlink_parameters_list[];
 extern const int count_of_parameters_list;
 
 
+// callback type for data services user
+// TODO : MODE THIS FROM HERE????
+//typedef void (*DSRV_callbackFunc)(boolean);
+
+
 typedef struct tag_mavlink_parameter_block
 {
-	const mavlink_parameter* const 	parameters;
-	const unsigned int 				list_size ;
 	const unsigned int 				data_storage_area ;
+	const unsigned int				block_start_index ;
+	const unsigned int 				block_size ;
 	const unsigned int 				data_storage_flags ;
+	PT_callbackFunc					ploadCallback;
 } mavlink_parameter_block;
 
 extern const mavlink_parameter_block mavlink_parameter_blocks[];
-extern const int count_of_parameter_blocks;
+extern const unsigned int mavlink_parameter_block_count;
 
 
+// Collection of data on all memory areas served
+//extern const mavlink_parameter_block data_services_table[];
+
+// Length of the data service table in entries, not bytes
+//extern const unsigned int data_service_table_count;
 
 
 #endif 	//PARAMETER_TABLE_H
