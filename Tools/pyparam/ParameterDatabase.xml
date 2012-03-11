@@ -146,7 +146,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
 		</serialisationFlags>
 		<load_callback>NULL</load_callback>
-		<in_mavlink_parameters>true</in_mavlink_parameters>
+		<in_mavlink_parameters>false</in_mavlink_parameters>
 		<parameters>
 			<parameter>
 				<parameterName>MAG_CAL_RAW0</parameterName>
