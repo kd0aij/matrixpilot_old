@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Generated Sun Mar 11 22:58:08 2012 by generateDS.py version 2.7b.
+# Generated Tue Mar 13 00:00:25 2012 by generateDS.py version 2.7b.
 #
 
 import sys
@@ -642,6 +642,9 @@ class Parameter(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_parameterName(self): return self.parameterName
     def set_parameterName(self, parameterName): self.parameterName = parameterName
+    def validate_ParamIdentifier(self, value):
+        # Validate type ParamIdentifier, a restriction on xs:string.
+        pass
     def get_udb_param_type(self): return self.udb_param_type
     def set_udb_param_type(self, udb_param_type): self.udb_param_type = udb_param_type
     def get_variable_name(self): return self.variable_name
@@ -744,6 +747,7 @@ class Parameter(GeneratedsSuper):
             parameterName_ = child_.text
             parameterName_ = self.gds_validate_string(parameterName_, node, 'parameterName')
             self.parameterName = parameterName_
+            self.validate_ParamIdentifier(self.parameterName)    # validate type ParamIdentifier
         elif nodeName_ == 'udb_param_type':
             udb_param_type_ = child_.text
             udb_param_type_ = self.gds_validate_string(udb_param_type_, node, 'udb_param_type')
