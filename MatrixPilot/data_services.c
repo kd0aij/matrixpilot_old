@@ -375,7 +375,7 @@ unsigned int serialise_items_to_buffer(unsigned int table_index)
 
 		if( (buffer_index + item_size) > DATA_SERVICE_BUFFER_SIZE )
 			return 0;
-		memcpy(&data_services_buffer[buffer_index], pData, item_size);
+		memcpy( &data_services_buffer[buffer_index], pData, item_size);
 		buffer_index += item_size;
 	}
 	return buffer_index;
@@ -405,7 +405,7 @@ unsigned int  serialise_buffer_to_items(unsigned int table_index)
 
 		if( (buffer_index + item_size) > DATA_SERVICE_BUFFER_SIZE )
 			return 0;
-		memcpy(pData, &data_services_buffer[buffer_index], item_size);
+		memcpy( (unsigned char*) pData, &data_services_buffer[buffer_index], item_size);
 		buffer_index += item_size;
 	}
 	return buffer_index;

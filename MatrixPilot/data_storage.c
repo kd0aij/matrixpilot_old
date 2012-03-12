@@ -228,7 +228,7 @@ void data_storage_service(void)
 				data_storage_header.data_version 	= 0;
 				memcpy(data_storage_header.data_preamble, data_storage_preamble, sizeof(data_storage_preamble));
 
-				if(udb_nv_memory_write( &data_storage_header,
+				if(udb_nv_memory_write( (unsigned char*) &data_storage_header,
 										data_storage_table.table[data_storage_handle].data_address,
 										sizeof(DATA_STORAGE_HEADER),
 										&storage_write_header_callback) == false)
@@ -256,7 +256,7 @@ void data_storage_service(void)
 		switch(data_storage_type)
 		{
 		case DATA_STORAGE_CHECKSUM_STRUCT:
-			if(udb_nv_memory_read( &data_storage_header, 
+			if(udb_nv_memory_read( (unsigned char*) &data_storage_header, 
 						data_storage_table.table[data_storage_handle].data_address, 
 						sizeof(DATA_STORAGE_HEADER),
 						&storage_read_header_callback) == false)

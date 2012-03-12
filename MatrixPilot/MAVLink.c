@@ -414,7 +414,7 @@ void mavlink_set_param_Q14(mavlink_param_union_t setting, int16_t i )
 void mavlink_send_param_pwtrim( int16_t i )
 {
 	// Check that the size of the udb_pwtrim array is not exceeded
-	if(mavlink_parameters_list[i].pparam >=  (void*) (&udb_pwTrim + sizeof(udb_pwTrim)) )
+	if( mavlink_parameters_list[i].pparam >=  (unsigned char*) (&udb_pwTrim + sizeof(udb_pwTrim)) )
 		return;
 
 	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
@@ -428,7 +428,7 @@ void mavlink_set_param_pwtrim(mavlink_param_union_t setting, int16_t i )
 	if(setting.type != MAVLINK_TYPE_FLOAT) return;
 
 	// Check that the size of the ubb_pwtrim array is not exceeded
-	if(mavlink_parameters_list[i].pparam >=  (void*) (&udb_pwTrim + sizeof(udb_pwTrim)) )
+	if(mavlink_parameters_list[i].pparam >=  (unsigned char*) (&udb_pwTrim + sizeof(udb_pwTrim)) )
 		return;
 						
 	*((int*) mavlink_parameters_list[i].pparam) = (int) ( setting.param_float * 2.0 ) ;

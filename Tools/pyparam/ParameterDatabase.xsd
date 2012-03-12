@@ -27,7 +27,7 @@
   
 	<xs:complexType name="Parameter">
 		<xs:sequence>
-			<xs:element name="parameterName" type="xs:string"/>
+			<xs:element name="parameterName" type="ParamIdentifier"/>
 			<xs:element name="udb_param_type" type="xs:string" />
 			<xs:element name="variable_name" type="xs:string" default="NULL"/>
 			<xs:element name="description" type="xs:string" default="no description" />
@@ -89,4 +89,13 @@
 			<xs:element name="externString" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
+
+
+	<xs:simpleType name="ParamIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"></xs:minLength>
+			<xs:maxLength value="15"></xs:maxLength>
+
+		</xs:restriction>
+	</xs:simpleType>
 </xs:schema>
