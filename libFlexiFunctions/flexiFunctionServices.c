@@ -12,7 +12,7 @@
 #include "../libUDB/events.h"
 #include "flexifunction_options.h"
 #include "flexiFunctionServices.h"
-#include "../libUDB/data_storage.h"
+#include "data_storage.h"
 
 // Include MAVlink library for checksums
 #include "../MAVlink/include/mavlink_types.h"
