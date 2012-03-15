@@ -86,6 +86,16 @@ class MAVLink_message(object):
 
 # enums
 
+# MAV_PREFLIGHT_STORAGE_ACTION
+MAV_PFS_CMD_READ_ALL = 0 # Read all parameters from storage
+MAV_PFS_CMD_WRITE_ALL = 1 # Write all parameters to storage
+MAV_PFS_CMD_CLEAR_ALL = 2 # Clear all  parameters in storage
+MAV_PFS_CMD_READ_SPECIFIC = 3 # Read specific parameters from storage
+MAV_PFS_CMD_WRITE_SPECIFIC = 4 # Write specific parameters to storage
+MAV_PFS_CMD_CLEAR_SPECIFIC = 5 # Clear specific parameters in storage
+MAV_PFS_CMD_DO_NOTHING = 100 # Clear specific parameters in storage
+MAV_PREFLIGHT_STORAGE_ACTION_ENUM_END = 101 # 
+
 # MAV_AUTOPILOT
 MAV_AUTOPILOT_GENERIC = 0 # Generic autopilot, full support for everything
 MAV_AUTOPILOT_PIXHAWK = 1 # PIXHAWK autopilot, http://pixhawk.ethz.ch
@@ -298,6 +308,8 @@ MAV_CMD_PREFLIGHT_CALIBRATION = 241 # Trigger calibration. This command will be 
                         # flight mode.
 MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS = 242 # Set sensor offsets. This command will be only accepted if in pre-
                         # flight mode.
+MAV_CMD_PREFLIGHT_STORAGE_ADVANCED = 243 # Request storage of different parameter values and logs. This command
+                        # will be only accepted if in pre-flight mode.
 MAV_CMD_PREFLIGHT_STORAGE = 245 # Request storage of different parameter values and logs. This command
                         # will be only accepted if in pre-flight mode.
 MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN = 246 # Request the reboot or shutdown of system components.

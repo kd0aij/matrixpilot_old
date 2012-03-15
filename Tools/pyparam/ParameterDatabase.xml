@@ -248,7 +248,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
 			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
 		</serialisationFlags>
-		<load_callback>NULL</load_callback>
+		<load_callback>udb_skip_radio_trim</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
 		<parameters>
 			<parameter>
@@ -315,7 +315,6 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 		<blockName>IMU_CALIB</blockName>
 		<storage_area>DATA_HANDLE_IMU_CALIB</storage_area>
 		<serialisationFlags>
-			<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
 			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
 			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
 		</serialisationFlags>
@@ -327,7 +326,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<externString>struct ADchannel udb_yrate</externString>
 			<externString>struct ADchannel udb_zrate</externString>
 		</externs>
-		<load_callback>NULL</load_callback>
+		<load_callback>udb_skip_imu_calibration</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
 		<parameters>
 			<parameter>
@@ -386,6 +385,16 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<max>32767</max>
 				<readonly>true</readonly>
 			</parameter>
+			<parameter>
+				<parameterName>IMU_VREF_OFF</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>udb_vref.offset</variable_name>
+				<description>Vref offset</description>
+				<min>-32767</min>
+				<max>32767</max>
+				<readonly>true</readonly>
+			</parameter>
+	
 	
 	</parameters>
 		<description>Radio input pulse width offset calibration</description>

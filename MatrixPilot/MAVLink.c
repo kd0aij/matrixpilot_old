@@ -568,7 +568,9 @@ void handleMessage(mavlink_message_t* msg)
 	        }
 
 			break;
-	    } 
+	    }
+
+
 
 	    case MAVLINK_MSG_ID_COMMAND_LONG:
 		{
@@ -578,14 +580,53 @@ void handleMessage(mavlink_message_t* msg)
 			
 			switch(packet.command)
 			{
+			case MAV_CMD_PREFLIGHT_CALIBRATION:
+//				if(packet.param1 == 1)
+//					break;
+//				if(packet.param4 == 1)
+//					break;	
+				break;
 #if(USE_NV_MEMORY == 1)
 			case MAV_CMD_PREFLIGHT_STORAGE:
-				if(packet.param1 == 1)
-					data_services_save_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
-				else if(packet.param1 == 0)
-					data_services_load_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
-				else if(packet.param5 != 0)
-					storage_clear_area(packet.param5, &preflight_storage_complete_callback);
+				if(packet.param1 == MAV_PFS_CMD_WRITE_ALL)
+					if(packet.param2 == MAV_PFS_CMD_WRITE_ALL)
+						data_services_save_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+					else
+						data_services_save_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
+
+				else if(packet.param1 == MAV_PFS_CMD_READ_ALL)
+					if(packet.param2 == MAV_PFS_CMD_READ_ALL)
+						data_services_load_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+					else
+						data_services_load_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
+
+/*				else if(packet.param2 == MAV_PFS_CMD_WRITE_ALL)
+					data_services_save_all(DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+				else if(packet.param2 ==  MAV_PFS_CMD_READ_ALL)
+					data_services_load_all(DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+				break;
+*/
+				else if(packet.param1 == MAV_PFS_CMD_CLEAR_SPECIFIC)
+					if(packet.param5 != 0)
+						storage_clear_area(packet.param5, &preflight_storage_complete_callback);
+				break;
+
+			case MAV_CMD_PREFLIGHT_STORAGE_ADVANCED:
+				if(packet.param1 == MAV_PFS_CMD_WRITE_ALL)
+					if(packet.param2 == MAV_PFS_CMD_WRITE_ALL)
+						data_services_save_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+					else
+						data_services_save_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
+
+				else if(packet.param1 == MAV_PFS_CMD_READ_ALL)
+					if(packet.param2 == MAV_PFS_CMD_READ_ALL)
+						data_services_load_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+					else
+						data_services_load_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
+
+				else if(packet.param1 == MAV_PFS_CMD_CLEAR_SPECIFIC)
+					if(packet.param5 != 0)
+						storage_clear_area(packet.param5, &preflight_storage_complete_callback);
 				break;
 #endif
 			}

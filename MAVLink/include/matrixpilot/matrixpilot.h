@@ -43,6 +43,21 @@ extern "C" {
 // ENUM DEFINITIONS
 
 
+/** @brief Action required when performing CMD_PREFLIGHT_STORAGE */
+#ifndef HAVE_ENUM_MAV_PREFLIGHT_STORAGE_ACTION
+#define HAVE_ENUM_MAV_PREFLIGHT_STORAGE_ACTION
+enum MAV_PREFLIGHT_STORAGE_ACTION
+{
+	MAV_PFS_CMD_READ_ALL=0, /* Read all parameters from storage | */
+	MAV_PFS_CMD_WRITE_ALL=1, /* Write all parameters to storage | */
+	MAV_PFS_CMD_CLEAR_ALL=2, /* Clear all  parameters in storage | */
+	MAV_PFS_CMD_READ_SPECIFIC=3, /* Read specific parameters from storage | */
+	MAV_PFS_CMD_WRITE_SPECIFIC=4, /* Write specific parameters to storage | */
+	MAV_PFS_CMD_CLEAR_SPECIFIC=5, /* Clear specific parameters in storage | */
+	MAV_PFS_CMD_DO_NOTHING=6, /* Clear specific parameters in storage | */
+	MAV_PREFLIGHT_STORAGE_ACTION_ENUM_END=7, /*  | */
+};
+#endif
 
 // MESSAGE DEFINITIONS
 #include "./mavlink_msg_flexifunction_set.h"

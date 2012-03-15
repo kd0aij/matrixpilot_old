@@ -66,7 +66,10 @@ class ParameterTableGenerator():
     def writeParameterTable( self ):
         tableFile = open(self.filePath + "../../MatrixPilot/parameter_table.c", "w")
         
-        tableFile.write("// pyparam generated file - DO NOT EDIT\n\n\n")
+        tableFile.write("// pyparam generated file - DO NOT EDIT\n\n")
+        
+        tableFile.write('#include "../libUDB/libUDB.h" \n\n')        
+        tableFile.write('#if(SERIAL_FORMAT == SERIAL_MAVLINK) \n\n')
         
         tableFile.write('#include "parameter_table.h"\n')
         tableFile.write('#include "data_storage.h"\n\n\n')
@@ -131,6 +134,8 @@ class ParameterTableGenerator():
         tableFile.write("    };\n\n")
 
         tableFile.write("const int count_of_parameters_list = sizeof(mavlink_parameters_list) / sizeof(mavlink_parameter);\n\n\n")
+        
+        tableFile.write('#endif \n\n')        
 
         tableFile.close()
 

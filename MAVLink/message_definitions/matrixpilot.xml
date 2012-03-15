@@ -8,7 +8,38 @@
       If you prototype a message here, then you should consider if it
       is general enough to move into common.xml later
     -->
-	<messages>
+
+     <enums>
+          <enum name="MAV_PREFLIGHT_STORAGE_ACTION">
+               <description>Action required when performing CMD_PREFLIGHT_STORAGE</description>
+               <entry value="0" name="MAV_PFS_CMD_READ_ALL">
+                    <description>Read all parameters from storage</description>
+               </entry>
+               <entry value="1" name="MAV_PFS_CMD_WRITE_ALL">
+                    <description>Write all parameters to storage</description>
+               </entry>
+               <entry value="2" name="MAV_PFS_CMD_CLEAR_ALL">
+                    <description>Clear all  parameters in storage</description>
+               </entry>
+               <entry value="3" name="MAV_PFS_CMD_READ_SPECIFIC">
+                    <description>Read specific parameters from storage</description>
+               </entry>
+               <entry value="4" name="MAV_PFS_CMD_WRITE_SPECIFIC">
+                    <description>Write specific parameters to storage</description>
+               </entry>
+               <entry value="5" name="MAV_PFS_CMD_CLEAR_SPECIFIC">
+                    <description>Clear specific parameters in storage</description>
+               </entry>
+               <entry value="6" name="MAV_PFS_CMD_DO_NOTHING">
+                    <description>Clear specific parameters in storage</description>
+               </entry>
+          </enum>
+
+     </enums>
+
+
+
+    <messages>
     <message id="150" name="FLEXIFUNCTION_SET">
       <description>Depreciated but used as a compiler flag.  Do not remove</description>
       <field type="uint8_t" name="target_system">System ID</field>

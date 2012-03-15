@@ -1,5 +1,8 @@
 // pyparam generated file - DO NOT EDIT
 
+#include "../libUDB/libUDB.h" 
+
+#if(SERIAL_FORMAT == SERIAL_MAVLINK) 
 
 #include "parameter_table.h"
 #include "data_storage.h"
@@ -44,9 +47,12 @@ const mavlink_parameter mavlink_parameters_list[] = {
     {"IMU_XGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_xrate.offset, sizeof(udb_xrate.offset) },
     {"IMU_YGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_yrate.offset, sizeof(udb_yrate.offset) },
     {"IMU_ZGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_zrate.offset, sizeof(udb_zrate.offset) },
+    {"IMU_VREF_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_vref.offset, sizeof(udb_vref.offset) },
 
     };
 
 const int count_of_parameters_list = sizeof(mavlink_parameters_list) / sizeof(mavlink_parameter);
 
+
+#endif 
 

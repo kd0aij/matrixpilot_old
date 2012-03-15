@@ -32,6 +32,10 @@ void manualPassthrough( void ) ;
 void init_servoPrepare( void )	// initialize the PWM
 {
 	int i;
+
+	if(udb_skip_flags.skip_radio_trim == 1)
+		return;
+
 	for (i=0; i <= NUM_INPUTS; i++)
 #if (FIXED_TRIMPOINT == 1)
 		udb_pwTrim[i] = udb_pwIn[i] = ((i == THROTTLE_INPUT_CHANNEL) ? THROTTLE_TRIMPOINT : CHANNEL_TRIMPOINT ) ;
