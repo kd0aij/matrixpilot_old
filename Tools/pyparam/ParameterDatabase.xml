@@ -252,9 +252,47 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 		<in_mavlink_parameters>true</in_mavlink_parameters>
 		<parameters>
 			<parameter>
-				<parameterName>PWTRIM_ROLL</parameterName>
+				<parameterName>PWTRIM_AILERON</parameterName>
 				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
 				<variable_name>udb_pwTrim[AILERON_INPUT_CHANNEL]</variable_name>
+				<description>RC aileron trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_ELEVATOR</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[ELEVATOR_INPUT_CHANNEL]</variable_name>
+				<description>RC aileron trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_RUDDER</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[RUDDER_INPUT_CHANNEL]</variable_name>
+				<description>RC rudder trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_AILERON2</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[AILERON_SECONDARY_INPUT_CHANNEL]</variable_name>
+				<description>RC aileron secondary trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+
+
+			<parameter>
+				<parameterName>PWTRIM_ROLL</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[ROLL_INPUT_CHANNEL]</variable_name>
 				<description>RC roll trim</description>
 				<min>800.0</min>
 				<max>2200.0</max>
@@ -263,7 +301,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<parameter>
 				<parameterName>PWTRIM_PITCH</parameterName>
 				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
-				<variable_name>udb_pwTrim[ELEVATOR_INPUT_CHANNEL]</variable_name>
+				<variable_name>udb_pwTrim[PITCH_INPUT_CHANNEL]</variable_name>
 				<description>RC pitch trim</description>
 				<min>800.0</min>
 				<max>2200.0</max>
@@ -272,8 +310,8 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<parameter>
 				<parameterName>PWTRIM_THROTTLE</parameterName>
 				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
-				<variable_name>udb_pwTrim[3]</variable_name>
-				<description>RC trim channel 3</description>
+				<variable_name>udb_pwTrim[THROTTLE_INPUT_CHANNEL]</variable_name>
+				<description>Throttle input rc trim</description>
 				<min>800.0</min>
 				<max>2200.0</max>
 				<readonly>true</readonly>
@@ -281,8 +319,53 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<parameter>
 				<parameterName>PWTRIM_YAW</parameterName>
 				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
-				<variable_name>udb_pwTrim[RUDDER_INPUT_CHANNEL]</variable_name>
+				<variable_name>udb_pwTrim[YAW_INPUT_CHANNEL]</variable_name>
 				<description>RC yaw trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_FLAP</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[FLAP_INPUT_CHANNEL]</variable_name>
+				<description>RC flap input trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_AIRBRAKE</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[BRAKE_INPUT_CHANNEL]</variable_name>
+				<description>RC airbrake input trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_SPOILER</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[SPOILER_INPUT_CHANNEL]</variable_name>
+				<description>RC spoiler input trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CAMBER</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[CAMBER_INPUT_CHANNEL]</variable_name>
+				<description>RC camber input trim</description>
+				<min>800.0</min>
+				<max>2200.0</max>
+				<readonly>true</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PWTRIM_CROW</parameterName>
+				<udb_param_type>UDB_TYPE_PWTRIM</udb_param_type>
+				<variable_name>udb_pwTrim[CROW_INPUT_CHANNEL]</variable_name>
+				<description>RC crow input  trim</description>
 				<min>800.0</min>
 				<max>2200.0</max>
 				<readonly>true</readonly>

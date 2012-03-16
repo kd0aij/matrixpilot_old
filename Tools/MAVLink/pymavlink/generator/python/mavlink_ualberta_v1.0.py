@@ -319,8 +319,6 @@ MAV_CMD_PREFLIGHT_CALIBRATION = 241 # Trigger calibration. This command will be 
                         # flight mode.
 MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS = 242 # Set sensor offsets. This command will be only accepted if in pre-
                         # flight mode.
-MAV_CMD_PREFLIGHT_STORAGE_ADVANCED = 243 # Request storage of different parameter values and logs. This command
-                        # will be only accepted if in pre-flight mode.
 MAV_CMD_PREFLIGHT_STORAGE = 245 # Request storage of different parameter values and logs. This command
                         # will be only accepted if in pre-flight mode.
 MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN = 246 # Request the reboot or shutdown of system components.

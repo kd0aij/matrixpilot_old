@@ -634,16 +634,6 @@
                     <param index="6">Generic dimension 5, in the sensor's raw units</param>
                     <param index="7">Generic dimension 6, in the sensor's raw units</param>
                </entry>
-               <entry value="243" name="MAV_CMD_PREFLIGHT_STORAGE_ADVANCED">
-                    <description>Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode.</description>
-                    <param index="1">Parameter storage: Action defined by MAV_PREFLIGHT_STORAGE_ACTION</param>
-                    <param index="2">Mission storage: Action defined by MAV_PREFLIGHT_STORAGE_ACTION</param>
-                    <param index="3">Empty</param>
-                    <param index="4">Empty</param>
-                    <param index="5">Empty</param>
-                    <param index="6">Empty</param>
-                    <param index="7">Reference index for storage actions on specific parameter items or sets</param>
-               </entry>
                <entry value="245" name="MAV_CMD_PREFLIGHT_STORAGE">
                     <description>Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode.</description>
                     <param index="1">Parameter storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM</param>

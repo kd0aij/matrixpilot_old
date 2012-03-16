@@ -96,6 +96,75 @@ MAV_PFS_CMD_CLEAR_SPECIFIC = 5 # Clear specific parameters in storage
 MAV_PFS_CMD_DO_NOTHING = 6 # Clear specific parameters in storage
 MAV_PREFLIGHT_STORAGE_ACTION_ENUM_END = 7 # 
 
+# MAV_NV_STORAGE_AREA
+MAV_NV_STORAGE_ALL = 0 # Access all parameters in storage
+MAV_NV_STORAGE_FAILURE_DATALOG = 1 # Failure datalog storage area
+MAV_NV_STORAGE_IMU_CALIB = 2 # IMU calibration storage area
+MAV_NV_STORAGE_MAG_CALIB = 3 # Magnetometer calibration storage area
+MAV_NV_STORAGE_ANALOG_CALIB = 4 # Analog sensor calibration storage area
+MAV_NV_STORAGE_MIXER = 5 # Mixer settings storage area
+MAV_NV_STORAGE_RTL_SETTINGS = 6 # Return to launch settings storage area
+MAV_NV_STORAGE_WAYPOINTS = 7 # Mixer settings storage area
+MAV_NV_STORAGE_OSD_SETUP = 8 # OSD setup storage area
+MAV_NV_STORAGE_RADIO_TRIM = 9 # Radio trim storage area
+MAV_NV_STORAGE_AREA_ENUM_END = 10 # 
+
+# MAV_CMD
+MAV_CMD_NAV_WAYPOINT = 16 # Navigate to MISSION.
+MAV_CMD_NAV_LOITER_UNLIM = 17 # Loiter around this MISSION an unlimited amount of time
+MAV_CMD_NAV_LOITER_TURNS = 18 # Loiter around this MISSION for X turns
+MAV_CMD_NAV_LOITER_TIME = 19 # Loiter around this MISSION for X seconds
+MAV_CMD_NAV_RETURN_TO_LAUNCH = 20 # Return to launch location
+MAV_CMD_NAV_LAND = 21 # Land at location
+MAV_CMD_NAV_TAKEOFF = 22 # Takeoff from ground / hand
+MAV_CMD_NAV_ROI = 80 # Sets the region of interest (ROI) for a sensor set or the
+                        # vehicle itself. This can then be used by the
+                        # vehicles control             system to
+                        # control the vehicle attitude and the
+                        # attitude of various             sensors such
+                        # as cameras.
+MAV_CMD_NAV_PATHPLANNING = 81 # Control autonomous path planning on the MAV.
+MAV_CMD_NAV_LAST = 95 # NOP - This command is only used to mark the upper limit of the
+                        # NAV/ACTION commands in the enumeration
+MAV_CMD_CONDITION_DELAY = 112 # Delay mission state machine.
+MAV_CMD_CONDITION_CHANGE_ALT = 113 # Ascend/descend at rate.  Delay mission state machine until desired
+                        # altitude reached.
+MAV_CMD_CONDITION_DISTANCE = 114 # Delay mission state machine until within desired distance of next NAV
+                        # point.
+MAV_CMD_CONDITION_YAW = 115 # Reach a certain target angle.
+MAV_CMD_CONDITION_LAST = 159 # NOP - This command is only used to mark the upper limit of the
+                        # CONDITION commands in the enumeration
+MAV_CMD_DO_SET_MODE = 176 # Set system mode.
+MAV_CMD_DO_JUMP = 177 # Jump to the desired command in the mission list.  Repeat this action
+                        # only the specified number of times
+MAV_CMD_DO_CHANGE_SPEED = 178 # Change speed and/or throttle set points.
+MAV_CMD_DO_SET_HOME = 179 # Changes the home location either to the current location or a
+                        # specified location.
+MAV_CMD_DO_SET_PARAMETER = 180 # Set a system parameter.  Caution!  Use of this command requires
+                        # knowledge of the numeric enumeration value
+                        # of the parameter.
+MAV_CMD_DO_SET_RELAY = 181 # Set a relay to a condition.
+MAV_CMD_DO_REPEAT_RELAY = 182 # Cycle a relay on and off for a desired number of cyles with a desired
+                        # period.
+MAV_CMD_DO_SET_SERVO = 183 # Set a servo to a desired PWM value.
+MAV_CMD_DO_REPEAT_SERVO = 184 # Cycle a between its nominal setting and a desired PWM for a desired
+                        # number of cycles with a desired period.
+MAV_CMD_DO_CONTROL_VIDEO = 200 # Control onboard camera system.
+MAV_CMD_DO_LAST = 240 # NOP - This command is only used to mark the upper limit of the DO
+                        # commands in the enumeration
+MAV_CMD_PREFLIGHT_CALIBRATION = 241 # Trigger calibration. This command will be only accepted if in pre-
+                        # flight mode.
+MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS = 242 # Set sensor offsets. This command will be only accepted if in pre-
+                        # flight mode.
+MAV_CMD_PREFLIGHT_STORAGE_ADVANCED = 243 # Request storage of different parameter values and logs. This command
+                        # will be only accepted if in pre-flight mode.
+MAV_CMD_PREFLIGHT_STORAGE = 245 # Request storage of different parameter values and logs. This command
+                        # will be only accepted if in pre-flight mode.
+MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN = 246 # Request the reboot or shutdown of system components.
+MAV_CMD_OVERRIDE_GOTO = 252 # Hold / continue the current action
+MAV_CMD_MISSION_START = 300 # start running a mission
+MAV_CMD_ENUM_END = 301 # 
+
 # MAV_AUTOPILOT
 MAV_AUTOPILOT_GENERIC = 0 # Generic autopilot, full support for everything
 MAV_AUTOPILOT_PIXHAWK = 1 # PIXHAWK autopilot, http://pixhawk.ethz.ch
@@ -260,62 +329,6 @@ MAVLINK_DATA_STREAM_IMG_RAW32U = 4 #
 MAVLINK_DATA_STREAM_IMG_PGM = 5 # 
 MAVLINK_DATA_STREAM_IMG_PNG = 6 # 
 MAVLINK_DATA_STREAM_TYPE_ENUM_END = 7 # 
-
-# MAV_CMD
-MAV_CMD_NAV_WAYPOINT = 16 # Navigate to MISSION.
-MAV_CMD_NAV_LOITER_UNLIM = 17 # Loiter around this MISSION an unlimited amount of time
-MAV_CMD_NAV_LOITER_TURNS = 18 # Loiter around this MISSION for X turns
-MAV_CMD_NAV_LOITER_TIME = 19 # Loiter around this MISSION for X seconds
-MAV_CMD_NAV_RETURN_TO_LAUNCH = 20 # Return to launch location
-MAV_CMD_NAV_LAND = 21 # Land at location
-MAV_CMD_NAV_TAKEOFF = 22 # Takeoff from ground / hand
-MAV_CMD_NAV_ROI = 80 # Sets the region of interest (ROI) for a sensor set or the
-                        # vehicle itself. This can then be used by the
-                        # vehicles control             system to
-                        # control the vehicle attitude and the
-                        # attitude of various             sensors such
-                        # as cameras.
-MAV_CMD_NAV_PATHPLANNING = 81 # Control autonomous path planning on the MAV.
-MAV_CMD_NAV_LAST = 95 # NOP - This command is only used to mark the upper limit of the
-                        # NAV/ACTION commands in the enumeration
-MAV_CMD_CONDITION_DELAY = 112 # Delay mission state machine.
-MAV_CMD_CONDITION_CHANGE_ALT = 113 # Ascend/descend at rate.  Delay mission state machine until desired
-                        # altitude reached.
-MAV_CMD_CONDITION_DISTANCE = 114 # Delay mission state machine until within desired distance of next NAV
-                        # point.
-MAV_CMD_CONDITION_YAW = 115 # Reach a certain target angle.
-MAV_CMD_CONDITION_LAST = 159 # NOP - This command is only used to mark the upper limit of the
-                        # CONDITION commands in the enumeration
-MAV_CMD_DO_SET_MODE = 176 # Set system mode.
-MAV_CMD_DO_JUMP = 177 # Jump to the desired command in the mission list.  Repeat this action
-                        # only the specified number of times
-MAV_CMD_DO_CHANGE_SPEED = 178 # Change speed and/or throttle set points.
-MAV_CMD_DO_SET_HOME = 179 # Changes the home location either to the current location or a
-                        # specified location.
-MAV_CMD_DO_SET_PARAMETER = 180 # Set a system parameter.  Caution!  Use of this command requires
-                        # knowledge of the numeric enumeration value
-                        # of the parameter.
-MAV_CMD_DO_SET_RELAY = 181 # Set a relay to a condition.
-MAV_CMD_DO_REPEAT_RELAY = 182 # Cycle a relay on and off for a desired number of cyles with a desired
-                        # period.
-MAV_CMD_DO_SET_SERVO = 183 # Set a servo to a desired PWM value.
-MAV_CMD_DO_REPEAT_SERVO = 184 # Cycle a between its nominal setting and a desired PWM for a desired
-                        # number of cycles with a desired period.
-MAV_CMD_DO_CONTROL_VIDEO = 200 # Control onboard camera system.
-MAV_CMD_DO_LAST = 240 # NOP - This command is only used to mark the upper limit of the DO
-                        # commands in the enumeration
-MAV_CMD_PREFLIGHT_CALIBRATION = 241 # Trigger calibration. This command will be only accepted if in pre-
-                        # flight mode.
-MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS = 242 # Set sensor offsets. This command will be only accepted if in pre-
-                        # flight mode.
-MAV_CMD_PREFLIGHT_STORAGE_ADVANCED = 243 # Request storage of different parameter values and logs. This command
-                        # will be only accepted if in pre-flight mode.
-MAV_CMD_PREFLIGHT_STORAGE = 245 # Request storage of different parameter values and logs. This command
-                        # will be only accepted if in pre-flight mode.
-MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN = 246 # Request the reboot or shutdown of system components.
-MAV_CMD_OVERRIDE_GOTO = 252 # Hold / continue the current action
-MAV_CMD_MISSION_START = 300 # start running a mission
-MAV_CMD_ENUM_END = 301 # 
 
 # MAV_DATA_STREAM
 MAV_DATA_STREAM_ALL = 0 # Enable all data streams

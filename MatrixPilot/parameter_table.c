@@ -34,10 +34,19 @@ const mavlink_parameter mavlink_parameters_list[] = {
     {"PID_RUDELEVGAIN" , {.param_float=0.0} , {.param_float=0.4} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &rudderElevMixGain, sizeof(rudderElevMixGain) },
 
 
-    {"PWTRIM_ROLL" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[AILERON_INPUT_CHANNEL], sizeof(udb_pwTrim[AILERON_INPUT_CHANNEL]) },
-    {"PWTRIM_PITCH" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[ELEVATOR_INPUT_CHANNEL], sizeof(udb_pwTrim[ELEVATOR_INPUT_CHANNEL]) },
-    {"PWTRIM_THROTTLE" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[3], sizeof(udb_pwTrim[3]) },
-    {"PWTRIM_YAW" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[RUDDER_INPUT_CHANNEL], sizeof(udb_pwTrim[RUDDER_INPUT_CHANNEL]) },
+    {"PWTRIM_AILERON" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[AILERON_INPUT_CHANNEL], sizeof(udb_pwTrim[AILERON_INPUT_CHANNEL]) },
+    {"PWTRIM_ELEVATOR" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[ELEVATOR_INPUT_CHANNEL], sizeof(udb_pwTrim[ELEVATOR_INPUT_CHANNEL]) },
+    {"PWTRIM_RUDDER" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[RUDDER_INPUT_CHANNEL], sizeof(udb_pwTrim[RUDDER_INPUT_CHANNEL]) },
+    {"PWTRIM_AILERON2" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[AILERON_SECONDARY_INPUT_CHANNEL], sizeof(udb_pwTrim[AILERON_SECONDARY_INPUT_CHANNEL]) },
+    {"PWTRIM_ROLL" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[ROLL_INPUT_CHANNEL], sizeof(udb_pwTrim[ROLL_INPUT_CHANNEL]) },
+    {"PWTRIM_PITCH" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[PITCH_INPUT_CHANNEL], sizeof(udb_pwTrim[PITCH_INPUT_CHANNEL]) },
+    {"PWTRIM_THROTTLE" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[THROTTLE_INPUT_CHANNEL], sizeof(udb_pwTrim[THROTTLE_INPUT_CHANNEL]) },
+    {"PWTRIM_YAW" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[YAW_INPUT_CHANNEL], sizeof(udb_pwTrim[YAW_INPUT_CHANNEL]) },
+    {"PWTRIM_FLAP" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[FLAP_INPUT_CHANNEL], sizeof(udb_pwTrim[FLAP_INPUT_CHANNEL]) },
+    {"PWTRIM_AIRBRAKE" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[BRAKE_INPUT_CHANNEL], sizeof(udb_pwTrim[BRAKE_INPUT_CHANNEL]) },
+    {"PWTRIM_SPOILER" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[SPOILER_INPUT_CHANNEL], sizeof(udb_pwTrim[SPOILER_INPUT_CHANNEL]) },
+    {"PWTRIM_CAMBER" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[CAMBER_INPUT_CHANNEL], sizeof(udb_pwTrim[CAMBER_INPUT_CHANNEL]) },
+    {"PWTRIM_CROW" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[CROW_INPUT_CHANNEL], sizeof(udb_pwTrim[CROW_INPUT_CHANNEL]) },
     {"PWTRIM_CAMPITCH" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[CAMERA_PITCH_INPUT_CHANNEL], sizeof(udb_pwTrim[CAMERA_PITCH_INPUT_CHANNEL]) },
     {"PWTRIM_CAM_YAW" , {.param_float=800.0} , {.param_float=2200.0} , UDB_TYPE_PWTRIM, PARAMETER_READWRITE, (void*) &udb_pwTrim[CAMERA_YAW_INPUT_CHANNEL], sizeof(udb_pwTrim[CAMERA_YAW_INPUT_CHANNEL]) },
 

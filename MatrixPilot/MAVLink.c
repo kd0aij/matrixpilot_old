@@ -166,6 +166,8 @@ unsigned int 	mavlink_command_ack_result		= 0;
 inline void preflight_storage_complete_callback(boolean success);
 #endif
 
+// Generic function used to send command acknowledge
+inline void command_ack(unsigned int command, unsigned int result);
 
 void init_serial()
 {
@@ -612,23 +614,25 @@ void handleMessage(mavlink_message_t* msg)
 				break;
 
 			case MAV_CMD_PREFLIGHT_STORAGE_ADVANCED:
-				if(packet.param1 == MAV_PFS_CMD_WRITE_ALL)
-					if(packet.param2 == MAV_PFS_CMD_WRITE_ALL)
-						data_services_save_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
-					else
-						data_services_save_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
-
-				else if(packet.param1 == MAV_PFS_CMD_READ_ALL)
-					if(packet.param2 == MAV_PFS_CMD_READ_ALL)
-						data_services_load_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
-					else
-						data_services_load_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
-
-				else if(packet.param1 == MAV_PFS_CMD_CLEAR_SPECIFIC)
-					if(packet.param5 != 0)
-						storage_clear_area(packet.param5, &preflight_storage_complete_callback);
+				{
+				switch( (unsigned int) packet.param1  ) 
+					{
+					case MAV_PFS_CMD_CLEAR_SPECIFIC:
+						storage_clear_area(packet.param2, &preflight_storage_complete_callback);
+						break;
+					case MAV_PFS_CMD_WRITE_SPECIFIC:
+						storage_clear_area(packet.param2, &preflight_storage_complete_callback);
+						break;
+					default:
+						command_ack(packet.command, MAV_CMD_ACK_ERR_NOT_SUPPORTED);
+						break;
+					};
+				} ;
 				break;
 #endif
+			default:
+				command_ack(packet.command, MAV_CMD_ACK_ERR_NOT_SUPPORTED);
+				break;
 			}
 			break;
 		} 
@@ -1170,6 +1174,16 @@ void handleMessage(mavlink_message_t* msg)
 
 
 
+inline void command_ack(unsigned int command, unsigned int result)
+{
+	if(mavlink_send_command_ack == false)
+	{
+		mavlink_command_ack_result = result;
+		mavlink_command_ack_command = command;
+		mavlink_send_command_ack = true;
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
@@ -1180,7 +1194,11 @@ inline void preflight_storage_complete_callback(boolean success)
 {
 	if(mavlink_send_command_ack == false)
 	{
-		mavlink_command_ack_result = success;
+		if(success == true)
+			mavlink_command_ack_result = MAV_CMD_ACK_OK;
+		else
+			mavlink_command_ack_result = MAV_CMD_ACK_ERR_FAIL;
+
 		mavlink_command_ack_command = MAV_CMD_PREFLIGHT_STORAGE;
 		mavlink_send_command_ack = true;
 	}	
