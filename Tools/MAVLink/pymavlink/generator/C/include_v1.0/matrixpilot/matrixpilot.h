@@ -78,11 +78,29 @@ enum MAV_NV_STORAGE_AREA
 };
 #endif
 
+/** @brief Non volatile storage area */
+#ifndef HAVE_ENUM_MAV_NV_STORAGE_FLAGS
+#define HAVE_ENUM_MAV_NV_STORAGE_FLAGS
+enum MAV_NV_STORAGE_FLAGS
+{
+	MAV_STORAGE_LOAD_ALL=1, /* Access all parameters in storage | */
+	MAV_STORAGE_SAVE_ALL=2, /* Failure datalog storage area | */
+	MAV_STORAGE_LOAD_AT_STARTUP=4, /* IMU calibration storage area | */
+	MAV_STORAGE_STORE_WAYPOINTS=5, /* Mixer settings storage area | */
+	MAV_STORAGE_CALIB=6, /* Return to launch settings storage area | */
+	MAV_STORAGE_SAVE_MISSION=7, /* Mixer settings storage area | */
+	MAV_STORAGE_LOAD_AT_REBOOT=8, /* Magnetometer calibration storage area | */
+	MAV_STORAGE_SAVE_AFTER_CAL=16, /* Analog sensor calibration storage area | */
+	MAV_NV_STORAGE_FLAGS_ENUM_END=17, /*  | */
+};
+#endif
+
 /** @brief  */
 #ifndef HAVE_ENUM_MAV_CMD
 #define HAVE_ENUM_MAV_CMD
 enum MAV_CMD
 {
+	MAV_CMD_PREFLIGHT_STORAGE_ADVANCED=0, /* Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode. |Storage action: Action defined by MAV_PREFLIGHT_STORAGE_ACTION| Storage area as defined by MAV_NV_STORAGE_AREA| Storage flags as defined by MAV_NV_STORAGE_FLAGS| Empty| Empty| Empty| Empty|  */
 	MAV_CMD_NAV_WAYPOINT=16, /* Navigate to MISSION. |Hold time in decimal seconds. (ignored by fixed wing, time to stay at MISSION for rotary wing)| Acceptance radius in meters (if the sphere with this radius is hit, the MISSION counts as reached)| 0 to pass through the WP, if > 0 radius in meters to pass by WP. Positive value for clockwise orbit, negative value for counter-clockwise orbit. Allows trajectory control.| Desired yaw angle at MISSION (rotary wing)| Latitude| Longitude| Altitude|  */
 	MAV_CMD_NAV_LOITER_UNLIM=17, /* Loiter around this MISSION an unlimited amount of time |Empty| Empty| Radius around MISSION, in meters. If positive loiter clockwise, else counter-clockwise| Desired yaw angle.| Latitude| Longitude| Altitude|  */
 	MAV_CMD_NAV_LOITER_TURNS=18, /* Loiter around this MISSION for X turns |Turns| Empty| Radius around MISSION, in meters. If positive loiter clockwise, else counter-clockwise| Desired yaw angle.| Latitude| Longitude| Altitude|  */
@@ -114,7 +132,6 @@ enum MAV_CMD
 	MAV_CMD_DO_LAST=240, /* NOP - This command is only used to mark the upper limit of the DO commands in the enumeration |Empty| Empty| Empty| Empty| Empty| Empty| Empty|  */
 	MAV_CMD_PREFLIGHT_CALIBRATION=241, /* Trigger calibration. This command will be only accepted if in pre-flight mode. |Gyro calibration: 0: no, 1: yes| Magnetometer calibration: 0: no, 1: yes| Ground pressure: 0: no, 1: yes| Radio calibration: 0: no, 1: yes| Empty| Empty| Empty|  */
 	MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS=242, /* Set sensor offsets. This command will be only accepted if in pre-flight mode. |Sensor to adjust the offsets for: 0: gyros, 1: accelerometer, 2: magnetometer, 3: barometer, 4: optical flow| X axis offset (or generic dimension 1), in the sensor's raw units| Y axis offset (or generic dimension 2), in the sensor's raw units| Z axis offset (or generic dimension 3), in the sensor's raw units| Generic dimension 4, in the sensor's raw units| Generic dimension 5, in the sensor's raw units| Generic dimension 6, in the sensor's raw units|  */
-	MAV_CMD_PREFLIGHT_STORAGE_ADVANCED=243, /* Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode. |Storage action: Action defined by MAV_PREFLIGHT_STORAGE_ACTION| Empty| Empty| Empty| Empty| Empty| Reference index for storage actions on specific parameter items or sets|  */
 	MAV_CMD_PREFLIGHT_STORAGE=245, /* Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode. |Parameter storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM| Mission storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM| Reserved| Reserved| Empty| Empty| Empty|  */
 	MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN=246, /* Request the reboot or shutdown of system components. |0: Do nothing for autopilot, 1: Reboot autopilot, 2: Shutdown autopilot.| 0: Do nothing for onboard computer, 1: Reboot onboard computer, 2: Shutdown onboard computer.| Reserved| Reserved| Empty| Empty| Empty|  */
 	MAV_CMD_OVERRIDE_GOTO=252, /* Hold / continue the current action |MAV_GOTO_DO_HOLD: hold MAV_GOTO_DO_CONTINUE: continue with next item in mission plan| MAV_GOTO_HOLD_AT_CURRENT_POSITION: Hold at current position MAV_GOTO_HOLD_AT_SPECIFIED_POSITION: hold at specified position| MAV_FRAME coordinate frame of hold point| Desired yaw angle in degrees| Latitude / X position| Longitude / Y position| Altitude / Z position|  */

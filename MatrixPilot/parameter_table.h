@@ -114,6 +114,13 @@ extern const unsigned int mavlink_parameter_block_count;
 // Defines required to complete parameter table if these are not defined in
 // options.h
 
+//#if(MAG_YAW_DRIFT == 0)
+//extern unsigned int null_int[3];
+//#define udb_magOffset 	null_int;
+//#define magGain 		null_int;
+//#define rawMagCalib 	null_int;
+//#endif
+
 #ifndef AILERON_INPUT_CHANNEL
 #define AILERON_INPUT_CHANNEL 0
 #endif

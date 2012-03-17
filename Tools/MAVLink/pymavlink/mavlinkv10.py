@@ -109,7 +109,20 @@ MAV_NV_STORAGE_OSD_SETUP = 8 # OSD setup storage area
 MAV_NV_STORAGE_RADIO_TRIM = 9 # Radio trim storage area
 MAV_NV_STORAGE_AREA_ENUM_END = 10 # 
 
+# MAV_NV_STORAGE_FLAGS
+MAV_STORAGE_LOAD_ALL = 1 # Access all parameters in storage
+MAV_STORAGE_SAVE_ALL = 2 # Failure datalog storage area
+MAV_STORAGE_LOAD_AT_STARTUP = 4 # IMU calibration storage area
+MAV_STORAGE_STORE_WAYPOINTS = 5 # Mixer settings storage area
+MAV_STORAGE_CALIB = 6 # Return to launch settings storage area
+MAV_STORAGE_SAVE_MISSION = 7 # Mixer settings storage area
+MAV_STORAGE_LOAD_AT_REBOOT = 8 # Magnetometer calibration storage area
+MAV_STORAGE_SAVE_AFTER_CAL = 16 # Analog sensor calibration storage area
+MAV_NV_STORAGE_FLAGS_ENUM_END = 17 # 
+
 # MAV_CMD
+MAV_CMD_PREFLIGHT_STORAGE_ADVANCED = 0 # Request storage of different parameter values and logs. This command
+                        # will be only accepted if in pre-flight mode.
 MAV_CMD_NAV_WAYPOINT = 16 # Navigate to MISSION.
 MAV_CMD_NAV_LOITER_UNLIM = 17 # Loiter around this MISSION an unlimited amount of time
 MAV_CMD_NAV_LOITER_TURNS = 18 # Loiter around this MISSION for X turns
@@ -156,8 +169,6 @@ MAV_CMD_PREFLIGHT_CALIBRATION = 241 # Trigger calibration. This command will be 
                         # flight mode.
 MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS = 242 # Set sensor offsets. This command will be only accepted if in pre-
                         # flight mode.
-MAV_CMD_PREFLIGHT_STORAGE_ADVANCED = 243 # Request storage of different parameter values and logs. This command
-                        # will be only accepted if in pre-flight mode.
 MAV_CMD_PREFLIGHT_STORAGE = 245 # Request storage of different parameter values and logs. This command
                         # will be only accepted if in pre-flight mode.
 MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN = 246 # Request the reboot or shutdown of system components.
