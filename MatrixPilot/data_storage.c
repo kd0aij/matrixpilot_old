@@ -30,9 +30,9 @@
 //
 //
 
-#include "defines.h"
+#include "../libUDB/libUDB.h"
 
-#if( (USE_NV_MEMORY == 1) && (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK))
+#if(USE_NV_MEMORY == 1)
 
 #include "data_storage.h"
 #include "../libUDB/nv_memory.h"
@@ -734,7 +734,7 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size)
 	return lowestAddr;
 }
 
-
+#endif 		//#if(USE_NV_MEMORY == 1)
 
 
 // Clear specific data storage area by invalidating data
@@ -754,10 +754,12 @@ boolean storage_clear_area(unsigned int data_handle, DS_callbackFunc callback)
 void storage_clear_specific_area( void )
 {
 	// If the data storage area has not been created, return false
+	// TODO: Fix this so that it reports an already clear memory area as correctly cleared
 	if(storage_test_handle(data_storage_handle) == false)
 	{
 		if(data_storage_user_callback != NULL)
 			data_storage_user_callback(false);
+		data_storage_status = DATA_STORAGE_STATUS_WAITING;
 		return;
 	}
 
@@ -794,4 +796,3 @@ void storage_clear_specific_area_callback(boolean success)
 	data_storage_status = DATA_STORAGE_STATUS_WAITING;
 }
 
-#endif 		//#if(USE_NV_MEMORY == 1 && SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)

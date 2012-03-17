@@ -6,7 +6,7 @@
 // Set to 1 to include non volatile memory service in compilation
 // WARNING: THIS FEATURE IS UNDER DEVELOPMENT
 // WARNING: Use on UDB4+ only
-#define USE_NV_MEMORY					0
+#define USE_NV_MEMORY					1
 
 
 ////////////////////////////////////////////////////////////////////////////////

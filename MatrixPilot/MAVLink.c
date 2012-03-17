@@ -438,7 +438,7 @@ void mavlink_set_param_Q14(mavlink_param_union_t setting, int16_t i )
 void mavlink_send_param_pwtrim( int16_t i )
 {
 	// Check that the size of the udb_pwtrim array is not exceeded
-	if( mavlink_parameters_list[i].pparam >=  (unsigned char*) (&udb_pwTrim[0] + (sizeof(udb_pwTrim[0]) * NUM_INPUTS)) )
+	if(mavlink_parameters_list[i].pparam >=  (unsigned char*) (&udb_pwTrim[0] + (sizeof(udb_pwTrim[0]) * NUM_INPUTS)) )
 		return;
 
 	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
@@ -587,20 +587,163 @@ void handleMessage(mavlink_message_t* msg)
     		send_text( (unsigned char*) "\r\n");
 			switch(packet.command)
 			{
+			case MAV_CMD_PREFLIGHT_CALIBRATION:
+//				if(packet.param1 == 1)
+//					break;
+//				if(packet.param4 == 1)
+//					break;	
+				break;
 #if(USE_NV_MEMORY == 1)
 			case MAV_CMD_PREFLIGHT_STORAGE:
-				if(packet.param1 == 1)
-					data_services_save_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
-				else if(packet.param1 == 0)
-					data_services_load_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
-				else if(packet.param5 != 0)
-					storage_clear_area(packet.param5, &preflight_storage_complete_callback);
+				if(packet.param1 == MAV_PFS_CMD_WRITE_ALL)
+					if(packet.param2 == MAV_PFS_CMD_WRITE_ALL)
+						data_services_save_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+					else
+						data_services_save_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
+
+				else if(packet.param1 == MAV_PFS_CMD_READ_ALL)
+					if(packet.param2 == MAV_PFS_CMD_READ_ALL)
+						data_services_load_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+					else
+						data_services_load_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
+
+/*				else if(packet.param2 == MAV_PFS_CMD_WRITE_ALL)
+					data_services_save_all(DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+				else if(packet.param2 ==  MAV_PFS_CMD_READ_ALL)
+					data_services_load_all(DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+				break;
+*/
+				else if(packet.param1 == MAV_PFS_CMD_CLEAR_SPECIFIC)
+					if(packet.param5 != 0)
+						storage_clear_area(packet.param5, &preflight_storage_complete_callback);
+				break;
+
+			case MAV_CMD_PREFLIGHT_STORAGE_ADVANCED:
+				{
+				switch( (unsigned int) packet.param1  ) 
+					{
+					case MAV_PFS_CMD_CLEAR_SPECIFIC:
+						storage_clear_area(packet.param2, &preflight_storage_complete_callback);
+						break;
+					case MAV_PFS_CMD_WRITE_SPECIFIC:
+						storage_clear_area(packet.param2, &preflight_storage_complete_callback);
+						break;
+					default:
+						command_ack(packet.command, MAV_CMD_ACK_ERR_NOT_SUPPORTED);
+						break;
+					};
+				} ;
 				break;
 #endif
+			default:
+				command_ack(packet.command, MAV_CMD_ACK_ERR_NOT_SUPPORTED);
+				break;
 			}
 			break;
 		} 
 
+//	    case MAVLINK_MSG_ID_COMMAND:
+//			break;
+/*
+	    case MAVLINK_MSG_ID_ACTION:
+	    {
+			// send_text((unsigned char*) "Action: Specific Action Required\r\n");
+	        // decode
+	        mavlink_action_t packet;
+	        mavlink_msg_action_decode(msg, &packet);
+	        if (mavlink_check_target(packet.target,packet.target_component) == false ) break;
+			
+	        switch(packet.action)
+	        {
+	
+	            case MAV_ACTION_LAUNCH:
+					// send_text((unsigned char*) "Action: Launch !\r\n");
+	                //set_mode(TAKEOFF);
+						
+	                break;
+	
+	            case MAV_ACTION_RETURN:
+					// send_text((unsigned char*) "Action: Return !\r\n");
+	                //set_mode(RTL);
+	                break;
+	
+	            case MAV_ACTION_EMCY_LAND:
+					// send_text((unsigned char*) "Action: Emergency Land !\r\n");
+	                //set_mode(LAND);
+	                break;
+	
+	            case MAV_ACTION_HALT: 
+					// send_text((unsigned char*) "Action: Halt !\r\n");
+	                //loiter_at_location();
+	                break;
+	
+	            case MAV_ACTION_MOTORS_START:
+	            case MAV_ACTION_CONFIRM_KILL:
+	            case MAV_ACTION_EMCY_KILL:
+	            case MAV_ACTION_MOTORS_STOP:
+	            case MAV_ACTION_SHUTDOWN: 
+	                //set_mode(MANUAL);
+	                break;
+	
+	            case MAV_ACTION_CONTINUE:
+	                //process_next_command();
+	                break;
+	
+	            case MAV_ACTION_SET_MANUAL: 
+	                //set_mode(MANUAL);
+	                break;
+	
+	            case MAV_ACTION_SET_AUTO:
+	                //set_mode(AUTO);
+	                break; 
+	
+	            case MAV_ACTION_STORAGE_READ:
+					// send_text((unsigned char*) "Action: Storage Read\r\n");
+	                break; 
+	
+	            case MAV_ACTION_STORAGE_WRITE:
+					//send_text((unsigned char*) "Action: Storage Write\r\n");
+	                break;
+	
+	            case MAV_ACTION_CALIBRATE_RC:
+					//send_text((unsigned char*) "Action: Calibrate RC\r\n"); 
+	                break;
+	            
+	            case MAV_ACTION_CALIBRATE_GYRO:
+	            case MAV_ACTION_CALIBRATE_MAG: 
+	            case MAV_ACTION_CALIBRATE_ACC: 
+	            case MAV_ACTION_CALIBRATE_PRESSURE:
+	            case MAV_ACTION_REBOOT: 
+	                //startup_IMU_ground();     
+	                break; 
+	
+	            case MAV_ACTION_REC_START: break; 
+	            case MAV_ACTION_REC_PAUSE: break; 
+	            case MAV_ACTION_REC_STOP: break; 
+	
+	            case MAV_ACTION_TAKEOFF:
+					//send_text((unsigned char*) "Action: Take Off !\r\n");
+	                //set_mode(TAKEOFF);
+	                break; 
+	
+	            case MAV_ACTION_NAVIGATE:
+					// send_text((unsigned char*) "Action: Navigate !\r\n");
+	                //set_mode(AUTO);
+	                break; 
+	
+	            case MAV_ACTION_LAND:
+	                //set_mode(LAND);
+	                break; 
+	
+	            case MAV_ACTION_LOITER:
+	                //set_mode(LOITER);
+	                break; 
+	
+	            default: break;
+	        }
+	    }
+	    break;
+*/
 #if (FLIGHT_PLAN_TYPE == FP_WAYPOINTS )
 		/************** Not converted to MAVLink wire protocol 1.0 yet *******************
 	    case MAVLINK_MSG_ID_WAYPOINT_REQUEST_LIST:
@@ -1009,6 +1152,16 @@ void handleMessage(mavlink_message_t* msg)
 
 
 
+inline void command_ack(unsigned int command, unsigned int result)
+{
+	if(mavlink_send_command_ack == false)
+	{
+		mavlink_command_ack_result = result;
+		mavlink_command_ack_command = command;
+		mavlink_send_command_ack = true;
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
@@ -1019,7 +1172,11 @@ inline void preflight_storage_complete_callback(boolean success)
 {
 	if(mavlink_send_command_ack == false)
 	{
-		mavlink_command_ack_result = success;
+		if(success == true)
+			mavlink_command_ack_result = MAV_CMD_ACK_OK;
+		else
+			mavlink_command_ack_result = MAV_CMD_ACK_ERR_FAIL;
+
 		mavlink_command_ack_command = MAV_CMD_PREFLIGHT_STORAGE;
 		mavlink_send_command_ack = true;
 	}	

@@ -29,14 +29,15 @@
 // 
 //
 
-#include "defines.h"
+#include "../libUDB/libUDB.h"
 
-#if( USE_NV_MEMORY == 1 && SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
+#if(USE_NV_MEMORY == 1)
 
 #include "data_services.h"
 #include "../libUDB/events.h"
 #include "parameter_table.h"
 #include <string.h>
+
 
 // Data buffer used for services
 unsigned char data_services_buffer[DATA_SERVICE_BUFFER_SIZE];
@@ -507,6 +508,6 @@ void data_services_write_callback( boolean success )
 	}
 }
 
-#endif	//#if(USE_NV_MEMORY == 1 && SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
+#endif	//#if(USE_NV_MEMORY == 1)
 
 
