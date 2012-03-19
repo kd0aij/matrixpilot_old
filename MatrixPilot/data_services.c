@@ -434,8 +434,8 @@ boolean data_services_save_specific(unsigned int data_storage_handle, DSRV_callb
 	if(data_services_table_index == INVALID_HANDLE) return false;
 	
 	data_services_user_callback = pcallback;
-
-	data_services_serialize_flags = DS_SAVE_ALL;
+	data_services_do_all_areas = false;				// One area only
+	data_services_serialize_flags = DS_SAVE_ALL;	// Flag to write regardless of flags
 
 	data_service_state = DATA_SERVICE_STATE_WRITE;
 	
@@ -457,7 +457,12 @@ void data_services_write( void )
 	unsigned int size = serialise_items_to_buffer(data_services_table_index);
 
 	if(size == 0)
+	{
 		if(data_services_user_callback != NULL) data_services_user_callback(false);
+		data_services_user_callback = NULL;
+		data_service_state = DATA_SERVICE_STATE_WAITING;
+		return;
+	}
 
 	unsigned int handle = mavlink_parameter_blocks[data_services_table_index].data_storage_area;
 	//data_services_calc_item_size(data_services_table_index);
@@ -467,7 +472,8 @@ void data_services_write( void )
 	//storage_check_area_exists
 
 	if( (type == DATA_STORAGE_CHECKSUM_STRUCT) && 
-		(data_services_serialize_flags & mavlink_parameter_blocks[data_services_table_index].data_storage_flags) )
+		( (data_services_serialize_flags & mavlink_parameter_blocks[data_services_table_index].data_storage_flags) ||
+		  (data_services_serialize_flags & DS_SAVE_ALL) ) )
 	{
 		if(storage_write(handle, data_services_buffer, size, &data_services_write_callback) == true)
 		{
