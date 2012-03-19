@@ -310,24 +310,21 @@ void data_services_load_all(  unsigned int serialize_flags, DSRV_callbackFunc pc
 	data_service_state 				= DATA_SERVICE_STATE_READ;
 }
 
-//
-//void data_services_write_all(void)
-//{
-//	data_service_state =	DATA_SERVICE_STATE_WAITING;
-//}
+
 
 // Data is correct so serialise it from the buffer to the live data
 void data_services_read_done( void )
 {
 	serialise_buffer_to_items(data_services_table_index);
 
-	if(data_services_serialize_flags & (DS_LOAD_AT_STARTUP | DS_LOAD_AT_REBOOT))
+	if(mavlink_parameter_blocks[data_services_table_index].ploadCallback != NULL)
 	{
-		if(mavlink_parameter_blocks[data_services_table_index].ploadCallback != NULL)
-		{
-			mavlink_parameter_blocks[data_services_table_index].ploadCallback(true);
-		}
+		mavlink_parameter_blocks[data_services_table_index].ploadCallback(true);
 	}
+
+//	if(data_services_serialize_flags & (DS_LOAD_AT_STARTUP | DS_LOAD_AT_REBOOT))
+//	{
+//	}
 
 	data_services_table_index++;
 	data_service_state =	DATA_SERVICE_STATE_READ;

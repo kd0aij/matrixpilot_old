@@ -46,9 +46,9 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 	<mavlinkType>MAVLINK_TYPE_FLOAT</mavlinkType>
 	</udbType>
 	<udbType>
-	<typeName>UDB_TYPE_BYTE_CIRCULAR</typeName>
-	<sendFunction>mavlink_send_byte_circular</sendFunction>
-	<setFunction>mavlink_set_byte_circular</setFunction>
+	<typeName>UDB_TYPE_INT_CIRCULAR</typeName>
+	<sendFunction>mavlink_send_int_circular</sendFunction>
+	<setFunction>mavlink_set_int_circular</setFunction>
 	<mavlinkType>MAVLINK_TYPE_INT32_T</mavlinkType>
 	</udbType>
 
@@ -244,7 +244,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 
 			<parameter>
 				<parameterName>MAG_DECLINATION</parameterName>
-				<udb_param_type>UDB_TYPE_BYTE_CIRCULAR</udb_param_type>
+				<udb_param_type>UDB_TYPE_INT_CIRCULAR</udb_param_type>
 				<variable_name>dcm_declination_angle</variable_name>
 				<description>Magnetic declination</description>
 				<min>-180</min>

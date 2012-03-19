@@ -10,7 +10,7 @@ typedef enum
     UDB_TYPE_Q14,
     UDB_TYPE_PWTRIM,
     UDB_TYPE_GYROSCALE_Q14,
-    UDB_TYPE_BYTE_CIRCULAR,
+    UDB_TYPE_INT_CIRCULAR,
     } udb_internal_type_t;
 
 extern void mavlink_send_param_int16( int16_t i ) ;
@@ -25,7 +25,7 @@ extern void mavlink_set_param_pwtrim(mavlink_param_union_t setting, int16_t i ) 
 extern void mavlink_send_param_gyroscale_Q14( int16_t i ) ;
 extern void mavlink_set_param_gyroscale_Q14(mavlink_param_union_t setting, int16_t i ) ;
 
-extern void mavlink_send_byte_circular( int16_t i ) ;
-extern void mavlink_set_byte_circular(mavlink_param_union_t setting, int16_t i ) ;
+extern void mavlink_send_int_circular( int16_t i ) ;
+extern void mavlink_set_int_circular(mavlink_param_union_t setting, int16_t i ) ;
 
 #endif    // PARAMETER_DATATYPES_H

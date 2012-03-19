@@ -190,7 +190,6 @@ extern fractional udb_magOffset[3];
 // time the magnetometer reports new data.
 void udb_magnetometer_callback_data_available(void);	// Callback
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // LEDs
 // Use this to toggle an LED.  Use the LED definition from the Config*.h files,

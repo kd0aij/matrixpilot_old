@@ -492,41 +492,38 @@ void mavlink_set_param_null(float setting, int16_t i )
 	return ;
 }
 
-void mavlink_send_byte_circular( int16_t i )
+
+void mavlink_send_int_circular( int16_t i )
 {
 	param_union_t param ;
-
-#if(DECLINATIONANGLE_VARIABLE == 1)
 	union longww deg_angle;
-	deg_angle.WW = __builtin_mulss(dcm_declination_angle, (int) (RMAX * 180.0 / 128.0) );
-	deg_angle.WW <<= 2;
-	// Take care of the rounding error
-	if(deg_angle._.W0 > 0x8000)	deg_angle._.W1 ++;
-	param.param_int32 = deg_angle._.W1;
+
+	deg_angle._.W0 = *((int*) mavlink_parameters_list[i].pparam);
+
+	deg_angle.WW = __builtin_mulss(deg_angle._.W0 , (int) (RMAX * 180.0 / 256.0) );
+
+	deg_angle.WW >>= 5;
+	if(deg_angle._.W0 > 0x8000)	deg_angle._.W1 ++;		// Take care of the rounding error
+
+	param.param_int32 = deg_angle._.W1;	// >> 6;
 
 	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
 		param.param_float , MAVLINK_TYPE_INT32_T, count_of_parameters_list, i ) ;
-#else
-	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
-		0.0 , MAVLINK_TYPE_INT32_T, count_of_parameters_list, i ) ;.	
-#endif
 	return;
 }
 
-void mavlink_set_byte_circular(mavlink_param_union_t setting, int16_t i ){
-#if(DECLINATIONANGLE_VARIABLE == 1)
+void mavlink_set_int_circular(mavlink_param_union_t setting, int16_t i ){
 	if(setting.type != MAVLINK_TYPE_INT32_T) return;
 
 	union longww dec_angle;
-	dec_angle.WW = __builtin_mulss( (int) setting.param_int32, (int) (128.0 * RMAX / 180.0) );
-	dec_angle.WW <<= 2;
-	// Take care of the rounding error
-	if(dec_angle._.W0 > 0x8000)	dec_angle._.W1 ++;
-	dcm_declination_angle = (signed char) dec_angle._.W1;
+	dec_angle.WW = __builtin_mulss( (int) setting.param_int32, (int) ( RMAX * (256.0 / 180.0) ) );
+	dec_angle.WW <<= 9;
+	if(dec_angle._.W0 > 0x8000)	dec_angle.WW += 0x8000;		// Take care of the rounding error
+	*((int*) mavlink_parameters_list[i].pparam) = dec_angle._.W1;
 	
-#endif
 	return ;
 }
+
 
 // END OF GENERAL ROUTINES FOR CHANGING UAV ONBOARD PARAMETERS
 
