@@ -1,0 +1,92 @@
+Index: libDCM/libDCM.h
+===================================================================
+--- libDCM/libDCM.h	(revision 1320)
++++ libDCM/libDCM.h	(working copy)
+@@ -42,6 +42,10 @@
+ void dcm_calibrate(void) ;
+ void dcm_set_origin_location(long o_long, long o_lat, long o_alt) ;
+ 
++#if(DECLINATIONANGLE_VARIABLE == 1)
++extern signed char dcm_declination_angle ;
++#endif
++
+ // Called once each time the GPS reports a new location.
+ // After dead reckoning is complete, this callback may go away.
+ void dcm_callback_gps_location_updated(void) ;				// Callback
+Index: libDCM/rmat.c
+===================================================================
+--- libDCM/rmat.c	(revision 1320)
++++ libDCM/rmat.c	(working copy)
+@@ -126,6 +126,9 @@
+ 
+ fractional declinationVector[2] ;
+ 
++#if(DECLINATIONANGLE_VARIABLE == 1)
++signed char dcm_declination_angle = DECLINATIONANGLE;
++#endif
+ 
+ void dcm_init_rmat( void )
+ {
+@@ -135,7 +138,6 @@
+ #endif
+ }
+ 
+-
+ //	Implement the cross product. *dest = *src1X*src2 ;
+ void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
+ {
+@@ -383,7 +385,11 @@
+ 	int sintheta ;
+ 	initialBodyField.x = udb_magFieldBody[0] ;
+ 	initialBodyField.y = udb_magFieldBody[2] ;
++#if(DECLINATIONANGLE_VARIABLE == 1)
++	theta = rect_to_polar( &initialBodyField ) -64 - dcm_declination_angle ;	
++#else
+ 	theta = rect_to_polar( &initialBodyField ) -64 - DECLINATIONANGLE ;
++#endif
+ 	costheta = cosine(theta) ;
+ 	sintheta = sine(theta) ;
+ 	rmat[0] = rmat[5] = costheta ;
+@@ -401,7 +407,11 @@
+ 	int sintheta ;
+ 	initialBodyField.x = udb_magFieldBody[0] ;
+ 	initialBodyField.y = udb_magFieldBody[1] ;
++#if(DECLINATIONANGLE_VARIABLE == 1)
++	theta = rect_to_polar( &initialBodyField ) -64 - dcm_declination_angle ;
++#else
+ 	theta = rect_to_polar( &initialBodyField ) -64 - DECLINATIONANGLE ;
++#endif
+ 	costheta = cosine(theta) ;
+ 	sintheta = sine(theta) ;
+ 	rmat[0] = rmat[4] = costheta ;
+@@ -573,6 +583,10 @@
+ 
+ //		Use the magnetometer to detect yaw drift
+ 
++#if(DECLINATIONANGLE_VARIABLE == 1)
++		declinationVector[0] = cosine(dcm_declination_angle) ;
++		declinationVector[1] = sine(dcm_declination_angle) ;
++#endif		
+ 		mag_error = VectorDotProduct( 2 , magFieldEarthHorzNorm , declinationVector ) ;
+ 		VectorScale( 3 , errorYawplane , &rmat[6] , mag_error ) ; // Scalegain = 1/2
+ 
+Index: libUDB/magnetometerOptions.h
+===================================================================
+--- libUDB/magnetometerOptions.h	(revision 1320)
++++ libUDB/magnetometerOptions.h	(working copy)
+@@ -31,7 +31,10 @@
+ 
+ #define MAGNETICDECLINATION 0
+ 
++// Set to 0 for fixed declination angle or 1 for variable declination angle
++#define DECLINATIONANGLE_VARIABLE 1
+ 
++
+ // #define LED_RED_MAG_CHECK 1 if you want the RED LED to indicate the magnetometer is not working.
+ // #define LED_RED_MAG_CHECK 0 if you want the RED LED to indicate control mode.
+ 
+@@ -189,3 +192,4 @@
+ // The following line computes an internal parameter, do not change it.
+ #define DECLINATIONANGLE ((signed char)(MAGNETICDECLINATION*128/180))
+ 
++

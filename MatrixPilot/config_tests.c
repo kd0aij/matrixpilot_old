@@ -245,3 +245,8 @@
 	#error("Non volatile memory services can only be used with SERIAL_MAVLINK")
 #endif
 
+#if( (DECLINATIONANGLE_VARIABLE == 1) && (MAG_YAW_DRIFT != 1) )
+{
+	#error("Can't use variable declination angle with no magnetometer. Set MAG_YAW_DRIFT = 1")
+}
+#endif

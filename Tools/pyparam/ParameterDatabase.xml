@@ -45,6 +45,12 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 	<setFunction>mavlink_set_param_gyroscale_Q14</setFunction>
 	<mavlinkType>MAVLINK_TYPE_FLOAT</mavlinkType>
 	</udbType>
+	<udbType>
+	<typeName>UDB_TYPE_BYTE_CIRCULAR</typeName>
+	<sendFunction>mavlink_send_byte_circular</sendFunction>
+	<setFunction>mavlink_set_byte_circular</setFunction>
+	<mavlinkType>MAVLINK_TYPE_INT32_T</mavlinkType>
+	</udbType>
 
 </udbTypes>
 
@@ -146,7 +152,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
 		</serialisationFlags>
 		<load_callback>NULL</load_callback>
-		<in_mavlink_parameters>false</in_mavlink_parameters>
+		<in_mavlink_parameters>true</in_mavlink_parameters>
 		<parameters>
 			<parameter>
 				<parameterName>MAG_CAL_RAW0</parameterName>
@@ -234,6 +240,16 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<min>-32767</min>
 				<max>32767</max>
 				<readonly>true</readonly>
+			</parameter>
+
+			<parameter>
+				<parameterName>MAG_DECLINATION</parameterName>
+				<udb_param_type>UDB_TYPE_BYTE_CIRCULAR</udb_param_type>
+				<variable_name>dcm_declination_angle</variable_name>
+				<description>Magnetic declination</description>
+				<min>-180</min>
+				<max>180</max>
+				<readonly>false</readonly>
 			</parameter>
 		</parameters>
 		<description>Magnetometer parameters</description>

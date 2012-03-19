@@ -126,6 +126,9 @@ fractional error = 0 ;
 
 fractional declinationVector[2] ;
 
+#if(DECLINATIONANGLE_VARIABLE == 1)
+signed char dcm_declination_angle = DECLINATIONANGLE;
+#endif
 
 void dcm_init_rmat( void )
 {
@@ -134,7 +137,6 @@ void dcm_init_rmat( void )
 	declinationVector[1] = sine(DECLINATIONANGLE) ;
 #endif
 }
-
 
 //	Implement the cross product. *dest = *src1X*src2 ;
 void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
@@ -383,7 +385,11 @@ void align_rmat_to_mag(void)
 	int sintheta ;
 	initialBodyField.x = udb_magFieldBody[0] ;
 	initialBodyField.y = udb_magFieldBody[2] ;
+#if(DECLINATIONANGLE_VARIABLE == 1)
+	theta = rect_to_polar( &initialBodyField ) -64 - dcm_declination_angle ;	
+#else
 	theta = rect_to_polar( &initialBodyField ) -64 - DECLINATIONANGLE ;
+#endif
 	costheta = cosine(theta) ;
 	sintheta = sine(theta) ;
 	rmat[0] = rmat[5] = costheta ;
@@ -401,7 +407,11 @@ void align_rmat_to_mag(void)
 	int sintheta ;
 	initialBodyField.x = udb_magFieldBody[0] ;
 	initialBodyField.y = udb_magFieldBody[1] ;
+#if(DECLINATIONANGLE_VARIABLE == 1)
+	theta = rect_to_polar( &initialBodyField ) -64 - dcm_declination_angle ;
+#else
 	theta = rect_to_polar( &initialBodyField ) -64 - DECLINATIONANGLE ;
+#endif
 	costheta = cosine(theta) ;
 	sintheta = sine(theta) ;
 	rmat[0] = rmat[4] = costheta ;
@@ -573,6 +583,10 @@ void mag_drift()
 
 //		Use the magnetometer to detect yaw drift
 
+#if(DECLINATIONANGLE_VARIABLE == 1)
+		declinationVector[0] = cosine(dcm_declination_angle) ;
+		declinationVector[1] = sine(dcm_declination_angle) ;
+#endif		
 		mag_error = VectorDotProduct( 2 , magFieldEarthHorzNorm , declinationVector ) ;
 		VectorScale( 3 , errorYawplane , &rmat[6] , mag_error ) ; // Scalegain = 1/2
 

@@ -42,6 +42,10 @@ void dcm_init( void ) ;
 void dcm_calibrate(void) ;
 void dcm_set_origin_location(long o_long, long o_lat, long o_alt) ;
 
+#if(DECLINATIONANGLE_VARIABLE == 1)
+extern signed char dcm_declination_angle ;
+#endif
+
 // Called once each time the GPS reports a new location.
 // After dead reckoning is complete, this callback may go away.
 void dcm_callback_gps_location_updated(void) ;				// Callback
