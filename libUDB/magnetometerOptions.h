@@ -29,7 +29,7 @@
 // Define magneticDeclination to be the magnectic declination, in degrees, measured
 // clockwise from the north, east is plus, west is minus.
 
-#define MAGNETICDECLINATION 0
+#define MAGNETICDECLINATION 20
 
 // Set to 0 for fixed declination angle or 1 for variable declination angle
 #define DECLINATIONANGLE_VARIABLE 1
@@ -190,6 +190,6 @@
 #define MAGNETICMAXIMUM 1500
 
 // The following line computes an internal parameter, do not change it.
-#define DECLINATIONANGLE ((signed char)(MAGNETICDECLINATION*128/180))
+#define DECLINATIONANGLE ((int)(MAGNETICDECLINATION *(32767.0 / 180.0)))
 
 
