@@ -66,7 +66,7 @@ typedef struct tag_mavlink_parameter
 { 	const char name[15] ;                       // Name that will be displayed in the GCS
 	param_union_t min ;    						// Minimum allowed value for parameter
 	param_union_t max ;            				// Maximum allowed value for parameter
-	udb_internal_type_t udb_param_type ;		// The internal UDB type for parsing
+	udb_internal_type_e udb_param_type ;		// The internal UDB type for parsing
 	char readonly ; 							// Parameter is readonly (true) or Read / Write (false)
 	unsigned char* pparam ;						// Reference to variable
 	unsigned int param_size ;					// parameter size in ram

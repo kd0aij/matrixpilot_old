@@ -11,7 +11,7 @@
 
 
 
-          
+
      <enums>
           <enum name="MAV_PREFLIGHT_STORAGE_ACTION">
                <description>Action required when performing CMD_PREFLIGHT_STORAGE</description>
@@ -38,6 +38,9 @@
                </entry>
           </enum>
 
+
+        <!--  
+ Defined by parameter_database.xml 
           <enum name="MAV_NV_STORAGE_AREA">
                <description>Non volatile storage area</description>
                <entry value="0" name="MAV_NV_STORAGE_ALL">
@@ -77,7 +80,7 @@
 
 
 
-<!--     Defined by parameter_database.xml    
+       
            <enum name="MAV_NV_STORAGE_FLAGS">
                <description>Non volatile storage area</description>
                <entry value="1" name="MAV_STORAGE_LOAD_ALL">

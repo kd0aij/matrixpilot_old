@@ -631,16 +631,16 @@ void handleMessage(mavlink_message_t* msg)
 				if(packet.param1 == MAV_PFS_CMD_WRITE_ALL)
 				{
 					if(packet.param2 == MAV_PFS_CMD_WRITE_ALL)
-						data_services_save_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+						data_services_save_all(STORAGE_FLAG_STORE_CALIB | STORAGE_FLAG_STORE_WAYPOINTS, &preflight_storage_complete_callback);
 					else
-						data_services_save_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
+						data_services_save_all(STORAGE_FLAG_STORE_CALIB, &preflight_storage_complete_callback);
 				}
 				else if(packet.param1 == MAV_PFS_CMD_READ_ALL)
 				{
 					if(packet.param2 == MAV_PFS_CMD_READ_ALL)
-						data_services_load_all(DS_STORE_CALIB | DS_STORE_WAYPOINTS, &preflight_storage_complete_callback);
+						data_services_load_all(STORAGE_FLAG_STORE_CALIB | STORAGE_FLAG_STORE_WAYPOINTS, &preflight_storage_complete_callback);
 					else
-						data_services_load_all(DS_STORE_CALIB, &preflight_storage_complete_callback);
+						data_services_load_all(STORAGE_FLAG_STORE_CALIB, &preflight_storage_complete_callback);
 				}
 				else
 					command_ack(packet.command, MAV_CMD_ACK_ERR_NOT_SUPPORTED);

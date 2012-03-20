@@ -214,9 +214,9 @@ void data_services_init_table_index(void)
 	data_services_user_callback = NULL;
 
 	if(_SWR == 0)
-		data_services_serialize_flags = DS_LOAD_AT_STARTUP;
+		data_services_serialize_flags = STORAGE_FLAG_LOAD_AT_STARTUP;
 	else
-		data_services_serialize_flags = DS_LOAD_AT_REBOOT;
+		data_services_serialize_flags = STORAGE_FLAG_LOAD_AT_REBOOT;
 
 	data_service_state = DATA_SERVICE_STATE_READ;
 }
@@ -261,7 +261,7 @@ void data_services_read_index( void )
 	unsigned int service_flags = mavlink_parameter_blocks[data_services_table_index].data_storage_flags;
 
 	// Check the serialise flags to see if this table entry should be loaded
-	if( (service_flags & data_services_serialize_flags) | (service_flags & DS_LOAD_ALL) )
+	if( (service_flags & data_services_serialize_flags) | (service_flags & STORAGE_FLAG_ALL) )
 	{
 		unsigned int handle = mavlink_parameter_blocks[data_services_table_index].data_storage_area;
 		unsigned int size = data_services_calc_item_size(data_services_table_index);
@@ -435,7 +435,7 @@ boolean data_services_save_specific(unsigned int data_storage_handle, DSRV_callb
 	
 	data_services_user_callback = pcallback;
 	data_services_do_all_areas = false;				// One area only
-	data_services_serialize_flags = DS_SAVE_ALL;	// Flag to write regardless of flags
+	data_services_serialize_flags = STORAGE_FLAG_ALL;	// Flag to write regardless of flags
 
 	data_service_state = DATA_SERVICE_STATE_WRITE;
 	
@@ -473,7 +473,7 @@ void data_services_write( void )
 
 	if( (type == DATA_STORAGE_CHECKSUM_STRUCT) && 
 		( (data_services_serialize_flags & mavlink_parameter_blocks[data_services_table_index].data_storage_flags) ||
-		  (data_services_serialize_flags & DS_SAVE_ALL) ) )
+		  (data_services_serialize_flags & STORAGE_FLAG_ALL) ) )
 	{
 		if(storage_write(handle, data_services_buffer, size, &data_services_write_callback) == true)
 		{

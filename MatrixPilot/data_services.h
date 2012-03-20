@@ -23,23 +23,13 @@
 #define DATA_SERVICES_H
 
 #include "data_storage.h"
+#include "parameter_datatypes.h"
 
 #define DATA_SERVICE_BUFFER_SIZE	256
 
 // callback type for data services user
 typedef void (*DSRV_callbackFunc)(boolean);
 
-typedef enum
-{
-	DS_LOAD_ALL		 	= 0x0001,
-	DS_SAVE_ALL		 	= 0x0002,
-	DS_LOAD_AT_STARTUP	= 0x0004,
-	DS_LOAD_AT_REBOOT 	= 0x0008,
-	DS_SAVE_AFTER_CAL 	= 0x0010,
-	DS_STORE_WAYPOINTS	= 0x0020,
-	DS_STORE_CALIB		= 0x0040,
-	DS_SAVE_MISSION		= 0x0080,
-} DATA_SERVICE_FLAGS;
 
 /*
 // reference to a RAM variable/item and its size.

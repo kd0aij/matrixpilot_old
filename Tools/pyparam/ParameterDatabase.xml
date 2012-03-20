@@ -21,15 +21,14 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 		<dataStorageArea>CONTROL_GAINS</dataStorageArea>
 	</dataStorageAreas>
 
-	<serialisationFlags>
-	<serialisationFlag>DS_LOAD_ALL</serialisationFlag>
-	<serialisationFlag>DS_SAVE_ALL</serialisationFlag>
-	<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
-	<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
-	<serialisationFlag>DS_SAVE_AFTER_CAL</serialisationFlag>
-	<serialisationFlag>DS_STORE_WAYPOINTS</serialisationFlag>
-	<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
-	<serialisationFlag>DS_SAVE_MISSION</serialisationFlag>
+<serialisationFlags>
+	<serialisationFlag>ALL</serialisationFlag>
+	<serialisationFlag>LOAD_AT_STARTUP</serialisationFlag>
+	<serialisationFlag>LOAD_AT_REBOOT</serialisationFlag>
+	<serialisationFlag>SAVE_AFTER_CAL</serialisationFlag>
+	<serialisationFlag>STORE_WAYPOINTS</serialisationFlag>
+	<serialisationFlag>STORE_CALIB</serialisationFlag>
+	<serialisationFlag>SAVE_MISSION</serialisationFlag>
 </serialisationFlags>
 
 
@@ -70,11 +69,11 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 <parameterBlocks>
 	<parameterBlock>
 		<blockName>PID_SETTINGS</blockName>
-		<storage_area>DATA_HANDLE_CONTROL_LOOP_SETTINGS</storage_area>
+		<storage_area>CONTROL_GAINS</storage_area>
 		<serialisationFlags>
-			<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
-			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
-			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+			<serialisationFlag>LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>STORE_CALIB</serialisationFlag>
 		</serialisationFlags>
 		<load_callback>NULL</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
@@ -158,11 +157,11 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 
 	<parameterBlock>
 		<blockName>MAG_CALIB</blockName>
-		<storage_area>DATA_HANDLE_MAG_CALIB</storage_area>
+		<storage_area>MAG_CALIB</storage_area>
 		<serialisationFlags>
-			<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
-			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
-			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+			<serialisationFlag>LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>STORE_CALIB</serialisationFlag>
 		</serialisationFlags>
 		<load_callback>NULL</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
@@ -271,11 +270,11 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 
 	<parameterBlock>
 		<blockName>TRIM_CALIB</blockName>
-		<storage_area>DATA_HANDLE_TRIM_CALIB</storage_area>
+		<storage_area>RADIO_TRIM</storage_area>
 		<serialisationFlags>
-			<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
-			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
-			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+			<serialisationFlag>LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>STORE_CALIB</serialisationFlag>
 		</serialisationFlags>
 		<load_callback>udb_skip_radio_trim</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
@@ -425,10 +424,10 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 
 	<parameterBlock>
 		<blockName>IMU_CALIB</blockName>
-		<storage_area>DATA_HANDLE_IMU_CALIB</storage_area>
+		<storage_area>IMU_CALIB</storage_area>
 		<serialisationFlags>
-			<serialisationFlag>DS_LOAD_AT_REBOOT</serialisationFlag>
-			<serialisationFlag>DS_STORE_CALIB</serialisationFlag>
+			<serialisationFlag>LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>STORE_CALIB</serialisationFlag>
 		</serialisationFlags>
 		<externs>
 			<externString>struct ADchannel udb_xaccel</externString>

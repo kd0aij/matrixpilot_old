@@ -43,6 +43,7 @@
 #include "../MAVlink/include/mavlink_types.h"
 #include "../MAVlink/include/checksum.h"
 
+
 enum
 {
 	DATA_STORAGE_STATUS_START,
@@ -463,11 +464,11 @@ void data_storage_format_callback(boolean success)
 // return true if space is allocated
 boolean storage_test_handle(unsigned int data_handle)
 {
+	if(data_handle >= MAX_DATA_HANDLES)			return false;
 	DATA_STORAGE_ENTRY* pEntry = &data_storage_table.table[data_handle];
 	if(pEntry->data_address == 0) 				return false;
 	if(pEntry->data_type == DATA_STORAGE_NULL) 	return false;
 	if(pEntry->data_size == 0) 					return false;
-	if(data_handle >= DATA_HANDLE_MAX)			return false;
 	return true;
 }
 
@@ -685,7 +686,7 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size)
 	{
 		found_space = true;
 
-		for(handle = 0; handle <= DATA_HANDLE_MAX; handle++)
+		for(handle = 0; handle <= MAX_DATA_HANDLES; handle++)
 		{
 			overlap = false;
 
