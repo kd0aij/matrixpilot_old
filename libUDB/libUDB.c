@@ -218,14 +218,10 @@ void udb_a2d_record_offsets(void)
 
 void udb_servo_record_trims(void)
 {
-#if (FIXED_TRIMPOINT != 1)	// Do not alter trims from preset when they are fixed
-	if(udb_skip_flags.skip_radio_trim == 0)
-	{
-		int i;
-		for (i=0; i <= NUM_INPUTS; i++)
-			udb_pwTrim[i] = udb_pwIn[i] ;
-	}
-#endif	
+	int i;
+	for (i=0; i <= NUM_INPUTS; i++)
+		udb_pwTrim[i] = udb_pwIn[i] ;
+	
 	return ;
 }
 

@@ -49,7 +49,7 @@ class ParameterTableGenerator():
         for dataArea in dataAreas:
             headerFile.write("    STORAGE_HANDLE_" + dataArea + " = " + str(index) + ",\n" );
             index = index + 1
-        headerFile.write("    } data_Storage_handles_e;\n\n")
+        headerFile.write("    } data_storage_handles_e;\n\n")
         
         
         dataTypes = self.ParamDBMain.get_udbTypes().get_udbType()

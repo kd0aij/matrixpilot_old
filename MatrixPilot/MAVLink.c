@@ -620,11 +620,23 @@ void handleMessage(mavlink_message_t* msg)
 			switch(packet.command)
 			{
 			case MAV_CMD_PREFLIGHT_CALIBRATION:
-//				if(packet.param1 == 1)
-//					break;
-//				if(packet.param4 == 1)
-//					break;
-				command_ack(packet.command, MAV_CMD_ACK_ERR_NOT_SUPPORTED);
+				if(packet.param1 == 1)
+				{
+					udb_skip_flags.skip_imu_cal = 0;
+					udb_a2d_record_offsets();
+				} 
+				else if(packet.param4 == 1)	//param4 = radio calibration
+				{
+					if(udb_flags._.radio_on == 1)
+					{
+						udb_servo_record_trims();
+						command_ack(packet.command, MAV_CMD_ACK_OK);
+					}
+					else
+						command_ack(packet.command, MAV_CMD_ACK_ERR_FAIL);
+				}
+				else
+					command_ack(packet.command, MAV_CMD_ACK_ERR_NOT_SUPPORTED);
 				break;
 #if(USE_NV_MEMORY == 1)
 			case MAV_CMD_PREFLIGHT_STORAGE:
