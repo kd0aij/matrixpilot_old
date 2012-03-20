@@ -7,8 +7,21 @@
 xmlns="ParameterDB"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
+	<dataStorageAreas>
+		<dataStorageArea>NULL</dataStorageArea>
+		<dataStorageArea>FAILURE_DATALOG</dataStorageArea>
+		<dataStorageArea>IMU_CALIB</dataStorageArea>
+		<dataStorageArea>MAG_CALIB</dataStorageArea>
+		<dataStorageArea>ANALOG_CALIB</dataStorageArea>
+		<dataStorageArea>MIXER</dataStorageArea>
+		<dataStorageArea>RTL_SETTINGS</dataStorageArea>
+		<dataStorageArea>WAYPOINTS</dataStorageArea>
+		<dataStorageArea>OSD_SETUP</dataStorageArea>
+		<dataStorageArea>RADIO_TRIM</dataStorageArea>
+		<dataStorageArea>CONTROL_GAINS</dataStorageArea>
+	</dataStorageAreas>
 
-<serialisationFlags>
+	<serialisationFlags>
 	<serialisationFlag>DS_LOAD_ALL</serialisationFlag>
 	<serialisationFlag>DS_SAVE_ALL</serialisationFlag>
 	<serialisationFlag>DS_LOAD_AT_STARTUP</serialisationFlag>
