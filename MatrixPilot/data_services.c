@@ -112,6 +112,8 @@ void data_services_write( void );
 // Write callback
 void data_services_write_callback( boolean success );
 
+// Get the index in the nv memory table for the storage handle.
+unsigned int data_services_get_table_index(unsigned int data_storage_handle);
 
 // Calculate the size of the complete list of variable items in bytes
 unsigned int data_services_calc_item_size(unsigned int table_index);
@@ -261,7 +263,7 @@ void data_services_read_index( void )
 	unsigned int service_flags = mavlink_parameter_blocks[data_services_table_index].data_storage_flags;
 
 	// Check the serialise flags to see if this table entry should be loaded
-	if( (service_flags & data_services_serialize_flags) | (service_flags & STORAGE_FLAG_ALL) )
+	if( (service_flags & data_services_serialize_flags) | (data_services_serialize_flags & STORAGE_FLAG_ALL) )
 	{
 		unsigned int handle = mavlink_parameter_blocks[data_services_table_index].data_storage_area;
 		unsigned int size = data_services_calc_item_size(data_services_table_index);
@@ -278,8 +280,17 @@ void data_services_read_index( void )
 			return;
 		}
 	}
-
-	data_services_table_index++;
+	else
+	{
+		if(data_services_do_all_areas == true)
+			data_services_table_index++;
+		else
+		{
+			if(data_services_user_callback != NULL) data_services_user_callback(false);
+			data_services_user_callback = NULL;
+			data_service_state = DATA_SERVICE_STATE_WAITING;
+		}
+	}
 }
 
 // Request to save all memory areas from the table which match the serialize flags
@@ -295,6 +306,24 @@ boolean data_services_save_all( unsigned int serialize_flags, DSRV_callbackFunc 
 	data_service_state 				= DATA_SERVICE_STATE_WRITE;
 
 	return true;
+}
+
+
+// Load a data area to nv memory with the given handle.
+// Return true if services available to take request, otherwise return false
+boolean data_services_load_specific(unsigned int data_storage_handle, DSRV_callbackFunc pcallback)
+{
+	if(data_service_state != DATA_SERVICE_STATE_WAITING) return false;
+
+	data_services_table_index = data_services_get_table_index(data_storage_handle);
+	if(data_services_table_index == INVALID_HANDLE) return false;
+	
+	data_services_user_callback = pcallback;
+	data_services_do_all_areas = false;					// One area only
+	data_services_serialize_flags = STORAGE_FLAG_ALL;	// Flag to read regardless of flags
+	data_service_state = DATA_SERVICE_STATE_READ;
+	
+	return false;
 }
 
 
@@ -322,9 +351,13 @@ void data_services_read_done( void )
 		mavlink_parameter_blocks[data_services_table_index].ploadCallback(true);
 	}
 
-//	if(data_services_serialize_flags & (DS_LOAD_AT_STARTUP | DS_LOAD_AT_REBOOT))
-//	{
-//	}
+	if(data_services_do_all_areas == false)
+	{
+		if(data_services_user_callback != NULL) data_services_user_callback(true);
+		data_services_user_callback = NULL;
+		data_service_state = DATA_SERVICE_STATE_WAITING;
+		return;
+	}
 
 	data_services_table_index++;
 	data_service_state =	DATA_SERVICE_STATE_READ;
@@ -344,9 +377,11 @@ void data_services_read_callback(boolean success)
 		}
 		else
 		{
-			/// TODO: PUT DATA SERVICES CALLBACK HERE
+			if(data_services_user_callback != NULL) data_services_user_callback(true);
+			data_services_user_callback = NULL;
 			data_service_state =	DATA_SERVICE_STATE_WAITING;
 		}
+	return;
 }
 
 
@@ -410,7 +445,7 @@ unsigned int  serialise_buffer_to_items(unsigned int table_index)
 }
 
 
-inline unsigned int data_services_get_table_index(unsigned int data_storage_handle)
+unsigned int data_services_get_table_index(unsigned int data_storage_handle)
 {
 	int index;
 
@@ -483,7 +518,14 @@ void data_services_write( void )
 	}
 	else
 	{
-		data_services_table_index++;
+		if(data_services_do_all_areas == true)
+			data_services_table_index++;
+		else
+		{
+			if(data_services_user_callback != NULL) data_services_user_callback(false);
+			data_services_user_callback = NULL;
+			data_service_state = DATA_SERVICE_STATE_WAITING;
+		}
 	}
 }
 

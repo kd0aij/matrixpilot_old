@@ -668,6 +668,9 @@ void handleMessage(mavlink_message_t* msg)
 					case MAV_PFS_CMD_WRITE_SPECIFIC:
 						data_services_save_specific(packet.param2, &preflight_storage_complete_callback);
 						break;
+					case MAV_PFS_CMD_READ_SPECIFIC:
+						data_services_load_specific(packet.param2, &preflight_storage_complete_callback);
+						break;
 					default:
 						command_ack(packet.command, MAV_CMD_ACK_ERR_NOT_SUPPORTED);
 						break;

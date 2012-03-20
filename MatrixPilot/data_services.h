@@ -65,7 +65,7 @@ void data_services_load_all(  unsigned int serialize_flags, DSRV_callbackFunc pc
 
 // Load a data area to nv memory with the given handle.
 // Return true if services available to take request, otherwise return false
-void data_services_load_specific(unsigned int data_storage_handle, DSRV_callbackFunc pcallback);
+boolean data_services_load_specific(unsigned int data_storage_handle, DSRV_callbackFunc pcallback);
 
 // Save a data area to nv memory with the given handle.
 // Return true if services available to take request, otherwise return false
