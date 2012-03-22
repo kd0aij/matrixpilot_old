@@ -377,7 +377,7 @@ void data_services_read_callback(boolean success)
 		}
 		else
 		{
-			if(data_services_user_callback != NULL) data_services_user_callback(true);
+			if(data_services_user_callback != NULL) data_services_user_callback(false);
 			data_services_user_callback = NULL;
 			data_service_state =	DATA_SERVICE_STATE_WAITING;
 		}
