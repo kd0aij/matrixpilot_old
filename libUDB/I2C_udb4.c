@@ -152,6 +152,7 @@ boolean I2C1_Write(unsigned char address, unsigned char* pcommandData, unsigned 
 	if(!I2C1_CheckAvailable()) return false;
 
 	pI2C_callback 	= pCallback;
+	I2C1_mode		= I2C_MODE_WRITE;
 
 	I2C1_command_data_size 	= commandDataSize;
 	pI2C1commandBuffer		= pcommandData;
