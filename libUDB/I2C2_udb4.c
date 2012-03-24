@@ -26,13 +26,15 @@
 
 #if (BOARD_TYPE == UDB4_BOARD)
 
+#define USE_I2C_SECOND_PORT_DRIVER 1
+
 #if(USE_I2C_SECOND_PORT_DRIVER == 1)
 
-//#define I2C2_SDA 		_RG3
-//#define I2C2_SCL 		_RG2
+#define I2C2_SDA 		_RA3
+#define I2C2_SCL 		_RA2
 
-//#define I2C2_SDA_TRIS 	_TRISG3
-//#define I2C2_SCL_TRIS 	_TRISG2
+#define I2C2_SDA_TRIS 	_TRISA3
+#define I2C2_SCL_TRIS 	_TRISA2
 
 #define _I2C2EN 		I2C2CONbits.I2CEN
 
@@ -67,6 +69,10 @@ boolean I2C2_Busy = true;
 
 void (* I2C2_state ) ( void ) = &I2C2_idle ;
 
+// Calculate the BRGvalue automatically
+//#define I2C1FSCL 400000 // Bus speed measured in Hz
+//#define I2C1BRGVAL ((FREQOSC/(CLK_PHASES *I2C1FSCL))-(FREQOSC/(CLK_PHASES * 10000000)))-1
+
 #define I2C2BRGVAL 60 // 200 Khz
 
 #define I2C2_NORMAL ((( I2C2CON & 0b0000000000011111 ) == 0) && ( (I2C2STAT & 0b0100010011000001) == 0 ))
@@ -85,10 +91,40 @@ unsigned char* pI2C2commandBuffer = NULL;	// pointer to receive  buffer
 unsigned int I2C2_service_handle = INVALID_HANDLE;
 
 
+// Determine if the bus is normal
+boolean I2C2_Normal(void)
+{
+	if (I2C2_NORMAL) {
+		return true;
+	} else {
+		I2C2ERROR = I2C2STAT;
+		return false;
+	}
+}
+
+// Reset the bus
+void I2C2_reset(void)
+{
+	printf("I2C2_reset()\r\n");
+    I2C2_state = &I2C2_idle ;       // disable the response to any more interrupts
+    I2C2ERROR = I2C2STAT ;         // record the error for diagnostics
+
+    _I2C2EN = 0 ;                   // turn off the I2C
+    _MI2C2IF = 0 ;                  // clear the I2C master interrupt
+    _MI2C2IE = 0 ;                  // disable the interrupt
+    I2C2_SCL = I2C2_SDA = 0 ;       // pull SDA and SCL low
+    Nop();
+    I2C2_SCL = I2C2_SDA = 1 ;       // pull SDA and SCL high
+
+    I2C2_init() ;                   // enable the bus again
+    return ;
+}
+
+
 
 void I2C2_init(void)
 {
-//	I2C2_SDA_TRIS = I2C2_SCL_TRIS = 0 ;		// SDA and SCL as outputs
+	I2C2_SDA_TRIS = I2C2_SCL_TRIS = 0 ;		// SDA and SCL as outputs
 	I2C2BRG = I2C2BRGVAL ; 
 	_I2C2EN = 1 ; 	 		// enable I2C2		
 
@@ -107,7 +143,7 @@ void I2C2_init(void)
 void I2C2_trigger_service(void)
 {
 	trigger_event(I2C2_service_handle);
-};
+}
 
 
 void serviceI2C2(void)  // service the I2C
