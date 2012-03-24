@@ -94,6 +94,9 @@ unsigned int I2C2_service_handle = INVALID_HANDLE;
 // Determine if the bus is normal
 boolean I2C2_Normal(void)
 {
+	if ( _I2C2EN == 0 ) { // I2C is off
+		I2C2_init();
+	}
 	if (I2C2_NORMAL) {
 		return true;
 	} else {
@@ -105,7 +108,6 @@ boolean I2C2_Normal(void)
 // Reset the bus
 void I2C2_reset(void)
 {
-	printf("I2C2_reset()\r\n");
     I2C2_state = &I2C2_idle ;       // disable the response to any more interrupts
     I2C2ERROR = I2C2STAT ;         // record the error for diagnostics
 
@@ -119,7 +121,6 @@ void I2C2_reset(void)
     I2C2_init() ;                   // enable the bus again
     return ;
 }
-
 
 
 void I2C2_init(void)

@@ -84,15 +84,6 @@ void rxMagnetometer(void)  		// service the magnetometer
 		LED_RED = LED_ON ;
 	}
 #endif
-#define _I2C2EN I2C2CONbits.I2CEN
-	if ( _I2C2EN == 0 ) // I2C is off
-	{
-//		I2C2_state = &I2C2_idle ; // disable response to any interrupts
-		_RA2 = _RA3 = 1 ; // pull SDA and SCL high
-		udb_init_I2C() ; // turn the I2C back on
-		magMessage = 0 ; // start over again
-		return ;
-	}
 
 	if ( I2C_Normal() == false ) 	// if I2C is not ok
 	{
