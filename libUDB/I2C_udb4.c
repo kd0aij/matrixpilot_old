@@ -82,7 +82,8 @@ unsigned char* pI2C1commandBuffer = NULL;	// pointer to receive  buffer
 
 unsigned int I2C1_service_handle = INVALID_HANDLE;
 
-
+#define I2C1_WATCHDOG_CYCLES	3
+unsigned int I2C1_watchdog_counter = 0;
 
 void I2C1_init(void)
 {
@@ -114,8 +115,31 @@ void serviceI2C1(void)  // service the I2C
 	{
 		I2C1_state = &I2C1_idle ; 	// disable response to any interrupts
 		I2C1_init() ; 			// turn the I2C back on
+		I2C1_SDA = I2C1_SCL = 1 ; // pull SDA and SCL low
 		// Put something here to reset state machine.  Make sure attached servies exit nicely.
 		return ;
+	}
+
+	if(I2C1_state != &I2C1_idle)
+	{
+		if(I2C1_watchdog_counter == 0)
+		{
+			I2C1_state = &I2C1_idle ;	// disable the response to any more interrupts
+	//		I2ERROR = I2C2STAT ; // record the error for diagnostics
+			_I2C1EN = 0 ;  // turn off the I2C
+			_MI2C1IF = 0 ; // clear the I2C master interrupt
+			_MI2C1IE = 0 ; // disable the interrupt
+			I2C1_SDA = I2C1_SCL = 0 ; // pull SDA and SCL low
+			if(	pI2C_callback != NULL)
+				pI2C_callback(false);
+			pI2C_callback = NULL;
+		}
+		else
+		{
+			I2C1_watchdog_counter--;
+		}
+		return ;
+
 	}
 
 	return ;
@@ -165,6 +189,7 @@ boolean I2C1_Write(unsigned char address, unsigned char* pcommandData, unsigned 
 	// Set ISR callback and trigger the ISR
 	I2C1_state = &I2C1_startWrite;
 	_MI2C1IF = 1 ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return true;
 }
 
@@ -187,6 +212,7 @@ boolean I2C1_Read(unsigned char address, unsigned char* pcommandData, unsigned c
 	// Set ISR callback and trigger the ISR
 	I2C1_state = &I2C1_startWrite;
 	_MI2C1IF = 1 ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return true;
 }
 
@@ -209,6 +235,7 @@ boolean I2C1_checkACK(unsigned int address, I2C_callbackFunc pCallback)
 	// Set ISR callback and trigger the ISR
 	I2C1_state = &I2C1_startWrite;
 	_MI2C1IF = 1 ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return true;
 }
 
@@ -222,6 +249,7 @@ void I2C1_startWrite(void)
 	else
 		I2C1_state = &I2C1_writeAddress ;
 	I2C1CONbits.SEN = 1 ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return ;
 }
 
@@ -230,6 +258,7 @@ void I2C1_writeAddress(void)
 {
 	I2C1TRN = I2C1_AddressByte & 0xFE ;
 	I2C1_state = &I2C1_writeCommandData ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return;
 }
 
@@ -261,6 +290,8 @@ void I2C1_writeCommandData(void)
 		else
 			I2C1_state = &I2C1_writeData ;
 	}
+
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return ;
 }
 
@@ -282,6 +313,7 @@ void I2C1_writeData(void)
 		else
 			I2C1_state = &I2C1_readStart ;			
 	}
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return ;
 }
 
@@ -290,6 +322,7 @@ void I2C1_writeStop(void)
 {
 	I2C1_state = &I2C1_doneWrite ;
 	I2C1CONbits.PEN = 1 ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return ;
 }
 
@@ -298,6 +331,8 @@ void I2C1_doneWrite(void)
 	I2C1_Busy = false;
 	if(	pI2C_callback != NULL)
 		pI2C_callback(true);
+	pI2C_callback = NULL;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return;
 }
 
@@ -306,7 +341,9 @@ void I2C1_readStart(void)
 {
 	I2C1_Index = 0;  			// Reset index into buffer
 	I2C1_state = &I2C1_readAddress ;
-	I2C1CONbits.SEN = 1 ;	
+	I2C1CONbits.SEN = 1 ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
+	return;
 }
 
 // Send the address to read
@@ -325,6 +362,9 @@ void I2C1_readAddress(void)
 	}
 	else
 		I2C1_state = &I2C1_recen ;
+
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
+	return;
 }
 
 // Check for ACK.  If ok, start receive mode, otherwise abandon.
@@ -340,6 +380,8 @@ void I2C1_recen(void)
 		I2C1_state = &I2C1_recstore ;
 		I2C1CONbits.RCEN = 1 ;
 	}
+
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return ;
 }
 
@@ -347,6 +389,7 @@ void I2C1_rerecen(void)
 {
 	I2C1_state = &I2C1_recstore ;
 	I2C1CONbits.RCEN = 1 ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return ;
 }
 
@@ -364,6 +407,7 @@ void I2C1_recstore(void)
 		I2C1CONbits.ACKDT = 0 ;
 	}
 	I2C1CONbits.ACKEN = 1 ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return ;
 }
 
@@ -372,6 +416,7 @@ void I2C1_stopRead(void)
 {
 	I2C1CONbits.PEN = 1;
 	I2C1_state = &I2C1_doneRead ;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	return ;
 }
 
@@ -386,6 +431,8 @@ void I2C1_doneRead(void)
 	I2C1_Busy = false;
 	if(	pI2C_callback != NULL)
 		pI2C_callback(true);
+	pI2C_callback = NULL;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 }
 
 // On failure, stop the bus, go into idle and callback with failure
@@ -396,6 +443,8 @@ void I2C1_Failed(void)
 	I2C1_Busy = false;
 	if(	pI2C_callback != NULL)
 		pI2C_callback(false);
+	pI2C_callback = NULL;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 }
 
 #endif  // UDB4 BOARD
