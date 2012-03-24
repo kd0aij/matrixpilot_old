@@ -81,6 +81,9 @@ extern boolean I2C2_checkACK(unsigned int address, I2C_callbackFunc pCallback);
 extern void I2C2_trigger_service(void);
 extern void I2C2_init(void);
 
+extern boolean I2C2_Normal(void);
+extern void I2C2_reset(void);
+
 
 #endif	//I2C_H
 
