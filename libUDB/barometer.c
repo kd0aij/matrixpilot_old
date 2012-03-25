@@ -29,6 +29,7 @@ static Barometer_callbackFunc callbackFunc;
 
 void barometer_init(void)
 {
+
 }
 
 void barometer_service_trigger(void)
