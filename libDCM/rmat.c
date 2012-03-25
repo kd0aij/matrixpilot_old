@@ -132,7 +132,7 @@ union intbb dcm_declination_angle;
 
 void dcm_init_rmat( void )
 {
-#if ( MAG_YAW_DRIFT == 1 )
+#if (DECLINATIONANGLE_VARIABLE == 1)
 	dcm_declination_angle.BB = DECLINATIONANGLE;
 #endif
 	declinationVector[0] = cosine( (signed char) (DECLINATIONANGLE >> 8) ) ;

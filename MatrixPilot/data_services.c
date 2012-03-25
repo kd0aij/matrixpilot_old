@@ -33,11 +33,11 @@
 
 #if(USE_NV_MEMORY == 1)
 
+
 #include "data_services.h"
 #include "../libUDB/events.h"
 #include "parameter_table.h"
 #include <string.h>
-
 
 // Data buffer used for services
 unsigned char data_services_buffer[DATA_SERVICE_BUFFER_SIZE];

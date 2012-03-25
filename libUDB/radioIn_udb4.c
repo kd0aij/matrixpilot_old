@@ -50,8 +50,10 @@ void udb_init_capture(void)
 {
 	int i;
 
+#if(USE_NV_MEMORY == 1)
 	if(udb_skip_flags.skip_radio_trim == 0)
 	{	
+#endif
 		for (i=0; i <= NUM_INPUTS; i++)
 	#if (FIXED_TRIMPOINT == 1)
 			if(i == THROTTLE_OUTPUT_CHANNEL)
@@ -61,7 +63,9 @@ void udb_init_capture(void)
 	#else
 			udb_pwTrim[i] = udb_pwIn[i] = 0 ;
 	#endif
+#if(USE_NV_MEMORY == 1)
 	}
+#endif
 	
 	TMR2 = 0 ; 				// initialize timer
 	T2CONbits.TCKPS = 1 ;	// prescaler = 8 option

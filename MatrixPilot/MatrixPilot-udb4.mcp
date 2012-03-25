@@ -666,7 +666,7 @@ file_155=data_services.h
 file_156=data_storage.h
 file_157=parameter_datatypes.h
 file_158=parameter_table.h
-file_159=C:\Program Files (x86)\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
+file_159=C:\Program Files\Microchip\mplabc30\v3.25\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

@@ -160,7 +160,9 @@ class ParameterTableGenerator():
         tableFile.write("// pyparam generated file - DO NOT EDIT\n\n\n")
         
         tableFile.write('#include "parameter_table.h"\n')
-        tableFile.write('#include "data_services.h"\n\n\n')
+        tableFile.write('#include "data_services.h"\n\n')
+
+        tableFile.write('#if(USE_NV_MEMORY == 1)\n\n')
         
         dataTypes = self.ParamDBMain.get_udbTypes().get_udbType()
         paramBlocks = self.ParamDBMain.get_parameterBlocks().get_parameterBlock()
@@ -198,7 +200,9 @@ class ParameterTableGenerator():
             
         tableFile.write("    };\n\n\n")    
 
-        tableFile.write("const unsigned int mavlink_parameter_block_count = sizeof(mavlink_parameter_blocks) / sizeof(mavlink_parameter_block);\n\n\n")
+        tableFile.write("const unsigned int mavlink_parameter_block_count = sizeof(mavlink_parameter_blocks) / sizeof(mavlink_parameter_block);\n\n")
+
+        tableFile.write('#endif    //USE_NV_MEMORY\n\n')
 
 
         tableFile.close()

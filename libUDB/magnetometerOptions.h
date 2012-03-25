@@ -24,7 +24,7 @@
 // In either case, it is assumed you have one of the diydrones breakout boards.
 // Pin edge of the board should face the front of the plane, component side upward.
 //#define HMC5843
-#define HMC5883L
+//#define HMC5883L
 
 // Define magneticDeclination to be the magnectic declination, in degrees, measured
 // clockwise from the north, east is plus, west is minus.
@@ -32,7 +32,7 @@
 #define MAGNETICDECLINATION 0
 
 // Set to 0 for fixed declination angle or 1 for variable declination angle
-#define DECLINATIONANGLE_VARIABLE 1
+#define DECLINATIONANGLE_VARIABLE 0
 
 
 // #define LED_RED_MAG_CHECK 1 if you want the RED LED to indicate the magnetometer is not working.

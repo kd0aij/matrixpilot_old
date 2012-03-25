@@ -247,6 +247,6 @@
 
 #if( (DECLINATIONANGLE_VARIABLE == 1) && (MAG_YAW_DRIFT != 1) )
 {
-	#error("Can't use variable declination angle with no magnetometer. Set MAG_YAW_DRIFT = 1")
+	#error("Can't use variable declination angle with no magnetometer. Set MAG_YAW_DRIFT = 1 or DECLINATIONANGLE_VARIABLE = 0")
 }
 #endif

@@ -180,8 +180,10 @@ void udb_init_leds( void )
 #ifdef INITIALIZE_VERTICAL // for VTOL, vertical initialization
 void udb_a2d_record_offsets(void)
 {
+#if(USE_NV_MEMORY == 1)
 	if(udb_skip_flags.skip_imu_cal == 1)
 		return;
+#endif
 
 	// almost ready to turn the control on, save the input offsets
 	UDB_XACCEL.offset = UDB_XACCEL.value ;
@@ -198,8 +200,10 @@ void udb_a2d_record_offsets(void)
 #else  // horizontal initialization
 void udb_a2d_record_offsets(void)
 {
+#if(USE_NV_MEMORY == 1)
 	if(udb_skip_flags.skip_imu_cal == 1)
 		return;
+#endif
 
 	// almost ready to turn the control on, save the input offsets
 	UDB_XACCEL.offset = UDB_XACCEL.value ;

@@ -257,7 +257,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<parameter>
 				<parameterName>MAG_DECLINATION</parameterName>
 				<udb_param_type>UDB_TYPE_INT_CIRCULAR</udb_param_type>
-				<variable_name>dcm_declination_angle</variable_name>
+				<variable_name>dcm_declination_angle.BB</variable_name>
 				<description>Magnetic declination</description>
 				<min>-180</min>
 				<max>180</max>

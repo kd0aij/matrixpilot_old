@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<mavlink>
+	<mavlink>
 	<include>common.xml</include>
 	<!-- note that UDB specific messages should use the command id
       range from 150 to 250, to leave plenty of room for growth
@@ -11,7 +11,7 @@
 
 
 
-          
+
      <enums>
           <enum name="MAV_PREFLIGHT_STORAGE_ACTION">
                <description>Action required when performing CMD_PREFLIGHT_STORAGE</description>
@@ -37,74 +37,6 @@
                     <description>Clear specific parameters in storage</description>
                </entry>
           </enum>
-
-          <enum name="MAV_NV_STORAGE_AREA">
-               <description>Non volatile storage area</description>
-               <entry value="0" name="MAV_NV_STORAGE_ALL">
-                    <description>Access all parameters in storage</description>
-               </entry>
-               <entry value="1" name="MAV_NV_STORAGE_FAILURE_DATALOG">
-                    <description>Failure datalog storage area</description>
-               </entry>
-               <entry value="2" name="MAV_NV_STORAGE_IMU_CALIB">
-                    <description>IMU calibration storage area</description>
-               </entry>
-               <entry value="3" name="MAV_NV_STORAGE_MAG_CALIB">
-                    <description>Magnetometer calibration storage area</description>
-               </entry>
-               <entry value="4" name="MAV_NV_STORAGE_ANALOG_CALIB">
-                    <description>Analog sensor calibration storage area</description>
-               </entry>
-               <entry value="5" name="MAV_NV_STORAGE_MIXER">
-                    <description>Mixer settings storage area</description>
-               </entry>
-               <entry value="6" name="MAV_NV_STORAGE_RTL_SETTINGS">
-                    <description>Return to launch settings storage area</description>
-               </entry>
-               <entry value="7" name="MAV_NV_STORAGE_WAYPOINTS">
-                    <description>Mixer settings storage area</description>
-               </entry>
-               <entry value="8" name="MAV_NV_STORAGE_OSD_SETUP">
-                    <description>OSD setup storage area</description>
-               </entry>
-               <entry value="9" name="MAV_NV_STORAGE_RADIO_TRIM">
-                    <description>Radio trim storage area</description>
-               </entry>
-               <entry value="10" name="MAV_NV_STORAGE_PID_SETTINGS">
-                    <description>Control loop gains storage area</description>
-               </entry>
-          </enum>
-
-
-
-          <enum name="MAV_NV_STORAGE_FLAGS">
-               <description>Non volatile storage area</description>
-               <entry value="1" name="MAV_STORAGE_LOAD_ALL">
-                    <description>Access all parameters in storage</description>
-               </entry>
-               <entry value="2" name="MAV_STORAGE_SAVE_ALL">
-                    <description>Failure datalog storage area</description>
-               </entry>
-               <entry value="4" name="MAV_STORAGE_LOAD_AT_STARTUP">
-                    <description>IMU calibration storage area</description>
-               </entry>
-               <entry value="8" name="MAV_STORAGE_LOAD_AT_REBOOT">
-                    <description>Magnetometer calibration storage area</description>
-               </entry>
-               <entry value="16" name="MAV_STORAGE_SAVE_AFTER_CAL">
-                    <description>Analog sensor calibration storage area</description>
-               </entry>
-               <entry value="5" name="MAV_STORAGE_STORE_WAYPOINTS">
-                    <description>Mixer settings storage area</description>
-               </entry>
-               <entry value="6" name="MAV_STORAGE_CALIB">
-                    <description>Return to launch settings storage area</description>
-               </entry>
-               <entry value="7" name="MAV_STORAGE_SAVE_MISSION">
-                    <description>Mixer settings storage area</description>
-               </entry>
-          </enum>
-
 
           
           <enum name="MAV_CMD" >

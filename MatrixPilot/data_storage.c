@@ -735,8 +735,6 @@ unsigned int data_storage_find_hole(unsigned int data_storage_size)
 	return lowestAddr;
 }
 
-#endif 		//#if(USE_NV_MEMORY == 1)
-
 
 // Clear specific data storage area by invalidating data
 boolean storage_clear_area(unsigned int data_handle, DS_callbackFunc callback)
@@ -797,3 +795,4 @@ void storage_clear_specific_area_callback(boolean success)
 	data_storage_status = DATA_STORAGE_STATUS_WAITING;
 }
 
+#endif 		//#if(USE_NV_MEMORY == 1)

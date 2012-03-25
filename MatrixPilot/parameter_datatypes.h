@@ -28,7 +28,7 @@ typedef enum
     STORAGE_HANDLE_OSD_SETUP = 8,
     STORAGE_HANDLE_RADIO_TRIM = 9,
     STORAGE_HANDLE_CONTROL_GAINS = 10,
-    } data_Storage_handles_e;
+    } data_storage_handles_e;
 
 typedef enum
     {

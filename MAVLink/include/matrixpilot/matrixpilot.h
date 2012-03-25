@@ -59,43 +59,6 @@ enum MAV_PREFLIGHT_STORAGE_ACTION
 };
 #endif
 
-/** @brief Non volatile storage area */
-#ifndef HAVE_ENUM_MAV_NV_STORAGE_AREA
-#define HAVE_ENUM_MAV_NV_STORAGE_AREA
-enum MAV_NV_STORAGE_AREA
-{
-	MAV_NV_STORAGE_ALL=0, /* Access all parameters in storage | */
-	MAV_NV_STORAGE_FAILURE_DATALOG=1, /* Failure datalog storage area | */
-	MAV_NV_STORAGE_IMU_CALIB=2, /* IMU calibration storage area | */
-	MAV_NV_STORAGE_MAG_CALIB=3, /* Magnetometer calibration storage area | */
-	MAV_NV_STORAGE_ANALOG_CALIB=4, /* Analog sensor calibration storage area | */
-	MAV_NV_STORAGE_MIXER=5, /* Mixer settings storage area | */
-	MAV_NV_STORAGE_RTL_SETTINGS=6, /* Return to launch settings storage area | */
-	MAV_NV_STORAGE_WAYPOINTS=7, /* Mixer settings storage area | */
-	MAV_NV_STORAGE_OSD_SETUP=8, /* OSD setup storage area | */
-	MAV_NV_STORAGE_RADIO_TRIM=9, /* Radio trim storage area | */
-	MAV_NV_STORAGE_PID_SETTINGS=10, /* Control loop gains storage area | */
-	MAV_NV_STORAGE_AREA_ENUM_END=11, /*  | */
-};
-#endif
-
-/** @brief Non volatile storage area */
-#ifndef HAVE_ENUM_MAV_NV_STORAGE_FLAGS
-#define HAVE_ENUM_MAV_NV_STORAGE_FLAGS
-enum MAV_NV_STORAGE_FLAGS
-{
-	MAV_STORAGE_LOAD_ALL=1, /* Access all parameters in storage | */
-	MAV_STORAGE_SAVE_ALL=2, /* Failure datalog storage area | */
-	MAV_STORAGE_LOAD_AT_STARTUP=4, /* IMU calibration storage area | */
-	MAV_STORAGE_STORE_WAYPOINTS=5, /* Mixer settings storage area | */
-	MAV_STORAGE_CALIB=6, /* Return to launch settings storage area | */
-	MAV_STORAGE_SAVE_MISSION=7, /* Mixer settings storage area | */
-	MAV_STORAGE_LOAD_AT_REBOOT=8, /* Magnetometer calibration storage area | */
-	MAV_STORAGE_SAVE_AFTER_CAL=16, /* Analog sensor calibration storage area | */
-	MAV_NV_STORAGE_FLAGS_ENUM_END=17, /*  | */
-};
-#endif
-
 /** @brief  */
 #ifndef HAVE_ENUM_MAV_CMD
 #define HAVE_ENUM_MAV_CMD

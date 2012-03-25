@@ -35,13 +35,6 @@
 // Includes of all the data references required to build the parameter table.
 #include "gain_variables.h"        // Needed for access to internal DCM value"
 
-
-#if ( MAG_YAW_DRIFT == 1)
-extern int udb_magOffset[];  // magnetic offset in the body frame of reference
-extern int magGain[]; // magnetometer calibration gains
-extern int rawMagCalib[];
-#endif
-
 // callback type for data services user
 typedef void (*PT_callbackFunc)(boolean);
 
@@ -114,12 +107,10 @@ extern const unsigned int mavlink_parameter_block_count;
 // Defines required to complete parameter table if these are not defined in
 // options.h
 
-//#if(MAG_YAW_DRIFT == 0)
-//extern unsigned int null_int[3];
-//#define udb_magOffset 	null_int;
-//#define magGain 		null_int;
-//#define rawMagCalib 	null_int;
-//#endif
+
+extern int udb_magOffset[3];  	// magnetic offset in the body frame of reference
+extern int magGain[3]; 			// magnetometer calibration gains
+extern int rawMagCalib[3];
 
 #ifndef AILERON_INPUT_CHANNEL
 #define AILERON_INPUT_CHANNEL 0

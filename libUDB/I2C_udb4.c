@@ -82,12 +82,14 @@ unsigned char* pI2C1commandBuffer = NULL;	// pointer to receive  buffer
 
 unsigned int I2C1_service_handle = INVALID_HANDLE;
 
-#define I2C1_WATCHDOG_CYCLES	3
+// Counter for I2C timeout
 unsigned int I2C1_watchdog_counter = 0;
+#define I2C1_WATCHDOG_CYCLES	3
 
 void I2C1_init(void)
 {
 //	I2C1_SDA_TRIS = I2C1_SCL_TRIS = 0 ;		// SDA and SCL as outputs
+	I2C1_SDA = I2C1_SCL = 1 ; // pull SDA and SCL high
 	I2C1BRG = I2C1BRGVAL ; 
 	_I2C1EN = 1 ; 	 		// enable I2C1		
 
@@ -95,7 +97,9 @@ void I2C1_init(void)
 	_MI2C1IF = 0 ; 			// clear the I2C1 master interrupt
 	_MI2C1IE = 1 ; 			// enable the interrupt
 
-	I2C1_service_handle = register_event(&serviceI2C1);
+	// Only get a new service handle if one is not asigned already.
+	if(I2C1_service_handle == INVALID_HANDLE)
+		I2C1_service_handle = register_event(&serviceI2C1);
 
 	I2C1_Busy = false;
 
@@ -115,12 +119,11 @@ void serviceI2C1(void)  // service the I2C
 	{
 		I2C1_state = &I2C1_idle ; 	// disable response to any interrupts
 		I2C1_init() ; 			// turn the I2C back on
-		I2C1_SDA = I2C1_SCL = 1 ; // pull SDA and SCL low
 		// Put something here to reset state machine.  Make sure attached servies exit nicely.
 		return ;
 	}
 
-	if(I2C1_state != &I2C1_idle)
+	if(I2C1_Busy == true)
 	{
 		if(I2C1_watchdog_counter == 0)
 		{
@@ -133,6 +136,7 @@ void serviceI2C1(void)  // service the I2C
 			if(	pI2C_callback != NULL)
 				pI2C_callback(false);
 			pI2C_callback = NULL;
+			I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;	// Make sure this is not repeatedly called
 		}
 		else
 		{
@@ -165,6 +169,7 @@ inline boolean I2C1_CheckAvailable(void)
 	if (  !I2C1_NORMAL ) return false;
 
 	if(I2C1_Busy == true) return false;
+	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 	I2C1_Busy = true;
 
 	return true;

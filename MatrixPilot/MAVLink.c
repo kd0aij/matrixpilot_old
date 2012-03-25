@@ -95,9 +95,27 @@ mavlink_status_t  r_mavlink_status ;
 	#endif
 #endif
 
+
+
+#if(DECLINATIONANGLE_VARIABLE != 1)
+union intbb dcm_declination_angle = {.BB=0};
+#endif
+
+
+/****************************************************************************/
+// Variables to support compilation
+
+#if(MAG_YAW_DRIFT != 1)
+int udb_magOffset[3];  	// magnetic offset in the body frame of reference
+int magGain[3]; 			// magnetometer calibration gains
+int rawMagCalib[3];
+#endif
+
 #if(USE_NV_MEMORY == 1)
 #include "data_services.h"
 #endif
+
+/****************************************************************************/
 
 #if ( MAVLINK_TEST_ENCODE_DECODE == 1 )
 #include "../MAVLink/include/matrixpilot/testsuite.h"
@@ -622,7 +640,9 @@ void handleMessage(mavlink_message_t* msg)
 			case MAV_CMD_PREFLIGHT_CALIBRATION:
 				if(packet.param1 == 1)
 				{
+#if(USE_NV_MEMORY ==1)
 					udb_skip_flags.skip_imu_cal = 0;
+#endif
 					udb_a2d_record_offsets();
 				} 
 				else if(packet.param4 == 1)	//param4 = radio calibration

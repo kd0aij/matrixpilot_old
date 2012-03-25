@@ -33,8 +33,10 @@ void init_servoPrepare( void )	// initialize the PWM
 {
 	int i;
 
+#if(USE_NV_MEMORY == 1)
 	if(udb_skip_flags.skip_radio_trim == 1)
 		return;
+#endif
 
 	for (i=0; i <= NUM_INPUTS; i++)
 #if (FIXED_TRIMPOINT == 1)
