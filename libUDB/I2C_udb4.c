@@ -24,7 +24,7 @@
 #include "NV_memory.h"
 #include "events.h"
 
-#if (BOARD_TYPE == UDB4_BOARD)
+#if (USE_I2C1_DRIVER == 1)
 
 #define I2C1_SDA 		_RG3
 #define I2C1_SCL 		_RG2
@@ -452,4 +452,4 @@ void I2C1_Failed(void)
 	I2C1_watchdog_counter = I2C1_WATCHDOG_CYCLES;
 }
 
-#endif  // UDB4 BOARD
+#endif  // USE_I2C1_DRIVER

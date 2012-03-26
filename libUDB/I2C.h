@@ -18,8 +18,6 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-#if (BOARD_TYPE == UDB4_BOARD)
-
 #ifndef I2C_H
 #define I2C_H
 
@@ -42,6 +40,8 @@
 //
 
 #include "libUDB_internal.h"
+
+#if (USE_I2C1_DRIVER == 1)
 
 // callback type for I2C user
 typedef void (*I2C_callbackFunc)(boolean);
@@ -81,7 +81,8 @@ extern boolean I2C2_checkACK(unsigned int address, I2C_callbackFunc pCallback);
 extern void I2C2_trigger_service(void);
 extern void I2C2_init(void);
 
+#endif	// USE_I2C1_DRIVER
 
 #endif	//I2C_H
 
-#endif	// UDB4 BOARD
+
