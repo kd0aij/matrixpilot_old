@@ -69,9 +69,9 @@ void init_serial()
 	dcm_flags._.nmea_passthrough = 1;
 #endif
 	
-	udb_serial_set_rate(19200) ;
+//	udb_serial_set_rate(19200) ;
 //	udb_serial_set_rate(38400) ;
-//	udb_serial_set_rate(57600) ;
+	udb_serial_set_rate(57600) ;
 //	udb_serial_set_rate(115200) ;
 //	udb_serial_set_rate(230400) ;
 //	udb_serial_set_rate(460800) ;
@@ -629,7 +629,6 @@ void serial_output_8hz( void )
 
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_MAGNETOMETER )
 
-extern void rxMagnetometer(void) ;
 extern int udb_magFieldBody[3] ;
 extern unsigned char magreg[6] ;
 extern int magFieldEarth[3] ;
@@ -643,16 +642,18 @@ extern union longww HHIntegral ;
 
 #define OFFSETSHIFT 1
 
-extern int I2ERROR ;
 extern int I2messages ;
 extern int I2interrupts ;
 
 #if ( BOARD_TYPE == UDB4_BOARD )
 #define I2CCONREG I2C2CON
 #define I2CSTATREG I2C2STAT
+extern int I2C2ERROR;
+#define I2ERROR I2C2ERROR
 #else
 #define I2CCONREG I2CCON
 #define I2CSTATREG I2CSTAT
+extern int I2ERROR ;
 #endif
 /*
 void serial_output_8hz( void )
@@ -669,7 +670,15 @@ void serial_output_8hz( void )
 {
 	if (udb_heartbeat_counter % 10 == 0) // Every 2 runs (5 heartbeat counts per 8Hz)
 	{
-		serial_output("MagOffset: %i, %i, %i\r\nMagBody: %i, %i, %i\r\nMagEarth: %i, %i, %i\r\nMagGain: %i, %i, %i\r\nCalib: %i, %i, %i\r\nMagMessage: %i\r\nTotalMsg: %i\r\nI2CCON: %X, I2CSTAT: %X, I2ERROR: %X\r\n\r\n" ,
+		serial_output("MagOffset: %i, %i, %i\r\n"
+					  "MagBody: %i, %i, %i\r\n"
+					  "MagEarth: %i, %i, %i\r\n"
+					  "MagGain: %i, %i, %i\r\n"
+					  "Calib: %i, %i, %i\r\n"
+					  "MagMessage: %i\r\n"
+					  "TotalMsg: %i\r\n"
+					  "I2CCON: %X, I2CSTAT: %X, I2ERROR: %X\r\n"
+					  "\r\n" ,
 			udb_magOffset[0]>>OFFSETSHIFT , udb_magOffset[1]>>OFFSETSHIFT , udb_magOffset[2]>>OFFSETSHIFT ,
 			udb_magFieldBody[0] , udb_magFieldBody[1] , udb_magFieldBody[2] ,
 			magFieldEarth[0] , magFieldEarth[1] , magFieldEarth[2] ,
