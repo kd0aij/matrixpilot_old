@@ -23,6 +23,7 @@
 
 void dcm_init_rmat(void) ;
 
+void estAltitude(void) ;
 void estYawDrift(void) ;
 void estimateWind(void) ;
 
