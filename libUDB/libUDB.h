@@ -178,13 +178,9 @@ void udb_magnetometer_callback_data_available(void);	// Callback
 ////////////////////////////////////////////////////////////////////////////////
 // Barometer
 
-//extern long BarTemperature;
-//extern long BarPressure;
-//extern long BarAltitude;
-
 // Implement this callback to make use of the barometer data.  This is called each
 // time the barometer reports new data.
-void udb_barometer_callback_data_available(void);		// Callback
+void udb_barometer_callback_data(long pressure, int temperature, char status);
 
 
 ////////////////////////////////////////////////////////////////////////////////
