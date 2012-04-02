@@ -101,8 +101,8 @@
 	#endif
 #else
 	// UDB4
-	#if (NUM_OUTPUTS > 9)
-		#error("NUM_OUTPUTS can't be more than 9.")
+	#if (NUM_OUTPUTS > 10)
+		#error("NUM_OUTPUTS can't be more than 10.")
 	#endif
 #endif
 
@@ -159,6 +159,11 @@
 // Check HILSIM Settings
 #if (HILSIM == 1 && GPS_TYPE != GPS_UBX_4HZ)
 	#error("When using HILSIM, GPS_TYPE must be set to GPS_UBX_4HZ.")
+#endif
+
+// Check HILSIM and magnetometer setting
+#if ( (HILSIM == 1) && (MAG_YAW_DRIFT == 1) )
+	#error("Can't use HILSIM with the magnetometer yaw drift correction")
 #endif
 
 
@@ -262,3 +267,5 @@
 	#error("Can't use variable declination angle with no magnetometer. Set MAG_YAW_DRIFT = 1 or DECLINATIONANGLE_VARIABLE = 0")
 }
 #endif
+
+

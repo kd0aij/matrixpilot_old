@@ -93,7 +93,7 @@ MAV_PFS_CMD_CLEAR_ALL = 2 # Clear all  parameters in storage
 MAV_PFS_CMD_READ_SPECIFIC = 3 # Read specific parameters from storage
 MAV_PFS_CMD_WRITE_SPECIFIC = 4 # Write specific parameters to storage
 MAV_PFS_CMD_CLEAR_SPECIFIC = 5 # Clear specific parameters in storage
-MAV_PFS_CMD_DO_NOTHING = 6 # Clear specific parameters in storage
+MAV_PFS_CMD_DO_NOTHING = 6 # do nothing
 MAV_PREFLIGHT_STORAGE_ACTION_ENUM_END = 7 # 
 
 # MAV_CMD
@@ -403,6 +403,8 @@ MAVLINK_MSG_ID_FLEXIFUNCTION_SIZES = 155
 MAVLINK_MSG_ID_FLEXIFUNCTION_SIZES_ACK = 156
 MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND = 157
 MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_ACK = 158
+MAVLINK_MSG_ID_FLEXIFUNCTION_DIRECTORY = 159
+MAVLINK_MSG_ID_FLEXIFUNCTION_DIRECTORY_ACK = 160
 MAVLINK_MSG_ID_HEARTBEAT = 0
 MAVLINK_MSG_ID_SYS_STATUS = 1
 MAVLINK_MSG_ID_SYSTEM_TIME = 2
@@ -613,6 +615,40 @@ class MAVLink_flexifunction_command_ack_message(MAVLink_message):
 
         def pack(self, mav):
                 return MAVLink_message.pack(self, mav, 208, struct.pack('<HH', self.command_type, self.result))
+
+class MAVLink_flexifunction_directory_message(MAVLink_message):
+        '''
+        Acknowldge sucess or failure of a flexifunction command
+        '''
+        def __init__(self, target_system, target_component, directory_type, start_index, count, directory_data):
+                MAVLink_message.__init__(self, MAVLINK_MSG_ID_FLEXIFUNCTION_DIRECTORY, 'FLEXIFUNCTION_DIRECTORY')
+                self._fieldnames = ['target_system', 'target_component', 'directory_type', 'start_index', 'count', 'directory_data']
+                self.target_system = target_system
+                self.target_component = target_component
+                self.directory_type = directory_type
+                self.start_index = start_index
+                self.count = count
+                self.directory_data = directory_data
+
+        def pack(self, mav):
+                return MAVLink_message.pack(self, mav, 12, struct.pack('<BBBBB48s', self.target_system, self.target_component, self.directory_type, self.start_index, self.count, self.directory_data))
+
+class MAVLink_flexifunction_directory_ack_message(MAVLink_message):
+        '''
+        Acknowldge sucess or failure of a flexifunction command
+        '''
+        def __init__(self, target_system, target_component, directory_type, start_index, count, result):
+                MAVLink_message.__init__(self, MAVLINK_MSG_ID_FLEXIFUNCTION_DIRECTORY_ACK, 'FLEXIFUNCTION_DIRECTORY_ACK')
+                self._fieldnames = ['target_system', 'target_component', 'directory_type', 'start_index', 'count', 'result']
+                self.target_system = target_system
+                self.target_component = target_component
+                self.directory_type = directory_type
+                self.start_index = start_index
+                self.count = count
+                self.result = result
+
+        def pack(self, mav):
+                return MAVLink_message.pack(self, mav, 218, struct.pack('<HBBBBB', self.result, self.target_system, self.target_component, self.directory_type, self.start_index, self.count))
 
 class MAVLink_heartbeat_message(MAVLink_message):
         '''
@@ -1993,6 +2029,8 @@ mavlink_map = {
         MAVLINK_MSG_ID_FLEXIFUNCTION_SIZES_ACK : ( '<HHHBB', MAVLink_flexifunction_sizes_ack_message, [3, 4, 0, 1, 2], 125 ),
         MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND : ( '<BBB', MAVLink_flexifunction_command_message, [0, 1, 2], 133 ),
         MAVLINK_MSG_ID_FLEXIFUNCTION_COMMAND_ACK : ( '<HH', MAVLink_flexifunction_command_ack_message, [0, 1], 208 ),
+        MAVLINK_MSG_ID_FLEXIFUNCTION_DIRECTORY : ( '<BBBBB48s', MAVLink_flexifunction_directory_message, [0, 1, 2, 3, 4, 5], 12 ),
+        MAVLINK_MSG_ID_FLEXIFUNCTION_DIRECTORY_ACK : ( '<HBBBBB', MAVLink_flexifunction_directory_ack_message, [1, 2, 3, 4, 5, 0], 218 ),
         MAVLINK_MSG_ID_HEARTBEAT : ( '<IBBBBB', MAVLink_heartbeat_message, [1, 2, 3, 0, 4, 5], 50 ),
         MAVLINK_MSG_ID_SYS_STATUS : ( '<IIIHHhHHHHHHb', MAVLink_sys_status_message, [0, 1, 2, 3, 4, 5, 12, 6, 7, 8, 9, 10, 11], 124 ),
         MAVLINK_MSG_ID_SYSTEM_TIME : ( '<QI', MAVLink_system_time_message, [0, 1], 137 ),
@@ -2493,6 +2531,66 @@ class MAVLink(object):
 
                 '''
                 return self.send(self.flexifunction_command_ack_encode(command_type, result))
+            
+        def flexifunction_directory_encode(self, target_system, target_component, directory_type, start_index, count, directory_data):
+                '''
+                Acknowldge sucess or failure of a flexifunction command
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                directory_type            : 0=inputs, 1=outputs (uint8_t)
+                start_index               : index of first directory entry to write (uint8_t)
+                count                     : count of directory entries to write (uint8_t)
+                directory_data            : Settings data (int8_t)
+
+                '''
+                msg = MAVLink_flexifunction_directory_message(target_system, target_component, directory_type, start_index, count, directory_data)
+                msg.pack(self)
+                return msg
+            
+        def flexifunction_directory_send(self, target_system, target_component, directory_type, start_index, count, directory_data):
+                '''
+                Acknowldge sucess or failure of a flexifunction command
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                directory_type            : 0=inputs, 1=outputs (uint8_t)
+                start_index               : index of first directory entry to write (uint8_t)
+                count                     : count of directory entries to write (uint8_t)
+                directory_data            : Settings data (int8_t)
+
+                '''
+                return self.send(self.flexifunction_directory_encode(target_system, target_component, directory_type, start_index, count, directory_data))
+            
+        def flexifunction_directory_ack_encode(self, target_system, target_component, directory_type, start_index, count, result):
+                '''
+                Acknowldge sucess or failure of a flexifunction command
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                directory_type            : 0=inputs, 1=outputs (uint8_t)
+                start_index               : index of first directory entry to write (uint8_t)
+                count                     : count of directory entries to write (uint8_t)
+                result                    : result of acknowledge, 0=fail, 1=good (uint16_t)
+
+                '''
+                msg = MAVLink_flexifunction_directory_ack_message(target_system, target_component, directory_type, start_index, count, result)
+                msg.pack(self)
+                return msg
+            
+        def flexifunction_directory_ack_send(self, target_system, target_component, directory_type, start_index, count, result):
+                '''
+                Acknowldge sucess or failure of a flexifunction command
+
+                target_system             : System ID (uint8_t)
+                target_component          : Component ID (uint8_t)
+                directory_type            : 0=inputs, 1=outputs (uint8_t)
+                start_index               : index of first directory entry to write (uint8_t)
+                count                     : count of directory entries to write (uint8_t)
+                result                    : result of acknowledge, 0=fail, 1=good (uint16_t)
+
+                '''
+                return self.send(self.flexifunction_directory_ack_encode(target_system, target_component, directory_type, start_index, count, result))
             
         def heartbeat_encode(self, type, autopilot, base_mode, custom_mode, system_status, mavlink_version=3):
                 '''

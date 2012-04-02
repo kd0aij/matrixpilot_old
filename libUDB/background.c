@@ -293,7 +293,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	I2C1_trigger_service();
 #endif
 	
-#if ((USE_NV_MEMORY == 1) && (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK))
+#if (USE_NV_MEMORY == 1)
 	nv_memory_service_trigger();
 	storage_service_trigger();
 	data_services_trigger();

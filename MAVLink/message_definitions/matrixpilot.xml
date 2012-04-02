@@ -34,17 +34,35 @@
                     <description>Clear specific parameters in storage</description>
                </entry>
                <entry value="6" name="MAV_PFS_CMD_DO_NOTHING">
-                    <description>Clear specific parameters in storage</description>
+                    <description>do nothing</description>
                </entry>
           </enum>
 
+ <!--      can't define here until matrixpilot.h header can included anywhere but MAVlink.c
+
+      <enum name="FLEXIFUNCTION_COMMANDS">
+               <description>Action required when performing FLEXIFUNCTION_COMMAND</description>
+               <entry value="3" name="FLEXIFUNCTION_COMMAND_COMMIT_BUFFER">
+                    <description>Read specific parameters from storage</description>
+               </entry>
+               <entry value="4" name="FLEXIFUNCTION_COMMAND_READ_NVMEMORY">
+                    <description>Write specific parameters to storage</description>
+               </entry>
+               <entry value="5" name="FLEXIFUNCTION_COMMAND_WRITE_NVMEMORY">
+                    <description>Clear specific parameters in storage</description>
+               </entry>
+               <entry value="6" name="FLEXIFUNCTION_COMMAND_RELOAD_FROM_NVMEMORY">
+                    <description>Clear specific parameters in storage</description>
+               </entry>
+          </enum>
+-->
           
           <enum name="MAV_CMD" >
             <entry value="0" name="MAV_CMD_PREFLIGHT_STORAGE_ADVANCED">
 	<description>Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode.</description>
-	<param index="1">Storage action: Action defined by MAV_PREFLIGHT_STORAGE_ACTION</param>
-	<param index="2">Storage area as defined by MAV_NV_STORAGE_AREA</param>
-	<param index="3">Storage flags as defined by MAV_NV_STORAGE_FLAGS</param>
+	<param index="1">Storage action: Action defined by MAV_PREFLIGHT_STORAGE_ACTION_ADVANCED</param>
+	<param index="2">Storage area as defined by parameter database</param>
+	<param index="3">Storage flags as defined by parameter database</param>
 	<param index="4">Empty</param>
 	<param index="5">Empty</param>
 	<param index="6">Empty</param>
@@ -115,12 +133,30 @@
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint8_t" name="command_type">Flexifunction command type</field>
- 
     </message>
     <message id="158" name="FLEXIFUNCTION_COMMAND_ACK">
       <description>Acknowldge sucess or failure of a flexifunction command</description>
       <field type="uint16_t" name="command_type">Command acknowledged</field>
       <field type="uint16_t" name="result">result of acknowledge</field>
     </message>
-   	</messages>
+     <message id="159" name="FLEXIFUNCTION_DIRECTORY">
+      <description>Acknowldge sucess or failure of a flexifunction command</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint8_t" name="directory_type">0=inputs, 1=outputs</field>
+      <field type="uint8_t" name="start_index">index of first directory entry to write</field>
+      <field type="uint8_t" name="count">count of directory entries to write</field>
+      <field type="int8_t[48]" name="directory_data">Settings data</field>
+    </message>
+    <message id="160" name="FLEXIFUNCTION_DIRECTORY_ACK">
+      <description>Acknowldge sucess or failure of a flexifunction command</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint8_t" name="directory_type">0=inputs, 1=outputs</field>
+      <field type="uint8_t" name="start_index">index of first directory entry to write</field>
+      <field type="uint8_t" name="count">count of directory entries to write</field>
+      <field type="uint16_t" name="result">result of acknowledge, 0=fail, 1=good</field>
+    </message>
+
+   </messages>
 </mavlink>
