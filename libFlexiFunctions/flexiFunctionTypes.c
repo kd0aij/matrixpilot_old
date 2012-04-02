@@ -18,3 +18,8 @@ const pflexFunction flexiFunctions[] =
     &gain_limit_function,
     &three_point_function,
 	};
+
+
+const unsigned char functionParamSizes[] ={0, 10, 4, 6, 12, 10, 12, 14, 14, 10, 14, };
+
+

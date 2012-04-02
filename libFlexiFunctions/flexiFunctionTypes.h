@@ -170,18 +170,18 @@ extern fractional three_point_function(functionSetting* pSetting, fractional* pR
 
 extern void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions );
 
-
 extern const pflexFunction flexiFunctions [];
 
-
 extern unsigned int flexiFunctionsUsed;
-
 
 extern functionSetting flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
 
 
 extern fractional flexiFunction_registers[FLEXIFUNCTION_MAX_REGS];
 
+
+extern unsigned char inputs_directory [FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
+extern unsigned char outputs_directory [FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
 
 
 #endif

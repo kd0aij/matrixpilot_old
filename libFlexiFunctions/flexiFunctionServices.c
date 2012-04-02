@@ -16,7 +16,10 @@
 
 // Include MAVlink library for checksums
 #include "../MAVlink/include/mavlink_types.h"
+//#include "../MAVlink/include/matrixpilot/matrixpilot.h"
 #include "../MAVlink/include/checksum.h"
+
+#include "../MatrixPilot/parameter_datatypes.h"
 
 
 void flexifunction_commit_buffer_crc( void );
@@ -65,11 +68,11 @@ void flexiFunctionService(void)
 	case FLEXIFUNCTION_INIT:
 		if(storage_services_started() == true)
 		{
-			if(storage_check_area_exists(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_SELF_MANAGED) == true)
+			if(storage_check_area_exists(STORAGE_HANDLE_MIXER, sizeof(flexiFunctionBuffer), DATA_STORAGE_SELF_MANAGED) == true)
 				flexiFunctionState = FLEXIFUNCTION_LOAD_NVMEMORY;
 			else
 			{
-				if(storage_create_area(DATA_HANDLE_MIXER_SETTINGS, sizeof(flexiFunctionBuffer), DATA_STORAGE_SELF_MANAGED, &nv_init_callback) == true)
+				if(storage_create_area(STORAGE_HANDLE_MIXER, sizeof(flexiFunctionBuffer), DATA_STORAGE_SELF_MANAGED, &nv_init_callback) == true)
 					flexiFunctionState = FLEXIFUNCTION_INIT_NVMEMORY;
 				else
 					flexiFunctionState = FLEXIFUNCTION_INIT;
@@ -78,7 +81,7 @@ void flexiFunctionService(void)
 		break;
 
 	case FLEXIFUNCTION_LOAD_NVMEMORY:
-		if(storage_read(DATA_HANDLE_MIXER_SETTINGS, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_reload_callback) == true)
+		if(storage_read(STORAGE_HANDLE_MIXER, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_reload_callback) == true)
 			flexiFunctionState = FLEXIFUNCTION_LOADING_NVMEMORY;
 		break;
 	}
@@ -259,7 +262,7 @@ void flexifunction_write_nvmemory(void)
 	// Calculate data checksum
 	flexiFunctionBuffer.checksum = crc_calculate( (uint8_t*) flexiFunctionBuffer.flexiFunction_data, sizeof(flexiFunctionBuffer.flexiFunction_data) );
 
-	if( storage_write(DATA_HANDLE_MIXER_SETTINGS, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_write_callback) == true)
+	if( storage_write(STORAGE_HANDLE_MIXER, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_write_callback) == true)
 	{
 		flexiFunctionState = FLEXIFUNCTION_WRITING_NVMEMORY;
 	}
