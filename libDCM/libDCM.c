@@ -30,7 +30,7 @@ union dcm_fbts_word dcm_flags ;
 
 #if ( HILSIM == 1 )
 #if ( USE_VARIABLE_HILSIM_CHANNELS != 1 )
-unsigned carh SIMservoOutputs[] = {	0xFF, 0xEE,		//sync
+unsigned char SIMservoOutputs[] = {	0xFF, 0xEE,		//sync
 									0x03, 0x04,		//S1
 									0x05, 0x06,		//S2
 									0x07, 0x08,		//S3
@@ -207,22 +207,23 @@ void send_HILSIM_outputs( void )
 	for (i=1; i<=NUM_OUTPUTS; i++)
 	{
 		TempBB.BB = udb_pwOut[i] ;
-		SIMservoOutputs[2] = NUM_OUTPUTS;
 		SIMservoOutputs[(2*i)+1] = TempBB._.B1 ;
 		SIMservoOutputs[(2*i)+2] = TempBB._.B0 ;
 	}
 
+	SIMservoOutputs[2] = NUM_OUTPUTS;
+
 	// Calcualte checksum
-	for (i=3; i<HILSIM_NUM_SERVOS*2+3; i++)
+	for (i=3; i<(NUM_OUTPUTS*2)+3; i++)
 	{
 		CK_A += SIMservoOutputs[i] ;
 		CK_B += CK_A ;
 	}
-	SIMservoOutputs[i+1] = CK_A ;
-	SIMservoOutputs[i+2] = CK_B ;
+	SIMservoOutputs[i] = CK_A ;
+	SIMservoOutputs[i+1] = CK_B ;
 	
 	// Send HILSIM outputs
-	gpsoutbin(HILSIM_NUM_SERVOS*2+4, SIMservoOutputs) ;	
+	gpsoutbin((HILSIM_NUM_SERVOS*2)+5, SIMservoOutputs) ;	
 
 #endif	//USE_VARIABLE_HILSIM_CHANNELS
 	

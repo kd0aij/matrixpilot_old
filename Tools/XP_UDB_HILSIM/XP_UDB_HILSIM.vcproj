@@ -190,6 +190,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SerialIOWin.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Setup.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -213,14 +221,6 @@
 				RelativePath=".\utility.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\SerialIOWin.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Setup.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -228,15 +228,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\SerialIO.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Setup.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
 			<File
 				RelativePath=".\utility.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SerialIO.h"
 				>
 			</File>
 		</Filter>

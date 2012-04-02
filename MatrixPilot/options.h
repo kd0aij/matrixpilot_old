@@ -613,7 +613,7 @@
 // 19200, but 230400 is a good speedy option.  Make sure the X-Plane plugin's Setup file has
 // its speed set to match.
 #define HILSIM 								1
-#define HILSIM_BAUD							19200
+#define HILSIM_BAUD							57600
 
 
 ////////////////////////////////////////////////////////////////////////////////
