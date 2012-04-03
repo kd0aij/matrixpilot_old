@@ -7,6 +7,16 @@
 #define RMAX   0b0100000000000000	//	1.0 in 2.14 format
 
 
+unsigned char get_input_register_index_from_directory(unsigned char virtual_index)
+{
+	return inputs_directory[virtual_index];
+}
+
+unsigned char get_output_register_index_from_directory(unsigned char virtual_index)
+{
+	return outputs_directory[virtual_index];
+}
+
 // Run the flexifunction by stepping through the list of functions one-by-one.
 void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions)
 {

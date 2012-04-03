@@ -180,8 +180,11 @@ extern functionSetting flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
 extern fractional flexiFunction_registers[FLEXIFUNCTION_MAX_REGS];
 
 
-extern unsigned char inputs_directory [FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
-extern unsigned char outputs_directory [FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
+extern unsigned char inputs_directory[FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
+extern unsigned char outputs_directory[FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
+
+extern unsigned char get_input_register_index_from_directory(unsigned char virtual_index);
+extern unsigned char get_output_register_index_from_directory(unsigned char virtual_index);
 
 
 #endif
