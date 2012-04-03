@@ -123,6 +123,7 @@ void serviceI2C1(void)  // service the I2C
 		return ;
 	}
 
+#if(USE_I2C_TIMEOUT == 1)
 	if(I2C1_Busy == true)
 	{
 		if(I2C1_watchdog_counter == 0)
@@ -145,6 +146,7 @@ void serviceI2C1(void)  // service the I2C
 		return ;
 
 	}
+#endif
 
 	return ;
 }

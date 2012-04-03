@@ -8,6 +8,13 @@
 // WARNING: Use on UDB4+ only
 #define USE_I2C1_DRIVER					1
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Use I2C port driver timeout
+// Set to 1 to use and 0 to not use
+#define USE_I2C_TIMEOUT					0
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Use non volatile memory to store and recall settings
 // Set to 1 to include non volatile memory service in compilation
