@@ -20,7 +20,7 @@
 
 
 #include "libUDB_internal.h"
-#include "defines.h"
+//todo #include "defines.h"
 
 // Include the NV memory services if required
 #if((USE_NV_MEMORY == 1) && (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK))
@@ -92,8 +92,8 @@ void udb_init_clock(void)	/* initialize timers */
 
 #if (USE_FLEXIFUNCTION_MIXING == 1)
 	flexiFunctionServiceInit();
-#endif	
-
+#endif
+	
 	// Initialize timer1, used as the 40Hz heartbeat of libUDB.
 	TMR1 = 0 ;
 #if (BOARD_TYPE == UDB4_BOARD)
@@ -169,7 +169,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 		_cpu_timer = 0 ; 		// reset the load counter
 		T5CONbits.TON = 1 ;		// turn on timer 5
 	}
-	
+
 	// Call the periodic callback at 2Hz
 	if (udb_heartbeat_counter % 20 == 0)
 	{
@@ -185,6 +185,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 	
 	interrupt_restore_corcon ;
 	return ;
+}
+
+void vApplicationTickHook(void) // 1000 Hz
+{
 }
 
 
@@ -279,7 +283,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	calculate_analog_sensor_values() ;
 	udb_callback_read_sensors() ;
 	udb_flags._.a2d_read = 1 ; // signal the A/D to start the next summation
-	
+
 	udb_servo_callback_prepare_outputs() ;
 	
 #if ((USE_NV_MEMORY == 1) && (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK))

@@ -19,21 +19,71 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "defines.h"
+//todo #include "defines.h"
+
+//Note:  The trap flags need to be moved out of telemetry.c and mavlink.c
+volatile int trap_flags __attribute__ ((persistent));
+volatile long trap_source __attribute__ ((persistent));
+volatile int osc_fail_count __attribute__ ((persistent));
 
 //	main program for testing the IMU.
 
 int main (void)
 {
 	udb_init() ;
-	dcm_init() ;
-	init_servoPrepare() ;
-	init_states() ;
-	init_behavior() ;
-	init_serial() ;
 	
 	udb_run() ;
 	// This never returns.
 	
 	return 0 ;
 }
+
+
+void udb_barometer_callback_data(long pressure, int temperature, char status)
+{
+}
+
+void udb_magnetometer_callback_data_available(void)
+{
+}
+
+
+void udb_callback_read_sensors(void)
+{
+}
+
+void udb_servo_callback_prepare_outputs(void)
+{
+}
+
+void udb_background_callback_periodic(void)
+{
+}
+
+void udb_background_callback_triggered(void)
+{
+}
+
+void udb_callback_radio_did_turn_off(void)
+{
+}
+
+
+int udb_gps_callback_get_byte_to_send(void)
+{
+	return 0;
+}
+
+void udb_gps_callback_received_byte(char rxchar)
+{
+}
+
+int udb_serial_callback_get_byte_to_send(void)
+{
+	return 0;
+}
+
+void udb_serial_callback_received_byte(char rxchar)
+{
+}
+
