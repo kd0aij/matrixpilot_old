@@ -20,7 +20,6 @@
 
 
 #include "libUDB_internal.h"
-//todo #include "defines.h"
 
 // Include the NV memory services if required
 #if((USE_NV_MEMORY == 1) && (SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK))
