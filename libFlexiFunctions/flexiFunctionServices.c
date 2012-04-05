@@ -175,7 +175,7 @@ void flexiFunction_write_buffer_function(functionSetting* pFuncSetting, unsigned
 		return;
 	}	
 
-	memcpy(&flexiFunctionBuffer.flexiFunction_data[index], pFuncSetting, sizeof(functionSetting));
+	memcpy(&flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_data[index], pFuncSetting, sizeof(functionSetting));
 			
 	flexifunction_ref_result = 1;
 	flexiFunctionState = FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE;
@@ -202,7 +202,45 @@ void flexiFunction_write_functions_count(unsigned int funcCount)
 // Get functions count from buffer
 unsigned int flexiFunction_get_functions_count( void )
 {
-	return flexiFunctionBuffer.flexiFunctionsUsed;
+	return flexiFunctionBuffer.flexiFunction_dataset.flexiFunctionsUsed;
+}
+
+// Write directory data
+void flexiFunction_write_directory(unsigned char directory_type , unsigned char start_index, unsigned char count, unsigned char* pdirectory_data)
+{
+	if( (start_index + count) > FLEXIFUNCTION_MAX_DIRECTORY_SIZE)
+	{
+		flexifunction_ref_result = 0;
+		switch(directory_type)
+		{
+		case 0:
+			flexiFunctionState = FLEXIFUNCTION_OUTPUT_DIRECTORY_ACKNOWLEDGE;
+			break;
+		case 1:
+			flexiFunctionState = FLEXIFUNCTION_INPUT_DIRECTORY_ACKNOWLEDGE;
+			break;
+		}
+		return;
+	}
+
+	switch(directory_type)
+	{
+	case 0:
+		memcpy(&flexiFunctionBuffer.flexiFunction_dataset.outputs_directory[start_index], 	&pdirectory_data, count);
+		flexifunction_ref_result = 1;
+		flexiFunctionState = FLEXIFUNCTION_OUTPUT_DIRECTORY_ACKNOWLEDGE;
+		break;
+	case 1:
+		memcpy(&flexiFunctionBuffer.flexiFunction_dataset.inputs_directory[start_index], 	&pdirectory_data, count);
+		flexifunction_ref_result = 1;
+		flexiFunctionState = FLEXIFUNCTION_INPUT_DIRECTORY_ACKNOWLEDGE;
+		break;
+	default:
+		flexifunction_ref_result = 0;
+		flexiFunctionState = FLEXIFUNCTION_COMMAND_ACKNOWLEDGE;
+	}
+
+
 }
 
 
@@ -243,7 +281,7 @@ void flexifunction_commit_reloaded_buffer_crc( void )
 	}
 
 	// If checksum is not correct, do not commit values and return to wait.
-	if(flexiFunctionBuffer.checksum != crc_calculate( (uint8_t*) flexiFunctionBuffer.flexiFunction_data, sizeof(flexiFunctionBuffer.flexiFunction_data) ) )
+	if(flexiFunctionBuffer.checksum != crc_calculate( (uint8_t*) &flexiFunctionBuffer.flexiFunction_dataset, sizeof(flexiFunctionBuffer.flexiFunction_dataset) ) )
 	{
 		flexiFunctionState = FLEXIFUNCTION_WAITING;
 		return;
@@ -260,7 +298,7 @@ void flexifunction_write_nvmemory(void)
 	memcpy(flexiFunctionBuffer.preamble, flexifunction_storage_preamble, 4);
 
 	// Calculate data checksum
-	flexiFunctionBuffer.checksum = crc_calculate( (uint8_t*) flexiFunctionBuffer.flexiFunction_data, sizeof(flexiFunctionBuffer.flexiFunction_data) );
+	flexiFunctionBuffer.checksum = crc_calculate( (uint8_t*) &flexiFunctionBuffer.flexiFunction_dataset, sizeof(flexiFunctionBuffer.flexiFunction_dataset) );
 
 	if( storage_write(STORAGE_HANDLE_MIXER, (unsigned char*) &flexiFunctionBuffer, sizeof(flexiFunctionBuffer), &nv_write_callback) == true)
 	{
@@ -305,20 +343,22 @@ void nv_reload_callback(boolean success)
 void flexiFunction_commit_buffer_check()
 {
 	if(flexiFunctionState != FLEXIFUNCTION_COMMITTING_BUFFER) return;
-
+/*
 	unsigned int index;
 	functionSetting* pTarget;
 	functionSetting* pSource;
 
 	for( index = 0; index < flexiFunctionBuffer.flexiFunctionsUsed; index++)
 	{
-		pTarget = &flexiFunction_data[index];
-		pSource = &flexiFunctionBuffer.flexiFunction_data[index];
+		pTarget = &flexiFunction_dataset.flexiFunction_data[index];
+		pSource = &flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_data[index];
 
 		memcpy((unsigned char*) pTarget, (unsigned char*) pSource, sizeof(functionSetting));
 	}
 
-	flexiFunctionsUsed = flexiFunctionBuffer.flexiFunctionsUsed;
+	flexiFunction_dataset.flexiFunctionsUsed = flexiFunctionBuffer.flexiFunction_dataset.flexiFunctionsUsed;
+*/
+	memcpy(&flexiFunction_dataset, &flexiFunctionBuffer.flexiFunction_dataset, sizeof(flexiFunction_dataset));
 
 	flexifunction_ref_command = FLEXIFUNCTION_COMMAND_COMMIT_BUFFER;
 
@@ -337,4 +377,6 @@ inline void flexiFunction_ACK( void )
 {
 	flexifunction_ref_result = 1;
 	flexiFunctionState = FLEXIFUNCTION_COMMAND_ACKNOWLEDGE;
-}
+};
+
+

@@ -172,16 +172,17 @@ extern void runFlexiFunctions( functionSetting* pSettings, fractional* pRegister
 
 extern const pflexFunction flexiFunctions [];
 
-extern unsigned int flexiFunctionsUsed;
+typedef struct tagFLEXIFUNCTION_DATASET
+{
+	unsigned char inputs_directory[FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
+	unsigned char outputs_directory[FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
+	functionSetting flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
+	unsigned int flexiFunctionsUsed;
+} FLEXIFUNCTION_DATASET;
 
-extern functionSetting flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
-
+extern FLEXIFUNCTION_DATASET flexiFunction_dataset;
 
 extern fractional flexiFunction_registers[FLEXIFUNCTION_MAX_REGS];
-
-
-extern unsigned char inputs_directory[FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
-extern unsigned char outputs_directory[FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
 
 extern unsigned char get_input_register_index_from_directory(unsigned char virtual_index);
 extern unsigned char get_output_register_index_from_directory(unsigned char virtual_index);

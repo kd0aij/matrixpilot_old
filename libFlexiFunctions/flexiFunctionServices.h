@@ -37,6 +37,8 @@ enum FLEXIFUNCTION_SERVICES_STATUS
 	FLEXIFUNCTION_COMMAND_ACKNOWLEDGE,
 	FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE,
 	FLEXIFUNCTION_SIZES_ACKNOWLEDGE,
+	FLEXIFUNCTION_INPUT_DIRECTORY_ACKNOWLEDGE,
+	FLEXIFUNCTION_OUTPUT_DIRECTORY_ACKNOWLEDGE,
 };
 
 enum FLEXIFUNCTION_COMMANDS
@@ -50,10 +52,10 @@ enum FLEXIFUNCTION_COMMANDS
 
 typedef struct tagNVMEM_FLEXIFUNCTION_DATA
 {
-	unsigned char		preamble[4];
-	unsigned int		flexiFunctionsUsed;
-	unsigned int 		checksum;
-	functionSetting 	flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
+	unsigned char			preamble[4];
+	unsigned int			flexiFunctionsUsed;
+	unsigned int 			checksum;
+	FLEXIFUNCTION_DATASET	flexiFunction_dataset;
 } NVMEM_FLEXIFUNCTION_DATA;
 
 // Initialise the flexifunction low priority service
@@ -85,6 +87,10 @@ void flexiFunction_write_functions_count(unsigned int funcCount);
 
 // Get functions count from buffer
 unsigned int flexiFunction_get_functions_count( void );
+
+// Write directory data
+void flexiFunction_write_directory(unsigned char directory_type , unsigned char start_index, unsigned char count, unsigned char* pdirectory_data);
+
 
 #endif 	//FLEXIFUNCTION_SERVICES
 

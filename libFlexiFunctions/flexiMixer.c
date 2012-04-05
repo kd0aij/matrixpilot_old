@@ -97,14 +97,14 @@ void preMix( void )
 	else
 		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_GAIN_MAN_MIX)] = 0;	
 
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_ROLL)]			= PWM_to_frac(roll_control,0);
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_ROLL)]		= PWM_to_frac(roll_control,0);
 	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_PITCH)]		= PWM_to_frac(pitch_control,0);
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_YAW)]			= PWM_to_frac(yaw_control,0);
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_THROTTLE)]		= PWM_to_frac(throttle_control,0);
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_WAGGLE)]		= PWM_to_frac(waggle,0);
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_YAW)]		= PWM_to_frac(yaw_control,0);
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_THROTTLE)]	= PWM_to_frac(throttle_control,0);
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_WAGGLE)]	= PWM_to_frac(waggle,0);
 
 	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_TRIM_POINT)] 		= udb_pwTrim[ROLL_INPUT_CHANNEL];
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_TRIM_THROTTLE)] 		= udb_pwTrim[THROTTLE_INPUT_CHANNEL];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_TRIM_THROTTLE)] 	= udb_pwTrim[THROTTLE_INPUT_CHANNEL];
 }
 
 
@@ -120,7 +120,7 @@ void postMix( void )
 	udb_pwOut[FLAPMID_RIGHT_OUTPUT_CHANNEL] = udb_servo_pulsesat( (int) flexiFunction_registers[get_output_register_index_from_directory(VIRTUAL_OUTPUT_FLAPMID_R)] );
 	udb_pwOut[SPOILER_OUTPUT_CHANNEL] 		= udb_servo_pulsesat( (int) flexiFunction_registers[get_output_register_index_from_directory(VIRTUAL_OUTPUT_SPOILER)] );
 
-	int throttle = (int) flexiFunction_registers[REG_THROTTLE];
+	int throttle = (int) flexiFunction_registers[get_output_register_index_from_directory(VIRTUAL_OUTPUT_THROTTLE)];
 
 	if(throttle < udb_pwTrim[THROTTLE_INPUT_CHANNEL])
 		throttle = udb_pwTrim[THROTTLE_INPUT_CHANNEL];
@@ -141,7 +141,7 @@ void servoMix( void )
 
 	preMix();
 
-	runFlexiFunctions( flexiFunction_data, flexiFunction_registers , FLEXIFUNCTION_MAX_FUNCS );
+	runFlexiFunctions( &flexiFunction_dataset.flexiFunction_data[0], &flexiFunction_registers[0] , FLEXIFUNCTION_MAX_FUNCS );
 	
 	postMix();
 };

@@ -9,12 +9,12 @@
 
 unsigned char get_input_register_index_from_directory(unsigned char virtual_index)
 {
-	return inputs_directory[virtual_index];
+	return flexiFunction_dataset.inputs_directory[virtual_index];
 }
 
 unsigned char get_output_register_index_from_directory(unsigned char virtual_index)
 {
-	return outputs_directory[virtual_index];
+	return flexiFunction_dataset.outputs_directory[virtual_index];
 }
 
 // Run the flexifunction by stepping through the list of functions one-by-one.
@@ -27,7 +27,7 @@ void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsi
 	pSetting = &(pSettings[functionNo]);
 
 	// Step through each mixer and run it
-	while( (functionNo < flexiFunctionsUsed) & (pSetting->functionType != 0) )
+	while( (functionNo < flexiFunction_dataset.flexiFunctionsUsed) & (pSetting->functionType != 0) )
 	{	
 		pRegisters[0] = 0;	// reset the NULL register to make sure
 
