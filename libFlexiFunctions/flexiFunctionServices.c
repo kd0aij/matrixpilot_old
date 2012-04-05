@@ -226,12 +226,12 @@ void flexiFunction_write_directory(unsigned char directory_type , unsigned char 
 	switch(directory_type)
 	{
 	case 0:
-		memcpy(&flexiFunctionBuffer.flexiFunction_dataset.outputs_directory[start_index], 	&pdirectory_data, count);
+		memcpy(&flexiFunctionBuffer.flexiFunction_dataset.outputs_directory[start_index], 	pdirectory_data, count);
 		flexifunction_ref_result = 1;
 		flexiFunctionState = FLEXIFUNCTION_OUTPUT_DIRECTORY_ACKNOWLEDGE;
 		break;
 	case 1:
-		memcpy(&flexiFunctionBuffer.flexiFunction_dataset.inputs_directory[start_index], 	&pdirectory_data, count);
+		memcpy(&flexiFunctionBuffer.flexiFunction_dataset.inputs_directory[start_index], 	pdirectory_data, count);
 		flexifunction_ref_result = 1;
 		flexiFunctionState = FLEXIFUNCTION_INPUT_DIRECTORY_ACKNOWLEDGE;
 		break;
