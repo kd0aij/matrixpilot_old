@@ -141,7 +141,7 @@ void servoMix( void )
 
 	preMix();
 
-	runFlexiFunctions( &flexiFunction_dataset.flexiFunction_data[0], &flexiFunction_registers[0] , FLEXIFUNCTION_MAX_FUNCS );
+	runFlexiFunctions( );
 	
 	postMix();
 };

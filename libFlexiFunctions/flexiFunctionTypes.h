@@ -1,5 +1,5 @@
-#ifndef FLEXIFUNCTION_TYPES_H
-#define FLEXIFUNCTION_TYPES_H
+#ifndef FLEXIFUNCTION_TYPES_COMPACT_H
+#define FLEXIFUNCTION_TYPES_COMPACT_H
 
 #include <dsp.h>
 
@@ -168,7 +168,7 @@ extern fractional three_point_function(functionSetting* pSetting, fractional* pR
 
 
 
-extern void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions );
+extern void runFlexiFunctions( void );
 
 extern const pflexFunction flexiFunctions [];
 
@@ -176,7 +176,8 @@ typedef struct tagFLEXIFUNCTION_DATASET
 {
 	unsigned char inputs_directory[FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
 	unsigned char outputs_directory[FLEXIFUNCTION_MAX_DIRECTORY_SIZE];
-	functionSetting flexiFunction_data[FLEXIFUNCTION_MAX_FUNCS];
+	unsigned int flexiFunction_directory[FLEXIFUNCTION_MAX_FUNCS];
+	unsigned char flexiFunction_data[FLEXIFUNCTION_MAX_DATA_SIZE];
 	unsigned int flexiFunctionsUsed;
 } FLEXIFUNCTION_DATASET;
 

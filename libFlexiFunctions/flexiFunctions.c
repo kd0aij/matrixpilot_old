@@ -18,20 +18,22 @@ unsigned char get_output_register_index_from_directory(unsigned char virtual_ind
 }
 
 // Run the flexifunction by stepping through the list of functions one-by-one.
-void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsigned int max_functions)
+void runFlexiFunctions( void )
 {
 	int 				functionNo = 0;		// Index of mixer in mixer list
 	functionSetting* 	pSetting;
 	fractional 			output;
+	unsigned int		functionAddr;		// Address of mixer in mixer data
 
-	pSetting = &(pSettings[functionNo]);
+	functionAddr = flexiFunction_dataset.flexiFunction_directory[functionNo];
+	pSetting = (functionSetting*) &(flexiFunction_dataset.flexiFunction_data[functionAddr]);
 
 	// Step through each mixer and run it
-	while( (functionNo < flexiFunction_dataset.flexiFunctionsUsed) & (pSetting->functionType != 0) )
+	while( functionNo < flexiFunction_dataset.flexiFunctionsUsed )
 	{	
-		pRegisters[0] = 0;	// reset the NULL register to make sure
+		flexiFunction_registers[0] = 0;	// reset the NULL register to make sure
 
-		output  =	flexiFunctions[pSetting->functionType] ( pSetting, pRegisters);
+		output  =	flexiFunctions[pSetting->functionType] ( pSetting, &flexiFunction_registers[0]);
 
 		// Always limit mixer output to +-RMAX15 or 1.5*full scale
 		if(output > RMAX15) output = RMAX15;
@@ -39,26 +41,26 @@ void runFlexiFunctions( functionSetting* pSettings, fractional* pRegisters, unsi
 
 		if(pSetting->setValue == 0)
 		{
-			pRegisters[pSetting->dest] = output;
+			flexiFunction_registers[pSetting->dest] = output;
 		}
 		else if(pSetting->setValue == 1)
 		{
-			pRegisters[pSetting->dest] += output;
+			flexiFunction_registers[pSetting->dest] += output;
 			
 			// limit final output to +-RMAX15 or 1.5*full scale
-			if(pRegisters[pSetting->dest] > RMAX15) 
-				pRegisters[pSetting->dest] = RMAX15;
-			else if (pRegisters[pSetting->dest] < -RMAX15) 
-				pRegisters[pSetting->dest] = -RMAX15;
+			if(flexiFunction_registers[pSetting->dest] > RMAX15) 
+				flexiFunction_registers[pSetting->dest] = RMAX15;
+			else if (flexiFunction_registers[pSetting->dest] < -RMAX15) 
+				flexiFunction_registers[pSetting->dest] = -RMAX15;
 		}
 		else if(pSetting->setValue == 2)
 		{
-			pRegisters[pSetting->dest] = 0;
+			flexiFunction_registers[pSetting->dest] = 0;
 		}
 
-
 		functionNo++;
-		pSetting = &(pSettings[functionNo]);
+		functionAddr = flexiFunction_dataset.flexiFunction_directory[functionNo];
+		pSetting = (functionSetting*) &(flexiFunction_dataset.flexiFunction_data[functionAddr]);
 	};
 };
 
