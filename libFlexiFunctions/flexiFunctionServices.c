@@ -166,38 +166,42 @@ void flexifunction_sending_buffer_all()
 }
 
 // Write a function to the buffer
-void flexiFunction_write_buffer_function(functionSetting* pFuncSetting, unsigned int index)
+void flexiFunction_write_buffer_function(unsigned char* pFuncData, unsigned int index, unsigned int address, unsigned int size, unsigned int count)
 {
 	if(index >=  FLEXIFUNCTION_MAX_FUNCS)
 	{
 		flexifunction_ref_result = 0;
 		flexiFunctionState = FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE;
 		return;
-	}	
+	}
 
-	memcpy(&flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_data[index], pFuncSetting, sizeof(functionSetting));
-			
+	functionSetting* pSetting = (functionSetting*) pFuncData;
+
+	memcpy(&flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_data[address], pFuncData, size);
+	flexiFunctionBuffer.flexiFunction_dataset.flexiFunctionsUsed = count;
+	flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_directory[index] = address;
+
 	flexifunction_ref_result = 1;
 	flexiFunctionState = FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE;
 	return;
 }
 
-
-// Write a functions count to the buffer
-void flexiFunction_write_functions_count(unsigned int funcCount)
-{
-	if(funcCount >= FLEXIFUNCTION_MAX_FUNCS)
-	{
-		flexifunction_ref_result = 0;
-		flexiFunctionState = FLEXIFUNCTION_SIZES_ACKNOWLEDGE;
-		return;
-	}
-	
-	flexiFunctionBuffer.flexiFunctionsUsed = funcCount;
-	flexifunction_ref_result = 1;
-	flexiFunctionState = FLEXIFUNCTION_SIZES_ACKNOWLEDGE;
-	return;
-}
+//
+//// Write a functions count to the buffer
+//void flexiFunction_write_functions_count(unsigned int funcCount)
+//{
+//	if(funcCount >= FLEXIFUNCTION_MAX_FUNCS)
+//	{
+//		flexifunction_ref_result = 0;
+//		flexiFunctionState = FLEXIFUNCTION_SIZES_ACKNOWLEDGE;
+//		return;
+//	}
+//	
+//	flexiFunctionBuffer.flexiFunctionsUsed = funcCount;
+//	flexifunction_ref_result = 1;
+//	flexiFunctionState = FLEXIFUNCTION_SIZES_ACKNOWLEDGE;
+//	return;
+//}
 
 // Get functions count from buffer
 unsigned int flexiFunction_get_functions_count( void )
@@ -343,21 +347,7 @@ void nv_reload_callback(boolean success)
 void flexiFunction_commit_buffer_check()
 {
 	if(flexiFunctionState != FLEXIFUNCTION_COMMITTING_BUFFER) return;
-/*
-	unsigned int index;
-	functionSetting* pTarget;
-	functionSetting* pSource;
 
-	for( index = 0; index < flexiFunctionBuffer.flexiFunctionsUsed; index++)
-	{
-		pTarget = &flexiFunction_dataset.flexiFunction_data[index];
-		pSource = &flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_data[index];
-
-		memcpy((unsigned char*) pTarget, (unsigned char*) pSource, sizeof(functionSetting));
-	}
-
-	flexiFunction_dataset.flexiFunctionsUsed = flexiFunctionBuffer.flexiFunction_dataset.flexiFunctionsUsed;
-*/
 	memcpy(&flexiFunction_dataset, &flexiFunctionBuffer.flexiFunction_dataset, sizeof(flexiFunction_dataset));
 
 	flexifunction_ref_command = FLEXIFUNCTION_COMMAND_COMMIT_BUFFER;

@@ -36,7 +36,7 @@ enum FLEXIFUNCTION_SERVICES_STATUS
 	FLEXIFUNCTION_COMMIT_ACKNOWLEDGE,	// Commit done, send acknowledge
 	FLEXIFUNCTION_COMMAND_ACKNOWLEDGE,
 	FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE,
-	FLEXIFUNCTION_SIZES_ACKNOWLEDGE,
+//	FLEXIFUNCTION_SIZES_ACKNOWLEDGE,
 	FLEXIFUNCTION_INPUT_DIRECTORY_ACKNOWLEDGE,
 	FLEXIFUNCTION_OUTPUT_DIRECTORY_ACKNOWLEDGE,
 };
@@ -80,10 +80,10 @@ void flexiFunction_write_nv_memory(void);
 void flexiFunction_load_nv_memory(void);
 
 // Write a function to the buffer
-void flexiFunction_write_buffer_function(functionSetting* pFuncSetting, unsigned int index);
+void flexiFunction_write_buffer_function(unsigned char* pFuncData, unsigned int index, unsigned int address, unsigned int size, unsigned int count);
 
 // Write a functions count to the buffer
-void flexiFunction_write_functions_count(unsigned int funcCount);
+//void flexiFunction_write_functions_count(unsigned int funcCount);
 
 // Get functions count from buffer
 unsigned int flexiFunction_get_functions_count( void );
