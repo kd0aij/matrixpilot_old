@@ -17,9 +17,13 @@ const pflexFunction flexiFunctions[] =
     &scale_reftrim_limit_function,
     &gain_limit_function,
     &three_point_function,
+    &four_point_function,
+    &five_point_function,
+    &gain_function,
+    &rate_function,
 	};
 
 
-const unsigned char functionParamSizes[] ={0, 10, 4, 6, 12, 10, 12, 14, 14, 10, 14, };
+const unsigned char functionParamSizes[] ={0, 10, 4, 6, 12, 10, 12, 14, 14, 10, 14, 18, 22, 6, 6, };
 
 

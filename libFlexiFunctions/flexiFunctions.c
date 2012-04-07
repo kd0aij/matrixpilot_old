@@ -244,12 +244,7 @@ fractional conditional_set_ref_function(functionSetting* pSetting, fractional* p
 	return 0;
 };
 
-/*
-fractional mixConditionalOffset(MixerSetting* pSetting)
-{
-	return 0;
-};
-*/
+
 
 fractional conditional_set_function(functionSetting* pSetting, fractional* pRegisters)
 {
@@ -307,8 +302,8 @@ fractional three_point_function(functionSetting* pSetting, fractional* pRegister
 	}
 	
 	input -= X1;
-	if(X2 <= X1) return pSetting->data.three_point.outputLow;
-	if(Y1 == Y2) return pSetting->data.three_point.outputLow;
+	if(X2 <= X1) return Y1;
+	if(Y1 == Y2) return Y1;
 
 	delta = X2 - X1;
 
@@ -351,16 +346,248 @@ fractional three_point_function(functionSetting* pSetting, fractional* pRegister
 
 	
 	ltemp.WW = __builtin_mulss(output, input);	
-//	ltemp.WW <<= 1;									// To correct for input RMAX
 	ltemp.WW <<= gain;
 	output = (fractional) (ltemp._.W1 + Y1);
 
 	return output;
 }
 
-/*
-fractional mixGainLim(MixerSetting* pSetting)
-{
 
-};
-*/
+fractional four_point_function(functionSetting* pSetting, fractional* pRegisters)
+{
+	fractional output;
+	fractional X1;
+	fractional X2;
+	fractional Y1;
+	fractional Y2;
+	fractional 		delta;
+	union longww 	ltemp;
+
+	int 			gain = 0;
+
+	fractional input = pRegisters[pSetting->data.four_point.src];
+
+	if(input <= pSetting->data.four_point.input1)
+		return pSetting->data.four_point.output1;
+
+	if(input >= pSetting->data.four_point.input4)
+		return pSetting->data.four_point.output4;
+
+	if(input >= pSetting->data.four_point.input3)
+	{
+		X1 = pSetting->data.four_point.input3;
+		X2 = pSetting->data.four_point.input4;
+		Y1 = pSetting->data.four_point.output3;
+		Y2 = pSetting->data.four_point.output4;
+	}
+	else if(input >= pSetting->data.four_point.input2)
+	{
+		X1 = pSetting->data.four_point.input2;
+		X2 = pSetting->data.four_point.input3;
+		Y1 = pSetting->data.four_point.output2;
+		Y2 = pSetting->data.four_point.output3;
+	}
+	else
+	{
+		X1 = pSetting->data.four_point.input1;
+		X2 = pSetting->data.four_point.input2;
+		Y1 = pSetting->data.four_point.output1;
+		Y2 = pSetting->data.four_point.output2;
+	}
+	
+	input -= X1;
+	if(X2 <= X1) return Y1;
+	if(Y1 == Y2) return Y1;
+
+	delta = X2 - X1;
+
+	// Find the gain required to increase delta to be in range RMAX to RMAX/2
+	while(delta < RMAX/2)
+	{
+		gain++;
+		delta <<= 1;
+	}
+
+	if(delta > RMAX)
+	{
+		gain--;
+		delta >>= 1;
+	}
+
+	ltemp.WW = 0;
+	ltemp._.W1 = (Y2 - Y1);		//  does this need to be inverted???
+
+
+	// Limit numerator to +-RMAX/4 and adjust gain
+	if(ltemp.WW > 0)
+	{
+		while(ltemp._.W1 > RMAX/4)
+		{
+			gain++;
+			ltemp.WW >>= 1;
+		}
+	}
+	else
+	{
+		while(ltemp._.W1 < -RMAX/4)
+		{
+			gain++;
+			ltemp.WW >>= 1;
+		}
+	}
+
+	output = __builtin_divsd( ltemp.WW,  delta ); //(int) (fractional)
+
+	
+	ltemp.WW = __builtin_mulss(output, input);
+	ltemp.WW <<= gain;
+	output = (fractional) (ltemp._.W1 + Y1);
+
+	return output;
+}
+
+
+fractional five_point_function(functionSetting* pSetting, fractional* pRegisters)
+{
+	fractional output;
+	fractional X1;
+	fractional X2;
+	fractional Y1;
+	fractional Y2;
+	fractional 		delta;
+	union longww 	ltemp;
+
+	int 			gain = 0;
+
+	fractional input = pRegisters[pSetting->data.five_point.src];
+
+	if(input <= pSetting->data.five_point.input1)
+		return pSetting->data.five_point.output1;
+
+	if(input >= pSetting->data.five_point.input5)
+		return pSetting->data.five_point.output5;
+
+	if(input >= pSetting->data.five_point.input4)
+	{
+		X1 = pSetting->data.five_point.input4;
+		X2 = pSetting->data.five_point.input5;
+		Y1 = pSetting->data.five_point.output4;
+		Y2 = pSetting->data.five_point.output5;
+	}
+	if(input >= pSetting->data.five_point.input3)
+	{
+		X1 = pSetting->data.five_point.input3;
+		X2 = pSetting->data.five_point.input4;
+		Y1 = pSetting->data.five_point.output3;
+		Y2 = pSetting->data.five_point.output4;
+	}
+	else if(input >= pSetting->data.five_point.input2)
+	{
+		X1 = pSetting->data.five_point.input2;
+		X2 = pSetting->data.five_point.input3;
+		Y1 = pSetting->data.five_point.output2;
+		Y2 = pSetting->data.five_point.output3;
+	}
+	else
+	{
+		X1 = pSetting->data.five_point.input1;
+		X2 = pSetting->data.five_point.input2;
+		Y1 = pSetting->data.five_point.output1;
+		Y2 = pSetting->data.five_point.output2;
+	}
+	
+	input -= X1;
+	if(X2 <= X1) return Y1;
+	if(Y1 == Y2) return Y1;
+
+	delta = X2 - X1;
+
+	// Find the gain required to increase delta to be in range RMAX to RMAX/2
+	while(delta < RMAX/2)
+	{
+		gain++;
+		delta <<= 1;
+	}
+
+	if(delta > RMAX)
+	{
+		gain--;
+		delta >>= 1;
+	}
+
+	ltemp.WW = 0;
+	ltemp._.W1 = (Y2 - Y1);		//  does this need to be inverted???
+
+
+	// Limit numerator to +-RMAX/4 and adjust gain
+	if(ltemp.WW > 0)
+	{
+		while(ltemp._.W1 > RMAX/4)
+		{
+			gain++;
+			ltemp.WW >>= 1;
+		}
+	}
+	else
+	{
+		while(ltemp._.W1 < -RMAX/4)
+		{
+			gain++;
+			ltemp.WW >>= 1;
+		}
+	}
+
+	output = __builtin_divsd( ltemp.WW,  delta ); //(int) (fractional)
+
+	
+	ltemp.WW = __builtin_mulss(output, input);
+	ltemp.WW <<= gain;
+	output = (fractional) (ltemp._.W1 + Y1);
+
+	return output;
+}
+
+
+fractional gain_function(functionSetting* pSetting, fractional* pRegisters)
+{
+	union longww 	ltemp;
+	fractional 		ftemp;
+	ftemp = pRegisters[pSetting->data.gain_limit.src];
+
+	if(ftemp > 0)
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.gain_limit.posGain);
+	else
+		ltemp.WW = __builtin_mulss(ftemp, pSetting->data.gain_limit.negGain);	
+	
+	ltemp.WW <<= 2;
+	ftemp = (fractional) ltemp._.W1;
+
+	return ftemp;
+}
+
+
+fractional rate_function(functionSetting* pSetting, fractional* pRegisters)
+{
+	fractional src = pRegisters[pSetting->data.rate.src];
+	fractional dest = pRegisters[pSetting->dest];
+	
+	if(dest > src)
+	{
+		src += pSetting->data.rate.posRate;
+		if(src > dest) src = dest;
+	}
+	else if(dest < src)
+	{
+		src -= pSetting->data.rate.negRate;
+		if(src < dest) src = dest;
+	}
+
+	// Force output to be set rather than add or clear
+	pSetting->setValue = 0;
+
+	// Update the src which is the memory of the last output
+	pRegisters[pSetting->data.rate.src] = src;
+
+	return src;
+}
+

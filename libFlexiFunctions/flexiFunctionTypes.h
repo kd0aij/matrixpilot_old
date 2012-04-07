@@ -118,6 +118,52 @@ typedef struct tagFuncData_THREE_POINT
 } FuncData_three_point;
 
 
+typedef struct tagFuncData_FOUR_POINT
+{
+	unsigned int	src;
+	fractional	input1;
+	fractional	output1;
+	fractional	input2;
+	fractional	output2;
+	fractional	input3;
+	fractional	output3;
+	fractional	input4;
+	fractional	output4;
+} FuncData_four_point;
+
+
+typedef struct tagFuncData_FIVE_POINT
+{
+	unsigned int	src;
+	fractional	input1;
+	fractional	output1;
+	fractional	input2;
+	fractional	output2;
+	fractional	input3;
+	fractional	output3;
+	fractional	input4;
+	fractional	output4;
+	fractional	input5;
+	fractional	output5;
+} FuncData_five_point;
+
+
+typedef struct tagFuncData_GAIN
+{
+	unsigned int	src;
+	fractional	posGain;
+	fractional	negGain;
+} FuncData_gain;
+
+
+typedef struct tagFuncData_RATE
+{
+	unsigned int	src;
+	fractional	posRate;
+	fractional	negRate;
+} FuncData_rate;
+
+
 typedef union
 {
 	FuncData_null	null;
@@ -131,6 +177,10 @@ typedef union
 	FuncData_scale_reftrim_limit	scale_reftrim_limit;
 	FuncData_gain_limit	gain_limit;
 	FuncData_three_point	three_point;
+	FuncData_four_point	four_point;
+	FuncData_five_point	five_point;
+	FuncData_gain	gain;
+	FuncData_rate	rate;
 } functionData;
 
 
@@ -165,6 +215,10 @@ extern fractional scale_trim_limit_function(functionSetting* pSetting, fractiona
 extern fractional scale_reftrim_limit_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional gain_limit_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional three_point_function(functionSetting* pSetting, fractional* pRegisters);
+extern fractional four_point_function(functionSetting* pSetting, fractional* pRegisters);
+extern fractional five_point_function(functionSetting* pSetting, fractional* pRegisters);
+extern fractional gain_function(functionSetting* pSetting, fractional* pRegisters);
+extern fractional rate_function(functionSetting* pSetting, fractional* pRegisters);
 
 
 
