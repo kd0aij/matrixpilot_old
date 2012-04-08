@@ -168,7 +168,7 @@ void flexifunction_sending_buffer_all()
 // Write a function to the buffer
 void flexiFunction_write_buffer_function(unsigned char* pFuncData, unsigned int index, unsigned int address, unsigned int size, unsigned int count)
 {
-	if(index >=  FLEXIFUNCTION_MAX_FUNCS)
+	if(index >=  FLEXIFUNCTION_MAX_FUNCS-1)
 	{
 		flexifunction_ref_result = 0;
 		flexiFunctionState = FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE;
@@ -176,13 +176,42 @@ void flexiFunction_write_buffer_function(unsigned char* pFuncData, unsigned int 
 	}
 
 	functionSetting* pSetting = (functionSetting*) pFuncData;
+	unsigned int tempAddr = address;
 
-	memcpy(&flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_data[address], pFuncData, size);
-	flexiFunctionBuffer.flexiFunction_dataset.flexiFunctionsUsed = count;
-	flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_directory[index] = address;
+	// If this is a function update only, take the address from the directory.
+	if(address == 0xFFFF)
+	{
+		if(count != flexiFunctionBuffer.flexiFunction_dataset.flexiFunctionsUsed)
+		{
+			flexifunction_ref_result = 0;
+			flexiFunctionState = FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE;
+			return;
+		}
+		tempAddr = flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_directory[index];
+	}
 
-	flexifunction_ref_result = 1;
-	flexiFunctionState = FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE;
+	if( (tempAddr + size) >= FLEXIFUNCTION_MAX_DATA_SIZE )
+	{
+		flexifunction_ref_result = 0;
+		flexiFunctionState = FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE;
+		return;
+	}
+
+	memcpy(&flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_data[tempAddr], pFuncData, size);
+
+	if(address == 0xFFFF)
+	{
+		flexiFunctionState = FLEXIFUNCTION_COMMITTING_BUFFER;
+	}
+	else
+	{
+		flexiFunctionBuffer.flexiFunction_dataset.flexiFunctionsUsed = count;
+		flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_directory[index] = tempAddr;
+		flexiFunctionBuffer.flexiFunction_dataset.flexiFunction_directory[index+1] = tempAddr + size;
+	
+		flexifunction_ref_result = 1;
+		flexiFunctionState = FLEXIFUNCTION_BUFFER_FUNCTION_ACKNOWLEDGE;
+	}
 	return;
 }
 
