@@ -22,6 +22,7 @@ const mavlink_parameter_parser    mavlink_parameter_parsers[] = {
     { &mavlink_send_param_pwtrim, &mavlink_set_param_pwtrim, MAVLINK_TYPE_FLOAT},
     { &mavlink_send_param_gyroscale_Q14, &mavlink_set_param_gyroscale_Q14, MAVLINK_TYPE_FLOAT},
     { &mavlink_send_int_circular, &mavlink_set_int_circular, MAVLINK_TYPE_INT32_T},
+    { &mavlink_send_dm_airspeed_in_cm, &mavlink_set_dm_airspeed_from_cm, MAVLINK_TYPE_INT32_T},
     };
 
 const mavlink_parameter mavlink_parameters_list[] = {
@@ -68,6 +69,8 @@ const mavlink_parameter mavlink_parameters_list[] = {
     {"IMU_YGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_yrate.offset, sizeof(udb_yrate.offset) },
     {"IMU_ZGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_zrate.offset, sizeof(udb_zrate.offset) },
     {"IMU_VREF_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_vref.offset, sizeof(udb_vref.offset) },
+
+    {"TH_ASPEED" , {.param_int32=-2500} , {.param_int32=2500} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &desiredSpeed, sizeof(desiredSpeed) },
 
     };
 

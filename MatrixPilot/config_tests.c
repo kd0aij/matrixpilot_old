@@ -166,9 +166,9 @@
 	#error("Can't use HILSIM with the magnetometer yaw drift correction")
 #endif
 
-#if( (HILSIM_NUM_SERVOS < NUM_OUTPUTS) && (HILSIM == 1) )
-	#error("Use USE_VARIABLE_HILSIM_CHANNELS = 1 for HILSIM")
-#endif
+//#if( (HILSIM_NUM_SERVOS < NUM_OUTPUTS) && (HILSIM == 1) )
+//	#error("Use USE_VARIABLE_HILSIM_CHANNELS = 1 for HILSIM")
+//#endif
 
 
 #if (BOARD_IS_CLASSIC_UDB == 1)
