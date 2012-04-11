@@ -130,21 +130,21 @@ const int yaw_servo_ratio;
 */
 
 #if ((SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK) || ( GAINS_VARIABLE == 1 ))
-	extern long height_target_min;
-	extern long height_target_max;
-	extern long height_margin;
-	extern fractional alt_throttle_min;
-	extern fractional alt_throttle_max;
+	extern int height_target_min;
+	extern int height_target_max;
+	extern int height_margin;
+	extern fractional alt_hold_throttle_min;
+	extern fractional alt_hold_throttle_max;
 	extern int alt_hold_pitch_min;
 	extern int alt_hold_pitch_max;
 	extern int alt_hold_pitch_high;
 	extern int rtl_pitch_down;
 #else
-	extern const long height_target_min;
-	extern const long height_target_max;
-	extern const long height_margin;
-	extern const long alt_throttle_min;
-	extern const long alt_throttle_max;
+	extern const int height_target_min;
+	extern const int height_target_max;
+	extern const int height_margin;
+	extern const fractional alt_hold_throttle_min;
+	extern const fractional alt_hold_throttle_max;
 	extern const int alt_hold_pitch_min;
 	extern const int alt_hold_pitch_max;
 	extern const int alt_hold_pitch_high;

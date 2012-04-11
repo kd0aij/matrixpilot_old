@@ -70,7 +70,15 @@ const mavlink_parameter mavlink_parameters_list[] = {
     {"IMU_ZGYRO_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_zrate.offset, sizeof(udb_zrate.offset) },
     {"IMU_VREF_OFF" , {.param_int32=-32767} , {.param_int32=32767} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &udb_vref.offset, sizeof(udb_vref.offset) },
 
-    {"TH_ASPEED" , {.param_int32=-2500} , {.param_int32=2500} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &desiredSpeed, sizeof(desiredSpeed) },
+    {"TH_ASPEED" , {.param_int32=-250} , {.param_int32=250} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &desiredSpeed, sizeof(desiredSpeed) },
+    {"TH_H_TARGET_MIN" , {.param_int32=0} , {.param_int32=1} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &height_target_min, sizeof(height_target_min) },
+    {"TH_H_TARGET_MAX" , {.param_int32=0} , {.param_int32=1} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &height_target_max, sizeof(height_target_max) },
+    {"TH_H_MARGIN" , {.param_int32=1} , {.param_int32=500} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &height_margin, sizeof(height_margin) },
+    {"TH_T_HOLD_MIN" , {.param_float=0} , {.param_float=1} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &alt_hold_throttle_min, sizeof(alt_hold_throttle_min) },
+    {"TH_T_HOLD_MAX" , {.param_float=0} , {.param_float=1} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &alt_hold_throttle_max, sizeof(alt_hold_throttle_max) },
+    {"TH_P_HOLD_MIN" , {.param_int32=-89} , {.param_int32=0} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &alt_hold_pitch_min, sizeof(alt_hold_pitch_min) },
+    {"TH_P_HOLD_MAX" , {.param_int32=0} , {.param_int32=89} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &alt_hold_pitch_max, sizeof(alt_hold_pitch_max) },
+    {"TH_P_RTL_DOWN" , {.param_int32=0} , {.param_int32=89} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &rtl_pitch_down, sizeof(rtl_pitch_down) },
 
     };
 
