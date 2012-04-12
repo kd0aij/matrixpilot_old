@@ -129,26 +129,26 @@ const int yaw_servo_ratio;
 
 */
 
-#if ((SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK) || ( GAINS_VARIABLE == 1 ))
-	extern int height_target_min;
-	extern int height_target_max;
-	extern int height_margin;
-	extern fractional alt_hold_throttle_min;
-	extern fractional alt_hold_throttle_max;
-	extern int alt_hold_pitch_min;
-	extern int alt_hold_pitch_max;
-	extern int alt_hold_pitch_high;
-	extern int rtl_pitch_down;
-#else
-	extern const int height_target_min;
-	extern const int height_target_max;
-	extern const int height_margin;
-	extern const fractional alt_hold_throttle_min;
-	extern const fractional alt_hold_throttle_max;
-	extern const int alt_hold_pitch_min;
-	extern const int alt_hold_pitch_max;
-	extern const int alt_hold_pitch_high;
-	extern const int rtl_pitch_down;
-#endif
+//#if ((SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK) || ( GAINS_VARIABLE == 1 ))
+//	extern int height_target_min;
+//	extern int height_target_max;
+//	extern int height_margin;
+//	extern fractional alt_hold_throttle_min;
+//	extern fractional alt_hold_throttle_max;
+//	extern int alt_hold_pitch_min;
+//	extern int alt_hold_pitch_max;
+//	extern int alt_hold_pitch_high;
+//	extern int rtl_pitch_down;
+//#else
+//	extern const int height_target_min;
+//	extern const int height_target_max;
+//	extern const int height_margin;
+//	extern const fractional alt_hold_throttle_min;
+//	extern const fractional alt_hold_throttle_max;
+//	extern const int alt_hold_pitch_min;
+//	extern const int alt_hold_pitch_max;
+//	extern const int alt_hold_pitch_high;
+//	extern const int rtl_pitch_down;
+//#endif
 
 #endif 	//GAIN_VARIABLES_H

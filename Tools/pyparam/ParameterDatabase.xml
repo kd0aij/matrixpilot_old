@@ -519,9 +519,23 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 		<blockName>THROTTLE_HEIGHT_OPTIONS</blockName>
 		<storage_area>THROTTLE_HEIGHT_OPTIONS</storage_area>
 		<serialisationFlags>
-		<serialisationFlag>LOAD_AT_STARTUP</serialisationFlag>
-		<serialisationFlag>LOAD_AT_REBOOT</serialisationFlag>
+			<serialisationFlag>LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>LOAD_AT_REBOOT</serialisationFlag>
 		</serialisationFlags>
+		<externs>
+			<externString>int height_target_min</externString>
+			<externString>int height_target_max</externString>
+			<externString>int height_margin</externString>
+			<externString>fractional alt_hold_throttle_min</externString>
+			<externString>fractional alt_hold_throttle_max</externString>
+			<externString>int alt_hold_pitch_min</externString>
+			<externString>int alt_hold_pitch_max</externString>
+			<externString>int alt_hold_pitch_high</externString>
+			<externString>int rtl_pitch_down</externString>
+			<externString>int minimum_groundspeed</externString>
+			<externString>int maximum_airspeed</externString>
+			<externString>int minimum_airspeed</externString>
+		</externs>
 		<load_callback>NULL</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
 		<parameters>
@@ -613,6 +627,34 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<description>Return to launch pitch down</description>
 				<min>0</min>
 				<max>89</max>
+				<readonly>false</readonly>
+			</parameter>
+
+			<parameter>
+				<parameterName>TH_MIN_GSPD</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>minimum_groundspeed</variable_name>
+				<description>Minimum groundspeed</description>
+				<min>0</min>
+				<max>100</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>TH_MIN_ASPD</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>minimum_airspeed</variable_name>
+				<description>Minimum airspeed</description>
+				<min>0</min>
+				<max>100</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>TH_MAX_ASPD</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>maximum_airspeed</variable_name>
+				<description>Maximum airspeed</description>
+				<min>0</min>
+				<max>500</max>
 				<readonly>false</readonly>
 			</parameter>
 		</parameters>

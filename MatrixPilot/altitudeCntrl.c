@@ -49,26 +49,6 @@ void normalAltitudeCntrl(void) ;
 void manualThrottle(int throttleIn) ;
 void hoverAltitudeCntrl(void) ;
 
-#if((SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK) || ( GAINS_VARIABLE == 1 ))
-	int height_target_min		= HEIGHT_TARGET_MIN;
-	int height_target_max		= HEIGHT_TARGET_MAX;
-	int height_margin			= HEIGHT_MARGIN;
-	fractional alt_hold_throttle_min	= ALT_HOLD_THROTTLE_MIN * RMAX;
-	fractional alt_hold_throttle_max	= ALT_HOLD_THROTTLE_MAX * RMAX;
-	int alt_hold_pitch_min		= ALT_HOLD_PITCH_MIN;
-	int alt_hold_pitch_max		= ALT_HOLD_PITCH_MAX;
-	int alt_hold_pitch_high		= ALT_HOLD_PITCH_HIGH;
-	int rtl_pitch_down			= RTL_PITCH_DOWN;
-
-	int throttle_height_gain 	= THROTTLEHEIGHTGAIN;
-	int pitch_at_max 			= PITCHATMAX;
-	int pitch_at_min 			= PITCHATMIN;
-	int pitch_at_zero 			= PITCHATZERO;
-	int pitch_height_gain		= PITCHHEIGHTGAIN;
-	int height_throttle_gain	= HEIGHTTHROTTLEGAIN;
-
-	int max_throttle			= MAXTHROTTLE;
-#endif
 
 #if ( SPEED_CONTROL == 1)  // speed control loop
 
