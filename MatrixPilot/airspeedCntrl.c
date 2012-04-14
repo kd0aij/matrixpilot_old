@@ -20,7 +20,7 @@
 
 
 #include "defines.h"
-#include "airspeed.h"
+#include "airspeedCntrl.h"
 
 int 	airspeed		= 0;
 long 	airspeed2 		= 0;

@@ -20,7 +20,7 @@
 
 
 #include "defines.h"
-#include "airspeed.h"
+#include "airspeedCntrl.h"
 
 union longww throttleFiltered = { 0 } ;
 
