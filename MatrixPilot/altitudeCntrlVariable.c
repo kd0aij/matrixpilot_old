@@ -52,7 +52,7 @@ void normalAltitudeCntrl(void) ;
 void manualThrottle(int throttleIn) ;
 void hoverAltitudeCntrl(void) ;
 
-
+// External variables
 int height_target_min		= HEIGHT_TARGET_MIN;
 int height_target_max		= HEIGHT_TARGET_MAX;
 int height_margin			= HEIGHT_MARGIN;
@@ -63,14 +63,14 @@ int alt_hold_pitch_max		= ALT_HOLD_PITCH_MAX;
 int alt_hold_pitch_high		= ALT_HOLD_PITCH_HIGH;
 int rtl_pitch_down			= RTL_PITCH_DOWN;
 
+// Internal computed variables.  Values defined above.
+int max_throttle			= MAXTHROTTLE;
 int throttle_height_gain 	= THROTTLEHEIGHTGAIN;
 int pitch_at_max 			= PITCHATMAX;
 int pitch_at_min 			= PITCHATMIN;
 int pitch_at_zero 			= PITCHATZERO;
 int pitch_height_gain		= PITCHHEIGHTGAIN;
 int height_throttle_gain	= HEIGHTTHROTTLEGAIN;
-
-int max_throttle			= MAXTHROTTLE;
 
 int target_airspeed = 0;
 
@@ -242,7 +242,7 @@ void normalAltitudeCntrl(void)
 #if (ALTITUDEHOLD_STABILIZED == AH_PITCH_ONLY)
 			// In stabilized mode using pitch-only altitude hold, use desiredHeight as
 			// set from the state machine upon entering stabilized mode in ent_stabilizedS().
-#elif (ALTITUDEHOLD_STABILIZED == AH_FULL)
+#elif ( (ALTITUDEHOLD_STABILIZED == AH_FULL) || (ALTITUDEHOLD_STABILIZED == AH_THROTTLE_ONLY) )
 			// In stabilized mode using full altitude hold, use the throttle stick value to determine desiredHeight,
 			desiredHeight =(( __builtin_mulss( height_throttle_gain, throttleInOffset - ((int)( DEADBAND ) ))) >> 11) 
 							+ height_target_min;

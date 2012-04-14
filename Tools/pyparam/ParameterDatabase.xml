@@ -91,7 +91,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<variable_name>rollkp</variable_name>
 				<description>Roll proporational gain</description>
 				<min>0.0</min>
-				<max>0.4</max>
+				<max>0.5</max>
 				<readonly>false</readonly>
 			</parameter>
 			<parameter>
@@ -100,52 +100,44 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<variable_name>rollkd</variable_name>
 				<description>Roll differential gain</description>
 				<min>0.0</min>
-				<max>0.4</max>
+				<max>0.5</max>
 				<readonly>false</readonly>
 			</parameter>
 			<parameter>
 				<parameterName>PID_YAWKPAIL</parameterName>
 				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
 				<variable_name>yawkpail</variable_name>
-				<description>Roll differential gain</description>
+				<description>yaw to aileron gain</description>
 				<min>0.0</min>
-				<max>0.4</max>
+				<max>0.5</max>
 				<readonly>false</readonly>
 			</parameter>
 			<parameter>
 				<parameterName>PID_YAWKDAIL</parameterName>
 				<udb_param_type>UDB_TYPE_GYROSCALE_Q14</udb_param_type>
 				<variable_name>yawkdail</variable_name>
-				<description>Roll differential gain</description>
+				<description>yaw to aileron rate gain</description>
 				<min>0.0</min>
-				<max>0.4</max>
+				<max>0.5</max>
 				<readonly>false</readonly>
 			</parameter>
-			<parameter>
-				<parameterName>PID_YAWKPRUD</parameterName>
-				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
-				<variable_name>yawkprud</variable_name>
-				<description>Roll differential gain</description>
-				<min>0.0</min>
-				<max>0.4</max>
-				<readonly>false</readonly>
-			</parameter>
-			<parameter>
-				<parameterName>PID_ROLLKPRUD</parameterName>
-				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
-				<variable_name>rollkprud</variable_name>
-				<description>Roll differential gain</description>
-				<min>0.0</min>
-				<max>0.4</max>
-				<readonly>false</readonly>
-			</parameter>
+
 			<parameter>
 				<parameterName>PID_PITCHGAIN</parameterName>
 				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
 				<variable_name>pitchgain</variable_name>
-				<description>Roll differential gain</description>
+				<description>PItch gain</description>
 				<min>0.0</min>
-				<max>0.4</max>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_PITCHKD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>pitchkd</variable_name>
+				<description>Pitch rate gain</description>
+				<min>0.0</min>
+				<max>0.5</max>
 				<readonly>false</readonly>
 			</parameter>
 			<parameter>
@@ -154,9 +146,57 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<variable_name>rudderElevMixGain</variable_name>
 				<description>Roll differential gain</description>
 				<min>0.0</min>
-				<max>0.4</max>
+				<max>0.5</max>
 				<readonly>false</readonly>
 			</parameter>
+			
+			<parameter>
+				<parameterName>PID_ROLLKPRUD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>rollkprud</variable_name>
+				<description>Roll differential gain</description>
+				<min>0.0</min>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+
+			<parameter>
+				<parameterName>PID_YAWKPRUD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>yawkprud</variable_name>
+				<description>Yaw to rudder gain</description>
+				<min>0.0</min>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_YAWKDRUD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>yawkprud</variable_name>
+				<description>Yaw to rudder rate gain</description>
+				<min>0.0</min>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_ROLLKPRUD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>rollkprud</variable_name>
+				<description>Roll to rudder gain</description>
+				<min>0.0</min>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>PID_ROLLKDRUD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>rollkdrud</variable_name>
+				<description>Roll to rudder rate gain</description>
+				<min>0.0</min>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+			
 		</parameters>
 		<description>PID Settings Block </description>
 	</parameterBlock>

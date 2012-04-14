@@ -69,8 +69,6 @@
 	extern const int rollkprud;
 	extern const int rollkdrud;
 #endif
-//extern int MANUAL_AILERON_RUDDER_MIX			0.20
-//#define RUDDER_BOOST						1.0
 
 // Gains for Hovering
 // Gains are named based on plane's frame of reference (roll means ailerons)
@@ -102,53 +100,6 @@
 	extern const int hoveryawkd;
 #endif
 
-//#define HOVER_PITCH_OFFSET					0.0		// + leans towards top, - leans towards bottom
-//#define HOVER_YAW_OFFSET					0.0
-//#define HOVER_PITCH_TOWARDS_WP			   30.0
-//#define HOVER_NAV_MAX_PITCH_RADIUS		   20
-
-
-/*
-// servo throw can be more than 3 turns - 1080 degrees - so use integers rather than char
-const int tan_pitch_in_stabilized_mode;
-const int yaw_in_stabilized_mode;
-
-const int pitch_offset_centred;
-const int yaw_offset_centred;
-
-const int pitch_servo_max;
-const int pitch_servo_min;
-const int yaw_servo_max;
-const int yaw_servo_min;
-
-// servo_ratios are used to convert degrees of rotation into servo pulse code lengths
-// This code is configured for the full throw of the servo to be achieved by a range of
-// 2000 units being sent to udb_pwOut. (i.e. min 2000, centered 3000, max 4000 )
-const int pitch_servo_ratio;
-const int yaw_servo_ratio;
-
-*/
-
-//#if ((SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK) || ( GAINS_VARIABLE == 1 ))
-//	extern int height_target_min;
-//	extern int height_target_max;
-//	extern int height_margin;
-//	extern fractional alt_hold_throttle_min;
-//	extern fractional alt_hold_throttle_max;
-//	extern int alt_hold_pitch_min;
-//	extern int alt_hold_pitch_max;
-//	extern int alt_hold_pitch_high;
-//	extern int rtl_pitch_down;
-//#else
-//	extern const int height_target_min;
-//	extern const int height_target_max;
-//	extern const int height_margin;
-//	extern const fractional alt_hold_throttle_min;
-//	extern const fractional alt_hold_throttle_max;
-//	extern const int alt_hold_pitch_min;
-//	extern const int alt_hold_pitch_max;
-//	extern const int alt_hold_pitch_high;
-//	extern const int rtl_pitch_down;
-//#endif
+//#define MANUAL_AILERON_RUDDER_MIX			0.20
 
 #endif 	//GAIN_VARIABLES_H

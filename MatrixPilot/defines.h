@@ -91,13 +91,13 @@ extern int pitchAltitudeAdjust ;
 
 #if ( SPEED_CONTROL == 1)
 extern int desiredSpeed ; // Stored in 10ths of meters per second
+#define AH_THROTTLE_ONLY	4
 #endif
 
 // AltitudeHold type
 #define AH_NONE				0
 #define AH_PITCH_ONLY		1
 #define AH_FULL				3
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
