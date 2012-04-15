@@ -18,35 +18,25 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef AIRSPEEDCNTRL_H
-#define AIRSPEEDCNTRL_H
+#ifndef INPUTCNTRL_H
+#define INPUTCNTRL_H
 
-#include "airspeed_options.h"
+#include "defines.h"
 
-extern int 		airspeed;
-extern long 	airspeed2;
-extern int 		groundspeed;
-extern long 	groundspeed2;
-extern int 		target_airspeed;
-extern int 		airspeedError;
-extern int		airspeedDelta;
-extern int		groundspeedDelta;
+// Fix this to your particular radio at 100% travel
+#define MIX_PWM_RANGE 800
 
-extern int 		lastAirspeed;
-extern int 		lastGroundspeed;
+// RMAX scaled inputs
+extern fractional pitch_input_control;
+extern fractional roll_input_control;
+extern fractional yaw_input_control;
+extern fractional throttle_input_control;
 
-extern int minimum_groundspeed;
-extern int minimum_airspeed;
-extern int maximum_airspeed;
-extern int airspeed_adj_range;
+// Turn PWM into fraction subtracting the offset
+fractional PWM_to_frac(int PWM, int offset, boolean reversed);
 
-extern fractional airspeed_pitch_kp;
-extern fractional airspeed_pitch_kd;
-extern fractional groundspeed_pitch_kd;
-
-void calc_airspeed(void);
-void calc_groundspeed(void);
-void calc_target_airspeed(void);
+// turn PWM inputs into RMAX scaled values with corrected reversing
+void input_controls(void);
 
 #endif
 

@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "defines.h"
+#include "inputCntrl.h"
 
 //	routines to drive the PWM pins for the servos,
 //	assumes the use of the 16MHz crystal.
@@ -75,6 +75,7 @@ void dcm_servo_callback_prepare_outputs(void)
 #endif	
 		updateBehavior() ;
 		wind_gain = wind_gain_adjustment () ;
+		input_controls();
 		rollCntrl() ;
 		yawCntrl() ;
 		altitudeCntrl();

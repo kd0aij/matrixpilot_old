@@ -26,6 +26,11 @@ extern int rtl_pitch_down ;
 extern int minimum_groundspeed ;
 extern int maximum_airspeed ;
 extern int minimum_airspeed ;
+extern fractional airspeed_pitch_kp ;
+extern fractional airspeed_pitch_kd ;
+extern fractional groundspeed_pitch_kd ;
+extern int airspeed_adj_range ;
+extern int target_speed_as_groundspeed ;
 
 
 const mavlink_parameter_parser    mavlink_parameter_parsers[] = {
@@ -95,9 +100,15 @@ const mavlink_parameter mavlink_parameters_list[] = {
     {"TH_P_HOLD_MIN" , {.param_int32=-89} , {.param_int32=0} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &alt_hold_pitch_min, sizeof(alt_hold_pitch_min) },
     {"TH_P_HOLD_MAX" , {.param_int32=0} , {.param_int32=89} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &alt_hold_pitch_max, sizeof(alt_hold_pitch_max) },
     {"TH_P_RTL_DOWN" , {.param_int32=0} , {.param_int32=89} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &rtl_pitch_down, sizeof(rtl_pitch_down) },
-    {"TH_MIN_GSPD" , {.param_int32=0} , {.param_int32=100} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &minimum_groundspeed, sizeof(minimum_groundspeed) },
-    {"TH_MIN_ASPD" , {.param_int32=0} , {.param_int32=100} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &minimum_airspeed, sizeof(minimum_airspeed) },
-    {"TH_MAX_ASPD" , {.param_int32=0} , {.param_int32=500} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &maximum_airspeed, sizeof(maximum_airspeed) },
+
+    {"ASPD_MIN_GSPD" , {.param_int32=0} , {.param_int32=100} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &minimum_groundspeed, sizeof(minimum_groundspeed) },
+    {"ASPD_MIN" , {.param_int32=0} , {.param_int32=10000} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &minimum_airspeed, sizeof(minimum_airspeed) },
+    {"ASPD_MAX" , {.param_int32=0} , {.param_int32=20000} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &maximum_airspeed, sizeof(maximum_airspeed) },
+    {"ASPD_PT_KP" , {.param_float=-0} , {.param_float=0.5} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &airspeed_pitch_kp, sizeof(airspeed_pitch_kp) },
+    {"ASPD_PT_KD" , {.param_float=--0.5} , {.param_float=0.5} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &airspeed_pitch_kd, sizeof(airspeed_pitch_kd) },
+    {"ASPD_GSPD_PT_KD" , {.param_float=--0.5} , {.param_float=0.5} , UDB_TYPE_Q14, PARAMETER_READWRITE, (void*) &groundspeed_pitch_kd, sizeof(groundspeed_pitch_kd) },
+    {"ASPD_ADJ_RNG" , {.param_int32=10} , {.param_int32=5000} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &airspeed_adj_range, sizeof(airspeed_adj_range) },
+    {"ASPD_GSPD_CNTRL" , {.param_int32=0} , {.param_int32=1} , UDB_TYPE_INT, PARAMETER_READWRITE, (void*) &target_speed_as_groundspeed, sizeof(target_speed_as_groundspeed) },
 
     };
 

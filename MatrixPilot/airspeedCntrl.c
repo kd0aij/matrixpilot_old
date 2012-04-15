@@ -26,16 +26,39 @@ int 	airspeed		= 0;
 long 	airspeed2 		= 0;
 int 	groundspeed		= 0;
 long 	groundspeed2 	= 0;
+int 	airspeedError	= 0;
+int		airspeedDelta		= 0;
+int		groundspeedDelta	= 0;
+
+// Last speeds recorded for doing differential control
+int 	lastAirspeed 	= 0;
+int 	lastGroundspeed	= 0;
 
 int minimum_groundspeed		= MINIMUM_GROUNDSPEED;
 int minimum_airspeed		= MINIMUM_AIRSPEED;
 int maximum_airspeed		= MAXIMUM_AIRSPEED;
+int airspeed_adj_range		= AIRSPEED_ADJ_RANGE;
+
+// Previous target airspeed. Caution, this is in cm/s
+int previous_target_airspeed	= 0;
+
+int	target_speed_as_groundspeed 	= TARGET_SPEED_AS_GROUNDSPEED;
+
+int maximum_target_airspeed_rate	= MAXIMUM_TARGET_AIRSPEED_RATE;
+
+fractional airspeed_pitch_kp 	= AIRSPEED_PITCH_KP * RMAX;
+fractional airspeed_pitch_kd 	= AIRSPEED_PITCH_KD * RMAX;
+fractional groundspeed_pitch_kd = GROUNDSPEED_PITCH_KD * RMAX;
+
 
 void calc_airspeed(void)
 {
 	int speed_component ;
 	union longww accum ;
 	long fwdapsd2 = 0;
+
+	lastAirspeed = airspeed;
+	lastGroundspeed = groundspeed;
 
 	speed_component = IMUvelocityx._.W1 - estimatedWind[0] ;
 	accum.WW = __builtin_mulsu ( speed_component , 37877 ) ;
@@ -51,6 +74,10 @@ void calc_airspeed(void)
 
 	airspeed  = sqrt_long(fwdapsd2);
 	airspeed2 = fwdapsd2;
+
+	// Airspeed deltas with some filtering
+	airspeedDelta 	 = (airspeedDelta >> 1) + ((airspeed - lastAirspeed) >> 1);
+	groundspeedDelta = (groundspeedDelta >> 1) + ((groundspeed- lastGroundspeed) >> 1);
 }
 
 void calc_groundspeed(void) // computes (1/2gravity)*( actual_speed^2 - desired_speed^2 )
@@ -67,20 +94,32 @@ void calc_groundspeed(void) // computes (1/2gravity)*( actual_speed^2 - desired_
 	accum.WW = __builtin_mulsu ( IMUvelocityz._.W1 , 37877 ) ;
 	ground_speed2_ += __builtin_mulss ( accum._.W1 , accum._.W1 ) ;
 
-	groundspeed 	= sqrt(ground_speed2_);
+	groundspeed 	= sqrt_long(ground_speed2_);
 	groundspeed2 	= ground_speed2_;
 }
 
 void calc_target_airspeed(void)
 {
-	target_airspeed = desiredSpeed;
+	target_airspeed = desiredSpeed * 10;
 
 	if(groundspeed < minimum_groundspeed)
 		target_airspeed += (minimum_groundspeed - groundspeed);
+	
+	// WARNING: UNTESTED
+	if(target_speed_as_groundspeed == 1)
+	{
+		if(groundspeed < desiredSpeed)
+			target_airspeed += (desiredSpeed - groundspeed);
+	}
+
+	// 	TODO: Check for maximum target airspeed rate change here
+//	if(previous_target_airspeed
 
 	if(target_airspeed > maximum_airspeed)
 		target_airspeed = maximum_airspeed;
 
 	if(target_airspeed < minimum_airspeed)
 		target_airspeed = minimum_airspeed;
+
+	airspeedError = target_airspeed - airspeed;
 }

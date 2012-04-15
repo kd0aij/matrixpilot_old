@@ -22,9 +22,36 @@
 #ifndef AIRSPEED_OPTIONS_H
 #define AIRSPEED_OPTIONS_H
 
-#define MINIMUM_GROUNDSPEED 	30
-#define MINIMUM_AIRSPEED		70
-#define MAXIMUM_AIRSPEED		200
+// Airspeeds in cm/s
+#define MINIMUM_GROUNDSPEED 	300
+#define MINIMUM_AIRSPEED		700
+#define MAXIMUM_AIRSPEED		2000
+
+// Airspeed to pitch proportional and differential control terms
+#define AIRSPEED_PITCH_KP		0.5
+#define AIRSPEED_PITCH_KD		0.5
+#define GROUNDSPEED_PITCH_KD	0.0
+
+#define AIRSPEED_ADJ_MAX			0.5
+
+// Range of airspeed error across which linear
+// adjustment is made
+#define AIRSPEED_ADJ_RANGE		500
+// Maximum airspeed delta/sec for linear response
+#define AIRSPEED_ACCEL_MAX		2000
+
+// Always fly at groundspeed, not airspeed
+#define TARGET_SPEED_AS_GROUNDSPEED		0
+
+// Maximum rate of target airspeed change in cm/s
+#define MAXIMUM_TARGET_AIRSPEED_RATE 	1000
+
+// The maximum airspeed above which the throttle can be used
+// Above this airspeed the throttle is reduced to zero
+// Set to the maximum pitch speed of your engine/propeller combination
+#define MAXIMUM_AIRSPEED_ON_THROTTLE 250
+
+#define AIRSPEED_ACCEL_MAX_STEP	(AIRSPEED_ACCEL_MAX / 40)
 
 #endif
 

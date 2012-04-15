@@ -20,6 +20,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 		<dataStorageArea>RADIO_TRIM</dataStorageArea>
 		<dataStorageArea>CONTROL_GAINS</dataStorageArea>
 		<dataStorageArea>THROTTLE_HEIGHT_OPTIONS</dataStorageArea>
+		<dataStorageArea>AIRSPEED_OPTIONS</dataStorageArea>
 	</dataStorageAreas>
 
 <serialisationFlags>
@@ -572,22 +573,10 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<externString>int alt_hold_pitch_max</externString>
 			<externString>int alt_hold_pitch_high</externString>
 			<externString>int rtl_pitch_down</externString>
-			<externString>int minimum_groundspeed</externString>
-			<externString>int maximum_airspeed</externString>
-			<externString>int minimum_airspeed</externString>
 		</externs>
 		<load_callback>NULL</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
 		<parameters>
-<!--			<parameter>
-				<parameterName>TH_SPEED_CONTROL</parameterName>
-				<udb_param_type>UDB_TYPE_INT</udb_param_type>
-				<variable_name>speed_control</variable_name>
-				<description>Switch airpseed control on/off 1/0</description>
-				<min>0</min>
-				<max>1</max>
-				<readonly>false</readonly>
-			</parameter>-->
 			<parameter>
 				<parameterName>TH_ASPEED</parameterName>
 				<udb_param_type>UDB_TYPE_INT</udb_param_type>
@@ -669,9 +658,33 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<max>89</max>
 				<readonly>false</readonly>
 			</parameter>
+		</parameters>
+		<description>Throttle and height control gains and options</description>
+	</parameterBlock>
+	
+	<parameterBlock>
+		<blockName>AIRPSPEED_OPTIONS</blockName>
+		<storage_area>AIRSPEED_OPTIONS</storage_area>
+		<serialisationFlags>
+			<serialisationFlag>LOAD_AT_STARTUP</serialisationFlag>
+			<serialisationFlag>LOAD_AT_REBOOT</serialisationFlag>
+		</serialisationFlags>
+		<externs>
+			<externString>int minimum_groundspeed</externString>
+			<externString>int maximum_airspeed</externString>
+			<externString>int minimum_airspeed</externString>
+			<externString>fractional airspeed_pitch_kp</externString>
+			<externString>fractional airspeed_pitch_kd</externString>
+			<externString>fractional groundspeed_pitch_kd</externString>			
+			<externString>int airspeed_adj_range</externString>
+			<externString>int target_speed_as_groundspeed</externString>
+		</externs>
+		<load_callback>NULL</load_callback>
+		<in_mavlink_parameters>true</in_mavlink_parameters>
 
+		<parameters>
 			<parameter>
-				<parameterName>TH_MIN_GSPD</parameterName>
+				<parameterName>ASPD_MIN_GSPD</parameterName>
 				<udb_param_type>UDB_TYPE_INT</udb_param_type>
 				<variable_name>minimum_groundspeed</variable_name>
 				<description>Minimum groundspeed</description>
@@ -680,28 +693,72 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<readonly>false</readonly>
 			</parameter>
 			<parameter>
-				<parameterName>TH_MIN_ASPD</parameterName>
+				<parameterName>ASPD_MIN</parameterName>
 				<udb_param_type>UDB_TYPE_INT</udb_param_type>
 				<variable_name>minimum_airspeed</variable_name>
 				<description>Minimum airspeed</description>
 				<min>0</min>
-				<max>100</max>
+				<max>10000</max>
 				<readonly>false</readonly>
 			</parameter>
 			<parameter>
-				<parameterName>TH_MAX_ASPD</parameterName>
+				<parameterName>ASPD_MAX</parameterName>
 				<udb_param_type>UDB_TYPE_INT</udb_param_type>
 				<variable_name>maximum_airspeed</variable_name>
 				<description>Maximum airspeed</description>
 				<min>0</min>
-				<max>500</max>
+				<max>20000</max>
 				<readonly>false</readonly>
 			</parameter>
+			<parameter>
+				<parameterName>ASPD_PT_KP</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>airspeed_pitch_kp</variable_name>
+				<description>gain between airspeed error and pitch control change</description>
+				<min>-0</min>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>ASPD_PT_KD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>airspeed_pitch_kd</variable_name>
+				<description>gain between airspeed change and pitch control change</description>
+				<min>--0.5</min>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>ASPD_GSPD_PT_KD</parameterName>
+				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
+				<variable_name>groundspeed_pitch_kd</variable_name>
+				<description>gain between groundspeed change and pitch control change</description>
+				<min>--0.5</min>
+				<max>0.5</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>ASPD_ADJ_RNG</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>airspeed_adj_range</variable_name>
+				<description>Range of airspeed error over which linear control is performed</description>
+				<min>10</min>
+				<max>5000</max>
+				<readonly>false</readonly>
+			</parameter>
+			<parameter>
+				<parameterName>ASPD_GSPD_CNTRL</parameterName>
+				<udb_param_type>UDB_TYPE_INT</udb_param_type>
+				<variable_name>target_speed_as_groundspeed</variable_name>
+				<description>Set to 1 fly target speed as groundspeed </description>
+				<min>0</min>
+				<max>1</max>
+				<readonly>false</readonly>
+			</parameter>
+			
 		</parameters>
-	
 		<description>Throttle and height control gains and options</description>
 	</parameterBlock>
-
 </parameterBlocks>
 
 

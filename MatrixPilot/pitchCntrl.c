@@ -20,8 +20,11 @@
 
 
 #include "defines.h"
+#include "airspeedCntrl.h"
 
 //	If the state machine selects pitch feedback, compute it from the pitch gyro and accelerometer.
+
+#define ANGLE_90DEG (RMAX/(2*57.3))
 
 #define RTLKICK ((long)(RTL_PITCH_DOWN*(RMAX/57.3)))
 #define INVNPITCH ((long)(INVERTED_NEUTRAL_PITCH*(RMAX/57.3)))
@@ -72,6 +75,8 @@ void normalPitchCntrl(void)
 {
 	union longww pitchAccum ;
 	int rtlkick ;
+	int aspd_adj ;
+	fractional aspd_err ;
 	
 #ifdef TestGains
 	flags._.GPS_steering = 0 ; // turn navigation off
@@ -97,6 +102,7 @@ void normalPitchCntrl(void)
 	}
 	
 	navElevMix = 0 ;
+/*
 	if ( flags._.pitch_feedback )
 	{
 		if ( RUDDER_OUTPUT_CHANNEL != CHANNEL_UNUSED && RUDDER_INPUT_CHANNEL != CHANNEL_UNUSED ) {
@@ -114,7 +120,7 @@ void normalPitchCntrl(void)
 	pitchAccum.WW = ( __builtin_mulss( rmat8 , omegagyro[0] )
 					- __builtin_mulss( rmat6 , omegagyro[2] )) << 1 ;
 	pitchrate = pitchAccum._.W1 ;
-	
+*/	
 	if ( !udb_flags._.radio_on && flags._.GPS_steering )
 	{
 		rtlkick = RTLKICK ;
@@ -123,11 +129,39 @@ void normalPitchCntrl(void)
 	{
 		rtlkick = 0 ;
 	}
-	
+
+	// Proportional feedback from airspeed to pitch
+	aspd_err = airspeedError;
+	if(aspd_err > airspeed_adj_range) aspd_err = airspeed_adj_range;
+	if(aspd_err < -airspeed_adj_range) aspd_err = -airspeed_adj_range;
+	// Divide by range
+	pitchAccum.WW 	= 0;
+	pitchAccum._.W1 = aspd_err;
+	pitchAccum.WW >>= 2;
+	aspd_err = __builtin_divsd( pitchAccum.WW ,  airspeed_adj_range );
+	// Apply proporational gain
+	pitchAccum.WW = __builtin_mulss(airspeed_pitch_kp, aspd_err ) << 2;
+	aspd_adj = pitchAccum._.W1;
+
+	// Differential feedback from airspeed to pitch
+	aspd_err = airspeedDelta;
+	if(aspd_err > AIRSPEED_ACCEL_MAX_STEP) aspd_err = AIRSPEED_ACCEL_MAX_STEP;
+	if(aspd_err < -AIRSPEED_ACCEL_MAX_STEP) aspd_err = -AIRSPEED_ACCEL_MAX_STEP;
+	// Divide by range
+	pitchAccum.WW 	= 0;
+	pitchAccum._.W1 = aspd_err;
+	pitchAccum.WW >>= 2;
+	aspd_err = __builtin_divsd( pitchAccum.WW ,  AIRSPEED_ACCEL_MAX_STEP );
+	// Apply differential gain
+	pitchAccum.WW = __builtin_mulss(airspeed_pitch_kd, aspd_err ) << 2;
+	aspd_adj += pitchAccum._.W1;
+
 	if ( PITCH_STABILIZATION && flags._.pitch_feedback )
 	{
-		pitchAccum.WW = __builtin_mulss( rmat7 - rtlkick + pitchAltitudeAdjust, pitchgain ) 
-					  + __builtin_mulss( pitchkd , pitchrate ) ;
+		pitchAccum.WW = __builtin_mulss( rmat7 - aspd_adj, pitchgain )
+					  + __builtin_mulss( pitchkd , pitchrate );
+
+//		pitchAccum.WW = __builtin_mulss( rmat7 - rtlkick + pitchAltitudeAdjust, pitchgain ) 
 	}
 	else
 	{
