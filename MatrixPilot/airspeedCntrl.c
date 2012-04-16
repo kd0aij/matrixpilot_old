@@ -50,6 +50,10 @@ fractional airspeed_pitch_kp 	= AIRSPEED_PITCH_KP * RMAX;
 fractional airspeed_pitch_kd 	= AIRSPEED_PITCH_KD * RMAX;
 fractional groundspeed_pitch_kd = GROUNDSPEED_PITCH_KD * RMAX;
 
+#define ASPD_BUFF_SIZE 20
+int airspeed_buff[ASPD_BUFF_SIZE];
+unsigned char	aspd_buff_pos;
+
 
 void calc_airspeed(void)
 {
@@ -72,12 +76,16 @@ void calc_airspeed(void)
 	accum.WW = __builtin_mulsu ( speed_component , 37877 ) ;
 	fwdapsd2 += __builtin_mulss ( accum._.W1 , accum._.W1 ) ;
 
-	airspeed  = sqrt_long(fwdapsd2);
+	airspeed >>= 1;
+	airspeed  += (sqrt_long(fwdapsd2)) >> 1;
 	airspeed2 = fwdapsd2;
 
-	// Airspeed deltas with some filtering
-	airspeedDelta 	 = (airspeedDelta >> 1) + ((airspeed - lastAirspeed) >> 1);
-	groundspeedDelta = (groundspeedDelta >> 1) + ((groundspeed- lastGroundspeed) >> 1);
+	// Airspeed deltas with filtering
+	airspeed_buff[aspd_buff_pos] = airspeed;
+	aspd_buff_pos++;
+	if(aspd_buff_pos >= ASPD_BUFF_SIZE) aspd_buff_pos = 0;
+	airspeedDelta >>= 1;
+	airspeedDelta += (airspeed - airspeed_buff[aspd_buff_pos]) >> 1;
 }
 
 void calc_groundspeed(void) // computes (1/2gravity)*( actual_speed^2 - desired_speed^2 )
@@ -96,6 +104,8 @@ void calc_groundspeed(void) // computes (1/2gravity)*( actual_speed^2 - desired_
 
 	groundspeed 	= sqrt_long(ground_speed2_);
 	groundspeed2 	= ground_speed2_;
+
+//	groundspeedDelta = (groundspeedDelta >> 1) + ((groundspeed- lastGroundspeed) >> 1);
 }
 
 void calc_target_airspeed(void)
@@ -121,5 +131,8 @@ void calc_target_airspeed(void)
 	if(target_airspeed < minimum_airspeed)
 		target_airspeed = minimum_airspeed;
 
-	airspeedError = target_airspeed - airspeed;
+	//Some airspeed error filtering
+	airspeedError = airspeedError >>=1;
+	airspeedError += (target_airspeed - airspeed) >>1;
+
 }

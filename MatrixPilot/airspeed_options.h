@@ -38,7 +38,7 @@
 // adjustment is made
 #define AIRSPEED_ADJ_RANGE		500
 // Maximum airspeed delta/sec for linear response
-#define AIRSPEED_ACCEL_MAX		2000
+#define AIRSPEED_ACCEL_MAX		500
 
 // Always fly at groundspeed, not airspeed
 #define TARGET_SPEED_AS_GROUNDSPEED		0

@@ -127,6 +127,7 @@ int rawMagCalib[3];
 #define 	MAVLINK_FRAME_FREQUENCY	40
 #define     MAVLINK_FREQ_ATTITUDE	 8   // Be careful if you change this. Requested frequency may not be actual freq.
 #define 	MAVLINK_WAYPOINT_TIMEOUT 120 // Dependent on frequency of calling mavlink_output_40hz. 120 is 3 second timeout.
+#define 	MAVLINK_FREQ_RC_CHAN	8	//
 
 void send_text(uint8_t text[]) ;
 void handleMessage(mavlink_message_t* msg) ;
@@ -139,6 +140,7 @@ boolean mavlink_check_target( uint8_t target_system, uint8_t target_component ) 
 union intbb voltage_milis = {0} ;
 unsigned char mavlink_counter_40hz = 0 ;
 uint64_t usec = 0 ;			// A measure of time in microseconds (should be from Unix Epoch).
+uint64_t msec = 0 ;			// A measure of time in microseconds (should be from Unix Epoch).
 
 int sb_index = 0 ;
 int end_index = 0 ;
@@ -1378,7 +1380,8 @@ void mavlink_output_40hz( void )
 
     if ( ++mavlink_counter_40hz >= 40) mavlink_counter_40hz = 0 ;
 	
-	usec = usec + 25000 ; // Frequency sensitive code
+	usec += 25000 ; // Frequency sensitive code
+	msec += 25 ; 	// Frequency sensitive code
 
 	// Note that message types are arranged in order of importance so that if the serial buffer fills up,
 	// critical message types are more likely to still be transmitted.
@@ -1531,6 +1534,7 @@ void mavlink_output_40hz( void )
 	}
 
     /****************** Not yet converted to wire protocol 1.0 ***********************************
+    *********************End of section not yet converted to wire protocol 1.0 *******************/
 
 	// RC CHANNELS
 	// Channel values shifted left by 1, to divide by two, so values reflect PWM pulses in microseconds.
@@ -1540,13 +1544,18 @@ void mavlink_output_40hz( void )
 	spread_transmission_load = 24 ;
 	if (mavlink_frequency_send( streamRateRCChannels, mavlink_counter_40hz + spread_transmission_load)) 
 	{			
-	 mavlink_msg_rc_channels_raw_send(MAVLINK_COMM_0,
-			 (uint16_t)(udb_pwOut[1]>>1),  (uint16_t) (udb_pwOut[2]>>1), (uint16_t) (udb_pwOut[3]>>1), (uint16_t) (udb_pwOut[4]>>1),
-			 (uint16_t) (udb_pwOut[5]>>1), (uint16_t) (udb_pwOut[6]>>1), (uint16_t) (udb_pwOut[7]>>1), (uint16_t) (udb_pwOut[8]>>1),
-			 (uint8_t) 0); // last item, RSSI currently not measured on UDB.
-     
+	 mavlink_msg_rc_channels_raw_send(MAVLINK_COMM_0, msec,
+			 	(uint16_t)(udb_pwOut[1]>>1),  
+				(uint16_t) (udb_pwOut[2]>>1), 
+				(uint16_t) (udb_pwOut[3]>>1), 
+				(uint16_t) (udb_pwOut[4]>>1),
+			 	(uint16_t) (udb_pwOut[5]>>1), 
+				(uint16_t) (udb_pwOut[6]>>1), 
+				(uint16_t) (udb_pwOut[7]>>1), 
+				(uint16_t) (udb_pwOut[8]>>1),
+			 	(uint8_t) 0,	// port number for more than 8 servos
+			 	(uint8_t) 0); // last item, RSSI currently not measured on UDB.
 	}
-    *********************End of section not yet converted to wire protocol 1.0 *******************/
 
 	// RAW SENSORS - ACCELOREMETERS and GYROS
 	// It is expected that these values are graphed to allow users to check basic sensor operation,

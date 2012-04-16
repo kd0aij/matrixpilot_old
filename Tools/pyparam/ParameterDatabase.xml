@@ -724,7 +724,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
 				<variable_name>airspeed_pitch_kd</variable_name>
 				<description>gain between airspeed change and pitch control change</description>
-				<min>--0.5</min>
+				<min>-0.5</min>
 				<max>0.5</max>
 				<readonly>false</readonly>
 			</parameter>
@@ -733,7 +733,7 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
 				<variable_name>groundspeed_pitch_kd</variable_name>
 				<description>gain between groundspeed change and pitch control change</description>
-				<min>--0.5</min>
+				<min>-0.5</min>
 				<max>0.5</max>
 				<readonly>false</readonly>
 			</parameter>
