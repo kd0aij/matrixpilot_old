@@ -20,6 +20,7 @@
 
 
 #include "libDCM_internal.h"
+#include "HILSIM.h"
 
 //		These are the routines for maintaining a direction cosine matrix
 //		that can be used to transform vectors between the earth and plane
@@ -163,15 +164,13 @@ void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
 }
 
 
-void read_gyros()
+void read_gyros(void)
 //	fetch the gyro signals and subtract the baseline offset, 
 //	and adjust for variations in supply voltage
 {
 	unsigned spin_rate_over_2 ;
 #if ( HILSIM == 1 )
-	omegagyro[0] = q_sim.BB;
-	omegagyro[1] = p_sim.BB;
-	omegagyro[2] = r_sim.BB;  
+	HILSIM_read_gyro(omegagyro);
 #else
 	omegagyro[0] = XRATE_VALUE ;
 	omegagyro[1] = YRATE_VALUE ;
@@ -191,12 +190,10 @@ void read_gyros()
 	return ;
 }
 
-void read_accel()
+void read_accel(void)
 {
 #if ( HILSIM == 1 )
-	gplane[0] = v_dot_sim.BB;
-	gplane[1] = u_dot_sim.BB; 
-	gplane[2] = w_dot_sim.BB;
+	HILSIM_read_accel(gplane);
 #else
 	gplane[0] =   XACCEL_VALUE ;
 	gplane[1] =   YACCEL_VALUE ;
