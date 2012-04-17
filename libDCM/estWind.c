@@ -19,7 +19,11 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
+#include "libDCM.h"
+#include "gpsParseCommon.h"
+#include "mathlibNAV.h"
+#include "estWind.h"
+#include "rmat.h"
 
 
 int estimatedWind[3] = { 0 , 0 , 0 } ;

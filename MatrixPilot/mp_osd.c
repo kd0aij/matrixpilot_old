@@ -20,7 +20,7 @@
 
 
 #include "defines.h"
-#include "../libDCM/libDCM_internal.h"
+#include "../libDCM/libDCM.h"
 
 
 #if (USE_OSD == 1)

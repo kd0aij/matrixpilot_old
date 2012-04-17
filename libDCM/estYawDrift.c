@@ -19,7 +19,15 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
+#include "libDCM.h"
+#include "mathlibNAV.h"
+#include "../libUDB/magnetometer.h"
+#include "gpsParseCommon.h"
+#include "rmat.h"
+#include "estYawDrift.h"
+#include "estWind.h"
+#include <stdio.h>
+
 
 //	Compute actual and desired courses.
 //	Actual course is simply the scaled GPS course over ground information.

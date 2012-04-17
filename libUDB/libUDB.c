@@ -220,14 +220,15 @@ void udb_a2d_record_offsets(void)
 #endif
 
 
-void udb_servo_record_trims(void)
-{
-	int i;
-	for (i=0; i <= NUM_INPUTS; i++)
-		udb_pwTrim[i] = udb_pwIn[i] ;
-	
-	return ;
-}
+// this function now moved to radioIn_udb4.c
+//void udb_servo_record_trims(void)
+//{
+//	int i;
+//	for (i=0; i <= NUM_INPUTS; i++)
+//		udb_pwTrim[i] = udb_pwIn[i] ;
+//	
+//	return ;
+//}
 
 
 // saturation logic to maintain pulse width within bounds

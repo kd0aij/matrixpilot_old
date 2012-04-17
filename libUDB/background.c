@@ -241,6 +241,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T5Interrupt(void)
 	return ;
 }
 
+void udb_read_gyro_accel_restart(void) // this needs a better name.
+{
+	udb_flags._.a2d_read = 1 ; // signal the A/D to start the next summation
+}
 
 //	Executes whatever lower priority calculation needs to be done every 25 milliseconds.
 //	This is a good place to eventually compute pulse widths for servos.
@@ -283,10 +287,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 #endif
 	
 	calculate_analog_sensor_values() ;
-	udb_callback_read_sensors() ;
-	udb_flags._.a2d_read = 1 ; // signal the A/D to start the next summation
-	
-	udb_servo_callback_prepare_outputs() ;
+	udb_callback_40hertz();
 
 #if(USE_I2C1_DRIVER == 1)
 	I2C1_trigger_service();

@@ -54,16 +54,10 @@ struct dcm_flag_bits {
 #define GPS_UBX_4HZ			4
 #define GPS_MTEK			5
 
-#define GPS_RATE			((GPS_TYPE == GPS_MTEK) ? 4 : GPS_TYPE)
-
-// If GPS data has not been received for this many state machine cycles, consider the GPS lock to be lost.
-#define GPS_DATA_MAX_AGE	9
-
 #define LONGDEG_2_BYTECIR 305 // = (256/360)*((256)**4)/(10**7)
 #define COURSEDEG_2_BYTECIR 466 // = (256/360)*((256)**2)/(10**2)
 
-#define LONGDEG_2_BYTECIR 305
-// = (256/360)*((256)**4)/(10**7)
+#define LONGDEG_2_BYTECIR 305 // = (256/360)*((256)**4)/(10**7)
 
 #define RADPERSEC ((long long)5632.0/SCALEGYRO)
 // one radian per second, in AtoD/2 units

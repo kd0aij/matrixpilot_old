@@ -20,7 +20,7 @@
 
 
 #include "defines.h"
-#include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM values
+#include "../libDCM/libDCM.h" // Needed for access to internal DCM values
 
 //Note:  The trap flags need to be moved out of telemetry.c and mavlink.c
 volatile int trap_flags __attribute__ ((persistent));

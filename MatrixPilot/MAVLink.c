@@ -33,7 +33,7 @@
  
 #include <string.h>
 #include "defines.h"
-#include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM value
+#include "../libDCM/libDCM.h" // Needed for access to internal DCM value
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK  )
 

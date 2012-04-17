@@ -139,7 +139,7 @@ extern UDB_SKIP_FLAGS udb_skip_flags;
 
 // Implement this callback to prepare the pwOut values.
 // It is called at 40Hz (once every 25ms) at a low priority.
-void udb_servo_callback_prepare_outputs(void);			// Callback
+void udb_callback_40hertz(void);						// Callback
 
 // Called immediately whenever the radio_on flag is set to 0
 void udb_callback_radio_did_turn_off( void );			// Callback
@@ -176,6 +176,7 @@ extern unsigned char rc_signal_strength;	// rc_signal_strength is 0-100 as perce
 // holding the UDB very still.
 void udb_a2d_record_offsets(void);
 void udb_callback_read_sensors(void);		// Callback
+void udb_read_gyro_accel_restart(void);		// this needs a better name.
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +187,7 @@ void udb_callback_read_sensors(void);		// Callback
 extern fractional udb_magFieldBody[3];
 extern fractional udb_magOffset[3];
 
-// Implement thiis callback to make use of the magetometer data.  This is called each
+// Implement this callback to make use of the magetometer data.  This is called each
 // time the magnetometer reports new data.
 void udb_magnetometer_callback_data_available(void);	// Callback
 

@@ -19,8 +19,13 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
+#include "libDCM.h"
+#include "mathlibNAV.h"
+#include "estAltitude.h"
+#include "estYawDrift.h"
+#include "estWind.h"
 #include "gpsParseCommon.h"
+#include "rmat.h"
 #include <string.h>
 
 

@@ -55,6 +55,26 @@ unsigned int rise_ppm ;				// rising edge clock capture for PPM radio input
 #endif
 
 
+int channelIn(int channel)
+{
+	return udb_pwIn[channel];
+}
+
+int channelTrim(int channel)
+{
+	return udb_pwTrim[channel];
+}
+
+void udb_servo_record_trims(void)
+{
+	int i;
+	for (i=0; i <= NUM_INPUTS; i++)
+		udb_pwTrim[i] = udb_pwIn[i] ;
+	
+	return ;
+}
+
+
 void udb_init_capture(void)
 {
 	T2CON = 0b1000000000000000  ;	// turn on timer 2

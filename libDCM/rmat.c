@@ -19,9 +19,13 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
+#include "libDCM.h"
+#include "gpsParseCommon.h"
 #include "HILSIM.h"
+#include "mathlibNAV.h"
 #include "deadReckoning.h"
+#include "rmat.h"
+
 
 //		These are the routines for maintaining a direction cosine matrix
 //		that can be used to transform vectors between the earth and plane

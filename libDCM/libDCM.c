@@ -19,8 +19,16 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
+#include "libDCM.h"
+#include "gpsParseCommon.h"
+#include "mathlibNAV.h"
+#include "../libUDB/magnetometer.h"
+#include "../libUDB/barometer.h"
+#include "estAltitude.h"
+#include "estYawDrift.h"
 #include "HILSIM.h"
+#include "rmat.h"
+
 
 union dcm_fbts_word dcm_flags ;
 
@@ -62,19 +70,19 @@ void dcm_run_init_step( void )
 	return ;
 }
 
-
-void udb_callback_read_sensors(void)
+void read_sensors(void)
 {
 	read_gyros() ; // record the average values for both DCM and for offset measurements
 	read_accel() ;
+	udb_read_gyro_accel_restart();
 	
 	return ;
 }
 
-
-// Called at 40Hz
-void udb_servo_callback_prepare_outputs(void)
+void udb_callback_40hertz(void)
 {
+	read_sensors();
+
 #if (MAG_YAW_DRIFT == 1)
 	// This is a simple counter to do stuff at 4hz
 	if ( udb_heartbeat_counter % 10 == 0 )
@@ -94,9 +102,7 @@ void udb_servo_callback_prepare_outputs(void)
 		dcm_run_init_step() ;
 	}
 	
-#if ( HILSIM == 1)
 	HILSIM_send_outputs() ;
-#endif
 	
 	return ;
 }

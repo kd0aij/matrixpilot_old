@@ -19,9 +19,10 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
+#include "../libUDB/libUDB.h"
+#include "libDCM.h"
+#include "mathlibNAV.h"
 
-//	math libraray
 
 #define RADIANTOCIRCULAR 10430 
 
