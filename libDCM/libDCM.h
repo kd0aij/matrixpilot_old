@@ -98,25 +98,12 @@ extern fractional omegaAccum[] ;
 extern fractional omegagyro[] ;
 extern fractional accelEarth[] ;
 
-extern struct relative3D GPSlocation ;
-extern struct relative3D GPSvelocity ;
 extern struct relative2D velocity_thru_air ; // derived horizontal velocity relative to air in cm/sec
 extern int    estimatedWind[3] ;			// wind velocity vectors in cm / sec
 
-extern unsigned int air_speed_3DIMU ;
-extern int total_energy ;
+//#include "../libDCM/mathlibNAV.h"
+#include "deadReckoning.h"
+#include "gpsParseCommon.h"
 
-extern union longww IMUlocationx , IMUlocationy , IMUlocationz ;
-extern union longww IMUvelocityx , IMUvelocityy , IMUvelocityz ;
-#define IMUheight IMUlocationz._.W1
 
-extern signed char calculated_heading ; // takes into account wind velocity
-extern int gps_data_age ;
-
-extern unsigned int ground_velocity_magnitudeXY ;
-extern unsigned int air_speed_magnitudeXY;
-
-extern union longbbbb lat_gps , long_gps , alt_sl_gps ;
-extern union longbbbb lat_origin , long_origin , alt_origin ;
-
-#endif
+#endif // LIB_DCM_H

@@ -20,6 +20,7 @@
 
 
 #include "libDCM_internal.h"
+#include "gpsParseCommon.h"
 #include <string.h>
 
 
@@ -37,7 +38,6 @@ union longbbbb lat_origin , long_origin , alt_origin ;
 //unsigned char  mode1 , mode2 ;						// gps mode1, mode2
 unsigned char  svs ;									// number of satellites
 
-unsigned char  	lat_cir ;
 int				cos_lat = 0 ;
 
 int gps_data_age ;
@@ -94,16 +94,17 @@ void udb_gps_callback_received_byte(char rxchar)
 }
 
 signed char actual_dir ;
-signed char cog_previous = 64 ;
 unsigned int ground_velocity_magnitudeXY = 0 ;
-int sog_previous = 0 ;
-int climb_rate_previous = 0 ;
 int forward_acceleration = 0 ;
-unsigned int velocity_previous = 0 ;
 unsigned int air_speed_magnitudeXY = 0;
 unsigned int air_speed_3DGPS = 0 ;
 signed char calculated_heading ;
-int location_previous[] = { 0 , 0 , 0 } ;
+
+static signed char cog_previous = 64 ;
+static int sog_previous = 0 ;
+static int climb_rate_previous = 0 ;
+static int location_previous[] = { 0 , 0 , 0 } ;
+static unsigned int velocity_previous = 0 ;
 
 // Received a full set of GPS messages
 void udb_background_callback_triggered(void) 

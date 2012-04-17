@@ -85,7 +85,10 @@ file_057=MatrixPilot
 file_058=libUDB
 file_059=MatrixPilot
 file_060=libDCM
-file_061=.
+file_061=libDCM
+file_062=libDCM
+file_063=libDCM
+file_064=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -149,6 +152,9 @@ file_058=no
 file_059=no
 file_060=no
 file_061=no
+file_062=no
+file_063=no
+file_064=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -212,6 +218,9 @@ file_058=no
 file_059=no
 file_060=no
 file_061=no
+file_062=no
+file_063=no
+file_064=no
 [FILE_INFO]
 file_000=config_tests.c
 file_001=..\libUDB\background.c
@@ -273,8 +282,11 @@ file_056=gain_variables.h
 file_057=osd_layout.h
 file_058=..\libUDB\ConfigARSOVUAV1.h
 file_059=mode_switch.h
-file_060=..\libDCM\HILSIM.h
-file_061=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
+file_060=..\libDCM\deadReckoning.h
+file_061=..\libDCM\gpsParseCommon.h
+file_062=..\libDCM\mathlibNAV.h
+file_063=..\libDCM\HILSIM.h
+file_064=C:\Program Files\Microchip\MPLAB C30\lib\libdsp-coff.a
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
