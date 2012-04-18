@@ -46,11 +46,46 @@ unsigned int rise_ppm ;				// rising edge clock capture for PPM radio input
 #endif
 
 
-void udb_init_capture(void)
+int channelIn(int channel)
+{
+	return udb_pwIn[channel];
+}
+
+int channelTrim(int channel)
+{
+	return udb_pwTrim[channel];
+}
+
+void udb_servo_record_trims(void)
 {
 	int i;
 	for (i=0; i <= NUM_INPUTS; i++)
-		udb_pwIn[i] = udb_pwTrim[i] = 0 ;
+		udb_pwTrim[i] = udb_pwIn[i] ;
+	
+	return ;
+}
+
+
+void udb_init_capture(void)
+{
+	int i;
+
+#if(USE_NV_MEMORY == 1)
+	if(udb_skip_flags.skip_radio_trim == 0)
+	{	
+#endif
+	for (i=0; i <= NUM_INPUTS; i++)
+	#if (FIXED_TRIMPOINT == 1)
+			if(i == THROTTLE_OUTPUT_CHANNEL)
+				udb_pwTrim[i] = udb_pwIn[i] = THROTTLE_TRIMPOINT;
+			else
+				udb_pwTrim[i] = udb_pwIn[i] = CHANNEL_TRIMPOINT;			
+	#else
+			udb_pwTrim[i] = udb_pwIn[i] = 0 ;
+	#endif
+#if(USE_NV_MEMORY == 1)
+	}
+#endif
 	
 	TMR2 = 0 ; 				// initialize timer
 	T2CONbits.TCKPS = 1 ;	// prescaler = 8 option

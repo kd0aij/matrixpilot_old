@@ -44,7 +44,7 @@ void udb_callback_read_sensors(void)
 {
 }
 
-void udb_servo_callback_prepare_outputs(void)
+void udb_callback_40hertz(void)
 {
 }
 
