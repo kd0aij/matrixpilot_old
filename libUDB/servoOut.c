@@ -20,7 +20,6 @@
 
 
 #include "libUDB_internal.h"
-#include "../libDCM/libDCM.h"
 
 #if (BOARD_TYPE == UDB4_BOARD)
 
