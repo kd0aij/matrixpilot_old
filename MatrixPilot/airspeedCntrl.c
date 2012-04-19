@@ -29,6 +29,8 @@ long 	groundspeed2 	= 0;
 int 	airspeedError	= 0;
 int		airspeedDelta		= 0;
 int		groundspeedDelta	= 0;
+int		airspeedFadeout	= 0;		// Gain for fadeout of controls with airspeed
+
 
 // Last speeds recorded for doing differential control
 int 	lastAirspeed 	= 0;
@@ -50,7 +52,6 @@ fractional airspeed_pitch_kp 	= AIRSPEED_PITCH_KP * RMAX;
 fractional airspeed_pitch_kd 	= AIRSPEED_PITCH_KD * RMAX;
 fractional groundspeed_pitch_kd = GROUNDSPEED_PITCH_KD * RMAX;
 
-#define ASPD_BUFF_SIZE 20
 int airspeed_buff[ASPD_BUFF_SIZE];
 unsigned char	aspd_buff_pos;
 
@@ -76,8 +77,9 @@ void calc_airspeed(void)
 	accum.WW = __builtin_mulsu ( speed_component , 37877 ) ;
 	fwdapsd2 += __builtin_mulss ( accum._.W1 , accum._.W1 ) ;
 
-	airspeed >>= 1;
-	airspeed  += (sqrt_long(fwdapsd2)) >> 1;
+//	airspeed >>= 1;
+//	airspeed  += (sqrt_long(fwdapsd2)) >> 1;
+	airspeed = (sqrt_long(fwdapsd2));
 	airspeed2 = fwdapsd2;
 
 	// Airspeed deltas with filtering
@@ -133,6 +135,25 @@ void calc_target_airspeed(void)
 
 	//Some airspeed error filtering
 	airspeedError = airspeedError >>=1;
-	airspeedError += (target_airspeed - airspeed) >>1;
+	airspeedError += ( (target_airspeed - airspeed) >> 1);
 
+}
+
+
+void calc_airspeed_gain(void)
+{
+	union longww temp ;
+	int aspd = airspeed;
+
+	// Limit between minimum and maximum airspeed
+	if(aspd <= minimum_airspeed)
+		aspd = minimum_airspeed;
+	else if (aspd >= maximum_airspeed)
+		aspd = maximum_airspeed;
+	
+	// Scale limited airspeed to the maximum airspeed
+	temp.WW = 0;
+	temp._.W1 = minimum_airspeed;
+	temp.WW >>= 1;
+	airspeedFadeout = __builtin_divsd( temp.WW ,  aspd );
 }

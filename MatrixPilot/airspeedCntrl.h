@@ -29,8 +29,9 @@ extern int 		groundspeed;
 extern long 	groundspeed2;
 extern int 		target_airspeed;
 extern int 		airspeedError;
-extern int		airspeedDelta;
+extern int		airspeedDelta;		// Filtered change in airspeed over period ASPD_BUFF_SIZE
 extern int		groundspeedDelta;
+extern int		airspeedFadeout;	// Gain for fadeout of controls with airspeed
 
 extern int 		lastAirspeed;
 extern int 		lastGroundspeed;
@@ -47,6 +48,7 @@ extern fractional groundspeed_pitch_kd;
 void calc_airspeed(void);
 void calc_groundspeed(void);
 void calc_target_airspeed(void);
+void calc_airspeed_gain(void);
 
 #endif
 

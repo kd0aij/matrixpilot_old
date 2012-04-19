@@ -206,6 +206,7 @@ void normalAltitudeCntrl(void)
 	calc_airspeed();
 	calc_groundspeed();
 	calc_target_airspeed();
+	calc_airspeed_gain();
 
 	speed_height = excess_energy_height(target_airspeed) ; // equivalent height of the airspeed
 	

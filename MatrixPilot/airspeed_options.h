@@ -28,15 +28,13 @@
 #define MAXIMUM_AIRSPEED		2000
 
 // Airspeed to pitch proportional and differential control terms
-#define AIRSPEED_PITCH_KP		0.5
-#define AIRSPEED_PITCH_KD		0.5
+#define AIRSPEED_PITCH_KP		0.0
+#define AIRSPEED_PITCH_KD		0.0
 #define GROUNDSPEED_PITCH_KD	0.0
 
-#define AIRSPEED_ADJ_MAX			0.5
-
-// Range of airspeed error across which linear
-// adjustment is made
+// Range of airspeed error across which linear adjustment is made
 #define AIRSPEED_ADJ_RANGE		500
+
 // Maximum airspeed delta/sec for linear response
 #define AIRSPEED_ACCEL_MAX		500
 
@@ -49,9 +47,10 @@
 // The maximum airspeed above which the throttle can be used
 // Above this airspeed the throttle is reduced to zero
 // Set to the maximum pitch speed of your engine/propeller combination
-#define MAXIMUM_AIRSPEED_ON_THROTTLE 250
+#define MAXIMUM_AIRSPEED_ON_THROTTLE 2500
 
-#define AIRSPEED_ACCEL_MAX_STEP	(AIRSPEED_ACCEL_MAX / 40)
+// Number of frame cycles over which the delta airspeed is measured.
+#define ASPD_BUFF_SIZE 20
 
 #endif
 

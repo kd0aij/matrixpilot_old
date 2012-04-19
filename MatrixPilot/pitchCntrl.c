@@ -139,13 +139,8 @@ void normalPitchCntrl(void)
 	pitchAccum._.W1 = aspd_err;
 	pitchAccum.WW >>= 2;
 	aspd_err = __builtin_divsd( pitchAccum.WW ,  airspeed_adj_range );
-	// Apply proporational gain
-//	pitchAccum.WW = __builtin_mulss(airspeed_pitch_kp, aspd_err ) << 2;
-//	aspd_adj = pitchAccum._.W1;
 
 	// Differential feedback from airspeed to pitch
-	// Scale delta from 1/frame to 1/second
-//	pitchAccum.WW = __builtin_mulss(airspeedDelta, 80);
 	aspd_diff = airspeedDelta << 1;
 	if(aspd_diff > AIRSPEED_ACCEL_MAX) aspd_diff = AIRSPEED_ACCEL_MAX;
 	if(aspd_diff < -AIRSPEED_ACCEL_MAX) aspd_diff = -AIRSPEED_ACCEL_MAX;
@@ -154,9 +149,6 @@ void normalPitchCntrl(void)
 	pitchAccum._.W1 = aspd_diff;
 	pitchAccum.WW >>= 2;
 	aspd_diff = __builtin_divsd( pitchAccum.WW ,  AIRSPEED_ACCEL_MAX );
-	// Apply differential gain
-//	pitchAccum.WW = __builtin_mulss(airspeed_pitch_kd, aspd_diff ) << 2;
-//	aspd_adj += pitchAccum._.W1;
 
 	if ( PITCH_STABILIZATION && flags._.pitch_feedback )
 	{
@@ -164,8 +156,6 @@ void normalPitchCntrl(void)
 						- __builtin_mulss(airspeed_pitch_kd, aspd_diff )
 						- __builtin_mulss(airspeed_pitch_kp, aspd_err )
 					  	+ __builtin_mulss( pitchkd , pitchrate );
-
-//		pitchAccum.WW = __builtin_mulss( rmat7 - rtlkick + pitchAltitudeAdjust, pitchgain ) 
 	}
 	else
 	{
@@ -174,7 +164,10 @@ void normalPitchCntrl(void)
 	
 	pitch_control = (long)pitchAccum._.W1 + navElevMix ;
 	// Servo reversing is handled in servoMix.c
+	pitchAccum.WW = __builtin_mulss(airspeedFadeout, pitch_control );
 	
+	pitch_control = pitchAccum._.W1;
+
 	return ;
 }
 

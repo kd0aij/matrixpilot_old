@@ -127,7 +127,6 @@ int rawMagCalib[3];
 #define 	MAVLINK_FRAME_FREQUENCY	40
 #define     MAVLINK_FREQ_ATTITUDE	 8   // Be careful if you change this. Requested frequency may not be actual freq.
 #define 	MAVLINK_WAYPOINT_TIMEOUT 120 // Dependent on frequency of calling mavlink_output_40hz. 120 is 3 second timeout.
-#define 	MAVLINK_FREQ_RC_CHAN	8	//
 
 void send_text(uint8_t text[]) ;
 void handleMessage(mavlink_message_t* msg) ;
@@ -561,7 +560,8 @@ void mavlink_send_dm_airspeed_in_cm( int16_t i )
 	return;
 }
 
-void mavlink_set_dm_airspeed_from_cm(mavlink_param_union_t setting, int16_t i ){
+void mavlink_set_dm_airspeed_from_cm(mavlink_param_union_t setting, int16_t i )
+{
 	if(setting.type != MAVLINK_TYPE_INT32_T) return;
 	
 	union longww airspeed;
@@ -573,10 +573,6 @@ void mavlink_set_dm_airspeed_from_cm(mavlink_param_union_t setting, int16_t i )
 
 	return ;
 }
-
-
-
-
 
 // END OF GENERAL ROUTINES FOR CHANGING UAV ONBOARD PARAMETERS
 
@@ -1291,7 +1287,7 @@ inline void preflight_storage_complete_callback(boolean success)
 // MAIN MAVLINK CODE FOR SENDING COMMANDS TO THE GROUND CONTROL STATION
 //
 
-const unsigned char mavlink_freq_table[] = { 0,40,20,13,10,8,7,6 } ;
+const unsigned char mavlink_freq_table[] = { 0,40,20,13,10,8,7,6,5,4,4 } ;
 
 boolean is_this_the_moment_to_send( unsigned char counter, unsigned char max_counter )
 {
@@ -1313,12 +1309,12 @@ boolean mavlink_frequency_send( unsigned char frequency, unsigned char counter)
 	{
 		return false ;
 	}
-	else if ( frequency > 0 && frequency < 8 )
+	else if ( frequency > 0 && frequency < 11 )
 	{
 		max_counter = mavlink_freq_table[frequency] ;
 		return is_this_the_moment_to_send( counter, max_counter ) ;
 	}	 
-	else if ( frequency > 7 && frequency < 14 )
+	else if ( frequency > 10  && frequency < 14 )
 	{
 		max_counter = 4 ;
 		return is_this_the_moment_to_send( counter,max_counter ) ;
@@ -1387,14 +1383,18 @@ void mavlink_output_40hz( void )
 	// critical message types are more likely to still be transmitted.
 
 	// HEARTBEAT
-	spread_transmission_load = 0;
+	spread_transmission_load = 1;
 
 	if ( mavlink_frequency_send( 4, mavlink_counter_40hz + spread_transmission_load)) 
 	{	
 		if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 0)
+		{
 				 mavlink_mode = MAV_MODE_MANUAL_ARMED ;
-		else if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 1) 
+		}
+		else if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 1)
+		{ 
 				 mavlink_mode = MAV_MODE_GUIDED_ARMED ;
+		}
 		else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 1)
 		{
 				 mavlink_mode = MAV_MODE_AUTO_ARMED ;
@@ -1431,10 +1431,9 @@ void mavlink_output_40hz( void )
 			accum_B_long.WW = ( accum_A_long.WW + 8192 ) / cos_lat  ;  // 8192 improves rounding accuracy
 			lon = long_origin.WW + (accum_B_long.WW * 90 ) ;           // degrees 
 		}
-		accum_A_long._.W1 = 0 ;
-		accum_A_long._.W0 = IMUlocationz._.W1 ;
+		accum_A_long.WW = IMUlocationz._.W1 ;
 		relative_alt = accum_A_long.WW * 1000  ;
-		alt  =  relative_alt + (alt_origin.WW ) ;      //In millimeters; more accurate if used IMUlocationz._.W0
+		alt  =  relative_alt + (alt_origin.WW * 10 ) ;      //In millimeters; more accurate if used IMUlocationz._.W0
 
 		// Could calculate heading from DCM, but going to use 2D "calculated_heading" for now until Maths peer reviewed.
 		angle = (calculated_heading * 180 + 64) >> 7 ;	// 0-359 (ccw, 0=East)
@@ -1496,31 +1495,12 @@ void mavlink_output_40hz( void )
 	spread_transmission_load = 18 ;
 	if (mavlink_frequency_send( 4, mavlink_counter_40hz + spread_transmission_load)) 
 	{
-		if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 0)
-				 mavlink_mode = MAV_MODE_MANUAL_ARMED ;
-		else if (flags._.GPS_steering == 0 && flags._.pitch_feedback == 1) 
-				 mavlink_mode = MAV_MODE_GUIDED_ARMED ;
-		else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 1)
-		{
-				 mavlink_mode = MAV_MODE_AUTO_ARMED ;
-				 //mavlink_nav_mode = MAV_NAV_WAYPOINT ;
-		}
-		else if (flags._.GPS_steering == 1 && flags._.pitch_feedback == 1 && udb_flags._.radio_on == 0)
-		{
-				 mavlink_mode = MAV_MODE_AUTO_ARMED; // Return to Landing (lost contact with transmitter)
-				// mavlink_nav_mode = MAV_NAV_RETURNING ;
-		}
-		else
-		{
-				 mavlink_mode = MAV_MODE_TEST_ARMED ; // Unknown state 
-		}
-	    
 		mavlink_msg_sys_status_send(MAVLINK_COMM_0,
 			0 , 0, 0, // Not currently sending information about sensors 
 		    udb_cpu_load() * 10, 
 			0,                   // Battery voltage in mV
 			0 ,                  // Current
-		    0 ,    // Percentage battery remaining 100 percent is 1000 
+		    0 ,    				 // Percentage battery remaining 100 percent is 1000 
 		    r_mavlink_status.packet_rx_drop_count,
 			0,					 // errors_comm
 			0,					 // errors_count1
@@ -1533,8 +1513,6 @@ void mavlink_output_40hz( void )
 			// uint16_t drop_rate_comm, uint16_t errors_comm, uint16_t errors_count1, uint16_t errors_count2, uint16_t errors_count3, uint16_t errors_count4)    
 	}
 
-    /****************** Not yet converted to wire protocol 1.0 ***********************************
-    *********************End of section not yet converted to wire protocol 1.0 *******************/
 
 	// RC CHANNELS
 	// Channel values shifted left by 1, to divide by two, so values reflect PWM pulses in microseconds.
