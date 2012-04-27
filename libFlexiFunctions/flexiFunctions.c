@@ -591,3 +591,44 @@ fractional rate_function(functionSetting* pSetting, fractional* pRegisters)
 	return src;
 }
 
+
+fractional pct_cond_gains_function(functionSetting* pSetting, fractional* pRegisters)
+{
+	union longww 	ltemp;
+	fractional 		ftemp;
+	fractional		posgain, neggain, gain;
+	boolean			state;
+
+	// collect the reference condition value
+	ftemp = pRegisters[pSetting->data.conditional_gain.srcCond];
+
+	state = ( (ftemp >= pSetting->data.pct_cond_gains.condMin) & 
+			(ftemp <= pSetting->data.pct_cond_gains.condMax) );
+
+	
+	ftemp = pRegisters[pSetting->data.pct_cond_gains.src];
+
+	if(state == 0)
+	{
+		posgain = pSetting->data.pct_cond_gains.posGainInvalid;
+		neggain = pSetting->data.pct_cond_gains.negGainInvalid;
+	}
+	else
+	{
+		posgain = pSetting->data.pct_cond_gains.posGainValid;
+		neggain = pSetting->data.pct_cond_gains.negGainValid;
+	}
+
+	if(ftemp > 0)
+		gain = posgain;
+	else
+		gain = neggain;
+
+	ltemp.WW = __builtin_mulss(ftemp, gain);
+	ltemp.WW <<= 2;
+	ftemp = (fractional) ltemp._.W1;
+
+	return ftemp;
+}
+
+
