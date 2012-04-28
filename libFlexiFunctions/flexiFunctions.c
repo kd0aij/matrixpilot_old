@@ -600,7 +600,7 @@ fractional pct_cond_gains_function(functionSetting* pSetting, fractional* pRegis
 	boolean			state;
 
 	// collect the reference condition value
-	ftemp = pRegisters[pSetting->data.conditional_gain.srcCond];
+	ftemp = pRegisters[pSetting->data.pct_cond_gains.srcCond];
 
 	state = ( (ftemp >= pSetting->data.pct_cond_gains.condMin) & 
 			(ftemp <= pSetting->data.pct_cond_gains.condMax) );
