@@ -573,6 +573,61 @@ void mavlink_set_dm_airspeed_from_cm(mavlink_param_union_t setting, int16_t i )
 	return ;
 }
 
+
+
+
+void mavlink_send_cm_airspeed_in_m( int16_t i )
+{
+	param_union_t param ;
+
+	param.param_float = (float) *((int*) mavlink_parameters_list[i].pparam);
+	param.param_float *= 0.01;
+
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		param.param_float , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ;
+	return;
+}
+
+void mavlink_set_cm_airspeed_from_m(mavlink_param_union_t setting, int16_t i ){
+	if(setting.type != MAVLINK_TYPE_FLOAT) return;
+	
+	union longww airspeed;
+	
+	airspeed.WW = __builtin_mulss((int) setting.param_int32 , (RMAX / 10.0) );
+	airspeed.WW <<= 2;
+
+	*((int*) mavlink_parameters_list[i].pparam) = (int) (setting.param_float * 100.0);
+
+	return ;
+}
+
+
+
+void mavlink_send_dm_airspeed_in_m( int16_t i )
+{
+	param_union_t param ;
+
+	param.param_float = (float) *((int*) mavlink_parameters_list[i].pparam);
+	param.param_float *= 0.1;
+
+	mavlink_msg_param_value_send( MAVLINK_COMM_0, mavlink_parameters_list[i].name ,
+		param.param_float , MAVLINK_TYPE_FLOAT, count_of_parameters_list, i ) ;
+	return;
+}
+
+void mavlink_set_dm_airspeed_from_m(mavlink_param_union_t setting, int16_t i ){
+	if(setting.type != MAVLINK_TYPE_FLOAT) return;
+	
+	union longww airspeed;
+	
+	airspeed.WW = __builtin_mulss((int) setting.param_int32 , (RMAX / 10.0) );
+	airspeed.WW <<= 2;
+
+	*((int*) mavlink_parameters_list[i].pparam) = (int) (setting.param_float * 10.0);
+
+	return ;
+}
+
 
 
 
