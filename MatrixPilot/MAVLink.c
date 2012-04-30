@@ -1465,7 +1465,7 @@ void mavlink_output_40hz( void )
 	}
 
 	spread_transmission_load = 4 ;
-	if (mavlink_frequency_send( MAVLINK_FREQ_GLOBAL_POS , mavlink_counter_40hz + spread_transmission_load))
+	if (mavlink_frequency_send( MAVLINK_FREQ_GPS_RAW , mavlink_counter_40hz + spread_transmission_load))
 	{
 		accum_A_long.WW = IMUlocationy._.W1 + (long int) ( lat_origin.WW / 90.0 ) ; //  meters North from Equator
 		lat  =  (long int) accum_A_long.WW * 90  ;		                          // degrees North from Equator
