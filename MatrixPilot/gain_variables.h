@@ -9,11 +9,7 @@
 // Variable altitude and airspeed
 // BEWARE: This uses an alternative library for altitude control
 // Your aircraft will not behave the same way as when using non variable gains. 
-#define ALTITUDE_GAINS_VARIABLE 0
-// To use this option, you will need to add the following files to your project
-// airspeedCntrl.c/.h
-// altitudeCntrlVariable.c
-// airspeed_options.h
+#define ALTITUDE_GAINS_VARIABLE 1
 
 // Aileron/Roll Control Gains
 // ROLLKP is the proportional gain, approximately 0.25

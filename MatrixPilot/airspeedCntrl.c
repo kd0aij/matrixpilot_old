@@ -29,14 +29,24 @@ extern int desiredSpeed;
 
 int 	airspeed		= 0;
 int 	groundspeed		= 0;
+int 	airspeedError	= 0;
 
-int minimum_groundspeed		= MINIMUM_GROUNDSPEED;
-int minimum_airspeed		= MINIMUM_AIRSPEED;
-int maximum_airspeed		= MAXIMUM_AIRSPEED;
+int minimum_groundspeed		= MINIMUM_GROUNDSPEED * 100;
+int minimum_airspeed		= MINIMUM_AIRSPEED * 100;
+int maximum_airspeed		= MAXIMUM_AIRSPEED * 100;
+int cruise_airspeed			= CRUISE_AIRSPEED * 100;
+
+fractional airspeed_adj_range	= AIRSPEED_ADJ_RANGE * RMAX;
+
+fractional airspeed_pitch_kp 	= AIRSPEED_PITCH_KP * RMAX;
+fractional airspeed_pitch_kd 	= AIRSPEED_PITCH_KD * RMAX;
+
+int airspeed_pitch_min_aspd = (AIRSPEED_PITCH_MIN_ASPD*(RMAX/57.3));
+int airspeed_pitch_max_aspd = (AIRSPEED_PITCH_MAX_ASPD*(RMAX/57.3));
 
 // Calculate the airspeed.
 // Note that this airspeed is a magnitude regardless of direction.
-// It is not a calcualtion of forward airspeed.
+// It is not a calculation of forward airspeed.
 void calc_airspeed(void)
 {
 	int speed_component ;
@@ -81,6 +91,10 @@ void calc_target_airspeed(void)
 
 	if(target_airspeed < minimum_airspeed)
 		target_airspeed = minimum_airspeed;
+
+	//Some airspeed error filtering
+	airspeedError = airspeedError >>=1;
+	airspeedError += ( (target_airspeed - airspeed) >> 1);
 }
 
 #endif		//(ALTITUDE_GAINS_VARIABLE == 1)

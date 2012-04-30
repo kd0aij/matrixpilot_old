@@ -18,16 +18,44 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-// Options for airspeed control supplementing DESIRED_SPEED in options.h
-// All airspeed values are in cm/s.
-// These options are used when ALTITUDE_GAINS_VARIABLE==1 in gain_variables.h
 
 #ifndef AIRSPEED_OPTIONS_H
 #define AIRSPEED_OPTIONS_H
 
-#define MINIMUM_GROUNDSPEED 	300
-#define MINIMUM_AIRSPEED		700
-#define MAXIMUM_AIRSPEED		2000
+// Airspeeds in m/s
+#define MINIMUM_GROUNDSPEED 	3.0
+#define MINIMUM_AIRSPEED		7.0
+#define MAXIMUM_AIRSPEED		20.0
+#define CRUISE_AIRSPEED			12.0
+
+// Airspeed to pitch proportional and differential control terms
+#define AIRSPEED_PITCH_KP		0.0
+#define AIRSPEED_PITCH_KD		0.0
+
+// Pitch feedforward for airspeed
+// linnearly interpolated from cruise airspeed to min and max airspeed
+#define AIRSPEED_PITCH_MIN_ASPD		2.5
+#define AIRSPEED_PITCH_MAX_ASPD		-10.0
+
+// Fraction of actual airspeed across which linear control is made.
+#define AIRSPEED_ADJ_RANGE		0.2
+
+// Maximum airspeed delta/sec for linear response
+//#define AIRSPEED_ACCEL_MAX		500
+
+// Always fly at groundspeed, not airspeed
+#define TARGET_SPEED_AS_GROUNDSPEED		0
+
+// Maximum rate of target airspeed change in cm/s
+#define MAXIMUM_TARGET_AIRSPEED_RATE 	1000
+
+// The maximum airspeed above which the throttle can be used
+// Above this airspeed the throttle is reduced to zero
+// Set to the maximum pitch speed of your engine/propeller combination
+#define MAXIMUM_AIRSPEED_ON_THROTTLE 2500
+
+// Number of frame cycles over which the delta airspeed is measured.
+#define ASPD_BUFF_SIZE 20
 
 #endif
 
