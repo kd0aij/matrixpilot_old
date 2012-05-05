@@ -32,7 +32,8 @@ struct waypoint3D { long x ; long y ; int z ; } ;
 struct fixedOrigin3D {long x; long y; float z;} ;
 
 struct dcm_flag_bits {
-			unsigned int unused					: 5 ;
+			unsigned int unused					: 4 ;
+			unsigned int rollpitch_req			: 1 ;
 			unsigned int gps_history_valid		: 1 ;
 			unsigned int dead_reckon_enable		: 1 ;
 			unsigned int reckon_req				: 1 ;
@@ -53,6 +54,11 @@ struct dcm_flag_bits {
 #define GPS_UBX_2HZ			2
 #define GPS_UBX_4HZ			4
 #define GPS_MTEK			5
+
+#define GPS_RATE			((GPS_TYPE == GPS_MTEK) ? 4 : GPS_TYPE)
+
+// If GPS data has not been received for this many state machine cycles, consider the GPS lock to be lost.
+#define GPS_DATA_MAX_AGE	9
 
 #define LONGDEG_2_BYTECIR 305 // = (256/360)*((256)**4)/(10**7)
 #define COURSEDEG_2_BYTECIR 466 // = (256/360)*((256)**2)/(10**2)

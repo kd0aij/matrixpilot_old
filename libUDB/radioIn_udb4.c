@@ -494,6 +494,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	
 #if ( NORADIO != 1 )
 
+#if RADIO_IN_ROBD
 	if (_RD8 == PPM_PULSE_VALUE)
 	{
 		unsigned int pulse = time - rise_ppm ;
@@ -520,6 +521,29 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 			}
 		}
 	}
+#else
+	unsigned int pulse = time - rise_ppm ;
+	rise_ppm = time ;
+
+	if (_RD8 == PPM_PULSE_VALUE) {
+//		dprintf("%u\r\n", pulse);
+		if (pulse > MIN_SYNC_PULSE_WIDTH) {			//sync pulse
+			ppm_ch = 1 ;
+		}
+	} else {
+//		dprintf("%u %u\r\n", ppm_ch, pulse);	
+		if (ppm_ch > 0 && ppm_ch <= PPM_NUMBER_OF_CHANNELS)	{
+			if (ppm_ch <= NUM_INPUTS) {
+				udb_pwIn[ppm_ch] = pulse ;				
+				if ( ppm_ch == FAILSAFE_INPUT_CHANNEL && udb_pwIn[FAILSAFE_INPUT_CHANNEL] > FAILSAFE_INPUT_MIN && udb_pwIn[FAILSAFE_INPUT_CHANNEL] < FAILSAFE_INPUT_MAX ) {
+					failSafePulses++ ;
+				}
+			}
+			ppm_ch++ ;		//scan next channel
+		}
+	}
+#endif
+
 #endif
 
 	interrupt_restore_corcon ;
