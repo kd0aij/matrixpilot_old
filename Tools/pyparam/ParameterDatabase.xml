@@ -591,8 +591,6 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<externString>int maximum_airspeed</externString>
 			<externString>int minimum_airspeed</externString>
 			<externString>int desiredSpeed</externString>
-			<externString>fractional airspeed_pitch_kp</externString>
-			<externString>fractional airspeed_pitch_kd</externString>
 		</externs>
 		<load_callback>NULL</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
@@ -700,7 +698,8 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 			<externString>int minimum_airspeed</externString>
 			<externString>int cruise_airspeed</externString>
 			<externString>int desiredSpeed</externString>
-			<externString>fractional airspeed_adj_range</externString>
+			<externString>int airspeed_pitch_min_aspd</externString>
+			<externString>int airspeed_pitch_max_aspd</externString>
 		</externs>
 		<load_callback>NULL</load_callback>
 		<in_mavlink_parameters>true</in_mavlink_parameters>
@@ -745,57 +744,29 @@ xsi:schemaLocation="ParameterDB ParameterDatabase.xsd">
 				<parameterName>ASPD_CRUISE</parameterName>
 				<udb_param_type>UDB_TYPE_M_AIRSPEED_TO_CM</udb_param_type>
 				<variable_name>cruise_airspeed</variable_name>
-				<description>Cruise airspeed in normal level flight</description>
+				<description>Cruise airspeed in normal level flight at zero degrees</description>
 				<min>0</min>
 				<max>300.0</max>
 				<readonly>false</readonly>
 			</parameter>
 			<parameter>
-				<parameterName>ASPD_PT_KP</parameterName>
-				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
-				<variable_name>airspeed_pitch_kp</variable_name>
-				<description>gain between airspeed error and pitch control change</description>
-				<min>-0</min>
-				<max>0.5</max>
+				<parameterName>ASPD_P_MIN_ASPD</parameterName>
+				<udb_param_type>UDB_TYPE_INT_CIRCULAR</udb_param_type>
+				<variable_name>airspeed_pitch_min_aspd</variable_name>
+				<description>Estimated pitch change for minimum airspeed during glide(degrees)</description>
+				<min>-90</min>
+				<max>90.0</max>
 				<readonly>false</readonly>
 			</parameter>
 			<parameter>
-				<parameterName>ASPD_PT_KD</parameterName>
-				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
-				<variable_name>airspeed_pitch_kd</variable_name>
-				<description>gain between airspeed change and pitch control change</description>
-				<min>-0.5</min>
-				<max>0.5</max>
+				<parameterName>ASPD_P_MAX_ASPD</parameterName>
+				<udb_param_type>UDB_TYPE_INT_CIRCULAR</udb_param_type>
+				<variable_name>airspeed_pitch_max_aspd</variable_name>
+				<description>Estimated pitch change required for maximum airspeed during glide(degrees)</description>
+				<min>-90</min>
+				<max>90.0</max>
 				<readonly>false</readonly>
 			</parameter>
-<!--			<parameter>
-				<parameterName>ASPD_GSPD_PT_KD</parameterName>
-				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
-				<variable_name>groundspeed_pitch_kd</variable_name>
-				<description>gain between groundspeed change and pitch control change</description>
-				<min>-0.5</min>
-				<max>0.5</max>
-				<readonly>false</readonly>
-			</parameter>-->
-			<parameter>
-				<parameterName>ASPD_ADJ_RNG</parameterName>
-				<udb_param_type>UDB_TYPE_Q14</udb_param_type>
-				<variable_name>airspeed_adj_range</variable_name>
-				<description>Range of current airspeed over which linear control is performed</description>
-				<min>0.01</min>
-				<max>1</max>
-				<readonly>false</readonly>
-			</parameter>
-<!--			<parameter>
-				<parameterName>ASPD_GSPD_CNTRL</parameterName>
-				<udb_param_type>UDB_TYPE_INT</udb_param_type>
-				<variable_name>target_speed_as_groundspeed</variable_name>
-				<description>Set to 1 fly target speed as groundspeed </description>
-				<min>0</min>
-				<max>1</max>
-				<readonly>false</readonly>
-			</parameter>
--->
 		</parameters>
 	
 		<description>Airspeed options</description>

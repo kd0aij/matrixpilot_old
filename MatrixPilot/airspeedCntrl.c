@@ -36,10 +36,18 @@ int minimum_airspeed		= MINIMUM_AIRSPEED * 100;
 int maximum_airspeed		= MAXIMUM_AIRSPEED * 100;
 int cruise_airspeed			= CRUISE_AIRSPEED * 100;
 
-fractional airspeed_adj_range	= AIRSPEED_ADJ_RANGE * RMAX;
+int airspeed_pitch_adjust_rate	= (AIRSPEED_PITCH_ADJ_RATE*(RMAX/(57.3 * 40.0)));
 
-fractional airspeed_pitch_kp 	= AIRSPEED_PITCH_KP * RMAX;
-fractional airspeed_pitch_kd 	= AIRSPEED_PITCH_KD * RMAX;
+//fractional airspeed_adj_range	= AIRSPEED_ADJ_RANGE * RMAX;
+//#fractional airspeed_pitch_kp 	= AIRSPEED_PITCH_KP * RMAX;
+//#fractional airspeed_pitch_kd 	= AIRSPEED_PITCH_KD * RMAX;
+
+
+// output of pitch adjustment for airpeed
+fractional aspd_pitch_adj		= 0;
+
+// Remember last adjustment to limit rate of adjustment.
+fractional last_aspd_pitch_adj	= 0;
 
 int airspeed_pitch_min_aspd = (AIRSPEED_PITCH_MIN_ASPD*(RMAX/57.3));
 int airspeed_pitch_max_aspd = (AIRSPEED_PITCH_MAX_ASPD*(RMAX/57.3));
@@ -93,8 +101,86 @@ void calc_target_airspeed(void)
 		target_airspeed = minimum_airspeed;
 
 	//Some airspeed error filtering
-	airspeedError = airspeedError >>=1;
+	airspeedError = airspeedError >> 1;
 	airspeedError += ( (target_airspeed - airspeed) >> 1);
 }
+
+//Calculate pitch target adjustment for target airspeed
+void airspeed_pitch_adjust(void)
+{
+	union longww accum ;
+
+	// Proportional feedback from airspeed to pitch
+//	aspd_err = airspeedError;
+//	if(aspd_err > airspeed_adj_range) aspd_err = airspeed_adj_range;
+//	if(aspd_err < -airspeed_adj_range) aspd_err = -airspeed_adj_range;
+//	// Divide by range
+//	pitchAccum.WW 	= 0;
+//	pitchAccum._.W1 = aspd_err;
+//	pitchAccum.WW >>= 2;
+//	aspd_err = __builtin_divsd( pitchAccum.WW ,  airspeed_adj_range );
+//
+//	// Differential feedback from airspeed to pitch
+//	aspd_diff = airspeedDelta << 1;
+//	if(aspd_diff > AIRSPEED_ACCEL_MAX) aspd_diff = AIRSPEED_ACCEL_MAX;
+//	if(aspd_diff < -AIRSPEED_ACCEL_MAX) aspd_diff = -AIRSPEED_ACCEL_MAX;
+//	// Divide by range
+//	pitchAccum.WW 	= 0;
+//	pitchAccum._.W1 = aspd_diff;
+//	pitchAccum.WW >>= 2;
+//	aspd_diff = __builtin_divsd( pitchAccum.WW ,  AIRSPEED_ACCEL_MAX );
+//
+//	aspd_diff = 0;
+
+
+	// linear interpolation between target airspeed and cruise airspeed.
+	// calculating demand airspeed to pitch feedforward
+	int aspd_tc_delta = target_airspeed - cruise_airspeed;
+	int aspd_tc_range;
+	int pitch_range = 0;
+	
+	if(aspd_tc_delta > 0)
+	{
+		aspd_tc_range = maximum_airspeed - cruise_airspeed;
+		pitch_range = airspeed_pitch_max_aspd;
+	}
+	else if(aspd_tc_delta < 0)
+	{
+		aspd_tc_range = cruise_airspeed - minimum_airspeed;
+		pitch_range = airspeed_pitch_min_aspd;
+		aspd_tc_delta = -aspd_tc_delta;
+	}
+	else
+	{
+		aspd_tc_range = 1;
+	}
+
+	accum.WW = 0;
+	accum._.W1 = aspd_tc_delta;
+	accum._.W1 = __builtin_divsd( accum.WW >> 2,  aspd_tc_range );
+	accum.WW = __builtin_mulss( accum._.W1, pitch_range ) << 2;
+	aspd_pitch_adj = accum._.W1;
+
+	// Pitch adjust for airspeed on glide only.
+	if(throttle_control >= 100)
+	{
+		aspd_pitch_adj = 0;
+	}
+
+	// limit the rate of the airspeed pitch adjustment
+	if(aspd_pitch_adj > last_aspd_pitch_adj)
+	{
+		if( (last_aspd_pitch_adj + airspeed_pitch_adjust_rate) < aspd_pitch_adj)
+			aspd_pitch_adj = (last_aspd_pitch_adj + airspeed_pitch_adjust_rate);
+	}
+	else
+	{
+		if( (last_aspd_pitch_adj - airspeed_pitch_adjust_rate) > aspd_pitch_adj)
+			aspd_pitch_adj = (last_aspd_pitch_adj - airspeed_pitch_adjust_rate);
+	}
+
+	last_aspd_pitch_adj = aspd_pitch_adj;
+}
+
 
 #endif		//(ALTITUDE_GAINS_VARIABLE == 1)

@@ -55,6 +55,9 @@ int elevInput ;
 void normalPitchCntrl(void) ;
 void hoverPitchCntrl(void) ;
 
+#if(ALTITUDE_GAINS_VARIABLE == 1)
+void airspeedPitchAdjust(void);
+#endif
 
 void pitchCntrl(void)
 {
@@ -129,65 +132,19 @@ void normalPitchCntrl(void)
 		rtlkick = 0 ;
 	}
 
-	// Proportional feedback from airspeed to pitch
-//	aspd_err = airspeedError;
-//	if(aspd_err > airspeed_adj_range) aspd_err = airspeed_adj_range;
-//	if(aspd_err < -airspeed_adj_range) aspd_err = -airspeed_adj_range;
-//	// Divide by range
-//	pitchAccum.WW 	= 0;
-//	pitchAccum._.W1 = aspd_err;
-//	pitchAccum.WW >>= 2;
-//	aspd_err = __builtin_divsd( pitchAccum.WW ,  airspeed_adj_range );
-//
-//	// Differential feedback from airspeed to pitch
-//	aspd_diff = airspeedDelta << 1;
-//	if(aspd_diff > AIRSPEED_ACCEL_MAX) aspd_diff = AIRSPEED_ACCEL_MAX;
-//	if(aspd_diff < -AIRSPEED_ACCEL_MAX) aspd_diff = -AIRSPEED_ACCEL_MAX;
-//	// Divide by range
-//	pitchAccum.WW 	= 0;
-//	pitchAccum._.W1 = aspd_diff;
-//	pitchAccum.WW >>= 2;
-//	aspd_diff = __builtin_divsd( pitchAccum.WW ,  AIRSPEED_ACCEL_MAX );
-//
-//	aspd_diff = 0;
-
-
-	// linear interpolation between target airspeed and cruise airspeed.
-	// calculating demand airspeed to pitch feedforward
-	int aspd_tc_delta = target_airspeed - cruise_airspeed;
-	int aspd_tc_range;
-	int pitch_range = 0;
-	int aspd_pitch_adj;
-	
-	if(aspd_tc_delta > 0)
-	{
-		aspd_tc_range = maximum_airspeed - cruise_airspeed;
-		pitch_range = airspeed_pitch_max_aspd;
-	}
-	else if(aspd_tc_delta < 0)
-	{
-		aspd_tc_range = minimum_airspeed - cruise_airspeed;
-		pitch_range = airspeed_pitch_min_aspd;
-	}
-	else
-	{
-		aspd_tc_range = 1;
-	}
-
-	pitchAccum.WW = 0;
-	pitchAccum._.W1 = aspd_tc_delta;
-	pitchAccum._.W1 = __builtin_divsd( pitchAccum.WW >> 2,  aspd_tc_range );
-	pitchAccum.WW = __builtin_mulss( pitchAccum._.W1, pitch_range ) << 2;
-	aspd_pitch_adj = pitchAccum._.W1;
+#if(AIRSPEED_PITCH_ADJUST == 1)
+	airspeed_pitch_adjust();
+#endif
 
 	if ( PITCH_STABILIZATION && flags._.pitch_feedback )
 	{
+#if(AIRSPEED_PITCH_ADJUST == 1)
 		pitchAccum.WW = __builtin_mulss( rmat7 - rtlkick + aspd_pitch_adj + pitchAltitudeAdjust, pitchgain ) 
 					  + __builtin_mulss( pitchkd , pitchrate ) ;
-//		pitchAccum.WW = __builtin_mulss( rmat7, pitchgain )
-//						- __builtin_mulss(airspeed_pitch_kd, aspd_diff )
-//						- __builtin_mulss(airspeed_pitch_kp, aspd_err )
-					  	+ __builtin_mulss( pitchkd , pitchrate );
+#else
+		pitchAccum.WW = __builtin_mulss( rmat7 - rtlkick + pitchAltitudeAdjust, pitchgain ) 
+					  + __builtin_mulss( pitchkd , pitchrate ) ;
+#endif
 	}
 	else
 	{
@@ -195,14 +152,10 @@ void normalPitchCntrl(void)
 	}
 	
 	pitch_control = (long)pitchAccum._.W1 + navElevMix ;
-	// Servo reversing is handled in servoMix.c
-
-//	fadeout
-//	pitchAccum.WW = __builtin_mulss(airspeedFadeout, pitch_control );	
-//	pitch_control = pitchAccum._.W1;
 
 	return ;
 }
+
 
 
 void hoverPitchCntrl(void)

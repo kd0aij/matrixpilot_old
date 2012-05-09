@@ -32,13 +32,14 @@ extern int 		target_airspeed;
 extern int 		cruise_airspeed;
 extern int 		airspeedError;
 
-extern fractional airspeed_adj_range;
-extern fractional airspeed_pitch_kp;
-extern fractional airspeed_pitch_kd;
+//extern fractional airspeed_adj_range;
+//extern fractional airspeed_pitch_kp;
+//extern fractional airspeed_pitch_kd;
 
 extern int airspeed_pitch_min_aspd;
 extern int airspeed_pitch_max_aspd;
 
+extern fractional aspd_pitch_adj;
 
 // Calculate the airspeed.
 void calc_airspeed(void);
@@ -48,6 +49,9 @@ void calc_groundspeed(void);
 
 // Calculate the target airspeed
 void calc_target_airspeed(void);
+
+//Calculate pitch target adjustment for target airspeed
+void airspeed_pitch_adjust(void);
 
 #endif
 
