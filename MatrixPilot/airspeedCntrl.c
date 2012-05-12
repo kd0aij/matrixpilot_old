@@ -21,7 +21,28 @@
 
 #include "defines.h"
 
-#if(ALTITUDE_GAINS_VARIABLE == 1)
+#if(ALTITUDE_GAINS_VARIABLE != 1)
+
+// If mavlink is being used but the gains are not variable
+// implement the malink parameter variables for airspeed here
+#if(SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
+	#include "airspeedCntrl.h"
+
+	int minimum_groundspeed		= MINIMUM_GROUNDSPEED * 100;
+	int minimum_airspeed		= MINIMUM_AIRSPEED * 100;
+	int maximum_airspeed		= MAXIMUM_AIRSPEED * 100;
+	int cruise_airspeed			= CRUISE_AIRSPEED * 100;
+	
+	int airspeed_pitch_adjust_rate	= (AIRSPEED_PITCH_ADJ_RATE*(RMAX/(57.3 * 40.0)));
+	
+	int airspeed_pitch_ki_limit	= (AIRSPEED_PITCH_KI_MAX*(RMAX/57.3));
+	fractional airspeed_pitch_ki = (AIRSPEED_PITCH_KI * RMAX);
+	
+	int airspeed_pitch_min_aspd = (AIRSPEED_PITCH_MIN_ASPD*(RMAX/57.3));
+	int airspeed_pitch_max_aspd = (AIRSPEED_PITCH_MAX_ASPD*(RMAX/57.3));
+#endif	//SERIAL_MAVLINK
+
+#else	//ALTITUDE_GAINS_VARIABLE == 1
 
 #include "airspeedCntrl.h"
 
