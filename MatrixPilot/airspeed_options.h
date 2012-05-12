@@ -28,39 +28,24 @@
 #define MAXIMUM_AIRSPEED		20.0
 #define CRUISE_AIRSPEED			12.0
 
-// Pitch feedforward for airspeed
-// linearly interpolated from cruise airspeed to min and max airspeed
-#define AIRSPEED_PITCH_MIN_ASPD		5.0
-#define AIRSPEED_PITCH_MAX_ASPD		-15.0
-
-// Maximum rate of pitch demand change in deg/s
-#define AIRSPEED_PITCH_ADJ_RATE		5.0
-
-// Airspeed to pitch proportional and differential control terms
-//#define AIRSPEED_PITCH_KP		0.0
-//#define AIRSPEED_PITCH_KD		0.0
-
+// Enable pitch adjustment to alter airspeed.
+// NOTE:  This only operates during throttle off (below 100)
 #define AIRSPEED_PITCH_ADJUST	1
 
-// Fraction of actual airspeed across which linear control is made.
-//#define AIRSPEED_ADJ_RANGE		0.2
+// Pitch feedforward for airspeed
+// linearly interpolated from cruise airspeed to min and max airspeed
+#define AIRSPEED_PITCH_MIN_ASPD		0.0		// Default off, start with 5.0
+#define AIRSPEED_PITCH_MAX_ASPD		0.0		// Default off, start with -10.0
 
-// Maximum airspeed delta/sec for linear response
-//#define AIRSPEED_ACCEL_MAX		500
+// Maximum rate of pitch demand change in deg/s.  Used to make control smoother.
+// Default 10.0, Higher for small aircraft. Too low may cause instability.
+// Maximum value is 720deg/s.  
+#define AIRSPEED_PITCH_ADJ_RATE		10.0
 
-// Always fly at groundspeed, not airspeed
-//#define TARGET_SPEED_AS_GROUNDSPEED		0
+#define AIRSPEED_PITCH_KI		0.04		// Integrataion rate.  High = unstable, low = slow response.
+#define AIRSPEED_PITCH_KI_MAX	0.0			// Limit of integration control in degrees.  Start with 5.0.
 
-// Maximum rate of target airspeed change in cm/s
-//#define MAXIMUM_TARGET_AIRSPEED_RATE 	1000
 
-// The maximum airspeed above which the throttle can be used
-// Above this airspeed the throttle is reduced to zero
-// Set to the maximum pitch speed of your engine/propeller combination
-//#define MAXIMUM_AIRSPEED_ON_THROTTLE 2500
-
-// Number of frame cycles over which the delta airspeed is measured.
-//#define ASPD_BUFF_SIZE 20
 
 #endif
 

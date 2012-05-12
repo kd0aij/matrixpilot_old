@@ -39,6 +39,7 @@ extern int 		airspeedError;
 extern int airspeed_pitch_min_aspd;
 extern int airspeed_pitch_max_aspd;
 
+// adjustment to pitch demand for controlling airspeed
 extern fractional aspd_pitch_adj;
 
 // Calculate the airspeed.

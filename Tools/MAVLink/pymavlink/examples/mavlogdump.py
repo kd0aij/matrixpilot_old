@@ -46,6 +46,12 @@ while True:
     m = mlog.recv_match(condition=opts.condition, blocking=opts.follow)
     if m is None:
         break
+    if(m.get_type() == "SERIAL_UDB_EXTRA_F2_A"):
+        print("UDB_EXTRA_F2_A")
+    if(m.get_type() == "SERIAL_UDB_EXTRA_F2_B"):
+        print("UDB_EXTRA_F2_B")
+    if(m.get_type() == "GLOBAL_POSITION_INT"):
+        print("GLOBAL_POSITION_INT")
     if output:
         timestamp = getattr(m, '_timestamp', None)
         if timestamp:
@@ -56,8 +62,12 @@ while True:
     if opts.notimestamps:
         print("%s" % m)
     else:
-        print("%s.%02u: %s" % (
-            time.strftime("%Y-%m-%d %H:%M:%S",
-                          time.localtime(m._timestamp)),
-            int(m._timestamp*100.0)%100, m))
+        timestamp = getattr(m, '_timestamp', None)
+        try:
+            print("%s.%02u: %s" % (
+                time.strftime("%Y-%m-%d %H:%M:%S",
+                              time.localtime(timestamp)),
+                int(timestamp*100.0)%100, m))
+        except:
+            pass
         

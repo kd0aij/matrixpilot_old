@@ -49,6 +49,12 @@ fractional aspd_pitch_adj		= 0;
 // Remember last adjustment to limit rate of adjustment.
 fractional last_aspd_pitch_adj	= 0;
 
+// Integral of airspeed error
+// lower word is underflow.  Upper word is output in degrees.
+union longww airspeed_integration = {0};
+int airspeed_pitch_ki_limit	= (AIRSPEED_PITCH_KI_MAX*(RMAX/57.3));
+fractional airspeed_pitch_ki = (AIRSPEED_PITCH_KI * RMAX);
+
 int airspeed_pitch_min_aspd = (AIRSPEED_PITCH_MIN_ASPD*(RMAX/57.3));
 int airspeed_pitch_max_aspd = (AIRSPEED_PITCH_MAX_ASPD*(RMAX/57.3));
 
@@ -103,6 +109,13 @@ void calc_target_airspeed(void)
 	//Some airspeed error filtering
 	airspeedError = airspeedError >> 1;
 	airspeedError += ( (target_airspeed - airspeed) >> 1);
+
+	airspeed_integration.WW += __builtin_mulss( airspeed_pitch_ki, airspeedError ) << 2;
+
+	if(airspeed_integration._.W1 > airspeed_pitch_ki_limit)
+		airspeed_integration._.W1 = airspeed_pitch_ki_limit;
+	else if(airspeed_integration._.W1 < -airspeed_pitch_ki_limit)
+		airspeed_integration._.W1 = -airspeed_pitch_ki_limit;
 }
 
 //Calculate pitch target adjustment for target airspeed
@@ -161,10 +174,13 @@ void airspeed_pitch_adjust(void)
 	accum.WW = __builtin_mulss( accum._.W1, pitch_range ) << 2;
 	aspd_pitch_adj = accum._.W1;
 
+	aspd_pitch_adj -= airspeed_integration._.W1;
+
 	// Pitch adjust for airspeed on glide only.
 	if(throttle_control >= 100)
 	{
 		aspd_pitch_adj = 0;
+		airspeed_integration.WW = 0;
 	}
 
 	// limit the rate of the airspeed pitch adjustment
