@@ -37,9 +37,6 @@ volatile int osc_fail_count __attribute__ ((persistent)) ;
 union intbb voltage_milis = {0} ;
 union intbb voltage_temp ;
 
-volatile int trap_flags __attribute__ ((persistent));
-volatile long trap_source __attribute__ ((persistent));
-volatile int osc_fail_count __attribute__ ((persistent));
 void sio_newMsg(unsigned char);
 void sio_voltage_low( unsigned char inchar ) ;
 void sio_voltage_high( unsigned char inchar ) ;
@@ -69,9 +66,9 @@ void init_serial()
 	dcm_flags._.nmea_passthrough = 1;
 #endif
 	
-	udb_serial_set_rate(19200) ;
+//	udb_serial_set_rate(19200) ;
 //	udb_serial_set_rate(38400) ;
-//	udb_serial_set_rate(57600) ;
+	udb_serial_set_rate(57600) ;
 //	udb_serial_set_rate(115200) ;
 //	udb_serial_set_rate(230400) ;
 //	udb_serial_set_rate(460800) ;

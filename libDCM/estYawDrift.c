@@ -30,7 +30,7 @@
 
 
 #if (MAG_YAW_DRIFT == 1)
-void udb_magnetometer_callback_data_available( void )
+void udb_magnetometer_callback(void)
 {
 	dcm_flags._.mag_drift_req = 1 ;
 	return ;

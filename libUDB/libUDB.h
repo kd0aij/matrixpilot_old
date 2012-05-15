@@ -176,6 +176,7 @@ extern unsigned char rc_signal_strength;	// rc_signal_strength is 0-100 as perce
 // holding the UDB very still.
 void udb_a2d_record_offsets(void);
 void udb_callback_read_sensors(void);		// Callback
+void udb_read_gyro_accel_restart(void);		// this needs a better name.
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,9 +187,9 @@ void udb_callback_read_sensors(void);		// Callback
 extern fractional udb_magFieldBody[3];
 extern fractional udb_magOffset[3];
 
-// Implement thiis callback to make use of the magetometer data.  This is called each
+// Implement this callback to make use of the magetometer data.  This is called each
 // time the magnetometer reports new data.
-void udb_magnetometer_callback_data_available(void);	// Callback
+//void udb_magnetometer_callback(void);
 
 ////////////////////////////////////////////////////////////////////////////////
 // LEDs

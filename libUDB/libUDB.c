@@ -21,6 +21,19 @@
 
 #include "libUDB_internal.h"
 
+#ifdef USE_DEBUG_IO
+//#include "debug.h"
+#include "uart1.h"
+#endif
+
+void testproc_loop(void);
+void testproc_init(void);
+
+
+#ifdef USE_FREERTOS
+#include "FreeRTOS.h"
+#endif
+
 #if (BOARD_IS_CLASSIC_UDB)
 #if ( CLOCK_CONFIG == CRYSTAL_CLOCK )
 _FOSC( CSW_FSCM_OFF & HS ) ;		// external high speed crystal
@@ -137,7 +150,12 @@ void udb_init(void)
 	udb_init_I2C() ;
 #endif
 	
+#ifdef USE_DEBUG_IO
+//	udb_init_debug_io() ;
+	uart1_init();
+#else	
 	udb_init_GPS() ;
+#endif
 	udb_init_USART() ;
 	udb_init_pwm() ;
 	
@@ -146,6 +164,8 @@ void udb_init(void)
 #endif
 	
 	SRbits.IPL = 0 ;	// turn on all interrupt priorities
+	
+	testproc_init();
 	
 	return ;
 }
@@ -158,6 +178,9 @@ void udb_run(void)
 	{
 		// pause cpu counting timer while not in an ISR
 		indicate_loading_main ;
+#ifdef USE_DEBUG_IO
+		testproc_loop();
+#endif
 	}
 	// Never returns
 }
