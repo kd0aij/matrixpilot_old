@@ -20,6 +20,7 @@
 
 
 #include "libDCM_internal.h"
+#include "deadReckoning.h"
 
 #define DR_PERIOD (int)((40/GPS_RATE)+4 )
 
@@ -60,7 +61,7 @@ fractional locationErrorEarth[] = { 0 , 0 , 0 } ;
 //	GPSvelocity - IMUvelocity
 fractional velocityErrorEarth[] = { 0 , 0 , 0 } ;
 
-extern int errorYawground[] ;
+fractional errorYawground[] = { 0 , 0 , 0 } ;
 
 void dead_reckon(void)
 {
@@ -163,5 +164,3 @@ void dead_reckon(void)
 	
 	return ;
 }
-
-

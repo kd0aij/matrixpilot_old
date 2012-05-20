@@ -19,25 +19,20 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
+#include "libDCM.h"
+#include "../libUDB/barometer.h"
+#include "estAltitude.h"
+#include <stdio.h>
 
 //	The origin is recorded as the altitude of the plane during power up of the control.
 
 
-//#if (MAG_YAW_DRIFT == 1)
-//void udb_magnetometer_callback_data_available( void )
-//{
-//	dcm_flags._.mag_drift_req = 1 ;
-//	return ;
-//}
-//#endif
-
 #if (BAROMETER_ALTITUDE == 1)
-void udb_barometer_callback_data(long pressure, int temperature, char status)
+void udb_barometer_callback(long pressure, int temperature, char status)
 {
 	const float ground_altitude = 308.0;	// altitude at valley heights - this needs to be somehow set by the user - TODO
 //	const float p0 = 101325;     // Pressure at sea level (Pa)  -- standard
-	const float p0 = 101660;     // Pressure at sea level (Pa)  -- currently according to BMCC weather station
+//	const float p0 = 101660;     // Pressure at sea level (Pa)  -- currently according to BMCC weather station
 	float altitude;
 	float sea_level_pressure;
 
@@ -47,6 +42,7 @@ void udb_barometer_callback_data(long pressure, int temperature, char status)
  	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm for testing
 
 //	printf( "T = %.1f C, P = %.2f mB, A = %.2f m\r\n", (double)temperature / 10.0, (double)pressure / 100.0, (double)altitude);
+	printf( "barom %.1f, %.2f, %.2f, slp %.2f\r\n", (double)temperature / 10.0, (double)pressure / 100.0, (double)altitude, (double)sea_level_pressure / 100.0);
 }
 #endif
 

@@ -155,6 +155,12 @@ void udb_init_clock(void)	/* initialize timers */
 	return ;
 }
 
+#ifdef USE_DEBUG_IO
+//extern int trigger_one_hertz;
+//extern int trigger_forty_hertz;
+int trigger_one_hertz;
+int trigger_forty_hertz;
+#endif
 
 // This high priority interrupt is the Heartbeat of libUDB.
 void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void) 
@@ -174,7 +180,16 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void)
 		cpu_timer = _cpu_timer ;// snapshot the load counter
 		_cpu_timer = 0 ; 		// reset the load counter
 		T5CONbits.TON = 1 ;		// turn on timer 5
+
+#ifdef USE_DEBUG_IO
+		trigger_one_hertz = 1;
+#endif
+
 	}
+
+#ifdef USE_DEBUG_IO
+	trigger_forty_hertz = 1;
+#endif
 	
 	// Call the periodic callback at 2Hz
 	if (udb_heartbeat_counter % 20 == 0)
@@ -241,6 +256,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T5Interrupt(void)
 	return ;
 }
 
+void udb_read_gyro_accel_restart(void) // this needs a better name.
+{
+	udb_flags._.a2d_read = 1 ; // signal the A/D to start the next summation
+}
 
 //	Executes whatever lower priority calculation needs to be done every 25 milliseconds.
 //	This is a good place to eventually compute pulse widths for servos.
@@ -283,10 +302,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 #endif
 	
 	calculate_analog_sensor_values() ;
-	udb_callback_read_sensors() ;
-	udb_flags._.a2d_read = 1 ; // signal the A/D to start the next summation
-	
-	udb_servo_callback_prepare_outputs() ;
+//	udb_callback_read_sensors() ;
+//	udb_read_gyro_accel_restart();		
+//	udb_servo_callback_prepare_outputs() ;
+	udb_callback_40hertz();
 
 #if(USE_I2C1_DRIVER == 1)
 	I2C1_trigger_service();

@@ -21,6 +21,7 @@
 
 #include "libUDB_internal.h"
 #include "I2C.h"
+#include "barometer.h"
 
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == MADRE_BOARD)
 
@@ -72,7 +73,7 @@ static const unsigned char bmp085write_index[]   = { 0xF4 } ;	// Address of the 
 
 static unsigned char barData[3];
 
-static int barMessage = 0 ; 			// message type
+static int barMessage = 0 ; 			// message type, state machine counter
 static int barCalibPause = 0 ;
 
 void ReadBarTemp_callback( boolean I2CtrxOK );
@@ -92,8 +93,12 @@ void ReadBarCalib_callback( boolean I2CtrxOK );
 #endif
 
 
-void rxBarometer(void)  		// service the barometer
+barometer_callback_funcptr barometer_callback = NULL;
+
+void rxBarometer(barometer_callback_funcptr callback)  // service the barometer
 {
+	barometer_callback = callback;
+
 	if ( I2C_Normal() == false ) 	// if I2C is not ok
 	{
 		barMessage = 0 ; 			// start over again
@@ -284,7 +289,9 @@ void ReadBarPres_callback( boolean I2CtrxOK )
 		pressure = 23843;
 #endif
 		pressure = bmp085CalcPressure(pressure);
-		udb_barometer_callback_data(pressure, ((b5 + 8) >> 4), 0);		// Callback
+		if (barometer_callback != NULL) {
+			barometer_callback(pressure, ((b5 + 8) >> 4), 0);		// Callback
+		}
 	}
 	else
 	{

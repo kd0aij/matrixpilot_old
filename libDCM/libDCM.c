@@ -19,39 +19,23 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
+//#include "libDCM_internal.h"
+#include "libDCM.h"
+#include "gpsParseCommon.h"
+#include "mathlibNAV.h"
+#include "../libUDB/magnetometer.h"
+#include "../libUDB/barometer.h"
+#include "estAltitude.h"
+#include "estYawDrift.h"
+#include "HILSIM.h"
+#include "rmat.h"
+
 
 union dcm_fbts_word dcm_flags ;
 
 // Calibrate for 10 seconds before moving servos
 #define CALIB_COUNT		  400		// 10 seconds at 40 Hz
 #define GPS_COUNT		 1000		// 25 seconds at 40 Hz
-
-
-#if ( HILSIM == 1 )
-#if ( USE_VARIABLE_HILSIM_CHANNELS != 1 )
-unsigned char SIMservoOutputs[] = {	0xFF, 0xEE,		//sync
-									0x03, 0x04,		//S1
-									0x05, 0x06,		//S2
-									0x07, 0x08,		//S3
-									0x09, 0x0A,		//S4
-									0x0B, 0x0C,		//S5
-									0x0D, 0x0E,		//S6
-									0x0F, 0x10,		//S7
-									0x11, 0x12,		//S8
-									0x13, 0x14		//checksum
-									};
- #define HILSIM_NUM_SERVOS 8
-#else
-#define HILSIM_NUM_SERVOS NUM_OUTPUTS
-unsigned char SIMservoOutputs[(NUM_OUTPUTS*2) + 5] = {	0xFE, 0xEF,		//sync
-														0x00			// output count
-																		// Two checksum on the end
-														};
-#endif	// USE_VARIABLE_HILSIM_CHANNELS
-
-void send_HILSIM_outputs( void ) ;
-#endif // HILSIM
 
 
 void dcm_init( void )
@@ -88,25 +72,52 @@ void dcm_run_init_step( void )
 }
 
 
-void udb_callback_read_sensors(void)
+void read_sensors(void)
 {
 	read_gyros() ; // record the average values for both DCM and for offset measurements
 	read_accel() ;
+	udb_read_gyro_accel_restart();
 	
 	return ;
 }
 
-
-// Called at 40Hz
-void udb_servo_callback_prepare_outputs(void)
+void do_I2C_stuff(void) // currently called at 40Hz
 {
+	static int toggle = 0;
+	static int counter = 0;
+
+	if (toggle) {
+		if (counter++ > 0) {
 #if (MAG_YAW_DRIFT == 1)
-	// This is a simple counter to do stuff at 4hz
-	if ( udb_heartbeat_counter % 10 == 0 )
-	{
-		rxMagnetometer() ;
-	}
+			rxMagnetometer(udb_magnetometer_callback);
 #endif
+			counter = 0;
+			toggle = 0;
+		}
+	} else {
+#if (BAROMETER_ALTITUDE == 1)
+		rxBarometer(udb_barometer_callback);
+#endif
+		if (counter++ > 6) {
+			counter = 0;
+			toggle = 1;
+		}
+	}
+}
+
+void udb_callback_40hertz(void)
+{
+	read_sensors();
+
+	do_I2C_stuff();
+
+//#if (MAG_YAW_DRIFT == 1)
+//	// This is a simple counter to do stuff at 4hz
+//	if ( udb_heartbeat_counter % 10 == 0 )
+//	{
+//		rxMagnetometer() ;
+//	}
+//#endif
 		
 	if (dcm_flags._.calib_finished) {
 		dcm_run_imu_step() ;
@@ -119,9 +130,7 @@ void udb_servo_callback_prepare_outputs(void)
 		dcm_run_init_step() ;
 	}
 	
-#if ( HILSIM == 1)
-	send_HILSIM_outputs() ;
-#endif
+	HILSIM_send_outputs() ;
 	
 	return ;
 }
@@ -149,7 +158,8 @@ void dcm_set_origin_location(long o_long, long o_lat, long o_alt)
 	
 	//	scale the latitude from GPS units to gentleNAV units
 	accum_nav.WW = __builtin_mulss( LONGDEG_2_BYTECIR , lat_origin._.W1 ) ;
-	lat_cir = accum_nav.__.B2 ;
+
+	unsigned char  	lat_cir ;	lat_cir = accum_nav.__.B2 ;
 	//	estimate the cosine of the latitude, which is used later computing desired course
 	cos_lat = cosine ( lat_cir ) ;
 	
@@ -172,63 +182,3 @@ struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute)
 	
 	return rel ;
 }
-
-
-#if ( HILSIM == 1 )
-
-void send_HILSIM_outputs( void )
-{
-	// Setup outputs for HILSIM
-	int i ;
-	unsigned char CK_A = 0 ;
-	unsigned char CK_B = 0 ;
-	union intbb TempBB ;
-	
-#if(USE_VARIABLE_HILSIM_CHANNELS != 1)
-	for (i=1; i<=NUM_OUTPUTS; i++)
-	{
-		TempBB.BB = udb_pwOut[i] ;
-		SIMservoOutputs[2*i] = TempBB._.B1 ;
-		SIMservoOutputs[(2*i)+1] = TempBB._.B0 ;
-	}
-
-	for (i=2; i<HILSIM_NUM_SERVOS*2+2; i++)
-	{
-		CK_A += SIMservoOutputs[i] ;
-		CK_B += CK_A ;
-	}
-	SIMservoOutputs[i] = CK_A ;
-	SIMservoOutputs[i+1] = CK_B ;
-	
-	// Send HILSIM outputs
-	gpsoutbin(HILSIM_NUM_SERVOS*2+4, SIMservoOutputs) ;	
-
-#else
-	for (i=1; i<=NUM_OUTPUTS; i++)
-	{
-		TempBB.BB = udb_pwOut[i] ;
-		SIMservoOutputs[(2*i)+1] = TempBB._.B1 ;
-		SIMservoOutputs[(2*i)+2] = TempBB._.B0 ;
-	}
-
-	SIMservoOutputs[2] = NUM_OUTPUTS;
-
-	// Calcualte checksum
-	for (i=3; i<(NUM_OUTPUTS*2)+3; i++)
-	{
-		CK_A += SIMservoOutputs[i] ;
-		CK_B += CK_A ;
-	}
-	SIMservoOutputs[i] = CK_A ;
-	SIMservoOutputs[i+1] = CK_B ;
-	
-	// Send HILSIM outputs
-	gpsoutbin((HILSIM_NUM_SERVOS*2)+5, SIMservoOutputs) ;	
-
-#endif	//USE_VARIABLE_HILSIM_CHANNELS
-	
-	
-	return ;
-}
-
-#endif
