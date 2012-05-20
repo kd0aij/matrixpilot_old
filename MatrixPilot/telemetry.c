@@ -22,12 +22,12 @@
 #include "defines.h"
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM values
 
+#if (SERIAL_OUTPUT_FORMAT != SERIAL_MAVLINK) // All MAVLink telemetry code is in MAVLink.c
+
 //Note:  The trap flags need to be moved out of telemetry.c and mavlink.c
 volatile int trap_flags __attribute__ ((persistent));
 volatile long trap_source __attribute__ ((persistent));
 volatile int osc_fail_count __attribute__ ((persistent));
-
-#if (SERIAL_OUTPUT_FORMAT != SERIAL_MAVLINK) // All MAVLink telemetry code is in MAVLink.c
 
 #define _ADDED_C_LIB 1 // Needed to get vsnprintf()
 #include <stdio.h>
@@ -642,18 +642,17 @@ extern union longww HHIntegral ;
 
 #define OFFSETSHIFT 1
 
+extern int I2ERROR ;
 extern int I2messages ;
 extern int I2interrupts ;
 
 #if ( BOARD_TYPE == UDB4_BOARD )
 #define I2CCONREG I2C2CON
 #define I2CSTATREG I2C2STAT
-extern int I2C2ERROR;
 #define I2ERROR I2C2ERROR
 #else
 #define I2CCONREG I2CCON
 #define I2CSTATREG I2CSTAT
-extern int I2ERROR ;
 #endif
 /*
 void serial_output_8hz( void )

@@ -140,7 +140,7 @@
 // Otherwise, if set to 0 the GPS will be used.
 // If you select this option, you also need to set magnetometer options in
 // the magnetometerOptions.h file, including declination and magnetometer type.
-#define MAG_YAW_DRIFT 						1
+#define MAG_YAW_DRIFT 						0
 
 // Define BAROMETER_ALTITUDE to be 1 to use barometer for altitude correction.
 // Otherwise, if set to 0 only the GPS will be used.
@@ -329,8 +329,9 @@
 // SERIAL_MAVLINK is only supported on the UDB4 to ensure that sufficient RAM is available.
 // Note that SERIAL_MAVLINK defaults to using a baud rate of 57600 baud (other formats default to 19200)
 
+#define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
 //#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAVLINK
-#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAGNETOMETER
+//#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAGNETOMETER
 //#define SERIAL_OUTPUT_FORMAT 	SERIAL_UDB_EXTRA
 
 // MAVLink requires an aircraft Identifier (I.D) as it is deaigned to control multiple aircraft
