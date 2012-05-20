@@ -83,6 +83,25 @@ unsigned char* pI2C1commandBuffer = NULL;	// pointer to receive  buffer
 unsigned int I2C1_service_handle = INVALID_HANDLE;
 
 
+// Determine if the bus is normal
+boolean I2C1_Normal(void)
+{
+	if ( _I2C1EN == 0 ) { // I2C is off
+		I2C1_init();
+	}
+	if (I2C1_NORMAL) {
+		return true;
+	} else {
+		I2C1ERROR = I2C1STAT;
+		return false;
+	}
+}
+
+// Reset the bus
+void I2C1_reset(void)
+{
+    return ;
+}
 
 void I2C1_init(void)
 {
@@ -105,7 +124,7 @@ void I2C1_init(void)
 void I2C1_trigger_service(void)
 {
 	trigger_event(I2C1_service_handle);
-};
+}
 
 
 void serviceI2C1(void)  // service the I2C

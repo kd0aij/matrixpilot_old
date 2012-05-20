@@ -114,9 +114,13 @@ void I2C2_reset(void)
     _I2C2EN = 0 ;                   // turn off the I2C
     _MI2C2IF = 0 ;                  // clear the I2C master interrupt
     _MI2C2IE = 0 ;                  // disable the interrupt
-    I2C2_SCL = I2C2_SDA = 0 ;       // pull SDA and SCL low
+//    I2C2_SCL = I2C2_SDA = 0 ;       // pull SDA and SCL low
+	I2C2_SDA = 0 ;       // pull SDA and SCL low
+    I2C2_SCL = 0;
     Nop();
-    I2C2_SCL = I2C2_SDA = 1 ;       // pull SDA and SCL high
+//    I2C2_SCL = I2C2_SDA = 1 ;       // pull SDA and SCL high
+	I2C2_SDA = 1 ;       // pull SDA and SCL high
+    I2C2_SCL = 1;
 
     I2C2_init() ;                   // enable the bus again
     return ;
@@ -125,7 +129,7 @@ void I2C2_reset(void)
 
 void I2C2_init(void)
 {
-	I2C2_SDA_TRIS = I2C2_SCL_TRIS = 0 ;		// SDA and SCL as outputs
+//	I2C2_SDA_TRIS = I2C2_SCL_TRIS = 0 ;		// SDA and SCL as outputs
 	I2C2BRG = I2C2BRGVAL ; 
 	_I2C2EN = 1 ; 	 		// enable I2C2		
 

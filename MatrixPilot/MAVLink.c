@@ -34,6 +34,7 @@
 #include <string.h>
 #include "defines.h"
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM value
+#include "../libDCM/estAltitude.h"
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK  )
 
@@ -791,7 +792,6 @@ void handleMessage(mavlink_message_t* msg)
 
 			break;
 	    } 
-
 	    case MAVLINK_MSG_ID_COMMAND_LONG:
 		{
 	        mavlink_command_long_t packet;
@@ -802,6 +802,18 @@ void handleMessage(mavlink_message_t* msg)
     		send_text( (unsigned char*) "\r\n");
 			switch(packet.command)
 			{
+/*
+               <entry value="241" name="MAV_CMD_PREFLIGHT_CALIBRATION">
+                    <description>Trigger calibration. This command will be only accepted if in pre-flight mode.</description>
+                    <param index="1">Gyro calibration: 0: no, 1: yes</param>
+                    <param index="2">Magnetometer calibration: 0: no, 1: yes</param>
+                    <param index="3">Ground pressure: 0: no, 1: yes</param>
+                    <param index="4">Radio calibration: 0: no, 1: yes</param>
+                    <param index="5">Empty</param>
+                    <param index="6">Empty</param>
+                    <param index="7">Empty</param>
+               </entry>
+ */
 			case MAV_CMD_PREFLIGHT_CALIBRATION:
 				if(packet.param1 == 1)
 				{
@@ -810,6 +822,10 @@ void handleMessage(mavlink_message_t* msg)
 #endif
 					udb_a2d_record_offsets();
 				} 
+				else if(packet.param3 == 1)	//param3 = Ground pressure
+				{
+					command_ack(packet.command, MAV_CMD_ACK_OK);
+				}
 				else if(packet.param4 == 1)	//param4 = radio calibration
 				{
 					if(udb_flags._.radio_on == 1)
@@ -1678,6 +1694,34 @@ void mavlink_output_40hz( void )
 				(uint16_t) (udb_pwOut[8]>>1),
 			 	(uint8_t) 0,	// port number for more than 8 servos
 			 	(uint8_t) 0); // last item, RSSI currently not measured on UDB.
+	}
+
+	// RAW SENSORS - BAROMETER
+
+//
+// static inline void mavlink_msg_scaled_pressure_send(mavlink_channel_t chan, uint32_t time_boot_ms, float press_abs, float press_diff, int16_t temperature)
+//
+
+
+// static inline void mavlink_msg_raw_pressure_send(mavlink_channel_t chan, uint64_t time_usec, 
+//  int16_t press_abs, int16_t press_diff1, int16_t press_diff2, int16_t temperature)
+
+	spread_transmission_load = 27 ;
+	if (mavlink_frequency_send( streamRateRawSensors , mavlink_counter_40hz + spread_transmission_load))
+	{ 				
+//static inline long get_barometer_pressure(void);
+//static inline int get_barometer_temperature(void);
+		int16_t press_abs;
+		int16_t press_diff1;
+		int16_t press_diff2;
+		int16_t temperature;
+
+		press_abs = get_barometer_pressure();
+		temperature = get_barometer_temperature();
+
+		mavlink_msg_raw_pressure_send(MAVLINK_COMM_0, usec,
+					press_abs, press_diff1, press_diff2, temperature);
+
 	}
 
 	// RAW SENSORS - ACCELOREMETERS and GYROS
