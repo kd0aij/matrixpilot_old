@@ -20,6 +20,10 @@
 
 
 #include "libDCM_internal.h"
+#include "estAltitude.h"
+#include "estYawDrift.h"
+#include "estWind.h"
+#include "gpsParseCommon.h"
 #include <string.h>
 
 

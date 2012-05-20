@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "mode_switch.h"
+#include "..\libDCM\estAltitude.h"
 
 union fbts_int flags ;
 int waggle = 0 ;
@@ -109,6 +110,8 @@ void ent_acquiringS()
 #endif
 	dcm_calibrate() ;
 	
+	altimeter_calibrate() ;
+
 	waggle = WAGGLE_SIZE ;
 	throttleFiltered._.W1 = 0 ;
 	stateS = &acquiringS ;

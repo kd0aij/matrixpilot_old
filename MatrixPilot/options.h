@@ -32,6 +32,12 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Support for console debug messages sent to the GPS serial port.
+//   makes stdio printf work using HILSIM connection cable.
+#define USE_DEBUG_IO						1
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
 // GREEN_BOARD - Board is green and includes 2 vertical gyro daugter-boards.
 // RED_BOARD   - Board is red, and includes 2 vertical gyro daugter-boards.

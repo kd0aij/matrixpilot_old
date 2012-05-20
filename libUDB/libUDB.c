@@ -22,7 +22,6 @@
 #include "libUDB_internal.h"
 
 #ifdef USE_DEBUG_IO
-//#include "debug.h"
 #include "uart1.h"
 #endif
 
@@ -144,10 +143,8 @@ void udb_init(void)
 #endif
 	
 #ifdef USE_DEBUG_IO
-//	udb_init_debug_io() ;
 	uart1_init();
-#else
-	
+#else	
 	udb_init_GPS() ;
 #endif
 	udb_init_USART() ;

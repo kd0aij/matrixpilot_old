@@ -18,8 +18,6 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-#define USE_DEBUG_IO
-
 #include "libUDB.h"
 
 extern int failSafePulses ;

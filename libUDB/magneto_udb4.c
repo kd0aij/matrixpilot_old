@@ -173,7 +173,6 @@ static void I2C_doneReadMagData( boolean I2CtrxOK )
 				 ( abs(udb_magFieldBody[1]) < MAGNETICMAXIMUM ) &&
 				 ( abs(udb_magFieldBody[2]) < MAGNETICMAXIMUM ) )
 			{
-				//udb_magnetometer_callback_data_available();
 				if (magnetometer_callback != NULL) {
 					magnetometer_callback();		// Callback
 				}

@@ -20,6 +20,8 @@
 
 
 #include "libDCM_internal.h"
+#include "../libUDB/magnetometer.h"
+#include "gpsParseCommon.h"
 #include "estYawDrift.h"
 #include <stdio.h>
 
@@ -36,7 +38,9 @@ void udb_magnetometer_callback(void)
 {
 	dcm_flags._.mag_drift_req = 1 ;
 
+#ifdef USE_DEBUG_IO
 	printf("magno %u %u %u\r\n", udb_magFieldBody[0], udb_magFieldBody[1], udb_magFieldBody[2]);
+#endif
 
 	return ;
 }

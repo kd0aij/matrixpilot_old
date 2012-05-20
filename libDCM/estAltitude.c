@@ -26,11 +26,26 @@
 
 //	The origin is recorded as the altitude of the plane during power up of the control.
 
+long barometer_pressure_gnd = 0;
+int barometer_temperature_gnd = 0;
+
+long barometer_altitude;
 long barometer_pressure;
 int barometer_temperature;
 
+inline long get_barometer_altitude(void) { return barometer_altitude; }
 inline long get_barometer_pressure(void) { return barometer_pressure; }
 inline int get_barometer_temperature(void) { return barometer_temperature; }
+
+void altimeter_calibrate(void)
+{
+	barometer_pressure_gnd = barometer_pressure;
+	barometer_temperature_gnd = barometer_temperature;
+
+#ifdef USE_DEBUG_IO
+	printf( "altimeter_calibrate: ground temp & pres set %.1f, %.2f, %.2f, slp %.2f\r\n", (double)barometer_temperature_gnd / 10.0, (double)barometer_pressure_gnd / 100.0);
+#endif
+}
 
 #if (BAROMETER_ALTITUDE == 1)
 void udb_barometer_callback(long pressure, int temperature, char status)
@@ -49,8 +64,10 @@ void udb_barometer_callback(long pressure, int temperature, char status)
 // 	altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
  	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm for testing
 
+#ifdef USE_DEBUG_IO
 //	printf( "T = %.1f C, P = %.2f mB, A = %.2f m\r\n", (double)temperature / 10.0, (double)pressure / 100.0, (double)altitude);
 	printf( "barom %.1f, %.2f, %.2f, slp %.2f\r\n", (double)temperature / 10.0, (double)pressure / 100.0, (double)altitude, (double)sea_level_pressure / 100.0);
+#endif
 
 // MAVLINK_MESSAGE_INFO_SCALED_PRESSURE
 /*
@@ -74,11 +91,14 @@ typedef struct __mavlink_scaled_pressure_t
 #endif
 
 
-//extern signed char actual_altitude;
-//extern signed char calculated_altitude;
-
 void estAltitude(void)
 {
+ 	barometer_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/barometer_pressure_gnd), 0.190295));
+
+// This will never work as the very GPS update that calls this uses the debug_io serial port...
+//#ifdef USE_DEBUG_IO
+//	printf( "estAltitude %.2f\r\n", (double)barometer_altitude);
+//#endif
 	return ;
 }
 

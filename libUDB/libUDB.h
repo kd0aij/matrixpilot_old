@@ -179,27 +179,6 @@ void udb_callback_read_sensors(void);		// Callback
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Magnetometer
-
-// If the magnetometer is connected and enabled, these will be the raw values, and the
-// calibration offsets.
-extern fractional udb_magFieldBody[3];
-extern fractional udb_magOffset[3];
-
-// Implement this callback to make use of the magetometer data.  This is called each
-// time the magnetometer reports new data.
-void udb_magnetometer_callback_data_available(void);	// Callback
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Barometer
-
-// Implement this callback to make use of the barometer data.  This is called each
-// time the barometer reports new data.
-void udb_barometer_callback_data(long pressure, int temperature, char status);
-
-
-////////////////////////////////////////////////////////////////////////////////
 // LEDs
 // Use this to toggle an LED.  Use the LED definition from the Config*.h files,
 // for example udb_led_toggle(LED_RED);
