@@ -158,14 +158,8 @@ void udb_init_clock(void)	/* initialize timers */
 extern int trigger_one_hertz;
 extern int trigger_forty_hertz;
 
-#ifdef USE_FREERTOS
-void T1Interrupt(void)
-#else
-
-
 // This high priority interrupt is the Heartbeat of libUDB.
 void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void) 
-#endif
 {
 	indicate_loading_inter ;
 	interrupt_save_set_corcon ;
