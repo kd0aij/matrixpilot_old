@@ -1,11 +1,12 @@
 #ifndef NV_MEMORY_OPTIONS_H
 #define NV_MEMORY_OPTIONS_H
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Use I2C port 1 drivers
 // Set to 1 to use and 0 to not include
 // WARNING: Use on UDB4+ only
-#define USE_I2C1_DRIVER					1
+#define USE_I2C1_DRIVER					0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +20,7 @@
 // Set to 1 to include non volatile memory service in compilation
 // WARNING: Use on UDB4+ only
 // WARNING: Can only be used with SERIAL_MAVLINK and USE_i2C1_DRIVER
-#define USE_NV_MEMORY					1
+#define USE_NV_MEMORY					0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,12 +42,7 @@
 // Use variable data width in HILSIM for output channels
 //  This is used to support NUM_OUTPUTS > 8
 // NOTE: Must have correct version of HILSIM to support this
-#define USE_VARIABLE_HILSIM_CHANNELS	1
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Use the I2C shared device driver on the second I2C port
-#define USE_I2C_SECOND_PORT_DRIVER		1
+#define USE_VARIABLE_HILSIM_CHANNELS	0
 
 #endif //NV_MEMORY_OPTIONS_H
 
