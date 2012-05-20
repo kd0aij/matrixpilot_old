@@ -4,12 +4,12 @@
 #define GAIN_VARIABLES_H
 
 
-#define GAINS_VARIABLE			0
+#define GAINS_VARIABLE			1
 
 // Variable altitude and airspeed
 // BEWARE: This uses an alternative library for altitude control
 // Your aircraft will not behave the same way as when using non variable gains. 
-#define ALTITUDE_GAINS_VARIABLE 0
+#define ALTITUDE_GAINS_VARIABLE 1
 // To use this option, you will need to add the following files to your project
 // airspeedCntrl.c/.h
 // altitudeCntrlVariable.c
