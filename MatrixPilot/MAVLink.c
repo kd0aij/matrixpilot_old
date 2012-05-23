@@ -1651,13 +1651,44 @@ void mavlink_output_40hz( void )
 		// mavlink_msg_attitude_send(mavlink_channel_t chan, uint32_t time_boot_ms, float roll, float pitch, float yaw, 
 		//	float rollspeed, float pitchspeed, float yawspeed)
 	}
+/*
+<field type="uint32_t" name="onboard_control_sensors_present" print_format="0x%04x">Bitmask showing which onboard controllers and sensors are present. 
+	Value of 0: not present. Value of 1: present. 
+Indices: 0: 
+		3D gyro, 1: 3D acc, 2: 3D mag, 3: absolute pressure, 4: differential pressure, 
+		5: GPS, 6: optical flow, 7: computer vision position, 8: laser based position, 9: external ground-truth (Vicon or Leica). 
+Controllers: 
+		10: 3D angular rate control 11: attitude stabilization, 12: yaw position, 13: z/altitude control, 
+		14: x/y position control, 15: motor outputs / control</field>
 
+<field type="uint32_t" name="onboard_control_sensors_enabled" print_format="0x%04x">Bitmask showing which onboard controllers and sensors are enabled:  
+	Value of 0: not enabled. Value of 1: enabled. 
+Indices: 0: 
+		3D gyro, 1: 3D acc, 2: 3D mag, 3: absolute pressure, 4: differential pressure, 
+		5: GPS, 6: optical flow, 7: computer vision position, 8: laser based position, 9: external ground-truth (Vicon or Leica). 
+Controllers: 
+		10: 3D angular rate control 11: attitude stabilization, 12: yaw position, 13: z/altitude control, 
+		14: x/y position control, 15: motor outputs / control</field>
+
+<field type="uint32_t" name="onboard_control_sensors_health" print_format="0x%04x">Bitmask showing which onboard controllers and sensors are operational or have an error:  
+	Value of 0: not enabled. Value of 1: enabled. 
+Indices: 0: 
+		3D gyro, 1: 3D acc, 2: 3D mag, 3: absolute pressure, 4: differential pressure, 
+		5: GPS, 6: optical flow, 7: computer vision position, 8: laser based position, 9: external ground-truth (Vicon or Leica). 
+Controllers: 
+		10: 3D angular rate control 11: attitude stabilization, 12: yaw position, 13: z/altitude control, 
+		14: x/y position control, 15: motor outputs / control</field>
+
+ */
 	// SYSTEM STATUS
 	spread_transmission_load = 18 ;
 	if (mavlink_frequency_send( 4, mavlink_counter_40hz + spread_transmission_load)) 
 	{
 		mavlink_msg_sys_status_send(MAVLINK_COMM_0,
-			0 , 0, 0, // Not currently sending information about sensors 
+				// Not currently sending information about sensors 
+			0,	// Onboard control sensors present bitfield
+			0,	// Onboard control sensors enabled bitfield
+			0,	// Onboard control sensors health bitfield
 		    udb_cpu_load() * 10, 
 			0,                   // Battery voltage in mV
 			0 ,                  // Current
@@ -1697,17 +1728,14 @@ void mavlink_output_40hz( void )
 	}
 
 	// RAW SENSORS - BAROMETER
-
 //
 // static inline void mavlink_msg_scaled_pressure_send(mavlink_channel_t chan, uint32_t time_boot_ms, float press_abs, float press_diff, int16_t temperature)
 //
-
-
 // static inline void mavlink_msg_raw_pressure_send(mavlink_channel_t chan, uint64_t time_usec, 
 //  int16_t press_abs, int16_t press_diff1, int16_t press_diff2, int16_t temperature)
-
+//
 	spread_transmission_load = 27 ;
-	if (mavlink_frequency_send( streamRateRawSensors , mavlink_counter_40hz + spread_transmission_load))
+	if (mavlink_frequency_send(MAVLINK_FREQ_PRESSURE_RAW, mavlink_counter_40hz + spread_transmission_load))
 	{ 				
 //static inline long get_barometer_pressure(void);
 //static inline int get_barometer_temperature(void);

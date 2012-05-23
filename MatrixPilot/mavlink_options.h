@@ -31,6 +31,7 @@
 #define 	MAVLINK_FREQ_HEARTBEAT		4
 #define 	MAVLINK_FREQ_GPS_RAW		0
 #define 	MAVLINK_FREQ_SUE			8	// SERIAL_UDB_EXTRA frequency
+#define 	MAVLINK_FREQ_PRESSURE_RAW	4
 
 #define 	MAVLINK_FRAME_FREQUENCY		40
 #define 	MAVLINK_WAYPOINT_TIMEOUT 	120 // Dependent on frequency of calling mavlink_output_40hz. 120 is 3 second timeout.

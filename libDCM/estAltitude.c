@@ -56,8 +56,8 @@ void udb_barometer_callback(long pressure, int temperature, char status)
 	float altitude;
 	float sea_level_pressure;
 
-	barometer_pressure = pressure;
-	barometer_temperature = temperature;
+	barometer_pressure = pressure / 100;
+	barometer_temperature = temperature / 10;
 
 	sea_level_pressure = ((float)pressure / powf((1 - (ground_altitude/44330.0)), 5.255));
 
@@ -93,7 +93,7 @@ typedef struct __mavlink_scaled_pressure_t
 
 void estAltitude(void)
 {
- 	barometer_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/barometer_pressure_gnd), 0.190295));
+	barometer_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/barometer_pressure_gnd), 0.190295));
 
 // This will never work as the very GPS update that calls this uses the debug_io serial port...
 //#ifdef USE_DEBUG_IO
