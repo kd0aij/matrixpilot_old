@@ -43,7 +43,7 @@ void altimeter_calibrate(void)
 	barometer_temperature_gnd = barometer_temperature;
 
 #ifdef USE_DEBUG_IO
-	printf( "altimeter_calibrate: ground temp & pres set %.1f, %.2f, %.2f, slp %.2f\r\n", (double)barometer_temperature_gnd / 10.0, (double)barometer_pressure_gnd / 100.0);
+	printf( "altimeter_calibrate: ground temp & pres set %.1f, %.2f\r\n", (double)barometer_temperature_gnd / 10.0, (double)barometer_pressure_gnd / 100.0);
 #endif
 }
 

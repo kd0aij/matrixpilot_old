@@ -39,6 +39,7 @@
 #include <string.h>
 #include "defines.h"
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM value
+#include "../libDCM/gpsParseCommon.h"
 #include "../libDCM/estAltitude.h"
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK  )

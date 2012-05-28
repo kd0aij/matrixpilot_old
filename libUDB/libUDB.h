@@ -68,7 +68,8 @@ void udb_run(void);
 ////////////////////////////////////////////////////////////////////////////////
 // Run Background Tasks
 
-// Implement this callback to perform periodic background tasks (high priority).
+void udb_callback_40hertz(void);
+// Implement this callback to perform periodic background tasks (high priority).
 // It is called once every 0.5 seconds, and must return quickly. (No printf!)
 void udb_background_callback_periodic(void);			// Callback
 
