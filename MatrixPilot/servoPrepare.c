@@ -72,6 +72,9 @@ void dcm_servo_callback_prepare_outputs(void)
 #if ( DEADRECKONING == 1 )
 		process_flightplan() ;
 #endif	
+#if(AIRSPEED_VARIABLE == 1)
+		calculateAirspeed();
+#endif
 		updateBehavior() ;
 		wind_gain = wind_gain_adjustment () ;
 		rollCntrl() ;

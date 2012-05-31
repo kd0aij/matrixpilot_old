@@ -55,10 +55,6 @@ int elevInput ;
 void normalPitchCntrl(void) ;
 void hoverPitchCntrl(void) ;
 
-#if(ALTITUDE_GAINS_VARIABLE == 1)
-void airspeedPitchAdjust(void);
-#endif
-
 void pitchCntrl(void)
 {
 	if ( canStabilizeHover() && desired_behavior._.hover )
@@ -132,13 +128,13 @@ void normalPitchCntrl(void)
 		rtlkick = 0 ;
 	}
 
-#if(AIRSPEED_PITCH_ADJUST == 1)
-	airspeed_pitch_adjust();
+#if(GLIDE_AIRSPEED_CONTROL == 1)
+	fractional aspd_pitch_adj = gliding_airspeed_pitch_adjust();
 #endif
 
 	if ( PITCH_STABILIZATION && flags._.pitch_feedback )
 	{
-#if(AIRSPEED_PITCH_ADJUST == 1)
+#if(GLIDE_AIRSPEED_CONTROL == 1)
 		pitchAccum.WW = __builtin_mulss( rmat7 - rtlkick + aspd_pitch_adj + pitchAltitudeAdjust, pitchgain ) 
 					  + __builtin_mulss( pitchkd , pitchrate ) ;
 #else

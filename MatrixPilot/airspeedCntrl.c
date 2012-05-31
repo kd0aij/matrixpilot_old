@@ -42,7 +42,9 @@
 	int airspeed_pitch_max_aspd = (AIRSPEED_PITCH_MAX_ASPD*(RMAX/57.3));
 #endif	//SERIAL_MAVLINK
 
+
 #else	//ALTITUDE_GAINS_VARIABLE == 1
+
 
 #include "airspeedCntrl.h"
 
@@ -58,14 +60,6 @@ int maximum_airspeed		= MAXIMUM_AIRSPEED * 100;
 int cruise_airspeed			= CRUISE_AIRSPEED * 100;
 
 int airspeed_pitch_adjust_rate	= (AIRSPEED_PITCH_ADJ_RATE*(RMAX/(57.3 * 40.0)));
-
-//fractional airspeed_adj_range	= AIRSPEED_ADJ_RANGE * RMAX;
-//#fractional airspeed_pitch_kp 	= AIRSPEED_PITCH_KP * RMAX;
-//#fractional airspeed_pitch_kd 	= AIRSPEED_PITCH_KD * RMAX;
-
-
-// output of pitch adjustment for airpeed
-fractional aspd_pitch_adj		= 0;
 
 // Remember last adjustment to limit rate of adjustment.
 fractional last_aspd_pitch_adj	= 0;
@@ -139,39 +133,17 @@ void calc_target_airspeed(void)
 		airspeed_integration._.W1 = -airspeed_pitch_ki_limit;
 }
 
-//Calculate pitch target adjustment for target airspeed
-void airspeed_pitch_adjust(void)
+//Calculate and return pitch target adjustment for target airspeed
+fractional airspeed_pitch_adjust(void)
 {
 	union longww accum ;
-
-	// Proportional feedback from airspeed to pitch
-//	aspd_err = airspeedError;
-//	if(aspd_err > airspeed_adj_range) aspd_err = airspeed_adj_range;
-//	if(aspd_err < -airspeed_adj_range) aspd_err = -airspeed_adj_range;
-//	// Divide by range
-//	pitchAccum.WW 	= 0;
-//	pitchAccum._.W1 = aspd_err;
-//	pitchAccum.WW >>= 2;
-//	aspd_err = __builtin_divsd( pitchAccum.WW ,  airspeed_adj_range );
-//
-//	// Differential feedback from airspeed to pitch
-//	aspd_diff = airspeedDelta << 1;
-//	if(aspd_diff > AIRSPEED_ACCEL_MAX) aspd_diff = AIRSPEED_ACCEL_MAX;
-//	if(aspd_diff < -AIRSPEED_ACCEL_MAX) aspd_diff = -AIRSPEED_ACCEL_MAX;
-//	// Divide by range
-//	pitchAccum.WW 	= 0;
-//	pitchAccum._.W1 = aspd_diff;
-//	pitchAccum.WW >>= 2;
-//	aspd_diff = __builtin_divsd( pitchAccum.WW ,  AIRSPEED_ACCEL_MAX );
-//
-//	aspd_diff = 0;
-
 
 	// linear interpolation between target airspeed and cruise airspeed.
 	// calculating demand airspeed to pitch feedforward
 	int aspd_tc_delta = target_airspeed - cruise_airspeed;
 	int aspd_tc_range;
 	int pitch_range = 0;
+	fractional aspd_pitch_adj = 0;
 	
 	if(aspd_tc_delta > 0)
 	{
@@ -217,6 +189,8 @@ void airspeed_pitch_adjust(void)
 	}
 
 	last_aspd_pitch_adj = aspd_pitch_adj;
+
+	return aspd_pitch_adj;
 }
 
 
