@@ -73,7 +73,9 @@ void dcm_servo_callback_prepare_outputs(void)
 		process_flightplan() ;
 #endif	
 #if(AIRSPEED_VARIABLE == 1)
-		calculateAirspeed();
+		calc_airspeed();
+		calc_groundspeed();
+		calc_target_airspeed();
 #endif
 		updateBehavior() ;
 		wind_gain = wind_gain_adjustment () ;

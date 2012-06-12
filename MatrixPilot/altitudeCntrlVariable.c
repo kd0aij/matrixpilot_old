@@ -215,10 +215,6 @@ void normalAltitudeCntrl(void)
 
 	int height_marginx8 = height_margin << 3;
 
-	calc_airspeed();
-	calc_groundspeed();
-	calc_target_airspeed();
-
 	speed_height = excess_energy_height(target_airspeed) ; // equivalent height of the airspeed
 	
 	if ( udb_flags._.radio_on == 1 )

@@ -31,7 +31,7 @@
 // Cruise airspeed may be below minimum airspeed for high drag aircraft.
 
 // Gliding airspeed control
-// Must use ALTITUDE_GAINS_VARIABLE=1 with this option.
+// Must use ALTITUDE_GAINS_VARIABLE=1 and AIRSPEED_VARIABLE=1 with this option.
 #define GLIDE_AIRSPEED_CONTROL 	1
 
 // Pitch feedforward for gliding airspeed

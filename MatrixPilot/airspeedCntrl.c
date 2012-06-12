@@ -134,7 +134,7 @@ void calc_target_airspeed(void)
 }
 
 //Calculate and return pitch target adjustment for target airspeed
-fractional airspeed_pitch_adjust(void)
+fractional gliding_airspeed_pitch_adjust(void)
 {
 	union longww accum ;
 
