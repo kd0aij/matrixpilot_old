@@ -47,7 +47,7 @@ void calc_target_airspeed(void);
 
 //Calculate and return pitch target adjustment for target airspeed
 // return value is in dcm scale angle 
-extern fractional airspeed_pitch_adjust(void);
+extern fractional gliding_airspeed_pitch_adjust(void);
 
 #endif
 
