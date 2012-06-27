@@ -20,8 +20,9 @@
 
 
 #include "defines.h"
+#include "airspeed_options.h"
 
-#if(ALTITUDE_GAINS_VARIABLE != 1)
+#if(AIRSPEED_VARIABLE != 1)
 
 // If mavlink is being used but the gains are not variable
 // implement the malink parameter variables for airspeed here
@@ -43,12 +44,12 @@
 #endif	//SERIAL_MAVLINK
 
 
-#else	//ALTITUDE_GAINS_VARIABLE == 1
+#else	//AIRSPEED_VARIABLE == 1
 
 
 #include "airspeedCntrl.h"
 
-extern int desiredSpeed;
+//extern int desiredSpeed;
 
 int 	airspeed		= 0;
 int 	groundspeed		= 0;
@@ -66,17 +67,30 @@ fractional last_aspd_pitch_adj	= 0;
 
 // Integral of airspeed error
 // lower word is underflow.  Upper word is output in degrees.
-union longww airspeed_integration = {0};
+union longww airspeed_error_integral = {0};
+
 int airspeed_pitch_ki_limit	= (AIRSPEED_PITCH_KI_MAX*(RMAX/57.3));
 fractional airspeed_pitch_ki = (AIRSPEED_PITCH_KI * RMAX);
 
 int airspeed_pitch_min_aspd = (AIRSPEED_PITCH_MIN_ASPD*(RMAX/57.3));
 int airspeed_pitch_max_aspd = (AIRSPEED_PITCH_MAX_ASPD*(RMAX/57.3));
 
+void airspeedCntrl(void)
+{
+#if(AIRSPEED_VARIABLE == 1)
+	airspeed 		= calc_airspeed();
+	groundspeed 	= calc_groundspeed();
+	target_airspeed = calc_target_airspeed(desiredSpeed);
+	airspeedError 	= calc_airspeed_error();
+ 	airspeed_error_integral.WW = calc_airspeed_int_error(airspeedError, airspeed_error_integral.WW);
+
+#endif
+}
+
 // Calculate the airspeed.
 // Note that this airspeed is a magnitude regardless of direction.
 // It is not a calculation of forward airspeed.
-void calc_airspeed(void)
+int calc_airspeed(void)
 {
 	int speed_component ;
 	long fwdaspd2;
@@ -91,47 +105,67 @@ void calc_airspeed(void)
 	fwdaspd2 += __builtin_mulss ( speed_component , speed_component ) ;
 
 	airspeed  = sqrt_long(fwdaspd2);
+
+	return airspeed;
 }
 
-// Calculate the groundspeed
-void calc_groundspeed(void) // computes (1/2gravity)*( actual_speed^2 - desired_speed^2 )
+// Calculate the groundspeed in cm/s
+int calc_groundspeed(void) // computes (1/2gravity)*( actual_speed^2 - desired_speed^2 )
 {
 	long gndspd2;
-
 	gndspd2 = __builtin_mulss ( IMUvelocityx._.W1 , IMUvelocityx._.W1 ) ;
 	gndspd2 += __builtin_mulss ( IMUvelocityy._.W1 , IMUvelocityy._.W1 ) ;
 	gndspd2 += __builtin_mulss ( IMUvelocityz._.W1 , IMUvelocityz._.W1 ) ;
 
-	groundspeed 	= sqrt_long(gndspd2);
+	return sqrt_long(gndspd2);
 }
 
 // Calculate the required airspeed in cm/s.  desiredSpeed is in dm/s
-void calc_target_airspeed(void)
+int calc_target_airspeed(int desiredSpd)
 {
 	union longww accum ;
-	accum.WW = __builtin_mulsu ( desiredSpeed , 10 ) ;
-	target_airspeed = accum._.W0 ;
+	int target;
+
+	accum.WW = __builtin_mulsu ( desiredSpd , 10 ) ;
+	target = accum._.W0 ;
 
 	if(groundspeed < minimum_groundspeed)
-		target_airspeed += (minimum_groundspeed - groundspeed);
+		target += (minimum_groundspeed - groundspeed);
 
-	if(target_airspeed > maximum_airspeed)
-		target_airspeed = maximum_airspeed;
+	if(target > maximum_airspeed)
+		target = maximum_airspeed;
 
-	if(target_airspeed < minimum_airspeed)
-		target_airspeed = minimum_airspeed;
+	if(target < minimum_airspeed)
+		target = minimum_airspeed;
 
+	return target;
+}
+
+
+// Calculate the airspeed error vs target airspeed including filtering
+int calc_airspeed_error(void)
+{
 	//Some airspeed error filtering
 	airspeedError = airspeedError >> 1;
 	airspeedError += ( (target_airspeed - airspeed) >> 1);
 
-	airspeed_integration.WW += __builtin_mulss( airspeed_pitch_ki, airspeedError ) << 2;
-
-	if(airspeed_integration._.W1 > airspeed_pitch_ki_limit)
-		airspeed_integration._.W1 = airspeed_pitch_ki_limit;
-	else if(airspeed_integration._.W1 < -airspeed_pitch_ki_limit)
-		airspeed_integration._.W1 = -airspeed_pitch_ki_limit;
+	return airspeedError;
 }
+
+// Calculate the airspeed error integral term with filtering and limits
+long calc_airspeed_int_error(int aspdError, long aspd_integral)
+{
+	union longww airspeed_int = {aspd_integral};
+	airspeed_int.WW += __builtin_mulss( airspeed_pitch_ki, airspeedError ) << 2;
+
+	if(airspeed_int._.W1 > airspeed_pitch_ki_limit)
+		airspeed_int._.W1 = airspeed_pitch_ki_limit;
+	else if(airspeed_int._.W1 < -airspeed_pitch_ki_limit)
+		airspeed_int._.W1 = -airspeed_pitch_ki_limit;
+
+	return airspeed_int.WW;
+}
+
 
 //Calculate and return pitch target adjustment for target airspeed
 fractional gliding_airspeed_pitch_adjust(void)
@@ -167,13 +201,13 @@ fractional gliding_airspeed_pitch_adjust(void)
 	accum.WW = __builtin_mulss( accum._.W1, pitch_range ) << 2;
 	aspd_pitch_adj = accum._.W1;
 
-	aspd_pitch_adj -= airspeed_integration._.W1;
+	aspd_pitch_adj -= airspeed_error_integral._.W1;
 
 	// Pitch adjust for airspeed on glide only.
 	if(throttle_control >= 100)
 	{
 		aspd_pitch_adj = 0;
-		airspeed_integration.WW = 0;
+		airspeed_error_integral.WW = 0;
 	}
 
 	// limit the rate of the airspeed pitch adjustment

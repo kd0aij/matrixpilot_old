@@ -29,7 +29,7 @@
 #define     MAVLINK_FREQ_ATTITUDE	 	4   // Be careful if you change this. Requested frequency may not be actual freq.
 #define 	MAVLINK_FREQ_GLOBAL_POS		4
 #define 	MAVLINK_FREQ_HEARTBEAT		2
-#define 	MAVLINK_FREQ_GPS_RAW		1
+#define 	MAVLINK_FREQ_GPS_RAW		2
 #define 	MAVLINK_FREQ_SUE			2	// SERIAL_UDB_EXTRA frequency, traditionally used at 8hz
 
 #define 	MAVLINK_FRAME_FREQUENCY		40

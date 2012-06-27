@@ -129,6 +129,9 @@ void normalPitchCntrl(void)
 	}
 
 #if(GLIDE_AIRSPEED_CONTROL == 1)
+#if(AIRSPEED_VARIABLE != 1)
+	#error("SET AIRSPEED_VARIABLE = 1")
+#endif
 	fractional aspd_pitch_adj = gliding_airspeed_pitch_adjust();
 #endif
 

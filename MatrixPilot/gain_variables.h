@@ -11,8 +11,6 @@
 // Your aircraft will not behave the same way as when using non variable gains. 
 #define ALTITUDE_GAINS_VARIABLE 1
 
-#define AIRSPEED_VARIABLE 1
-
 // Aileron/Roll Control Gains
 // ROLLKP is the proportional gain, approximately 0.25
 // ROLLKD is the derivative (gyro) gain, approximately 0.125

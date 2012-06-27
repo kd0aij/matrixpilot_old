@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "mode_switch.h"
+#include "airspeedCntrl.h"
 
 //	routines to drive the PWM pins for the servos,
 //	assumes the use of the 16MHz crystal.
@@ -72,11 +73,7 @@ void dcm_servo_callback_prepare_outputs(void)
 #if ( DEADRECKONING == 1 )
 		process_flightplan() ;
 #endif	
-#if(AIRSPEED_VARIABLE == 1)
-		calc_airspeed();
-		calc_groundspeed();
-		calc_target_airspeed();
-#endif
+		airspeedCntrl();
 		updateBehavior() ;
 		wind_gain = wind_gain_adjustment () ;
 		rollCntrl() ;

@@ -32,18 +32,31 @@ extern int 		target_airspeed;
 extern int 		cruise_airspeed;
 extern int 		airspeedError;
 
+// Integral of airspeed error
+// lower word is underflow.  Upper word is output in degrees of pitch adjustment.
+extern union longww airspeed_error_integral;
+
 // Feedforward values of pitch 
 extern int 		airspeed_pitch_min_aspd;
 extern int 		airspeed_pitch_max_aspd;
 
+// Run all airspeed control calculations and filters
+extern void airspeedCntrl(void);
+
 // Calculate the airspeed.
-void calc_airspeed(void);
+extern int calc_airspeed(void);
 
 // Calculate the groundspeed.
-void calc_groundspeed(void);
+extern int calc_groundspeed(void);
 
-// Calculate the target airspeed
-void calc_target_airspeed(void);
+// Calculate the target airspeed in cm/s from desiredSpd in dm/s
+extern int calc_target_airspeed(int desiredSpd);
+
+// Calculate the airspeed error vs target airspeed including filtering
+extern int calc_airspeed_error(void);
+
+// Calculate the airspeed error integral term with filtering and limits
+extern long calc_airspeed_int_error(int aspdError, long aspd_integral);
 
 //Calculate and return pitch target adjustment for target airspeed
 // return value is in dcm scale angle 

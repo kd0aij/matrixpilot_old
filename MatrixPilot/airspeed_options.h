@@ -30,6 +30,10 @@
 
 // Cruise airspeed may be below minimum airspeed for high drag aircraft.
 
+// Define to have target airspeed and airspeed error calculated depending on
+// variable parameters.
+#define AIRSPEED_VARIABLE		1
+
 // Gliding airspeed control
 // Must use ALTITUDE_GAINS_VARIABLE=1 and AIRSPEED_VARIABLE=1 with this option.
 #define GLIDE_AIRSPEED_CONTROL 	1
