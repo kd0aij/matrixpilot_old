@@ -20,10 +20,9 @@
 
 
 #include "defines.h"
-#include "airspeed_options.h"
+#include "airspeedCntrl.h"
 
-#if(AIRSPEED_VARIABLE != 1)
-
+#if(ALTITUDE_GAINS_VARIABLE != 1)
 // If mavlink is being used but the gains are not variable
 // implement the malink parameter variables for airspeed here
 #if(SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK)
@@ -44,16 +43,30 @@
 #endif	//SERIAL_MAVLINK
 
 
-#else	//AIRSPEED_VARIABLE == 1
+#else	//ALTITUDE_GAINS_VARIABLE == 1
 
 
 #include "airspeedCntrl.h"
 
-//extern int desiredSpeed;
+// Calculate the airspeed.
+extern int calc_airspeed(void);
+
+// Calculate the groundspeed.
+extern int calc_groundspeed(void);
+
+// Calculate the target airspeed in cm/s from desiredSpd in dm/s
+extern int calc_target_airspeed(int desiredSpd);
+
+// Calculate the airspeed error vs target airspeed including filtering
+extern int calc_airspeed_error(void);
+
+// Calculate the airspeed error integral term with filtering and limits
+extern long calc_airspeed_int_error(int aspdError, long aspd_integral);
 
 int 	airspeed		= 0;
 int 	groundspeed		= 0;
 int 	airspeedError	= 0;
+int 	target_airspeed	= 0;
 
 int minimum_groundspeed		= MINIMUM_GROUNDSPEED * 100;
 int minimum_airspeed		= MINIMUM_AIRSPEED * 100;
@@ -77,15 +90,14 @@ int airspeed_pitch_max_aspd = (AIRSPEED_PITCH_MAX_ASPD*(RMAX/57.3));
 
 void airspeedCntrl(void)
 {
-#if(AIRSPEED_VARIABLE == 1)
 	airspeed 		= calc_airspeed();
 	groundspeed 	= calc_groundspeed();
 	target_airspeed = calc_target_airspeed(desiredSpeed);
 	airspeedError 	= calc_airspeed_error();
  	airspeed_error_integral.WW = calc_airspeed_int_error(airspeedError, airspeed_error_integral.WW);
-
-#endif
+	return;
 }
+
 
 // Calculate the airspeed.
 // Note that this airspeed is a magnitude regardless of direction.
@@ -119,6 +131,7 @@ int calc_groundspeed(void) // computes (1/2gravity)*( actual_speed^2 - desired_s
 
 	return sqrt_long(gndspd2);
 }
+
 
 // Calculate the required airspeed in cm/s.  desiredSpeed is in dm/s
 int calc_target_airspeed(int desiredSpd)

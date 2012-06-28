@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "defines.h"
-
+#include "airspeed_options.h"
 
 // This file should generate no code.
 // It's just meant for precompiler tests, to catch problems and inconsistencies
@@ -266,9 +266,13 @@
 
 // Check that declination variable is only used with the magnetometer
 #if( (DECLINATIONANGLE_VARIABLE == 1) && (MAG_YAW_DRIFT != 1) )
-{
 	#error("Can't use variable declination angle with no magnetometer. Set MAG_YAW_DRIFT = 1 or DECLINATIONANGLE_VARIABLE = 0")
-}
 #endif
 
+#if( (ALTITUDE_GAINS_VARIABLE == 1) && (GAINS_VARIABLE != 1 ) )
+	#error("Must set GAINS_VARIABLE = 1 to use ALTITUDE_GAINS_VARIABLE option")
+#endif
 
+#if(  (GLIDE_AIRSPEED_CONTROL == 1) && (ALTITUDE_GAINS_VARIABLE != 1) )
+	#error("ALTITUDE_GAINS_VARIABLE = 1 to use glide airspeed control")
+#endif

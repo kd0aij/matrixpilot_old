@@ -73,7 +73,9 @@ void dcm_servo_callback_prepare_outputs(void)
 #if ( DEADRECKONING == 1 )
 		process_flightplan() ;
 #endif	
+#if(ALTITUDE_GAINS_VARIABLE == 1)
 		airspeedCntrl();
+#endif // ALTITUDE_GAINS_VARIABLE == 1
 		updateBehavior() ;
 		wind_gain = wind_gain_adjustment () ;
 		rollCntrl() ;
