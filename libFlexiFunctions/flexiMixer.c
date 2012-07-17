@@ -13,106 +13,22 @@
 // Mixer registers
 fractional flexiFunction_registers[FLEXIFUNCTION_MAX_REGS];
 //
-//// Turn PWM into fraction subtracting the offset
-//fractional PWM_to_frac(int PWM, int offset)
-//{
-//	union longww temp;
-//	temp.WW = ( (RMAX * 256.0) / ( MIX_PWM_RANGE ) );
-//	temp.WW = __builtin_mulss( PWM - offset, temp._.W0);  //
-//	temp.WW >>= 8;
-//	return (fractional) temp._.W0;
-//};
 //
 void preMix( void )
 {
-//	int				index;
+// Bring RMAX scaled input controls into registers.
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_ROLL)] 		= in_cntrls[IN_CNTRL_ROLL];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_PITCH)] 		= in_cntrls[IN_CNTRL_PITCH];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_THROTTLE)] 	= in_cntrls[IN_CNTRL_THROTTLE];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_YAW)] 		= in_cntrls[IN_CNTRL_YAW];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_CAMBER)] 	= in_cntrls[IN_CNTRL_CAMBER];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_BRAKE)] 		= in_cntrls[IN_CNTRL_BRAKE];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_FLAP)] 		= in_cntrls[IN_CNTRL_FLAP];
 
-/*	// Reset all registers to zero.  MUST BE STATELESS.
-	for(index = 0; index < REG_MAX; index++)
-	{
-		flexiFunction_registers[index] = 0;
-	}
-*/
-
-	// If radio is off, use udb_pwTrim values instead of the udb_pwIn values
-	if (udb_flags._.radio_on)
-	{
-		// Scale throttle to 0 to MIX_PWM_RANGE instead of 0 to 2 * MIX_PWM_RANGE
-		// This stops the fractional overflowing 2*RMAX
-		int tempThrottle = 0;
-
-		if(udb_pwIn[THROTTLE_INPUT_CHANNEL] < udb_pwTrim[THROTTLE_INPUT_CHANNEL])
-			tempThrottle = 0;
-		else
-			tempThrottle = udb_pwIn[THROTTLE_INPUT_CHANNEL] - udb_pwTrim[THROTTLE_INPUT_CHANNEL];
-
-		tempThrottle = tempThrottle >> 1;
-
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_ROLL)] = 
-			PWM_to_frac(udb_pwIn[ROLL_INPUT_CHANNEL], 	udb_pwTrim[ROLL_INPUT_CHANNEL], false);
-
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_PITCH)] = 
-			PWM_to_frac(udb_pwIn[PITCH_INPUT_CHANNEL], 	udb_pwTrim[PITCH_INPUT_CHANNEL], false);
-
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_THROTTLE)] = 
-			PWM_to_frac(tempThrottle, 0, false);
-
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_YAW)] = 
-			PWM_to_frac(udb_pwIn[YAW_INPUT_CHANNEL], 		udb_pwTrim[YAW_INPUT_CHANNEL], false);
-		
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_CAMBER)] =
-			PWM_to_frac(udb_pwIn[CAMBER_INPUT_CHANNEL], 	udb_pwTrim[CAMBER_INPUT_CHANNEL], false);
-
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_BRAKE)] =
-			PWM_to_frac(udb_pwIn[BRAKE_INPUT_CHANNEL], 	udb_pwTrim[BRAKE_INPUT_CHANNEL], false);
-
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_FLAP)] = 
-			PWM_to_frac(udb_pwIn[FLAP_INPUT_CHANNEL], 	udb_pwTrim[FLAP_INPUT_CHANNEL], false);
-	}
-	else
-	{
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_ROLL)]	 	= 0;
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_PITCH)] 		= 0;
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_THROTTLE)] 	= 0;
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_YAW)] 		= 0;
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_CAMBER)]		= 0;
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_BRAKE)]		= 0;
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_FLAP)]		= 0;
-	}
-
-	boolean apmode_full = 
-		( dcm_flags._.nav_capable & 
-			( udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH ) ) |
-		( dcm_flags._.nav_capable & !udb_flags._.radio_on);
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APMODE_FULL)] = apmode_full;
-
-	boolean manual_mode = 
-		!( udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_HIGH ) & 
-		!( udb_pwIn[MODE_SWITCH_INPUT_CHANNEL] > MODE_SWITCH_THRESHOLD_LOW );
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_RADIO_MANUAL_MODE)]= manual_mode;
-
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APMODE_RADIO_ON)] = 
-		udb_flags._.radio_on;
-
-	if( !apmode_full & 
-		!manual_mode )
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_GAIN_MAN_MIX)] = RMAX;
-	else
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_GAIN_MAN_MIX)] = 0;
-
-#if(USE_FBW == 1)
-	if( (fbwManualControlLockout(IN_CNTRL_ROLL) == true) && (flight_mode_switch_auto() == 1) )
-		flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_ROLL)]	 	= 0;
-#endif //(USE_FBW == 1)
-
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_ROLL)]		= PWM_to_frac(roll_control,0, false);
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_PITCH)]		= PWM_to_frac(pitch_control,0, false);
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_YAW)]		= PWM_to_frac(yaw_control,0, false);
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_THROTTLE)]	= PWM_to_frac(throttle_control,0, false);
 	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_WAGGLE)]	= PWM_to_frac(waggle,0, false);
 //
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_TRIM_POINT)] 		= udb_pwTrim[ROLL_INPUT_CHANNEL];
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_TRIM_THROTTLE)] 	= udb_pwTrim[THROTTLE_INPUT_CHANNEL];
+//	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_TRIM_POINT)] 		= udb_pwTrim[ROLL_INPUT_CHANNEL];
+//	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_TRIM_THROTTLE)] 	= udb_pwTrim[THROTTLE_INPUT_CHANNEL];
 }
 
 
