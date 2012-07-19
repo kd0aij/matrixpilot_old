@@ -164,6 +164,20 @@ typedef struct tagFuncData_RATE
 } FuncData_rate;
 
 
+typedef struct tagFuncData_PCT_COND_GAINS
+{
+	unsigned int	src;
+	unsigned int	srcCond;
+	fractional	negRate;
+	fractional	condMax;
+	fractional	condMin;
+	fractional	posGainInvalid;
+	fractional	negGainInvalid;
+	fractional	posGainValid;
+	fractional	negGainValid;
+} FuncData_pct_cond_gains;
+
+
 typedef union
 {
 	FuncData_null	null;
@@ -181,6 +195,7 @@ typedef union
 	FuncData_five_point	five_point;
 	FuncData_gain	gain;
 	FuncData_rate	rate;
+	FuncData_pct_cond_gains	pct_cond_gains;
 } functionData;
 
 
@@ -219,6 +234,7 @@ extern fractional four_point_function(functionSetting* pSetting, fractional* pRe
 extern fractional five_point_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional gain_function(functionSetting* pSetting, fractional* pRegisters);
 extern fractional rate_function(functionSetting* pSetting, fractional* pRegisters);
+extern fractional pct_cond_gains_function(functionSetting* pSetting, fractional* pRegisters);
 
 
 
