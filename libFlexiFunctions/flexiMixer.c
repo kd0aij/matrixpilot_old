@@ -17,13 +17,13 @@ fractional flexiFunction_registers[FLEXIFUNCTION_MAX_REGS];
 void preMix( void )
 {
 // Bring RMAX scaled output controls into registers.
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_ROLL)] 		= out_cntrls[IN_CNTRL_ROLL];
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_PITCH)] 		= out_cntrls[IN_CNTRL_PITCH];
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_THROTTLE)] 	= out_cntrls[IN_CNTRL_THROTTLE];
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_YAW)] 		= out_cntrls[IN_CNTRL_YAW];
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_CAMBER)] 	= out_cntrls[IN_CNTRL_CAMBER];
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_BRAKE)] 		= out_cntrls[IN_CNTRL_BRAKE];
-	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_PWIN_FLAP)] 		= out_cntrls[IN_CNTRL_FLAP];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_CON_ROLL)] 		= out_cntrls[IN_CNTRL_ROLL];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_CON_PITCH)] 		= out_cntrls[IN_CNTRL_PITCH];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_CON_THROTTLE)] 	= out_cntrls[IN_CNTRL_THROTTLE];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_CON_YAW)] 		= out_cntrls[IN_CNTRL_YAW];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_CON_CAMBER)] 		= out_cntrls[IN_CNTRL_CAMBER];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_CON_BRAKE)] 		= out_cntrls[IN_CNTRL_BRAKE];
+	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_CON_FLAP)] 		= out_cntrls[IN_CNTRL_FLAP];
 //
 	flexiFunction_registers[get_input_register_index_from_directory(VIRTUAL_INPUT_APCON_WAGGLE)]	= ap_cntrls[AP_CNTRL_WAGGLE];
 }
