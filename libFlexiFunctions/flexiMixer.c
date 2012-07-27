@@ -1,10 +1,34 @@
 #include "..\MatrixPilot\defines.h"
 #include "..\MatrixPilot\fbwCntrl.h"
-#include "..\MatrixPilot\mode_switch.h"
 #include "flexifunction_options.h"
 #include "flexiFunctionTypes.h"
 #include "flexiFunctionRegisters.h"
 #include "flexifunctionServices.h"
+#include "..\MatrixPilot\fbw_options.h"
+
+#if(USE_INPUT_CONTROL != 1)
+ #error("Must have USE_INPUT_CONTROL = 1")
+#endif
+
+#if(OUTPUT_CONTROL_GAIN_MUX != 1)
+ #error("Must have OUTPUT_CONTROL_GAIN_MUX = 1")
+#endif
+
+#if(OUT_CNTRL_AP_MAN_PREMIX != 1)
+ #error("Must have OUT_CNTRL_AP_MAN_PREMIX = 1")
+#endif
+
+#if(OUTPUT_CONTROL_IN_PWM_UNITS != 0)
+ #error("Must have OUTPUT_CONTROL_IN_PWM_UNITS = 0")
+#endif
+
+#if(MIXER_OUTPUTS_TO_UDB != 1)
+ #error("Must have MIXER_OUTPUTS_TO_UDB = 1")
+#endif
+
+#if(DO_SAFE_THROTTLE_MIXING != 1)
+ #error("Must have DO_SAFE_THROTTLE_MIXING = 1")
+#endif
 
 
 #define RMAX15 0b0110000000000000	//	1.5 in 2.14 format
