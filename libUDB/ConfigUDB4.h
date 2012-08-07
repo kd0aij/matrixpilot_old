@@ -58,6 +58,6 @@
 #define LED_RED				LATEbits.LATE1
 
 // There are no hardware toggle switches on the UDB4, so use values of 0
-#define HW_SWITCH_1			0
+#define HW_SWITCH_1			1
 #define HW_SWITCH_2			0
 #define HW_SWITCH_3			0

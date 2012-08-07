@@ -272,23 +272,22 @@
 #define SQUARE 1
 
 const struct logoInstructionDef instructions[] = {
-	
-	SET_ALT(100)
-	
-	// Go Home and point North
-	HOME
-	
-	REPEAT_FOREVER
-		DO_ARG(SQUARE, 100)
+
+SET_POS(100, 0)
+SET_POS(0, 50)
+SET_ANGLE(-60)
+DO_ARG(SQUARE, 120)
+
+END
+
+
+TO (SQUARE)
+	REPEAT(4)
+		FD_PARAM
+		RT(90)
 	END
-	
-	
-	TO (SQUARE)
-		REPEAT(4)
-			FD_PARAM
-			RT(90)
-		END
-	END
+END
+
 } ;
 
 
@@ -302,12 +301,14 @@ const struct logoInstructionDef rtlInstructions[] = {
 	// Use cross-tracking for navigation
 	FLAG_ON(F_CROSS_TRACK)
 	
-	// Turn off engine for RTL
-	// Move this line down below the HOME to return home with power before circling unpowered.
-	FLAG_ON(F_LAND)
 	
 	// Fly home
-	HOME
+	SET_POS(-100,50)
+	SET_POS(0,20)	
+
+	// Turn off engine for RTL
+	// Move this line down below the HOME to return home with power before circling unpowered.
+//	FLAG_ON(F_LAND)
 	
 	// Once we arrive home, aim the turtle in the
 	// direction that the plane is already moving.
@@ -316,7 +317,7 @@ const struct logoInstructionDef rtlInstructions[] = {
 	REPEAT_FOREVER
 		// Fly a circle (36-point regular polygon)
 		REPEAT(36)
-			RT(10)
+			LT(10)
 			FD(8)
 		END
 	END
