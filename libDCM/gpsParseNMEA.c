@@ -98,8 +98,8 @@ const char set_FIX_1Hz[]		= "$PMTK220,1000*1F\r\n" ;
 //const char set_FIX_4Hz[]		= "$PMTK220,250*29\r\n" ; 
 //const char set_FIX_5Hz[]		= "$PMTK220,200*2C\r\n" ; 
 //const char set_RMC[]		= "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n" ; 
-const char set_GGA_RMC[]	= "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n" ; 
-//const char set_DEFAULT[]	= "$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n" ; 
+//const char set_GGA_RMC[]	= "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n" ; 
+const char set_DEFAULT[]	= "$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n" ; 
 
 //	if data_valid is 'A', there is valid GPS data that can be used for navigation.
 boolean gps_nav_valid(void)
@@ -121,7 +121,7 @@ void gps_startup_sequence(int gpscount)
 	else if( gpscount == 50 )
 		gpsoutline( (char*)set_FIX_1Hz );
 	else if( gpscount == 20 )
-		gpsoutline( (char*)set_GGA_RMC );
+		gpsoutline( (char*)set_DEFAULT );
 //	else if( gpscount == 850 )
 //		gpsoutline( (char*)set_BAUD_9600 );
 //	else if( gpscount == 800 )
@@ -693,7 +693,7 @@ void commit_gps_data(void)
 	sog_gps		= sog_gps_ ; 			// Speed over ground
 	cog_gps		= cog_gps_ ;			// Course over ground
 
-	climb_gps.BB= (alt_sl_gps_.WW - last_alt.WW);
+	climb_gps.BB= (alt_sl_gps_.WW - last_alt.WW) * GPS_RATE ;
 
 	hdop		= hdop_ ;				
 	svs			= svs_ ;
