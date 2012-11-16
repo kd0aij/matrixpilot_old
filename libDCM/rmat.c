@@ -19,11 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-//#include "libDCM_internal.h"
-#include "libDCM.h"
-#include "gpsParseCommon.h"
-#include "HILSIM.h"
-#include "deadReckoning.h"
+#include "libDCM_internal.h"
 
 //		These are the routines for maintaining a direction cosine matrix
 //		that can be used to transform vectors between the earth and plane
@@ -71,11 +67,11 @@ fractional spin_axis[] = { 0 , 0 , RMAX } ;
 
 #ifdef INITIALIZE_VERTICAL  // for VTOL vertical initialization
 fractional rmat[] = { RMAX , 0 , 0 , 0 , 0 , RMAX , 0 , -RMAX , 0 } ;
-static fractional rmatDelayCompensated[] =  { RMAX , 0 , 0 , 0 , 0 , RMAX , 0 , -RMAX , 0 } ;
+fractional rmatDelayCompensated[] =  { RMAX , 0 , 0 , 0 , 0 , RMAX , 0 , -RMAX , 0 } ;
 
 #else // the usual case, horizontal initialization
 fractional rmat[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0 , RMAX } ;
-static fractional rmatDelayCompensated[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0 , RMAX } ;
+fractional rmatDelayCompensated[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0 , RMAX } ;
 #endif
 
 //	rup is the rotational update matrix.
@@ -84,11 +80,11 @@ static fractional rmatDelayCompensated[] = { RMAX , 0 , 0 , 0 , RMAX , 0 , 0 , 0
 
 //	gyro rotation vector:
 fractional omegagyro[] = { 0 , 0 , 0 } ;
-static fractional omega[] = { 0 , 0 , 0 } ;
+fractional omega[] = { 0 , 0 , 0 } ;
 
 //	gyro correction vectors:
-static fractional omegacorrP[] = { 0 , 0 , 0 } ;
-static fractional omegacorrI[] = { 0 , 0 , 0 } ;
+fractional omegacorrP[] = { 0 , 0 , 0 } ;
+fractional omegacorrI[] = { 0 , 0 , 0 } ;
 
 //  acceleration, as measured in GPS earth coordinate system
 fractional accelEarth[] = { 0 , 0 , 0 } ;
@@ -96,7 +92,7 @@ fractional accelEarth[] = { 0 , 0 , 0 } ;
 //union longww accelEarthFiltered[] = { { 0 } , { 0 } ,  { 0 } } ;
 
 //	correction vector integrators ;
-static union longww gyroCorrectionIntegral[] =  { { 0 } , { 0 } ,  { 0 } } ;
+union longww gyroCorrectionIntegral[] =  { { 0 } , { 0 } ,  { 0 } } ;
 
 //	accumulator for computing adjusted omega:
 fractional omegaAccum[] = { 0 , 0 , 0 } ;
@@ -121,14 +117,15 @@ fractional dirovergndHRmat[] = { 0 , RMAX , 0 } ;
 //  fractional rbuff[] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 } ;
 
 //	vector buffer
-static fractional errorRP[] = { 0 , 0 , 0 } ;
-static fractional errorYawplane[]  = { 0 , 0 , 0 } ;
+fractional errorRP[] = { 0 , 0 , 0 } ;
+fractional errorYawground[] = { 0 , 0 , 0 } ;
+fractional errorYawplane[]  = { 0 , 0 , 0 } ;
 
 //	measure of error in orthogonality, used for debugging purposes:
-static fractional error = 0 ;
+fractional error = 0 ;
 
 #if(MAG_YAW_DRIFT == 1)
-static fractional declinationVector[2] ;
+fractional declinationVector[2] ;
 #endif
 
 #if(DECLINATIONANGLE_VARIABLE == 1)
@@ -147,7 +144,7 @@ void dcm_init_rmat( void )
 }
 
 //	Implement the cross product. *dest = *src1X*src2 ;
-static void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
+void VectorCross( fractional * dest , fractional * src1 , fractional * src2 )
 {
 	union longww crossaccum ;
 	crossaccum.WW = __builtin_mulss( src1[1] , src2[2] ) ;
@@ -166,13 +163,15 @@ static void VectorCross( fractional * dest , fractional * src1 , fractional * sr
 }
 
 
-void read_gyros(void)
+void read_gyros()
 //	fetch the gyro signals and subtract the baseline offset, 
 //	and adjust for variations in supply voltage
 {
 	unsigned spin_rate_over_2 ;
 #if ( HILSIM == 1 )
-	HILSIM_read_gyro(omegagyro);
+	omegagyro[0] = q_sim.BB;
+	omegagyro[1] = p_sim.BB;
+	omegagyro[2] = r_sim.BB;  
 #else
 	omegagyro[0] = XRATE_VALUE ;
 	omegagyro[1] = YRATE_VALUE ;
@@ -192,10 +191,12 @@ void read_gyros(void)
 	return ;
 }
 
-void read_accel(void)
+void read_accel()
 {
 #if ( HILSIM == 1 )
-	HILSIM_read_accel(gplane);
+	gplane[0] = v_dot_sim.BB;
+	gplane[1] = u_dot_sim.BB; 
+	gplane[2] = w_dot_sim.BB;
 #else
 	gplane[0] =   XACCEL_VALUE ;
 	gplane[1] =   YACCEL_VALUE ;
@@ -213,10 +214,9 @@ void read_accel(void)
 	return ;
 }
 
-#if ( HILSIM != 1 )
 //	multiplies omega times speed, and scales appropriately
 //  omega in radians per second, speed in cm per second
-static int omegaSOG ( int omega , unsigned int speed  )
+int omegaSOG ( int omega , unsigned int speed  )
 {
 	union longww working ;
 	speed = speed>>3 ;
@@ -239,8 +239,8 @@ static int omegaSOG ( int omega , unsigned int speed  )
 }
 
 //	Lets leave it like this for a while, just in case we need to revert roll_pitch_drift.
-/*
-static void adj_accel(void)
+
+void adj_accel()
 {
 	// total (3D) airspeed in cm/sec is used to adjust for acceleration
 	gplane[0]=gplane[0]- omegaSOG( omegaAccum[2] , air_speed_3DGPS ) ;
@@ -249,11 +249,10 @@ static void adj_accel(void)
 	
 	return ;
 }
-*/
-#endif // HILSIM
+
 
 //	The update algorithm!!
-static void rupdate(void)
+void rupdate(void)
 //	This is the key routine. It performs a small rotation
 //	on the direction cosine matrix, based on the gyro vector and correction.
 //	It uses vector and matrix routines furnished by Microchip.
@@ -301,7 +300,7 @@ static void rupdate(void)
 }
 
 //	normalization algorithm:
-static void normalize(void)
+void normalize(void)
 //	This is the routine that maintains the orthogonality of the
 //	direction cosine matrix, which is expressed by the identity
 //	relationship that the cosine matrix multiplied by its
@@ -343,13 +342,14 @@ static void normalize(void)
 }
 
 //	Lets leave this for a while in case we need to revert roll_pitch_drift
-/*
+
+#ifndef NEW_ACCELERATION_COMPENSATION
 void roll_pitch_drift()
 {
 	VectorCross( errorRP , gplane , &rmat[6] ) ;
 	return ;
 }
-*/
+#endif
 
 long int accelerometer_earth_integral[3] = { 0 , 0 , 0 } ;
 int GPS_velocity_previous[3] = { 0 , 0 , 0 } ;
@@ -357,6 +357,7 @@ unsigned int accelerometer_samples = 0 ;
 #define MAX_ACCEL_SAMPLES 45
 #define ACCEL_SAMPLES_PER_SEC 40
 
+#ifdef NEW_ACCELERATION_COMPENSATION
 void roll_pitch_drift()
 {
 
@@ -434,8 +435,9 @@ void roll_pitch_drift()
 	}	
 	return ;
 }
+#endif  //  NEW_ACCELERATION_COMPENSATION
 
-static void yaw_drift(void)
+void yaw_drift()
 {
 	//	although yaw correction is done in horizontal plane,
 	//	this is done in 3 dimensions, just in case we change our minds later
@@ -473,7 +475,7 @@ fractional magFieldBodyMagnitudePrevious ;
 fractional magFieldBodyPrevious[3] ;
 
 #ifdef INITIALIZE_VERTICAL // vertical initialization for VTOL
-static void align_rmat_to_mag(void)
+void align_rmat_to_mag(void)
 {
 	unsigned char theta ;
 	struct relative2D initialBodyField ;
@@ -495,7 +497,7 @@ static void align_rmat_to_mag(void)
 }
 
 #else // horizontal initialization for usual cases
-static void align_rmat_to_mag(void)
+void align_rmat_to_mag(void)
 {
 	unsigned char theta ;
 	struct relative2D initialBodyField ;
@@ -515,9 +517,9 @@ static void align_rmat_to_mag(void)
 	rmat[3] = - sintheta ;
 	return ;
 }
-#endif // INITIALIZE_VERTICAL
+#endif
 
-static void quaternion_adjust( fractional quaternion[] , fractional direction[] )
+void quaternion_adjust( fractional quaternion[] , fractional direction[] )
 {
 //	performs an adjustment to a quaternion representation of re-alignement.
 //	the cross product is left out, theory and test both show it should not be used.
@@ -554,7 +556,7 @@ static void quaternion_adjust( fractional quaternion[] , fractional direction[] 
 	return ;
 }
 
-static void RotVector2RotMat( fractional rotation_matrix[] , fractional rotation_vector[] )
+void RotVector2RotMat( fractional rotation_matrix[] , fractional rotation_vector[] )
 {
 //	rotation vector represents a rotation in vector form
 //	around an axis equal to the normalized value of the vector.
@@ -613,9 +615,9 @@ static void RotVector2RotMat( fractional rotation_matrix[] , fractional rotation
 #define MAG_LATENCY 0.085 // seconds
 #define MAG_LATENCY_COUNT ( ( int ) ( MAG_LATENCY / 0.025 ) )
 
-static int mag_latency_counter = 10 - MAG_LATENCY_COUNT ;
+int mag_latency_counter = 10 - MAG_LATENCY_COUNT ;
 
-static void mag_drift(void)
+void mag_drift()
 {
 	int mag_error ;
 	fractional magFieldEarthNormalized[3];
@@ -745,11 +747,11 @@ static void mag_drift(void)
 	return ;
 }
 
-#endif // MAG_YAW_DRIFT
+#endif
 
 #define MAXIMUM_SPIN_DCM_INTEGRAL 20.0 // degrees per second
 
-static void PI_feedback(void)
+void PI_feedback(void)
 {
 	fractional errorRPScaled[3] ;
 	int kpyaw ;
@@ -798,7 +800,7 @@ static void PI_feedback(void)
 	return ;
 }
 
-static unsigned int adjust_gyro_gain ( unsigned int old_gain , int gain_change )
+unsigned int adjust_gyro_gain ( unsigned int old_gain , int gain_change )
 {
 	unsigned int gain ;
 	gain = old_gain + gain_change ;
@@ -816,7 +818,7 @@ static unsigned int adjust_gyro_gain ( unsigned int old_gain , int gain_change )
 #define GYRO_CALIB_TAU 10.0
 #define MINIMUM_SPIN_RATE_GYRO_CALIB 50.0 // degrees/second
 
-static void calibrate_gyros(void)
+void calibrate_gyros(void)
 {
 	fractional omegacorrPweighted[3] ;
 	long calib_accum ;
@@ -884,11 +886,12 @@ void dcm_run_imu_step(void)
 {
 	dead_reckon() ;
 //	Lets leave this for a while in case we need to revert roll_pitch_drift
-/*	WJP - accel comp
+
+#ifndef NEW_ACCELERATION_COMPENSATION
 #if ( HILSIM != 1 )
 	adj_accel() ;
 #endif
-*/
+#endif
 	rupdate() ;
 	normalize() ;
 	roll_pitch_drift() ;

@@ -21,16 +21,24 @@
 
 #include "libUDB_internal.h"
 
-#if(USE_I2C1_DRIVER == 1)
+#if(USE_I2C1_DRIVER == 1)					//  I2C1, BAROMETER SUPPORT *****************
 #include "I2C.h"
 #include "events.h"
 #endif
 
 // Include the NV memory services if required
+//#if(USE_NV_MEMORY == 1)
+//#include "NV_memory.h"
+//#include "data_storage.h"
+//#include "data_services.h"
+//#endif
+
 #if(USE_NV_MEMORY == 1)
+#include "I2C.h"
 #include "NV_memory.h"
 #include "data_storage.h"
 #include "data_services.h"
+#include "events.h"
 #endif
 
 // Include flexifunction mixers if required
@@ -55,6 +63,7 @@ unsigned int _cpu_timer = 0 ;
 
 unsigned int udb_heartbeat_counter = 0 ;
 #define HEARTBEAT_MAX	57600		// Evenly divisible by many common values: 2^8 * 3^2 * 5^2
+#define MAX_NOISE_RATE 	5 			// up to 5 PWM "glitches" per second are allowed
 
 void udb_run_init_step( void ) ;
 
@@ -85,7 +94,7 @@ void udb_init_clock(void)	/* initialize timers */
 	TRISF = 0b1111111111101100 ;
 
 
-#if(USE_I2C1_DRIVER == 1)
+#if(USE_I2C1_DRIVER == 1)                 //  I2C1, BAROMETER SUPPORT *****************
 	init_events();
 	I2C1_init();
 #endif
@@ -273,18 +282,21 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	interrupt_save_set_corcon ;
 	
 	_THEARTBEATIF = 0 ; /* clear the interrupt */
-	
+
 #if ( NORADIO != 1 )
-	// 20Hz testing for radio link
+	// 20Hz testing of radio link
 	if ( udb_heartbeat_counter % 2 == 1)
 	{
-		if ( failSafePulses == 0 )
+		// check to see if at least one valid pulse has been received,
+		// and also that the noise rate has not been exceeded
+		if ( ( failSafePulses == 0 ) || ( noisePulses > MAX_NOISE_RATE ) )
 		{
 			if (udb_flags._.radio_on == 1) {
 				udb_flags._.radio_on = 0 ;
 				udb_callback_radio_did_turn_off() ;
 			}
 			LED_GREEN = LED_OFF ;
+			noisePulses = 0 ; // reset count of noise pulses
 		}
 		else
 		{
@@ -293,8 +305,14 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 		}
 		failSafePulses = 0 ;
 	}
+	// Computation of noise rate
+	// Noise pulses are counted when they are detected,
+	// and reset once a second
+	if ( udb_heartbeat_counter % 40 == 1)
+	{
+		noisePulses = 0 ;
+	}
 #endif
-	
 #ifdef VREF
 	vref_adj = (udb_vref.offset>>1) - (udb_vref.value>>1) ;
 #else
@@ -303,11 +321,13 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	
 	calculate_analog_sensor_values() ;
 //	udb_callback_read_sensors() ;
+	udb_flags._.a2d_read = 1 ; // signal the A/D to start the next summation
+//	udb_callback_read_sensors() ;
 //	udb_read_gyro_accel_restart();		
-//	udb_servo_callback_prepare_outputs() ;
+//	udb_servo_callback_prepare_outputs() ;1
 	udb_callback_40hertz();
 
-#if(USE_I2C1_DRIVER == 1)
+#if(USE_I2C1_DRIVER == 1)       //  BAROMETER SUPPORT *****************
 	I2C1_trigger_service();
 #endif
 	

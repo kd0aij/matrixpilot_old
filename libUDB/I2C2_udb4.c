@@ -77,7 +77,6 @@ void (* I2C2_state ) ( void ) = &I2C2_idle ;
 
 #define I2C2_NORMAL ((( I2C2CON & 0b0000000000011111 ) == 0) && ( (I2C2STAT & 0b0100010011000001) == 0 ))
 
-
 unsigned int I2C2_Index = 0;  		// index into the write buffer
 
 unsigned char I2C2_AddressByte 	= 0;
@@ -86,7 +85,8 @@ unsigned int I2C2_rx_data_size = 0;		// rx data size
 unsigned int I2C2_command_data_size = 0;	// command data size
 
 unsigned char* pI2C2Buffer = NULL;	// pointer to buffer
-const unsigned char* pI2C2commandBuffer = NULL;	// pointer to receive buffer
+//const unsigned char* pI2C2commandBuffer = NULL;	// pointer to receive buffer
+unsigned char* pI2C2commandBuffer = NULL;	
 
 unsigned int I2C2_service_handle = INVALID_HANDLE;
 
@@ -189,8 +189,8 @@ inline boolean I2C2_CheckAvailable(void)
 	return true;
 }
 
-
-boolean I2C2_Write(unsigned char address, const unsigned char* pcommandData, unsigned char commandDataSize, const unsigned char* ptxData, unsigned int txSize, I2C_callbackFunc pCallback)
+//boolean I2C2_Write(unsigned char address, const unsigned char* pcommandData, unsigned char commandDataSize, const unsigned char* ptxData, unsigned int txSize, I2C_callbackFunc pCallback)
+boolean I2C2_Write(unsigned char address, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* ptxData, unsigned int txSize, I2C_callbackFunc pCallback)
 {
 	if(!I2C2_CheckAvailable()) return false;
 
@@ -212,7 +212,8 @@ boolean I2C2_Write(unsigned char address, const unsigned char* pcommandData, uns
 }
 
 
-boolean I2C2_Read(unsigned char address, const unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* prxData, unsigned int rxSize, I2C_callbackFunc pCallback, unsigned int I2C_mode)
+// boolean I2C2_Read(unsigned char address, const unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* prxData, unsigned int rxSize, I2C_callbackFunc pCallback, unsigned int I2C_mode)
+boolean I2C2_Read(unsigned char address, unsigned char* pcommandData, unsigned char commandDataSize, unsigned char* prxData, unsigned int rxSize, I2C_callbackFunc pCallback, unsigned int I2C_mode)
 {
 	if(!I2C2_CheckAvailable()) return false;
 

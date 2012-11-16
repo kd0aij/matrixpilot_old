@@ -183,9 +183,10 @@ struct ADchannel {
 
 
 struct udb_flag_bits {
-			unsigned int unused					  	    : 6 ;   // shouldn't this be 14 bits? - moreso, shouldn't the int be an unsigned char?
+			unsigned int unused					  	    : 5 ; // def 6, updated to support sonnar device
 			unsigned int a2d_read						: 1 ;
 			unsigned int radio_on						: 1 ;
+			unsigned int sonar_updated					: 1 ; // added to support sonnar device on UDB4
 			} ;
 
 // Baud Rate Generator -- See section 19.3.1 of datasheet.

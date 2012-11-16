@@ -19,13 +19,12 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "libDCM_internal.h"
-#include "estAltitude.h"
-#include "estYawDrift.h"
-#include "estWind.h"
-#include "gpsParseCommon.h"
-#include <string.h>
 
+#include "libDCM_internal.h"
+#include <string.h>
+#if (USE_BAROMETER == 1)
+	#include "estAltitude.h"					// BAROMETER SUPPORT
+#endif
 
 struct relative3D GPSlocation 		  = { 0 , 0 , 0 } ;
 struct relative3D GPSvelocity 		  = { 0 , 0 , 0 } ;
@@ -41,6 +40,7 @@ union longbbbb lat_origin , long_origin , alt_origin ;
 //unsigned char  mode1 , mode2 ;						// gps mode1, mode2
 unsigned char  svs ;									// number of satellites
 
+unsigned char  	lat_cir ;
 int				cos_lat = 0 ;
 
 int gps_data_age ;
@@ -51,7 +51,6 @@ int gps_out_index = 0 ;
 
 
 extern void (* msg_parse ) ( unsigned char inchar ) ;
-
 
 void gpsoutbin(int length , const unsigned char msg[] )  // output a binary message to the GPS
 {
@@ -64,7 +63,6 @@ void gpsoutbin(int length , const unsigned char msg[] )  // output a binary mess
 	
 	return ;
 }
-
 
 void gpsoutline(char message[]) // output one NMEA line to the GPS
 {
@@ -97,17 +95,16 @@ void udb_gps_callback_received_byte(char rxchar)
 }
 
 signed char actual_dir ;
+signed char cog_previous = 64 ;
 unsigned int ground_velocity_magnitudeXY = 0 ;
+int sog_previous = 0 ;
+int climb_rate_previous = 0 ;
 int forward_acceleration = 0 ;
+unsigned int velocity_previous = 0 ;
 unsigned int air_speed_magnitudeXY = 0;
 unsigned int air_speed_3DGPS = 0 ;
 signed char calculated_heading ;
-
-static signed char cog_previous = 64 ;
-static int sog_previous = 0 ;
-static int climb_rate_previous = 0 ;
-static int location_previous[] = { 0 , 0 , 0 } ;
-static unsigned int velocity_previous = 0 ;
+int location_previous[] = { 0 , 0 , 0 } ;
 
 // Received a full set of GPS messages
 void udb_background_callback_triggered(void) 
@@ -222,7 +219,21 @@ void udb_background_callback_triggered(void)
 		velocity_previous = air_speed_3DGPS ;
 
 		estimateWind() ;
-		estAltitude() ;	
+
+		//  0- default original; 1- states.c (orig); 2- gpsParseCommon.c; 3. altitudeCntrl.c and 4- libDCM.c
+		#if (USE_BAROMETER == 1)    
+			#if (BAR_RUN_FROM == 2) //   DEBUG runtime location  (0 is original location
+				altimeter_calibrate() ;  	// runs BAROMETER FUNCTION in estAltitude.c
+				#if (EST_ALT == 1)
+					estAltitude() ;			// DEBUG NECESSITY FOR THIS FUNCTION in estAltitude.c
+				#endif
+			#elif (BAR_RUN_FROM == 0) //   DEBUG runtime location
+				#if (EST_ALT == 1)
+					estAltitude() ;			// DEBUG NECESSITY FOR THIS FUNCTION in estAltitude.c
+				#endif
+			#endif
+		#endif
+
 		estYawDrift() ;	
 		dcm_flags._.yaw_req = 1 ;  // request yaw drift correction 
 		dcm_flags._.reckon_req = 1 ; // request dead reckoning correction
@@ -246,3 +257,4 @@ void udb_background_callback_triggered(void)
 	
 	return ;
 }
+

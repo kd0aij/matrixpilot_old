@@ -20,10 +20,7 @@
 
 
 #include "libUDB_internal.h"
-
-#ifdef USE_DEBUG_IO
-#include "uart1.h"
-#endif
+#include "I2C.h"
 
 
 #if (BOARD_IS_CLASSIC_UDB)
@@ -36,8 +33,10 @@ _FWDT( WDT_OFF ) ;					// no watchdog timer
 
 
 // Add compatibility for c30 V3.3
-#ifdef BORV20
+#ifndef BORV_20
 #define BORV_20 BORV20
+#endif
+#ifndef _FICD
 #define _FICD(x) _ICD(x)
 #endif
 

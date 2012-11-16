@@ -108,11 +108,40 @@ extern int cam_yaw_servo_pwm_delta ;
 long cam_pitchServoLimit( long pwm_pulse) ;
 long cam_yawServoLimit( long pwm_pulse) ;
 
+/* ************  SONAR SUPPORT External Variables ************ */
+#if ( USE_SONAR == 1 )
+	extern int sonar_rawaltitude ;			// direct distance from sonar to a target in cm fr. altitudeCntrl.c
+	extern int cos_pitch_roll ;				// cosine of angle of tilt of plane in fractional * 2  fr. altitudeCntrl.c
+	extern int sonar_altitude ;				// rmat tilt compensated sonar altitude in cm  fr. altitudeCntrl.c
+	extern boolean altitude_sonar_on;		// on off for using landing sonar altitude data fr. flightplan-logo.c
+#endif
+
+/* ************  BAROMETER SUPPORT External Variables ************ */
+
+#if ( USE_BAROMETER == 1 )
+	//void udb_barometer_callback(long pressure, int temperature, char status);
+	//inline long get_barometer_altitude(void);
+	//inline long get_barometer_pressure(void);
+	//int get_barometer_temperature(void);
+//	void estAltitude(void);
+
+	extern long barometer_pressure ;
+	extern long barometer_altitude ;	
+	extern long barometer_agl_altitude ;     // above ground level alt
+	extern long barometer_ground_altitude ; 
+	extern long est_barometer_altitude ;
+	extern int barometer_temperature ; 
+	extern long barometer_sealevel_pressure;  // new: field to support telemetry log
+	extern long barometer_pressure_gnd ; 
+	extern int barometer_temperature_gnd;
+	extern boolean altitude_bar_on;			// on off for using landing sonar altitude data fr. flightplan-logo.c
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// navigation.c
+// navigate.c
 void set_goal( struct relative3D fromPoint , struct relative3D toPoint ) ;
+void update_goal_alt( int z ) ;  // Modification to support logo..c
 void compute_bearing_to_goal ( void ) ;
 void process_flightplan( void ) ;
 int determine_navigation_deflection( char navType ) ;

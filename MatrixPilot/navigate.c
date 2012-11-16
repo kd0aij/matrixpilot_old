@@ -51,8 +51,17 @@ void setup_origin(void)
 		dcm_set_origin_location(origin.x, origin.y, origin.z ) ;
 	}
 	else
-	{
-		dcm_set_origin_location(long_gps.WW, lat_gps.WW, alt_sl_gps.WW) ;
+	{									//  TODO: BLEND IN BAROMETER ALTITUDE 
+		#if ( SONAR_ALTITUDE == 1 )  	//  RECALIBRATE IF SONAR ALTITUDE IS ON
+			{
+			int alt_snr_rel_orgn = ((ASL_GROUND_ALT-sonar_altitude)/100) ;
+			dcm_set_origin_location(long_gps.WW, lat_gps.WW, alt_snr_rel_orgn) ;
+			}
+		#else
+			{
+			dcm_set_origin_location(long_gps.WW, lat_gps.WW, alt_sl_gps.WW) ;
+			}
+		#endif
 	}
 	flags._.f13_print_req = 1 ; // Flag telemetry output that the origin can now be printed.
 	
@@ -99,6 +108,13 @@ void set_goal( struct relative3D fromPoint , struct relative3D toPoint )
 	goal.cosphi = cosine( goal.phi ) ;
 	goal.sinphi = sine( goal.phi ) ;
 	
+	return ;
+}
+
+// INSERT HERE SUPPORT FOR SONAR ALTITUDE  ***** NEW 
+void update_goal_alt( int z )
+{
+	goal.height = z ;
 	return ;
 }
 

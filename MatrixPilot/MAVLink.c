@@ -35,12 +35,10 @@
 // 	MAV_DATA_STREAM_EXTRA1 = SERIAL UDB EXTRA formated data
 //	MAV_DATA_STREAM_EXTRA2 = Scaled position sensor messages (ALTITUDES / AIRSPEEDS)
 //	MAV_DATA_STREAM_EXTRA3 not assigned yet
- 
+
 #include <string.h>
 #include "defines.h"
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM value
-#include "../libDCM/gpsParseCommon.h"
-#include "../libDCM/estAltitude.h"
 
 #if ( SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK  )
 
@@ -751,9 +749,10 @@ boolean mavlink_check_target( uint8_t target_system, uint8_t target_component )
 void handleMessage(mavlink_message_t* msg)
 // This is the main routine for taking action against a parsed message from the GCS
 {
-	send_text( ( unsigned char*) "Handling message ID 0x");
-    send_uint8(msg->msgid);
-    send_text( (unsigned char*) "\r\n");
+//	send_text( ( unsigned char*) "Handling message ID 0x");
+//    send_uint8(msg->msgid);
+//    send_text( (unsigned char*) "\r\n");
+
 	switch (msg->msgid)
 	{
 	    case MAVLINK_MSG_ID_REQUEST_DATA_STREAM:  
@@ -771,7 +770,7 @@ void handleMessage(mavlink_message_t* msg)
 	        else if (packet.start_stop == 1) freq = packet.req_message_rate; // start sending
 	        else break;
 			if(packet.req_stream_id == MAV_DATA_STREAM_ALL)
-	        {
+			{
 				// Warning: mavproxy automatically sets all.  Do not include all here, it will overide defaults.
 	            streamRates[MAV_DATA_STREAM_RAW_SENSORS] = freq ;  
 	            streamRates[MAV_DATA_STREAM_RC_CHANNELS] = freq; 
@@ -780,8 +779,7 @@ void handleMessage(mavlink_message_t* msg)
 			{
 				if(packet.req_stream_id < MAV_DATA_STREAM_ENUM_END)
 					streamRates[packet.req_stream_id] = freq ; 
-	        }
-
+			}
 			break;
 	    } 
 
@@ -790,23 +788,11 @@ void handleMessage(mavlink_message_t* msg)
 	        mavlink_command_long_t packet;
 	        mavlink_msg_command_long_decode(msg, &packet);
 	        //if (mavlink_check_target(packet.target,packet.target_component) == false ) break;
-		    send_text( ( unsigned char*) "Command ID 0x");
-    		send_uint8(packet.command);
-    		send_text( (unsigned char*) "\r\n");
+//		    send_text( ( unsigned char*) "Command ID 0x");
+//    		send_uint8(packet.command);
+//    		send_text( (unsigned char*) "\r\n");
 			switch(packet.command)
 			{
-/*
-               <entry value="241" name="MAV_CMD_PREFLIGHT_CALIBRATION">
-                    <description>Trigger calibration. This command will be only accepted if in pre-flight mode.</description>
-                    <param index="1">Gyro calibration: 0: no, 1: yes</param>
-                    <param index="2">Magnetometer calibration: 0: no, 1: yes</param>
-                    <param index="3">Ground pressure: 0: no, 1: yes</param>
-                    <param index="4">Radio calibration: 0: no, 1: yes</param>
-                    <param index="5">Empty</param>
-                    <param index="6">Empty</param>
-                    <param index="7">Empty</param>
-               </entry>
- */
 			case MAV_CMD_PREFLIGHT_CALIBRATION:
 				if(packet.param1 == 1)
 				{
@@ -815,10 +801,6 @@ void handleMessage(mavlink_message_t* msg)
 #endif
 					udb_a2d_record_offsets();
 				} 
-				else if(packet.param3 == 1)	//param3 = Ground pressure
-				{
-					command_ack(packet.command, MAV_CMD_ACK_OK);
-				}
 				else if(packet.param4 == 1)	//param4 = radio calibration
 				{
 					if(udb_flags._.radio_on == 1)
@@ -1549,7 +1531,7 @@ void mavlink_output_40hz( void )
 	{
 		int gps_fix_type;
 		if(gps_nav_valid())
-			gps_fix_type = 2;
+			gps_fix_type = 3;
 		else
 			gps_fix_type = 0;
 		mavlink_msg_gps_raw_int_send(MAVLINK_COMM_0, usec, gps_fix_type, lat_gps.WW, long_gps.WW,  alt_sl_gps.WW, hdop, 65535, sog_gps.BB, cog_gps.BB, svs) ;
@@ -1579,12 +1561,15 @@ void mavlink_output_40hz( void )
 		relative_alt = accum_A_long.WW * 1000  ;
 		alt  =  relative_alt + (alt_origin.WW * 10 ) ;      //In millimeters; more accurate if used IMUlocationz._.W0
 
-		// Could calculate heading from DCM, but going to use 2D "calculated_heading" for now until Maths peer reviewed.
-		angle = (calculated_heading * 180 + 64) >> 7 ;	// 0-359 (ccw, 0=East)
-		angle = -angle + 90 ;
+		matrix_accum.x = rmat[4] ;
+		matrix_accum.y = rmat[1] ;
+		accum = rect_to_polar(&matrix_accum) ;			// binary angle (0 to 180, -1 to -179 for complete 360 degrees)
+		angle = (accum * 180 + 64) >> 7 ;				// Angle measured counter clockwise, 0=East 
+		angle = -angle + 90 ;							// Angle measure clock wise, 0 = North
 		if (angle > 360 ) angle = angle - 360 ;
 		if (angle < 0   ) angle = angle + 360 ;
-		mavlink_heading = angle * 100 ;
+		mavlink_heading = angle * 100 ;					// Mavlink global position expects angle in degrees * 100
+		
 		mavlink_msg_global_position_int_send(MAVLINK_COMM_0, msec, lat, lon,  alt, relative_alt, 					 
 		   	-IMUvelocityy._.W1, IMUvelocityx._.W1, -IMUvelocityz._.W1, //  IMUVelocity  normal units are in cm / second
 			mavlink_heading ) ; // heading should be from 0 to 35999 meaning 0 to 359.99 degrees.
@@ -1633,44 +1618,26 @@ void mavlink_output_40hz( void )
 		// mavlink_msg_attitude_send(mavlink_channel_t chan, uint32_t time_boot_ms, float roll, float pitch, float yaw, 
 		//	float rollspeed, float pitchspeed, float yawspeed)
 	}
-/*
-<field type="uint32_t" name="onboard_control_sensors_present" print_format="0x%04x">Bitmask showing which onboard controllers and sensors are present. 
-	Value of 0: not present. Value of 1: present. 
-Indices: 0: 
-		3D gyro, 1: 3D acc, 2: 3D mag, 3: absolute pressure, 4: differential pressure, 
-		5: GPS, 6: optical flow, 7: computer vision position, 8: laser based position, 9: external ground-truth (Vicon or Leica). 
-Controllers: 
-		10: 3D angular rate control 11: attitude stabilization, 12: yaw position, 13: z/altitude control, 
-		14: x/y position control, 15: motor outputs / control</field>
 
-<field type="uint32_t" name="onboard_control_sensors_enabled" print_format="0x%04x">Bitmask showing which onboard controllers and sensors are enabled:  
-	Value of 0: not enabled. Value of 1: enabled. 
-Indices: 0: 
-		3D gyro, 1: 3D acc, 2: 3D mag, 3: absolute pressure, 4: differential pressure, 
-		5: GPS, 6: optical flow, 7: computer vision position, 8: laser based position, 9: external ground-truth (Vicon or Leica). 
-Controllers: 
-		10: 3D angular rate control 11: attitude stabilization, 12: yaw position, 13: z/altitude control, 
-		14: x/y position control, 15: motor outputs / control</field>
+#if(MSG_VFR_HUD_WITH_POSITION == 1)
+	// ATTITUDE
+	//  Roll: Earth Frame of Reference
+	spread_transmission_load = 14 ;
 
-<field type="uint32_t" name="onboard_control_sensors_health" print_format="0x%04x">Bitmask showing which onboard controllers and sensors are operational or have an error:  
-	Value of 0: not enabled. Value of 1: enabled. 
-Indices: 0: 
-		3D gyro, 1: 3D acc, 2: 3D mag, 3: absolute pressure, 4: differential pressure, 
-		5: GPS, 6: optical flow, 7: computer vision position, 8: laser based position, 9: external ground-truth (Vicon or Leica). 
-Controllers: 
-		10: 3D angular rate control 11: attitude stabilization, 12: yaw position, 13: z/altitude control, 
-		14: x/y position control, 15: motor outputs / control</field>
+	if (mavlink_frequency_send( streamRates[MAV_DATA_STREAM_POSITION] , mavlink_counter_40hz + spread_transmission_load))
+	{
+		mavlink_msg_vfr_hud_send(MAVLINK_COMM_0, 0.0, 0.0, mavlink_heading, 0, ((float) IMUlocationz._.W1), (float) -IMUvelocityz._.W1);
+	}
+#endif
 
- */
 	// SYSTEM STATUS
 	spread_transmission_load = 18 ;
 	if (mavlink_frequency_send( MAVLINK_RATE_SYSTEM_STATUS, mavlink_counter_40hz + spread_transmission_load)) 
 	{
 		mavlink_msg_sys_status_send(MAVLINK_COMM_0,
-				// Not currently sending information about sensors 
-			0,	// Onboard control sensors present bitfield
-			0,	// Onboard control sensors enabled bitfield
-			0,	// Onboard control sensors health bitfield
+			0 , // Sensors fitted
+			0,  // Sensors enabled
+			0, 	// Sensor health
 		    udb_cpu_load() * 10, 
 			0,                   // Battery voltage in mV
 			0 ,                  // Current
@@ -1709,31 +1676,6 @@ Controllers:
 				(uint16_t) (udb_pwOut[8]>>1),
 			 	(uint8_t) 0,	// port number for more than 8 servos
 			 	(uint8_t) 0); // last item, RSSI currently not measured on UDB.
-	}
-
-	// RAW SENSORS - BAROMETER
-//
-// static inline void mavlink_msg_scaled_pressure_send(mavlink_channel_t chan, uint32_t time_boot_ms, float press_abs, float press_diff, int16_t temperature)
-//
-// static inline void mavlink_msg_raw_pressure_send(mavlink_channel_t chan, uint64_t time_usec, 
-//  int16_t press_abs, int16_t press_diff1, int16_t press_diff2, int16_t temperature)
-//
-	spread_transmission_load = 27 ;
-	if (mavlink_frequency_send(MAVLINK_FREQ_PRESSURE_RAW, mavlink_counter_40hz + spread_transmission_load))
-	{ 				
-//static inline long get_barometer_pressure(void);
-//static inline int get_barometer_temperature(void);
-		int16_t press_abs;
-		int16_t press_diff1;
-		int16_t press_diff2;
-		int16_t temperature;
-
-		press_abs = get_barometer_pressure();
-		temperature = get_barometer_temperature();
-
-		mavlink_msg_raw_pressure_send(MAVLINK_COMM_0, usec,
-					press_abs, press_diff1, press_diff2, temperature);
-
 	}
 
 	// RAW SENSORS - ACCELOREMETERS and GYROS

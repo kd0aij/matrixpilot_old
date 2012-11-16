@@ -215,6 +215,43 @@
 	#error("ANALOG_RSSI_INPUT_CHANNEL > NUM_ANALOG_INPUTS.")
 #endif
 
+// Check Sonar settings
+#if (USE_PPM_INPUT != 1 && NUM_INPUTS > 7 && USE_SONAR == 1 )
+	#error("SONAR INPUT on PWM INPUT 8 in Conflict with NUMBER of PWM NUM_INPUTS which is 8 or more")
+#endif
+
+#if ((BOARD_TYPE != UDB4_BOARD ) && ( USE_SONAR == 1 ))         
+	#error("SONAR DEVICE only supported on the UDB4") 
+#endif 
+
+#if (( SONAR_ALTITUDE == 1 ) && (BOARD_TYPE != UDB4_BOARD ) && ( USE_SONAR != 1 ))         
+	#error("SONAR ALTITUDE can only be turned on with USE_SONAR on and with the UDB4.") 
+#else
+	#if (( SONAR_ALTITUDE == 1 ) && ( USE_SONAR != 1 ))         
+		#error("SONAR ALTITUDE is only supported with USE_SONAR on.") 
+	#endif 
+#endif 
+
+
+// Check Barometer settings
+#if ((BOARD_TYPE != UDB4_BOARD ) && ( USE_BAROMETER == 1 ))         
+	#error("SONAR DEVICE only supported on the UDB4") 
+#endif 
+#if ((USE_DEBUG_IO == 1 ) && ( USE_BAROMETER != 1 ))         
+	#error("USE_DEBUG_IO can only be set to 1 with USE_BAROMETER set to 1.") 
+#endif 
+#if (( BAROMETER_ALTITUDE == 1 ) && (BOARD_TYPE != UDB4_BOARD ) && ( USE_BAROMETER != 1 ))         
+	#error("BAROMETER_ALTITUDE can only be set to 1 with USE_BAROMETER on and works only with the UDB4.") 
+#else
+	#if (( BAROMETER_ALTITUDE == 1 ) && ( USE_BAROMETER != 1 ))         
+		#error("BAROMETER_ALTITUDE can only be set to 1 with USE_BAROMETER set to 1.") 
+	#endif 
+	#if (( USE_PA_PRESSURE == 1 ) && (USE_BAROMETER != 1 ))        
+		#error("USE_PA_PRESSURE can only be set to 1 with USE_BAROMETER set to 1.") 
+	#endif 
+#endif 
+
+
 // Check Magnetometer Options
 #if ( MAG_YAW_DRIFT == 1 )
 #ifdef MAG_DIRECT

@@ -80,9 +80,7 @@ void udb_init_GPS(void)
 
 void udb_gps_set_rate(long rate)
 {
-#ifndef USE_DEBUG_IO
 	U1BRG = UDB_BAUD(rate) ;
-#endif
 	return ;
 }
 
@@ -95,13 +93,9 @@ boolean udb_gps_check_rate(long rate)
 
 void udb_gps_start_sending_data(void)
 {
-#ifndef USE_DEBUG_IO
 	_U1TXIF = 1 ; // fire the tx interrupt
-#endif
 	return ;
 }
-
-#ifndef USE_DEBUG_IO
 
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
@@ -141,8 +135,6 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U1RXInterrupt(void)
 	interrupt_restore_corcon ;
 	return ;
 }
-
-#endif // !USE_DEBUG_IO
 
 
 

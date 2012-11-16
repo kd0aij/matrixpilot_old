@@ -23,12 +23,12 @@
 #include "I2C.h"
 #include "barometer.h"
 
-#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == MADRE_BOARD)
+#if (BOARD_TYPE == UDB4_BOARD)// || BOARD_TYPE == MADRE_BOARD)
 
 #if (BAROMETER_ALTITUDE == 1)
 
 #define BMP085_ADDRESS 0xEE  // I2C address of BMP085
-
+/*
 #if( BOARD_TYPE == UDB4_BOARD)
 	#define USE_BMP085_ON_I2C1  0
 	#define USE_BMP085_ON_I2C2  1
@@ -36,7 +36,7 @@
 	#define USE_BMP085_ON_I2C1  1
 	#define USE_BMP085_ON_I2C2  0	
 #endif
-
+*/
 // BMP085 oversampling can be set from 0 thru 3
 //#define OSS 3
 //#define OSS 2
@@ -64,12 +64,12 @@ typedef union
 static barCalib_union_t bc;
 static long b5;
 
-static const unsigned char bmp085read_barCalib[] = { 0xAA } ;	// Address of the first register to read
-static const unsigned char bmp085read_barTemp[]  = { 0x2E } ;
-static const unsigned char bmp085read_barPres[]  = { 0x34 + (OSS<<6) } ;
-static const unsigned char bmp085read_barData[]  = { 0xF6 } ;
-static const unsigned char bmp085read_index[]    = { 0xAA } ;	// Address of the first calibration register to read
-static const unsigned char bmp085write_index[]   = { 0xF4 } ;	// Address of the command register to write
+static unsigned char bmp085read_barCalib[] = { 0xAA } ;	// Address of the first register to read
+static unsigned char bmp085read_barTemp[]  = { 0x2E } ;
+static unsigned char bmp085read_barPres[]  = { 0x34 + (OSS<<6) } ;
+static unsigned char bmp085read_barData[]  = { 0xF6 } ;
+static unsigned char bmp085read_index[]    = { 0xAA } ;	// Address of the first calibration register to read
+static unsigned char bmp085write_index[]   = { 0xF4 } ;	// Address of the command register to write
 
 static unsigned char barData[3];
 
@@ -80,17 +80,17 @@ void ReadBarTemp_callback( boolean I2CtrxOK );
 void ReadBarPres_callback( boolean I2CtrxOK );
 void ReadBarCalib_callback( boolean I2CtrxOK );
 
-#if (USE_BMP085_ON_I2C1 == 1)
+/*#if (USE_BMP085_ON_I2C1 == 1)
 	#define I2C_Normal		I2C1_Normal
 	#define I2C_Read		I2C1_Read
 	#define I2C_Write		I2C1_Write
 	#define I2C_reset		I2C1_reset
-#elif (USE_BMP085_ON_I2C2 == 1)
+#elif (USE_BMP085_ON_I2C2 == 1)*/
 	#define I2C_Normal		I2C2_Normal
 	#define I2C_Read		I2C2_Read
 	#define I2C_Write		I2C2_Write
 	#define I2C_reset		I2C2_reset
-#endif
+//#endif
 
 
 barometer_callback_funcptr barometer_callback = NULL;

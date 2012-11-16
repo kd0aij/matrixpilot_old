@@ -23,13 +23,19 @@
 // or the newer HMC5883L, by uncommenting one of the lines below.
 // In either case, it is assumed you have one of the diydrones breakout boards.
 // Pin edge of the board should face the front of the plane, component side upward.
+// HMC5843 is the 3DRobotics HMC5843 (now out of production).
+// HMC5883L is the 3DRobotics HMC5883L
+// HMC5883L_SF is the SparkFun HMC5883L
+
 //#define HMC5843
-#define HMC5883L
+//#define HMC5883L
+#define HMC5883L_SF
 
 // Define magneticDeclination to be the magnectic declination, in degrees, measured
 // clockwise from the north, east is plus, west is minus.
-
-#define MAGNETICDECLINATION 0
+//  Mississauga, ON is Lat 45.58 N and Long 79.65 W, Mag. Decl. therefore is 10deg21' W or -10.35 degrees
+//  Bennet Field Springvale, ON is Lat 42deg58' N and Long 80deg9' W, Mag. Decl. therefore is 9deg48' W or -9.48 degrees
+#define MAGNETICDECLINATION -10.35  // 0
 
 // Set to 0 for fixed declination angle or 1 for variable declination angle
 #define DECLINATIONANGLE_VARIABLE 0
@@ -51,11 +57,11 @@
 // Note: right now, if MAG_DIRECT is selected, UDB board orientation must be ORIENTATION_FORWARDS
 // Simply define one of the above
 
-#define MAG_FORWARDS
+//#define MAG_FORWARDS
 //#define MAG_BACKWARDS
 //#define MAG_INVERTED
 //#define MAG_FLIPPED
-//#define MAG_DIRECT
+#define MAG_DIRECT
 
 
 
@@ -150,6 +156,58 @@
 #define MAG_X_SIGN +
 #define MAG_Y_SIGN -
 #define MAG_Z_SIGN +
+#endif
+
+#ifdef MAG_BACKWARDS
+#define MAG_X_AXIS 0
+#define MAG_Y_AXIS 2
+#define MAG_Z_AXIS 1
+#define MAG_X_SIGN -
+#define MAG_Y_SIGN +
+#define MAG_Z_SIGN -
+#endif
+
+#ifdef MAG_INVERTED
+#define MAG_X_AXIS 0
+#define MAG_Y_AXIS 2
+#define MAG_Z_AXIS 1
+#define MAG_X_SIGN -
+#define MAG_Y_SIGN -
+#define MAG_Z_SIGN +
+#endif
+
+#ifdef MAG_FLIPPED
+#define MAG_X_AXIS 0
+#define MAG_Y_AXIS 2
+#define MAG_Z_AXIS 1
+#define MAG_X_SIGN +
+#define MAG_Y_SIGN +
+#define MAG_Z_SIGN +
+#endif
+
+#define MAG_GAIN 1000.0
+#endif
+
+
+// SparkFun HMC5883L mag
+#ifdef HMC5883L_SF
+
+#ifdef MAG_FORWARDS
+#define MAG_X_AXIS 0
+#define MAG_Y_AXIS 2
+#define MAG_Z_AXIS 1
+#define MAG_X_SIGN +
+#define MAG_Y_SIGN -
+#define MAG_Z_SIGN -
+#endif
+
+#ifdef MAG_DIRECT
+#define MAG_X_AXIS 2
+#define MAG_Y_AXIS 0
+#define MAG_Z_AXIS 1
+#define MAG_X_SIGN +
+#define MAG_Y_SIGN +
+#define MAG_Z_SIGN -
 #endif
 
 #ifdef MAG_BACKWARDS

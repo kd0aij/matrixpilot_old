@@ -2,7 +2,7 @@
 //
 //    http://code.google.com/p/gentlenav/
 //
-// Copyright 2009-2011 MatrixPilot Team
+// Copyright 2009-2012 MatrixPilot Team
 // See the AUTHORS.TXT file for a list of authors of MatrixPilot.
 //
 // MatrixPilot is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-
+ 
 ////////////////////////////////////////////////////////////////////////////////
 // options.h
-// Bill Premerlani's UAV Dev Board
+// Bill Premerlani's UAV Dev Board 
 // 
 // This file includes all of the user-configuration for this firmware,
 // with the exception of waypoints, which live in the waypoints.h file.
@@ -30,12 +30,12 @@
 // specific planes located in the MatrixPilot/example-options-files directory.
 // You can use one of those files by replacing this file with that one.
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Support for console debug messages sent to the GPS serial port.
-//   makes stdio printf work using HILSIM connection cable.
-#define USE_DEBUG_IO						1
-
+///////////////////////////////////////////////////////////////////////////////
+// /////////      Customized for EZAPS24 Custom FPV airplane        ///////////
+//
+// 	   with modifications to support Magnetometer, Sonar and Barometer sensors
+//  For Precision landing, enhanced LOGO, navigation and deadreckoning functionalities
+//  BOM: UDB4, SF HMC5883L magnetometer, Sonar Maxbotix MB1230, BMP085 Barometer, Mediatek GPS
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
@@ -90,7 +90,7 @@
 // Roll, Pitch, and Yaw Stabilization
 // Set any of these to 0 to disable the stabilization in that axis.
 #define ROLL_STABILIZATION_AILERONS			1
-#define ROLL_STABILIZATION_RUDDER			0
+#define ROLL_STABILIZATION_RUDDER			1
 #define PITCH_STABILIZATION					1
 #define YAW_STABILIZATION_RUDDER			1
 #define YAW_STABILIZATION_AILERON			1
@@ -116,7 +116,7 @@
 // altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED				AH_FULL
+#define ALTITUDEHOLD_STABILIZED				AH_PITCH_ONLY
 #define ALTITUDEHOLD_WAYPOINT				AH_FULL
 
 // Speed Control
@@ -128,8 +128,8 @@
 
 // Inverted flight
 // Set these to 1 to enable stabilization of inverted flight in stabilized and/or waypoint modes.
-#define INVERTED_FLIGHT_STABILIZED_MODE		0
-#define INVERTED_FLIGHT_WAYPOINT_MODE		0
+#define INVERTED_FLIGHT_STABILIZED_MODE		1
+#define INVERTED_FLIGHT_WAYPOINT_MODE		1
 
 // Hovering
 // Set these to 1 to enable stabilization of hovering in stabilized and/or waypoint modes.
@@ -148,12 +148,39 @@
 // the magnetometerOptions.h file, including declination and magnetometer type.
 #define MAG_YAW_DRIFT 						1
 
-// Define BAROMETER_ALTITUDE to be 1 to use barometer for altitude correction.
-// Otherwise, if set to 0 only the GPS will be used.
-// If you select this option, you also need to set barometer options in
-// the barometerOptions.h file, including takeoff location altitude and/or sea level pressure
-// at the time of initialisation.
-#define BAROMETER_ALTITUDE 					1
+////////////////////////////////////////////////////////////////////////////////
+// Works with  only UDB4. This feature can only be turned on with the USE_BAROMETER set to 1, below.
+// Design for recalibrating altitude for enhaced accuracy in navigation, particularly trajectory.  
+// Otherwise, set to 0 to use GPS and IMU estimated ALTITUDE. 
+// If set to 1, barometer altitude will be used to recalibrate altitude in navigation and 
+// deadreckoning, starting 0 to 20m above altitude range, depending on the whether a SONAR sensor 
+// is attached and if so, what sonar sensor class used is used.
+#define BAROMETER_ALTITUDE 					1    // UNTESTED
+
+// FOR DEBUGGING TRIGGER LOCATION of barometer functions altimeter_calibrate() and estAltitude() 
+//  0- default original; 1- states.c (orig); 2- gpsParseCommon.c; 3. altitudeCntrl.c and 4- libDCM.c
+#define BAR_RUN_FROM	 					0    
+#define EST_ALT 							1   //  DEBUG: turn on (1) or off (0) run of estAltitude()  
+
+
+// if turned off, barometric alt will be base on ASL ground altitude defined below
+#define USE_PA_PRESSURE						1    // UNTESTED
+
+// PA_PRESSURE below is for Ontario, Canada as of 10-22-2012, 1016.8 hPA from
+// http://www.wunderground.com/cgi-bin/findweather/hdfForecast?query=Mississauga%2C+Canada
+#define PA_PRESSURE							102731    // UNTESTED
+
+// Home position fix above-sea-level(ASL) ground altitude in centimeter, USED BY sonar and barometer
+// altitude computation when USE_PA_PRESSURE is set to 0 and a barometer sensor is enabled
+#define ASL_GROUND_ALT						16950  // in centimeters, ground altitude of OMFC, SF
+
+////////////////////////////////////////////////////////////////////////////////
+// Works with  only UDB4. This feature can only be combined with USE_SONAR set to 1, below.
+// Design for supporting autonomous and soft precision landing flight plan in LOGO.  
+// Otherwise, set to 0 to use GPS and IMU estimated ALTITUDE. 
+// When enabled, sonar altitude will be used to recalibrate altitude in navigation and 
+// deadreckoning within 4 to 22m altitude range, depending on the sensor class used.
+#define SONAR_ALTITUDE 						1
 
 // Racing Mode
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
@@ -172,14 +199,24 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Configure Input and Output Channels
 //
+// For classic UDB boards:
 // Use a single PPM input connection from the RC receiver to the UDB on RC input channel 4.
 // This frees up RC inputs 3, 2, and 1 to act as RC outputs 4, 5, and 6.
-// If you're not sure, leave USE_PPM_INPUT set to 0.
-// PPM_NUMBER_OF_CHANNELS is the number of channels sent on the PWM signal.  This is
-// often different from the NUM_INPUTS value below, and should usually be left at 8.
 // If PPM_ALT_OUTPUT_PINS is set to 0, the 9 available RC outputs will be sent to the
 // following pins, in this order: Out1, Out2, Out3, In3, In2, In1, RE0, RE2, RE4.
 // With it set to 1, the RC outputs will be in this alternate configuration:
+// Out1, Out2, Out3, RE0, RE2, RE4, In3, In2, In1.
+// 
+// For UDB4 boards:
+// Use a single PPM input connection from the RC receiver to the UDB on RC input channel 1.
+// The 8 standard output channels remain unaffected.  2 additional output channels are available 
+// on pins RA4 and RA1.
+// 
+// For all boards:
+// If you're not sure, leave USE_PPM_INPUT set to 0.
+// PPM_NUMBER_OF_CHANNELS is the number of channels sent on the PWM signal.  This is
+// often different from the NUM_INPUTS value below, and should usually be left at 8.
+// 
 // Out1, Out2, Out3, RE0, RE2, RE4, In3, In2, In1.
 #define USE_PPM_INPUT						0
 #define PPM_NUMBER_OF_CHANNELS				8
@@ -189,12 +226,13 @@
 // NUM_INPUTS: Set to 1-5 (or 1-8 when using PPM input)
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
-#define NUM_INPUTS							5
+#define NUM_INPUTS							7
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
+/*  DEFAULT
 #define THROTTLE_INPUT_CHANNEL				CHANNEL_3
 #define AILERON_INPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
@@ -208,6 +246,24 @@
 #define PASSTHROUGH_B_INPUT_CHANNEL			CHANNEL_UNUSED
 #define PASSTHROUGH_C_INPUT_CHANNEL			CHANNEL_UNUSED
 #define PASSTHROUGH_D_INPUT_CHANNEL			CHANNEL_UNUSED
+*/
+//                                                              physical PPM IN channels to AR8000 Rx / DX8 Tx
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_1            // PPM/C1 to RxC1  Throttle
+#define AILERON_INPUT_CHANNEL				CHANNEL_2 		     // PPM/C2 to RxC2  Ail
+#define ELEVATOR_INPUT_CHANNEL				CHANNEL_3            //	PPM/C3 to RxC3  Elev
+#define RUDDER_INPUT_CHANNEL				CHANNEL_4            // PPM/C4 to RxC4  Rudder
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_5            // PPM/C5 to RxC6  AUX1, flight mode
+#define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED       
+#define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED       
+#define CAMERA_MODE_INPUT_CHANNEL			CHANNEL_UNUSED
+#define OSD_MODE_SWITCH_INPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_A_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_B_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_C_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_D_INPUT_CHANNEL			CHANNEL_UNUSED
+#define LOGO_A_CHANNEL						CHANNEL_6		  	 // PPM/C6 to RxC7  AUX2,3p toggle, 1st LOGO plan change 	  
+#define LOGO_B_CHANNEL						CHANNEL_7		  	 // PPM/C7 to RxC8  AUX3,3p toggle, 2nd LOGO plan change 
+#define LOGO_C_CHANNEL						CHANNEL_UNUSED		  	 // Input 8 to RxC5  GR,2p toggle, 3rd LOGO HI/LO speed select
 
 // NUM_OUTPUTS: Set to 3, 4, 5, or 6
 //   3 enables only the standard 3 output channels
@@ -215,7 +271,7 @@
 //   5 also enables E2 as the 5th output channel
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
-#define NUM_OUTPUTS							4
+#define NUM_OUTPUTS							5
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -228,11 +284,27 @@
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
 // 
+/*  DEFAULT
 #define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
 #define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
+#define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
+#define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
+#define PASSTHROUGH_A_OUTPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_B_OUTPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_C_OUTPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_D_OUTPUT_CHANNEL		CHANNEL_UNUSED
+*/
+//                                                                physical pin to servo/controls connections
+//  UDB4/UDB3/PPM_ALT_OUTPUT_PINS=1 OPTIONS 
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3            // Out3 to ESC/BL Motor  
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_4            // Out4/IN3/RE0 to AIL 1
+#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2            // Out2 to Elevator 
+#define RUDDER_OUTPUT_CHANNEL				CHANNEL_1            // Out1 to Rudder 
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5	     	 // Out5/IN2/RE2 to AIL 2
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
@@ -248,9 +320,9 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
-#define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
-#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
+#define AILERON_CHANNEL_REVERSED			0 // normal
+#define ELEVATOR_CHANNEL_REVERSED		 	1 // reversed
+#define RUDDER_CHANNEL_REVERSED				0 // normal
 #define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
 #define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
@@ -293,7 +365,7 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN					1500
+#define FAILSAFE_INPUT_MIN					2200
 #define FAILSAFE_INPUT_MAX					4500
 
 // FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
@@ -323,38 +395,73 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB,
-// SERIAL_UDB_EXTRA,SERIAL_MAVLINK, SERIAL_CAM_TRACK, SERIAL_MAGNETOMETER, or SERIAL_OSD_REMZIBI)
+// SERIAL_UDB_EXTRA,SERIAL_MAVLINK, SERIAL_CAM_TRACK, or SERIAL_OSD_REMZIBI)
 // This determines the format of the output sent out the spare serial port.
-// Note that SERIAL_OSD_REMZIBI only works with a ublox GPS - currently unimplemented.
-// SERIAL_MAGNETOMETER outputs detailed results from the magnetometer.
+// Note that SERIAL_OSD_REMZIBI only works with a ublox GPS.
 // SERIAL_UDB_EXTRA will add additional telemetry fields to those of SERIAL_UDB.
 // SERIAL_UDB_EXTRA can be used with the OpenLog without characters being dropped.
 // SERIAL_UDB_EXTRA may result in dropped characters if used with the XBEE wireless transmitter.
 // SERIAL_CAM_TRACK is used to output location data to a 2nd UDB, which will target its camera at this plane.
 // SERIAL_MAVLINK is a bi-directional binary format for use with QgroundControl, HKGCS or MAVProxy (Ground Control Stations.)
 // SERIAL_MAVLINK is only supported on the UDB4 to ensure that sufficient RAM is available.
+// SERIAL_UDB_SONAR for debugging sonar sensor displays data feed, should be combined with USE_SONAR_ON_PWM_INPUT_8 set to 1
 // Note that SERIAL_MAVLINK defaults to using a baud rate of 57600 baud (other formats default to 19200)
+// In UDB3, choose SERIAL_NONE if OSD is enabled to fit in available memory
 
-//#define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
-#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAVLINK
-//#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAGNETOMETER
-//#define SERIAL_OUTPUT_FORMAT 	SERIAL_UDB_EXTRA
+#define SERIAL_OUTPUT_FORMAT 			SERIAL_UDB_EXTRA
 
 // MAVLink requires an aircraft Identifier (I.D) as it is deaigned to control multiple aircraft
 // Each aircraft in the sky will need a unique I.D. in the range from 0-255
-#define MAVLINK_SYSID	55
+#define MAVLINK_SYSID	155
 
+////////////////////////////////////////////////////////////////////////////////
+// Works with  only UDB4. The barometer sensor must be plugged in at the UDB4's I2C pins.
+//
+// This feature is optionally combined with BAROMETER ALTITUDE set to 1, above.
+// When enabled, barometer altitude will be available as systems value in LOGO functions and in 
+// telemetry.  With BAROMETER ALTITUDE set to 1, above and BAR_ALT~ LOGO function used, barometer 
+// altitude will be used in deadreckoning for altitude correction, on ground or 20m above altitude 
+// range, complementing the sonar's altitude range if enabled below and above.
+// Recommended sensors:  BMP085 with .25 m accuracy and altitude range anywhere between -1640 to about 
+// 29,000 ft  (manufacturer's data). 
+// uncomment to enable for testing and debugging barometer program only
+// #define TEST_WITH_DATASHEET_VALUES  			
+#define USE_BAROMETER						1  
+
+////////////////////////////////////////////////////////////////////////////////
+// Works with UDB4 only
+// MAXBOTIX SONAR LANDING FLARE
+// Designed for use with MAXBOTIX MB1230 and 2200 for MB1260 XL
+// http://www.maxbotix.com/Ultrasonic_Sensors/MB1230.htm
+// Can be used on INPUT 8 of the UDB4 if that is not used for a channel input.
+// Will return distance to ground in meters and compensate for roll subject to 
+// receiving a returned sonar signal.
+// This option is designed to be used with Logo Flight Planning.
+// Logo allows the user to Interrupt a Landing and flare, or Go Around, based on sonar distance to ground.
+// Note: Set to 1 to enable a sonar sensor device and for debugging option 
+//     SERIAL_OUTPUT_FORMAT may be defined as SERIAL_SONAR abouve 
+//     If this is turned off, when used in LOGO, ALT_SNR will have a 0 default value
+//     Turned on the baud rate for the SERIAL_OUTPUT_FORMAT will default to 57600. In this case, adjust
+//     any serial telemetry logging and transmitting device to same baud rate.
+
+#define USE_SONAR							1
+
+// This specifies the tested effective and vendor max range of the type of sonar being used: . 
+// 	400 cm (4 m) effective and 750 cm max (vendor rated) for an MB1230 XL-MaxSonar-EZ3 
+// 	500 cm (5 m) effective and 1000 cm max (10 m vendor rated) for an  MB1261 XL-MaxSonar-EZL1
+#define EFFECTV_SONAR_ALTRANGE				500
+#define MAXIMUM_SONAR_ALTRANGE      		1000
 
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
 // USE_OSD enables the OSD system.  Customize the OSD Layout in the osd_layout.h file.
-#define USE_OSD								0
+#define USE_OSD								1
 
 // NUM_ANALOG_INPUTS: Set to 0, 1, or 2
 //   1 enables Radio In 1 as an analog Input
 //   2 also enables Radio In 2 as another analog Input
 //   NOTE: Can only be set this higher than 0 if USE_PPM_INPUT is enabled above.
-#define NUM_ANALOG_INPUTS					0
+#define NUM_ANALOG_INPUTS					2
 
 // Channel numbers for each analog input
 //   - Only assign each channel number to one analog sensor
@@ -378,8 +485,8 @@
 // to match your Receiver's RSSI format.  Note that some receivers use a higher voltage to 
 // represent a lower signal strength, so you may need to set MIN higher than MAX.
 
-#define ANALOG_CURRENT_INPUT_CHANNEL		CHANNEL_UNUSED
-#define ANALOG_VOLTAGE_INPUT_CHANNEL		CHANNEL_UNUSED
+#define ANALOG_CURRENT_INPUT_CHANNEL		CHANNEL_2
+#define ANALOG_VOLTAGE_INPUT_CHANNEL		CHANNEL_1
 #define ANALOG_RSSI_INPUT_CHANNEL			CHANNEL_UNUSED
 
 // RSSI - RC Receiver signal strength
@@ -435,10 +542,17 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
+/*
 #define ROLLKP								0.20
 #define ROLLKD								0.05
 #define YAWKP_AILERON						0.10
 #define YAWKD_AILERON						0.05
+#define AILERON_BOOST						1.00
+*/
+#define ROLLKP								0.25  // 0.25
+#define ROLLKD								0.05  // 0.08
+#define YAWKP_AILERON						0.12  // 0.08
+#define YAWKD_AILERON						0.04
 #define AILERON_BOOST						1.00
 
 // Elevator/Pitch Control Gains
@@ -447,15 +561,22 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
+/*
 #define PITCHGAIN							0.10
 #define PITCHKD								0.04
 #define RUDDER_ELEV_MIX						0.20
 #define ROLL_ELEV_MIX						0.05
 #define ELEVATOR_BOOST						0.50
+*/
+#define PITCHGAIN							0.11  // 0.12
+#define PITCHKD								0.04  // 0.07
+#define RUDDER_ELEV_MIX						0.18  
+#define ROLL_ELEV_MIX						0.05
+#define ELEVATOR_BOOST						0.50
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
 // Use this to add extra "up" elevator while the plane is inverted, to avoid losing altitude.
-#define INVERTED_NEUTRAL_PITCH	 			8.0
+#define INVERTED_NEUTRAL_PITCH	 			8.8 //  def 8.0
 
 // Rudder/Yaw Control Gains
 // YAWKP_RUDDER is the proportional feedback gain for rudder navigation
@@ -465,11 +586,19 @@
 // MANUAL_AILERON_RUDDER_MIX is the fraction of manual aileron control to mix into the rudder when
 // in stabilized or waypoint mode.  This mainly helps aileron-initiated turning while in stabilized.
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
+/*
 #define YAWKP_RUDDER						0.05
 #define YAWKD_RUDDER						0.05
 #define ROLLKP_RUDDER						0.06
 #define ROLLKD_RUDDER						0.05
 #define MANUAL_AILERON_RUDDER_MIX			0.00
+#define RUDDER_BOOST						1.00
+*/
+#define YAWKP_RUDDER						0.11   //  0.08
+#define YAWKD_RUDDER						0.06   //  0.12
+#define ROLLKP_RUDDER						0.08   //  0.06
+#define ROLLKD_RUDDER						0.05
+#define MANUAL_AILERON_RUDDER_MIX			0.02
 #define RUDDER_BOOST						1.00
 
 // Gains for Hovering
@@ -568,30 +697,30 @@
 // These settings are only used when Altitude Hold is enabled above.
 
 // Min and Max target heights in meters.  These only apply to stabilized mode.
-#define HEIGHT_TARGET_MIN					25.0
-#define HEIGHT_TARGET_MAX					100.0
+#define HEIGHT_TARGET_MIN					4.0    // 25.
+#define HEIGHT_TARGET_MAX					1000.0  // def 100.0, 500m or 1640.42ft, 600m or 1968.5ft 
 
 // The range of altitude within which to linearly vary the throttle
 // and pitch to maintain altitude.  A bigger value makes altitude hold
 // smoother, and is suggested for very fast planes.
-#define HEIGHT_MARGIN						10
+#define HEIGHT_MARGIN						6  // 10
 
 // Use ALT_HOLD_THROTTLE_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_THROTTLE_MAX and ALT_HOLD_THROTTLE_MIN
 // when within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
-#define ALT_HOLD_THROTTLE_MIN				0.35
-#define ALT_HOLD_THROTTLE_MAX				1.0
+#define ALT_HOLD_THROTTLE_MIN				0.38  // def 0.35, opt. 0.38 lpl and optimum pwr mgt.
+#define ALT_HOLD_THROTTLE_MAX				0.68  //def 1.00, 0.72 opt. for OSD add'l payload, 0.68 for optimum pwr mgt.
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_PITCH_MAX and ALT_HOLD_PITCH_MIN when
 // within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
-#define ALT_HOLD_PITCH_MIN					-15.0
-#define ALT_HOLD_PITCH_MAX					 15.0
-#define ALT_HOLD_PITCH_HIGH					-15.0
+#define ALT_HOLD_PITCH_MIN					-16.0  //def 15
+#define ALT_HOLD_PITCH_MAX					 17.0  //def 15
+#define ALT_HOLD_PITCH_HIGH					-16.0  //def 15
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -621,7 +750,7 @@
 // Set this to either FP_WAYPOINTS or FP_LOGO
 // The Waypoint definitions and options are located in the waypoints.h file.
 // The Logo flight plan definitions and options are located in the flightplan-logo.h file.
-#define FLIGHT_PLAN_TYPE					FP_WAYPOINTS
+#define FLIGHT_PLAN_TYPE					FP_LOGO
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -653,13 +782,18 @@
 //#define ID_VEHICLE_REGISTRATION "TW2-PDH-UK"
 //#define ID_LEAD_PILOT "Pete Hollands"
 //#define ID_DIY_DRONES_URL "http://www.diydrones.com/profile/PeterHollands"
-#define ID_VEHICLE_MODEL_NAME "Not Defined"
-#define ID_VEHICLE_REGISTRATION "Not Defined"
-#define ID_LEAD_PILOT "Not Defined"
-#define ID_DIY_DRONES_URL "http://www.diydrones.com"
+#define ID_VEHICLE_MODEL_NAME "EZAPS24-B4r1714"
+#define ID_VEHICLE_REGISTRATION "EZA-B4r1782"
+#define ID_LEAD_PILOT "DB-EZFLIER"
+#define ID_DIY_DRONES_URL "http://www.ezflightrc.com"
 
 ////////////////////////////////////////////////////////////////////////////////
 // The following define is used to enable vertical initialization for VTOL
 // To enable vertical initialization, uncomment the line
 //#define INITIALIZE_VERTICAL
+
+////////////////////////////////////////////////////////////////////////////////
+// The following define is used to turn the new acceleration compensation algorithm on or off
+// To enable the new algorithm, uncomment the line
+//#define NEW_ACCELERATION_COMPENSATION
 

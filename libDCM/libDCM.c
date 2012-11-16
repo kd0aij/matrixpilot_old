@@ -38,6 +38,32 @@ union dcm_fbts_word dcm_flags ;
 #define GPS_COUNT		 1000		// 25 seconds at 40 Hz
 
 
+#if ( HILSIM == 1 )
+#if ( USE_VARIABLE_HILSIM_CHANNELS != 1 )
+unsigned char SIMservoOutputs[] = {	0xFF, 0xEE,		//sync
+									0x03, 0x04,		//S1
+									0x05, 0x06,		//S2
+									0x07, 0x08,		//S3
+									0x09, 0x0A,		//S4
+									0x0B, 0x0C,		//S5
+									0x0D, 0x0E,		//S6
+									0x0F, 0x10,		//S7
+									0x11, 0x12,		//S8
+									0x13, 0x14		//checksum
+									};
+ #define HILSIM_NUM_SERVOS 8
+#else
+#define HILSIM_NUM_SERVOS NUM_OUTPUTS
+unsigned char SIMservoOutputs[(NUM_OUTPUTS*2) + 5] = {	0xFE, 0xEF,		//sync
+														0x00			// output count
+																		// Two checksum on the end
+														};
+#endif	// USE_VARIABLE_HILSIM_CHANNELS
+
+void send_HILSIM_outputs( void ) ;
+#endif // HILSIM
+
+
 void dcm_init( void )
 {
 	dcm_flags.W = 0 ;
@@ -76,28 +102,28 @@ void read_sensors(void)
 {
 	read_gyros() ; // record the average values for both DCM and for offset measurements
 	read_accel() ;
-	udb_read_gyro_accel_restart();
+//	udb_read_gyro_accel_restart();  //compile warning:   implicit declaration of function 
 	
 	return ;
 }
 
-void do_I2C_stuff(void) // currently called at 40Hz
+void runI2CSensFunc(void) // currently called at 40Hz
 {
 	static int toggle = 0;
 	static int counter = 0;
 
 	if (toggle) {
 		if (counter++ > 0) {
-#if (MAG_YAW_DRIFT == 1)
-			rxMagnetometer(udb_magnetometer_callback);
-#endif
+			#if (MAG_YAW_DRIFT == 1)						//  uses I2C2
+				rxMagnetometer(udb_magnetometer_callback);
+			#endif
 			counter = 0;
 			toggle = 0;
 		}
 	} else {
-#if (BAROMETER_ALTITUDE == 1)
-		rxBarometer(udb_barometer_callback);
-#endif
+		#if (USE_BAROMETER == 1)      					
+			rxBarometer(udb_barometer_callback);			// RUNS BAROMETER FUNCTION~ in esAltitude.c
+		#endif
 		if (counter++ > 6) {
 			counter = 0;
 			toggle = 1;
@@ -105,20 +131,29 @@ void do_I2C_stuff(void) // currently called at 40Hz
 	}
 }
 
+void runBarFunc(void) // currently called at 40Hz
+{
+//  1- states.c (orig); 2- gpsParseCommon.c; 3. altitudeCntrl.c and 4- libDCM.c
+#if (USE_BAROMETER == 1)    
+	#if (BAR_RUN_FROM == 4) //   DEBUG runtime location
+		if ( udb_heartbeat_counter % 10 == 0 )  // This is a simple counter to slow down to 40/10 hz or 4hz 
+		{
+			altimeter_calibrate() ;  	// runs BAROMETER FUNCTION in estAltitude.c
+			#if (EST_ALT == 1)
+				estAltitude() ;			// DEBUG NECESSITY FOR THIS FUNCTION in estAltitude.c
+			#endif
+		}
+	#endif
+#endif
+}
+
 void udb_callback_40hertz(void)
 {
 	read_sensors();
 
-	do_I2C_stuff();
+	runI2CSensFunc();
+	runBarFunc();   					//   debug runtime location
 
-//#if (MAG_YAW_DRIFT == 1)
-//	// This is a simple counter to do stuff at 4hz
-//	if ( udb_heartbeat_counter % 10 == 0 )
-//	{
-//		rxMagnetometer() ;
-//	}
-//#endif
-		
 	if (dcm_flags._.calib_finished) {
 		dcm_run_imu_step() ;
 	}

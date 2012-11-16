@@ -76,7 +76,7 @@ void dcm_servo_callback_prepare_outputs(void)
 		wind_gain = wind_gain_adjustment () ;
 		rollCntrl() ;
 		yawCntrl() ;
-		altitudeCntrl();
+		altitudeCntrl();    			// RUN ALL ALTITUDE RELATED FUNCTIONS
 		pitchCntrl() ;
 		servoMix() ;
 #if ( USE_CAMERA_STABILIZATION == 1 )

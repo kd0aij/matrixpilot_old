@@ -20,7 +20,6 @@
 
 
 #include "libDCM_internal.h"
-#include "deadReckoning.h"
 
 #define DR_PERIOD (int)((40/GPS_RATE)+4 )
 
@@ -61,7 +60,7 @@ fractional locationErrorEarth[] = { 0 , 0 , 0 } ;
 //	GPSvelocity - IMUvelocity
 fractional velocityErrorEarth[] = { 0 , 0 , 0 } ;
 
-fractional errorYawground[] = { 0 , 0 , 0 } ;
+extern int errorYawground[] ;
 
 void dead_reckon(void)
 {
@@ -116,7 +115,27 @@ void dead_reckon(void)
 	
 			locationErrorEarth[0] = GPSlocation.x - IMUlocationx._.W1 ;
 			locationErrorEarth[1] = GPSlocation.y - IMUlocationy._.W1 ;
-			locationErrorEarth[2] = GPSlocation.z - IMUlocationz._.W1 ;
+			//locationErrorEarth[2] = GPSlocation.z - IMUlocationz._.W1 ;
+
+			// recalibrate with sonar altitude only if within low alt range and over the field
+			#if (( SONAR_ALTITUDE == 1 ) && ( altitude_sonar_on == true ))  //  apply boolean from LOGO 
+				#if ( USE_PA_PRESSURE == 1 )
+					//add back sonar alt
+					locationErrorEarth[2] = (GPSlocation.z - ((barometer_ground_altitude+(sonar_altitude/100))));
+				#else
+					locationErrorEarth[2] = (GPSlocation.z - ((ASL_GROUND_ALT +(sonar_altitude/100)))) ;
+				#endif
+			#else
+				locationErrorEarth[2] = GPSlocation.z - IMUlocationz._.W1 ;
+			#endif
+			// TODO :  BLEND IN BAROMETER ALTITUDE AUTOMATICALY WHEN SONAR IS NOT ON
+			// recalibrate with barometric altitude only as called from LOGO
+			#if (( BAROMETER_ALTITUDE == 1 ) && ( altitude_bar_on == true ))  //  apply boolean from LOGO 
+			//	locationErrorEarth[2] = (GPSlocation.z - (barometer_altitude/100) ;  //convert if necessary
+				locationErrorEarth[2] = GPSlocation.z - barometer_altitude ;
+			#else
+				locationErrorEarth[2] = GPSlocation.z - IMUlocationz._.W1 ;
+			#endif
 
 			velocityErrorEarth[0] = GPSvelocity.x - IMUintegralAccelerationx._.W1 ;
 			velocityErrorEarth[1] = GPSvelocity.y - IMUintegralAccelerationy._.W1 ;
@@ -164,3 +183,5 @@ void dead_reckon(void)
 	
 	return ;
 }
+
+
