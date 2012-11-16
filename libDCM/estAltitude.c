@@ -72,6 +72,31 @@ void udb_barometer_callback(long pressure, int temperature, char status)  	//  *
 	}
 #endif
 
+/*  rough-in draft of new algorithm adaption pending verification and revision of barometer data & functions
+#if (USE_BAROMETER == 1)
+	void udb_barometer_callback(long pressure, int temperature, char status)
+	{
+	#if (USE_PA_PRESSURE == 1)		     							// **** OPTION TO USE PRESSURE OR HOME POSITION ALTITUDE  in options.h   ****
+		const float p0 = PA_PRESSURE;    							// **** Current pressure at sea level (Pa) defined in options.h   ****
+		altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
+		#if ( SONAR_ALTITUDE == 1 ) 
+			barometer_ground_altitude = ((float)44330 * (1 - pow(((float) barometer_pressure/p0), 0.190295))-(sonar_altitude/100));
+		#else 
+			barometer_ground_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/p0), 0.190295));
+		//return ;
+		#endif
+	#else
+		const float ground_altitude = (ASL_GROUND_ALT/100);			// **** defined HOME ASL GROUND ALTITUDE in options.h  ****
+	//	float altitude;
+	//	float sea_level_pressure;
+		barometer_pressure = pressure / 100;
+		barometer_temperature = temperature / 10;
+		sea_level_pressure = ((float)pressure / powf((1 - (ground_altitude/44330.0)), 5.255));
+	 	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm for testing
+	#endif
+	}
+#endif
+*/
 
 //   (4)   Process the data and pass them into ~~gnd variables for debugging/testing
 void estAltitude(void)    													// **** RAN FROM gpsParseCommon.c 
