@@ -22,6 +22,7 @@
 #include "libDCM.h"
 #include "../libUDB/barometer.h"
 #include "estAltitude.h"
+#include "defines.h"
 #include <stdio.h>
 
 //	The origin is recorded as the altitude of the plane during power up of the control.
@@ -53,7 +54,10 @@ void altimeter_calibrate(void)  											//   **** ORIGINALY RAN FROM states.c
 }
 
 //   (3)   Start data feed into variables from I2C2 and calculate
-#if (USE_BAROMETER == 1)            
+
+/* 
+#if (USE_BAROMETER == 1)      
+     
 void udb_barometer_callback(long pressure, int temperature, char status)  	//  ****  RAN FROM libDCM.c to acquire data from barometer_udb4.c
 	{
 	// const float ground_altitude = 132.0;	// Home altitude
@@ -61,7 +65,6 @@ void udb_barometer_callback(long pressure, int temperature, char status)  	//  *
 	//	const float p0 = 101660;     // Pressure at sea level (Pa)  -- currently according to BMCC weather station
 	float altitude;
 	float sea_level_pressure;
-
 	barometer_temperature = temperature / 10;
 	barometer_pressure = pressure / 100;
 
@@ -71,39 +74,39 @@ void udb_barometer_callback(long pressure, int temperature, char status)  	//  *
  	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm
 	}
 #endif
-
-/*  rough-in draft of new algorithm adaption pending verification and revision of barometer data & functions
-#if (USE_BAROMETER == 1)
-	void udb_barometer_callback(long pressure, int temperature, char status)
-	{
-	#if (USE_PA_PRESSURE == 1)		     							// **** OPTION TO USE PRESSURE OR HOME POSITION ALTITUDE  in options.h   ****
-		const float p0 = PA_PRESSURE;    							// **** Current pressure at sea level (Pa) defined in options.h   ****
-		altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
-		#if ( SONAR_ALTITUDE == 1 ) 
-			barometer_ground_altitude = ((float)44330 * (1 - pow(((float) barometer_pressure/p0), 0.190295))-(sonar_altitude/100));
-		#else 
-			barometer_ground_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/p0), 0.190295));
-		//return ;
-		#endif
-	#else
-		const float ground_altitude = (ASL_GROUND_ALT/100);			// **** defined HOME ASL GROUND ALTITUDE in options.h  ****
-	//	float altitude;
-	//	float sea_level_pressure;
-		barometer_pressure = pressure / 100;
-		barometer_temperature = temperature / 10;
-		sea_level_pressure = ((float)pressure / powf((1 - (ground_altitude/44330.0)), 5.255));
-	 	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm for testing
-	#endif
-	}
-#endif
 */
 
-//   (4)   Process the data and pass them into ~~gnd variables for debugging/testing
+#if (USE_BAROMETER == 1)
+	void udb_barometer_callback(long pressure, int temperature, char status)		//  ****  RAN FROM libDCM.c
+	{
+	float altitude;
+	#if (USE_PA_PRESSURE == 1)		     							// **** OPTION TO USE PRESSURE OR HOME POSITION ALTITUDE  in options.h   ****
+		const float p0 = PA_PRESSURE;    							// **** Current pressure at sea level (Pa) defined in options.h   ****
+		#if ( SONAR_ALTITUDE == 1 ) 
+			barometer_ground_altitude = ((float)44330 * (1 - pow(((float) pressure/p0), 0.190295))-(sonar_altitude/100));
+		#else 
+			barometer_ground_altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
+		#endif
+		altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
+	#else
+		float sea_level_pressure;
+		//const float ground_altitude = (ASL_GROUND_ALT/100);			// **** defined HOME ASL GROUND ALTITUDE in options.h  ****
+		barometer_ground_altitude =  (ASL_GROUND_ALT/100);
+		sea_level_pressure = ((float)pressure / powf((1 - (barometer_ground_altitude/44330.0)), 5.255));
+	 	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm for testing
+	#endif
+	barometer_pressure = pressure / 100;
+	barometer_temperature = temperature / 10;
+	barometer_altitude = altitude /100;
+	barometer_agl_altitude = (barometer_altitude - (barometer_ground_altitude * 100.0)) ;  //  compute above ground altitude
+	}
+#endif
+
+//   (4)   Process the data and pass them into ~~gnd variables for debugging/testing : this doesn' work
 void estAltitude(void)    													// **** RAN FROM gpsParseCommon.c 
 {
 	barometer_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/barometer_pressure_gnd), 0.190295));
-	barometer_agl_altitude = (barometer_altitude - (ground_altitude * 100.0)) ;  //  compute above ground altitude
-	return ;
+	return;
 }
 
 
