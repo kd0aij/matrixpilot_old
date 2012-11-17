@@ -25,7 +25,7 @@
 
 #if (BOARD_TYPE == UDB4_BOARD)// || BOARD_TYPE == MADRE_BOARD)
 
-#if (BAROMETER_ALTITUDE == 1)
+#if (USE_BAROMETER == 1)
 
 #define BMP085_ADDRESS 0xEE  // I2C address of BMP085
 /*
