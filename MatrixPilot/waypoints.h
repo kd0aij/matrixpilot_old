@@ -134,9 +134,18 @@
 // waypoints[]
 // 
 // By default the only waypoint is defined to be 75 meters above the starting point.
+//
+//const struct waypointDef waypoints[] = {
+//		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
+//} ;
 
+// X is positive as you move east
+// Y is positive as you move north
 const struct waypointDef waypoints[] = {
-		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
+	{ { -100, 100, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , 
+	{ {    0, 100, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , 
+	{ {    0,  20, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , 
+	{ {  -50,  20, 75 } , F_NORMAL , CAM_VIEW_LAUNCH }  
 } ;
 
 
@@ -153,7 +162,8 @@ const struct waypointDef waypoints[] = {
 // and after flights, since turning off the transmitter will cause the throttle to come on.
 
 const struct waypointDef rtlWaypoints[] = {
-		{ { 0, 0,  50 } , F_LOITER + F_LAND, CAM_VIEW_LAUNCH } ,
+	{ {  -100, 100, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , 
+	{ {   -50, 50, 75 } , F_LOITER , CAM_VIEW_LAUNCH }  
 } ;
 
 

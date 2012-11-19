@@ -24,16 +24,14 @@
 ;    along with ds30 Loader. If not, see <http://www.gnu.org/licenses/>.
 ;------------------------------------------------------------------------------
 
-
-		
 ;------------------------------------------------------------------------------
 ; Device
 ;------------------------------------------------------------------------------
         ;.equ __24F16KA102, 		1			;xxx uncomment and change if using PIC24F device
         ;.equ __24FJ128GA010, 		1			;xxx uncomment and change if using PIC24FJ device
         ;.equ __24HJ128GP504, 		1			;xxx uncomment and change if using PIC24HJ device
-        ;.equ __30F4013, 			1			;xxx uncomment and change if using dsPIC30F device
-        .equ __33FJ256GP710A, 		1			;xxx uncomment and change if using dsPIC33FJ device
+        .equ __30F4011, 			1			;xxx uncomment and change if using dsPIC30F device
+        ;.equ __33FJ256GP710A, 		1			;xxx uncomment and change if using dsPIC33FJ device
 
 
 ;------------------------------------------------------------------------------
@@ -45,8 +43,8 @@
 ;------------------------------------------------------------------------------
 ; User preferences
 ;------------------------------------------------------------------------------
-		.equiv 	FCY, 				25000000	;xxx speed of internal cycle clock[Hz], used to calculate uart brg and delay
-;		.equiv 	FCY, 				16000000	;xxx speed of internal cycle clock[Hz], used to calculate uart brg and delay
+;		.equiv 	FCY, 				25000000	;xxx speed of internal cycle clock[Hz], used to calculate uart brg and delay
+		.equiv 	FCY, 				16000000	;xxx speed of internal cycle clock[Hz], used to calculate uart brg and delay
 		.equiv	BLINIT,				3000		;xxx hello receive timeout [ms]
 		.equiv	HELLOTRIES,			2			;xxx number of non hello characters received before branching to the user application    
 		.equiv	BLTIME,				3000		;xxx data receive timeout [ms]
@@ -59,11 +57,11 @@
         ;.equiv	USE_UART2,			1			;xxx uncomment to use uart2
         ;.equiv	USE_UART3,			1			;xxx uncomment to use uart3
         ;.equiv	USE_UART4,			1			;xxx uncomment to use uart4
-		;.equ	USE_ALTIO,			1			;xxx uncomment to use uart 1 alternative i/o, only for dsPIC30F
-;		.equiv 	BAUDRATE, 			9600		;xxx baudrate
- 		.equiv 	BAUDRATE, 			115200		;xxx baudrate
+		.equ	USE_ALTIO,			1			;xxx uncomment to use uart 1 alternative i/o, only for dsPIC30F
+		.equiv 	BAUDRATE, 			9600		;xxx baudrate
+ 		;.equiv	BAUDRATE, 			115200		;xxx baudrate
         ;.equiv	USE_ABAUD,			1			;xxx uncomment to use auto baud rate detection, READ ERRATA FIRST        
-        .equiv	USE_BRGH,			1			;xxx uncomment to use high baud rates, READ ERRATA FIRST, not available for PIC24F		
+        ;.equiv	USE_BRGH,			1			;xxx uncomment to use high baud rates, READ ERRATA FIRST, not available for PIC24F		
 		
 		;.equiv	USE_TXENABLE,		1			;xxx uncomment to use a tx enable pin		
 		.ifdef USE_TXENABLE

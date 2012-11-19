@@ -34,7 +34,7 @@
 	.equiv		EESIZEB,		1024
 	.equiv		HAS_UART2,		1
 .endif
-.ifdef	__30F4013
+.ifdef	__30F4013a
 	.include	"p30F4013.inc"
 	.equiv		IS_30F,			1
 	.equiv		VALID_DEV,		1

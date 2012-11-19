@@ -137,6 +137,9 @@ __reset:mov		#__SP_init, WSTPTR	;initalize the Stack Pointer
 		clr		WDOERASE     			
 		rcall	CommInit
 		
+		SendL 	( 'a' )
+		SendL	( 'b' )
+		SendL	( '!' )
 		
 ;------------------------------------------------------------------------------
 ; Receive hello

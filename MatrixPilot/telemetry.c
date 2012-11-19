@@ -62,13 +62,9 @@ int sb_index = 0 ;
 int end_index = 0 ;
 
 
-
+#if (SERIAL_OUTPUT_FORMAT != SERIAL_NONE)
 void init_serial()
 {
-#if ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
-	dcm_flags._.nmea_passthrough = 1;
-#endif
-	
 	udb_serial_set_rate(19200) ;
 //	udb_serial_set_rate(38400) ;
 //	udb_serial_set_rate(57600) ;
@@ -80,6 +76,7 @@ void init_serial()
 	return ;
 }
 
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
@@ -617,16 +614,6 @@ void serial_output_8hz( void )
 }
 
 
-#elif ( SERIAL_OUTPUT_FORMAT == SERIAL_OSD_REMZIBI )
-
-void serial_output_8hz( void )
-{
-	// TODO: Output interesting information for OSD.
-	// But first we'll have to implement a buffer for passthrough characters to avoid
-	// output corruption, or generate NMEA ourselves here.
-	return ;
-}
-
 #elif ( SERIAL_OUTPUT_FORMAT == SERIAL_MAGNETOMETER )
 
 extern void rxMagnetometer(void) ;
@@ -710,10 +697,12 @@ void serial_output_8hz( void )
 
 #else // If SERIAL_OUTPUT_FORMAT is set to SERIAL_NONE, or is not set
 
+#if (USE_OSD == OSD_NONE)
 void serial_output_8hz( void )
 {
 	return ;
 }
+#endif
 
 #endif
 #endif //  (SERIAL_OUTPUT_FORMAT != SERIAL_MAVLINK)

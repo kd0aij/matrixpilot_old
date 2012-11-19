@@ -23,9 +23,8 @@
 #include "../libDCM/libDCM_internal.h"
 
 
-#if (USE_OSD == 1)
+#if (USE_OSD == OSD_NATIVE)
 
-#define OSD_LOC_DISABLED	-1
 #include "osd_layout.h"
 
 

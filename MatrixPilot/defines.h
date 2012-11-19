@@ -214,8 +214,6 @@ void mavlink_output_40hz( void ) ;
 #define SERIAL_DEBUG		1	// UAV Dev Board debug info
 #define SERIAL_ARDUSTATION	2	// Compatible with ArduStation
 #define SERIAL_UDB			3	// Pete's efficient UAV Dev Board format
-#define SERIAL_OSD_REMZIBI	4	// Output data formatted to use as input to a Remzibi OSD (only works with GPS_UBX)
-#define SERIAL_OSD_IF		5	// Output data formatted to use as input to a IF OSD (only works with GPS_UBX)
 #define SERIAL_MAGNETOMETER	6	// Debugging the magnetometer
 #define SERIAL_UDB_EXTRA	7	// Extra Telemetry beyond that provided by SERIAL_UDB for higher bandwidth connections
 #define SERIAL_CAM_TRACK	8	// Output Location in a format usable by a 2nd UDB to target its camera at this plane
@@ -242,5 +240,10 @@ void osd_run_step( void );
 
 #define OSD_NTSC			0
 #define OSD_PAL				1
+
+#define OSD_NONE    0	// OSD disabled
+#define OSD_NATIVE	1	// native OSD
+#define OSD_REMZIBI	2	// Output data formatted to use as input to a Remzibi OSD
+#define OSD_MINIM	3	// Output data formatted for minim OSD
 
 #include "gain_variables.h"

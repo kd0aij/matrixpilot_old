@@ -40,7 +40,7 @@
 // AUAV1_BOARD - Nick Arsov's UDB3 clone, version one
 // See the MatrixPilot wiki for more details on different UDB boards.
 // If building for the UDB4, use the MatrixPilot-udb4.mcw project workspace. 
-#define BOARD_TYPE 							UDB3_BOARD
+#define BOARD_TYPE 							AUAV1_BOARD
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@
 // ORIENTATION_ROLLCW180: Rick's pitcure #11, board rolled 90 degrees clockwise,
 //		from point of view of the pilot, then rotate the board 180 around the Z axis of the plane,
 //		so that the GPS connector points toward the tail of the plane
-#define BOARD_ORIENTATION					ORIENTATION_FORWARDS
+#define BOARD_ORIENTATION					ORIENTATION_BACKWARDS
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-#define GPS_TYPE							GPS_STD
+#define GPS_TYPE							GPS_MTEK
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@
 // This is an option for modulating the navigation gains in flight
 // to maintain a constant turn radius in heavy winds in waypoing mode.
 // Define WIND_GAIN_ADJUSTMENT as 1 to turn this feature on.
-#define WIND_GAIN_ADJUSTMENT				0
+#define WIND_GAIN_ADJUSTMENT				1
 
 // Altitude Hold
 // Use altitude hold in stabilized mode?  In waypoint mode?
@@ -110,14 +110,14 @@
 // altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED				AH_FULL
+#define ALTITUDEHOLD_STABILIZED				AH_NONE
 #define ALTITUDEHOLD_WAYPOINT				AH_FULL
 
 // Speed Control
 // If you define SPEED_CONTROL to be 1, MatrixPilot will take air speed into account
 // in the altitude controls, and will trim the throttle and pitch to maintain air speed.
 // Define DESIRED_SPEED to be the air speed that you want, in meters/second.
-#define SPEED_CONTROL						0
+#define SPEED_CONTROL						1
 #define DESIRED_SPEED						10.0 // meters/second
 
 // Inverted flight
@@ -215,7 +215,7 @@
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
 // For UDB4 boards: Set to 3-8 (or up to 10 using pins RA4 and RA1.)
-#define NUM_OUTPUTS							4
+#define NUM_OUTPUTS							5
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -232,7 +232,7 @@
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL			CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL				CHANNEL_UNUSED
@@ -252,7 +252,7 @@
 #define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
 #define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
 #define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
-#define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
+#define AILERON_SECONDARY_CHANNEL_REVERSED	1 // Hardcoded to be unreversed, since we have only 3 switches.
 #define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED			0
@@ -294,7 +294,7 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL				THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN					1500
+#define FAILSAFE_INPUT_MIN					2180
 #define FAILSAFE_INPUT_MAX					4500
 
 // FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
@@ -324,9 +324,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Serial Output Format (Can be SERIAL_NONE, SERIAL_DEBUG, SERIAL_ARDUSTATION, SERIAL_UDB,
-// SERIAL_UDB_EXTRA,SERIAL_MAVLINK, SERIAL_CAM_TRACK, or SERIAL_OSD_REMZIBI)
+// SERIAL_UDB_EXTRA,SERIAL_MAVLINK, SERIAL_CAM_TRACK)
 // This determines the format of the output sent out the spare serial port.
-// Note that SERIAL_OSD_REMZIBI only works with a ublox GPS.
 // SERIAL_UDB_EXTRA will add additional telemetry fields to those of SERIAL_UDB.
 // SERIAL_UDB_EXTRA can be used with the OpenLog without characters being dropped.
 // SERIAL_UDB_EXTRA may result in dropped characters if used with the XBEE wireless transmitter.
@@ -335,7 +334,7 @@
 // SERIAL_MAVLINK is only supported on the UDB4 to ensure that sufficient RAM is available.
 // Note that SERIAL_MAVLINK defaults to using a baud rate of 57600 baud (other formats default to 19200)
 
-#define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
+#define SERIAL_OUTPUT_FORMAT SERIAL_NONE
 
 // MAVLink requires an aircraft Identifier (I.D) as it is deaigned to control multiple aircraft
 // Each aircraft in the sky will need a unique I.D. in the range from 0-255
@@ -344,8 +343,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
-// USE_OSD enables the OSD system.  Customize the OSD Layout in the osd_layout.h file.
-#define USE_OSD								0
+// OSD_NONE disables the OSD system.  
+// OSD_REMZIBI enables support for Remzibi OSD
+// OSD_NATIVE  enable native OSD
+// OSD_MINIM   enable minim OSD (under development)
+// Customize the OSD Layout in the osd_layout.h file.
+#define USE_OSD	OSD_REMZIBI
+
 
 // NUM_ANALOG_INPUTS: 
 // For classic boards: Set to 0, 1, or 2
@@ -435,10 +439,10 @@
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
 #define ROLLKP								0.20
-#define ROLLKD								0.05
-#define YAWKP_AILERON						0.10
-#define YAWKD_AILERON						0.05
-#define AILERON_BOOST						1.00
+#define ROLLKD								0.03
+#define YAWKP_AILERON						0.06
+#define YAWKD_AILERON						0.03
+#define AILERON_BOOST						0.45
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
@@ -448,9 +452,9 @@
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
 #define PITCHGAIN							0.10
 #define PITCHKD								0.04
-#define RUDDER_ELEV_MIX						0.20
-#define ROLL_ELEV_MIX						0.05
-#define ELEVATOR_BOOST						0.50
+#define RUDDER_ELEV_MIX						0.0
+#define ROLL_ELEV_MIX						0.025
+#define ELEVATOR_BOOST						0.55
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
 // Use this to add extra "up" elevator while the plane is inverted, to avoid losing altitude.
@@ -567,7 +571,7 @@
 // These settings are only used when Altitude Hold is enabled above.
 
 // Min and Max target heights in meters.  These only apply to stabilized mode.
-#define HEIGHT_TARGET_MIN					25.0
+#define HEIGHT_TARGET_MIN					50.0
 #define HEIGHT_TARGET_MAX					100.0
 
 // The range of altitude within which to linearly vary the throttle
@@ -580,7 +584,7 @@
 // when within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
-#define ALT_HOLD_THROTTLE_MIN				0.35
+#define ALT_HOLD_THROTTLE_MIN				0.5
 #define ALT_HOLD_THROTTLE_MAX				1.0
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
@@ -652,9 +656,9 @@
 //#define ID_VEHICLE_REGISTRATION "TW2-PDH-UK"
 //#define ID_LEAD_PILOT "Pete Hollands"
 //#define ID_DIY_DRONES_URL "http://www.diydrones.com/profile/PeterHollands"
-#define ID_VEHICLE_MODEL_NAME "Not Defined"
+#define ID_VEHICLE_MODEL_NAME "balia"
 #define ID_VEHICLE_REGISTRATION "Not Defined"
-#define ID_LEAD_PILOT "Not Defined"
+#define ID_LEAD_PILOT "pma_"
 #define ID_DIY_DRONES_URL "http://www.diydrones.com"
 
 ////////////////////////////////////////////////////////////////////////////////
