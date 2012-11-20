@@ -298,6 +298,10 @@ void update_coords()
 		time
 	);
 
+#if (OSD_LOC_REMZIBI_DEBUG != OSD_LOC_DISABLED)
+	serial_send_location(OSD_LOC_REMZIBI_DEBUG);
+	serial_output(",,%li %li %i %i,\r\n", lat_gps.WW, long_gps.WW, dist_to_home, azimuth);
+#endif
 
 #if (OSD_LOC_AP_MODE != OSD_LOC_DISABLED)
 	serial_send_location(OSD_LOC_AP_MODE);

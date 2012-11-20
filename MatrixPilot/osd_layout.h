@@ -93,6 +93,7 @@
 
 #define OSD_LOC_DISTANCE				OSD_LOC(USE_SMALL_FONT+14,2)			// Remzibi OSD only
 #define OSD_LOC_FLIGHT_TIME				OSD_LOC(USE_SMALL_FONT+15,23)			// 5 charactes wide, Remzibi OSD only
+#define OSD_LOC_REMZIBI_DEBUG			OSD_LOC_DISABLED						// debug info for Remzibi OSD
 
 
 // Parameters for Remzibi OSD only
