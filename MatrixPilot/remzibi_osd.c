@@ -86,7 +86,7 @@ void init_serial()
 	udb_serial_set_rate(33600) ;
 }
 
-const char* ltoa(long val)
+const char* ltoa(long val, char digits)
 {
 	static char conversion_buffer[10+1+1];	// max digits for long + sign + eos
 
@@ -105,9 +105,16 @@ const char* ltoa(long val)
 	{
 		conversion_buffer[n--] = val % 10 + '0';
 		val /= 10;
+		--digits;
 	}
 	while (val != 0);
 
+	while (digits > 0)
+	{
+		conversion_buffer[n--] = '0';
+		--digits;
+	}
+ 
 	if (neg)
 	{
 		conversion_buffer[n--] = '-';
@@ -116,31 +123,11 @@ const char* ltoa(long val)
 	return conversion_buffer + n + 1;
 }
  
-const char* convert_fraction_coord(long coord)
-{
-	static char conversion_buffer[10+1];	// max digits for long + eos
-	int i;
-
-	coord %= 10000000L;
-	strcpy(conversion_buffer, ltoa(coord));		
-
-	conversion_buffer[6] = 0;
-
-	for (i = strlen(conversion_buffer); i < 6; i++)
-	{
-		conversion_buffer[i] = '0';		// fill remaining part with 0
-	}	
-
-	conversion_buffer[i] = 0; 			// eos
-
-	
-	return conversion_buffer;
-}
-
 void serial_send_coord(long coord)
 {
-	serial_output("%i.", (int)(coord / 10000000L));
-	serial_output((char*)convert_fraction_coord(coord));
+	coord /= 10;
+	serial_output("%i.", (int)(coord / 1000000L));
+	serial_output((char*)ltoa(coord / 1000000L, 6));
 }
 
 static void serial_send_location(int loc)
