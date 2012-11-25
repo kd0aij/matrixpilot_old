@@ -83,51 +83,13 @@ static const char* mp_mode_name[] = {
 
 void init_serial()
 {
-	udb_serial_set_rate(33600) ;
+	udb_serial_set_rate(19200) ;
 }
 
-const char* ltoa(long val, char digits)
-{
-	static char conversion_buffer[10+1+1];	// max digits for long + sign + eos
-
-	boolean neg = false;
-
-	if (val < 0)
-	{
-		val = -val;
-		neg = true;
-	}
-
-	unsigned char n = sizeof(conversion_buffer) -1;
-	conversion_buffer[n--] = 0;
-
-	do
-	{
-		conversion_buffer[n--] = val % 10 + '0';
-		val /= 10;
-		--digits;
-	}
-	while (val != 0);
-
-	while (digits > 0)
-	{
-		conversion_buffer[n--] = '0';
-		--digits;
-	}
- 
-	if (neg)
-	{
-		conversion_buffer[n--] = '-';
-	}
-
-	return conversion_buffer + n + 1;
-}
- 
 void serial_send_coord(long coord)
 {
-	coord /= 10;
-	serial_output("%i.", (int)(coord / 1000000L));
-	serial_output((char*)ltoa(coord / 1000000L, 6));
+	coord = abs(coord / 10);
+	serial_output("%i.%06i", (int)(coord / 1000000L), (int)(coord % 1000000L));
 }
 
 static void serial_send_location(int loc)
