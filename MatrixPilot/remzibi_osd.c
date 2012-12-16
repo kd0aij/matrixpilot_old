@@ -88,8 +88,10 @@ void init_serial()
 
 void serial_send_coord(long coord)
 {
-	coord = abs(coord / 10);
-	serial_output("%i.%06i", (int)(coord / 1000000L), (int)(coord % 1000000L));
+	coord /= 10;
+	long n1 = (coord / 1000000L);
+	long n2 = (coord % 1000000L);
+	serial_output("%li.%06li", n1, n2);
 }
 
 static void serial_send_location(int loc)
@@ -180,22 +182,20 @@ void update_coords()
 	struct relative2D curHeading ;
 	curHeading.x = -rmat[1] ;
 	curHeading.y = rmat[4] ;
-	signed char earth_yaw = rect_to_polar(&curHeading) ;// -128 - +127 (0=East,  ccw)
+	unsigned char earth_yaw = rect_to_polar(&curHeading) ;// 0 - 255 (0=East,  ccw)
 
-	int angle = (earth_yaw * 180 + 64) >> 7 ;			// -180 - +180 (0=East,  ccw) negative angle is reversed!!
-	angle = -angle + 90;
-	int azimuth = angle;
-	if (azimuth < 0)
+	// convert to degrees
+	unsigned int angle = (earth_yaw * 180 + 64) >> 7 ;	// 0 - 360 (0=East,  ccw)
+	angle = 450 - angle;								// course as degree - as integer , range 0 - 360, cw!! 0=North
+	if (angle > 360)
 	{
-		azimuth += 360;
+		angle -= 360;
 	}
 
 	struct relative2D toGoal;
 	toGoal.x = 0 - IMUlocationx._.W1;
 	toGoal.y = 0 - IMUlocationy._.W1;
 
-	//int dir_to_goal = rect_to_polar ( &toGoal ) - earth_yaw ;
-	rect_to_polar ( &toGoal );
 	int dist_to_home = toGoal.x ;
 	int dist_to_goal ;
 
@@ -208,9 +208,6 @@ void update_coords()
 	{
 		dist_to_goal = dist_to_home;
 	}
-
-	//int angle = (dir_to_goal * 180 + 64) >> 7 ;			// 0-359 (0=East,  ccw)
-	//angle = -angle + 90;
 
 	long date = 0;
 	long time = 0;
@@ -236,20 +233,19 @@ void update_coords()
 	serial_output(",");
 	serial_send_coord(long_gps.WW);
 
-	serial_output(",%i,%i,%i,%i,%i,%i,%li,%li,\r\n",
+	serial_output(",%i,%i,%i,%i,%i,,%li,%li,\r\n",
 		(int)svs,
 		dist_to_home,
 		IMUlocationz._.W1,		
 		(int)(ground_speed_3DIMU/51),  // OSD expects speed in knots !!  
-		azimuth,			// we could also put here angle to goal
-		azimuth,
+		angle,			// we could also put here angle to goal
 		date,
 		time
 	);
 
 #if (OSD_LOC_REMZIBI_DEBUG != OSD_LOC_DISABLED)
 	serial_send_location(OSD_LOC_REMZIBI_DEBUG);
-	serial_output(",,%li %li %i %i,\r\n", lat_gps.WW, long_gps.WW, dist_to_home, azimuth);
+	serial_output(",,E %i A %i\r\n", (int)earth_yaw, angle);
 #endif
 
 #if (OSD_LOC_AP_MODE != OSD_LOC_DISABLED)
