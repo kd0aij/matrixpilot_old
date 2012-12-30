@@ -241,6 +241,7 @@ void osd_run_step( void );
 #define OSD_NTSC			0
 #define OSD_PAL				1
 
+// new OSD types
 #define OSD_NONE    0	// OSD disabled
 #define OSD_NATIVE	1	// native OSD
 #define OSD_REMZIBI	2	// Output data formatted to use as input to a Remzibi OSD
