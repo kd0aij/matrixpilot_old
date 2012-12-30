@@ -23,7 +23,7 @@
 #include "../libDCM/libDCM_internal.h"
 
 
-#if (USE_OSD == OSD_NATIVE)
+#if (USE_OSD == OSD_NATIVE) 
 
 #include "osd_layout.h"
 
