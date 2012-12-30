@@ -182,10 +182,10 @@ void update_coords()
 	struct relative2D curHeading ;
 	curHeading.x = -rmat[1] ;
 	curHeading.y = rmat[4] ;
-	char earth_yaw = rect_to_polar(&curHeading) ;// -128 - 127 (0=East,  ccw)
+	char earth_yaw = rect_to_polar(&curHeading) ;// -128 to 127 (0=East,  ccw)
 
 	// convert to degrees
-	int angle1 = (earth_yaw * 180 + 64) >> 7 ;	// -180 - 180 (0=East,  ccw)
+	int angle1 = (earth_yaw * 180 + 64) >> 7 ;	// -180 to 180 (0=East,  ccw)
 	if (angle1 < 0)		// 0 - 360
 	{
 		angle1 += 360;
