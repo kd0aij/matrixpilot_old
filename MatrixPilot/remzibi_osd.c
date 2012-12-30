@@ -182,14 +182,19 @@ void update_coords()
 	struct relative2D curHeading ;
 	curHeading.x = -rmat[1] ;
 	curHeading.y = rmat[4] ;
-	unsigned char earth_yaw = rect_to_polar(&curHeading) ;// 0 - 255 (0=East,  ccw)
+	char earth_yaw = rect_to_polar(&curHeading) ;// -128 - 127 (0=East,  ccw)
 
 	// convert to degrees
-	unsigned int angle = (earth_yaw * 180 + 64) >> 7 ;	// 0 - 360 (0=East,  ccw)
-	angle = 450 - angle;								// course as degree - as integer , range 0 - 360, cw!! 0=North
-	if (angle > 360)
+	int angle1 = (earth_yaw * 180 + 64) >> 7 ;	// -180 - 180 (0=East,  ccw)
+	if (angle1 < 0)		// 0 - 360
 	{
-		angle -= 360;
+		angle1 += 360;
+	}
+
+	int angle = 90 - angle1;	// course as degree - as integer , range 0 - 360, cw!! 0=North
+	if (angle < 0)
+	{
+		angle += 360;
 	}
 
 	struct relative2D toGoal;
@@ -245,7 +250,7 @@ void update_coords()
 
 #if (OSD_LOC_REMZIBI_DEBUG != OSD_LOC_DISABLED)
 	serial_send_location(OSD_LOC_REMZIBI_DEBUG);
-	serial_output(",,E %i A %i\r\n", (int)earth_yaw, angle);
+	serial_output(",,E %i A1 %i A %i\r\n", (int)earth_yaw, angle1, angle);
 #endif
 
 #if (OSD_LOC_AP_MODE != OSD_LOC_DISABLED)
