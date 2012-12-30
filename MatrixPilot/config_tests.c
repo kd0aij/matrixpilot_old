@@ -271,7 +271,7 @@
 }
 #endif
 
-// Check serial port use
+// Check serial port use OSD or serial output
 #if ((SERIAL_OUTPUT_FORMAT != SERIAL_NONE) && ((USE_OSD == OSD_REMZIBI) || (USE_OSD == OSD_MINIM)))
 	#error("You cannot use both SERIAL_OUTPUT_FORMAT and USE_OSD same time")
 #endif
