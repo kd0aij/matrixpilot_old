@@ -219,7 +219,11 @@ void update_coords()
 
 #if ( GPS_TYPE == GPS_MTEK )
 	date = date_gps_.WW;
-	time = time_gps_.WW / 1000;#endif
+  #if OSD_REMZIBI_TIME_LONG_FMT
+	time = time_gps_.WW / 1000;
+  #else
+	time = time_gps_.WW / 100000;
+  #endif#endif
 	
 	/*
 		GPS data :
@@ -365,7 +369,7 @@ void serial_show_AH()
 	matrix_accum.y = rmat[6] ;
 	earth_roll = rect_to_polar(&matrix_accum) ;					// binary angle (0 - 256 = 360 degrees)
 	earth_roll = (-earth_roll * BYTECIR_TO_DEGREE) >> 16 ;		// switch polarity, convert to -180 - 180 degrees
-	earth_roll >>= 1;
+	earth_roll /= OSD_HORIZON_ROLL_SCALE;
 
 #if OSD_HORIZON_ROLL_REVERSED
 	earth_roll = -earth_roll;
@@ -379,7 +383,7 @@ void serial_show_AH()
 	matrix_accum.y = rmat[7] ;
 	earth_pitch = rect_to_polar(&matrix_accum) ;				// binary angle (0 - 256 = 360 degrees)
 	earth_pitch = (-earth_pitch * BYTECIR_TO_DEGREE) >> 16 ;	// switch polarity, convert to -180 - 180 degrees
-	earth_pitch >>= 1;
+	earth_pitch /= OSD_HORIZON_PITCH_SCALE;
 
 #if OSD_HORIZON_PITCH_REVERSED
 	earth_pitch = -earth_pitch;

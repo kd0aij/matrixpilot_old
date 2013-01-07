@@ -36,6 +36,8 @@
 #define OSD_HORIZON_WIDTH				10
 #define OSD_HORIZON_ROLL_REVERSED		0		// for MP and Remzibi OSD
 #define OSD_HORIZON_PITCH_REVERSED		0		// for MP and Remzibi OSD
+#define OSD_HORIZON_PITCH_SCALE			2		// for Remzibi OSD scale AH, more means lower amplitude
+#define OSD_HORIZON_ROLL_SCALE			1		// for Remzibi OSD scale AH, more means lower amplitude
 
 #define OSD_AUTO_HIDE_GPS				1 		// Only show Lat, Long, and Num Sats while slow and low. For MP only
 
@@ -102,8 +104,10 @@
 // OSD_REMZIBI_MID_THROTTLE if throttle is above this value and model is moving means model started
 // OSD_REMZIBI_CLS_TIME how often clear screen (in seconds)
 // OSD_REMZIBI_SUMMARY_DELAY delay for displaying summary after land
+// OSD_REMZIBI_TIME_LONG_FMT if set time is displayed as HHMMSS if not HHMM
 #define OSD_REMZIBI_MIN_THROTTLE	2240	
 #define OSD_REMZIBI_MID_THROTTLE	3000
 #define OSD_REMZIBI_CLS_TIME		60
 #define OSD_REMZIBI_SUMMARY_DELAY   5
+#define OSD_REMZIBI_TIME_LONG_FMT	0
 
