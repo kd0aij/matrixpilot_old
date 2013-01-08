@@ -171,6 +171,11 @@ static void serial_send_long(long int num, unsigned char leading, unsigned char 
 	serial_output(",\r\n");
 }
 
+static void serial_send_cls()
+{
+	serial_output("$CLS\r\n");
+}
+
 void update_coords()
 {
 	unsigned int ground_speed_3DIMU = 
@@ -409,7 +414,7 @@ static int init_counter = -1;
 	if (init_counter == -1)
 	{
 		init_counter = 0;
-		serial_output("$CLS\r\n");
+		serial_send_cls();
 	}
 
 	if (init_counter == 2)
@@ -419,7 +424,7 @@ static int init_counter = -1;
 
 	if (init_counter == 6)
 	{
-		serial_output("$CLS\r\n");
+		serial_send_cls();
 	}
 
 	if (init_counter == 10)
@@ -429,7 +434,7 @@ static int init_counter = -1;
 
 	if (init_counter == 14)
 	{
-		serial_output("$CLS\r\n");
+		serial_send_cls();
 		/*
 			Save Home command
 			$SH<CRLF>
@@ -455,8 +460,8 @@ static int counter = 0;
 
 	int throttleIn = udb_pwIn[THROTTLE_INPUT_CHANNEL] ;
 
-	if (flight_mode == PLANE_ON_GROUND)	// we are on ground before flight
-	{				// we need 2 secs of movement to decide in flight
+	if (flight_mode == PLANE_ON_GROUND || flight_mode == PLANE_LANDED)	// we are on ground before or after flight
+	{				// we need 7 meters of movement
 		if (last_long != log && last_lat != lat)	// we are moving 
 		{
 			if (throttleIn < OSD_REMZIBI_MID_THROTTLE)					// but without throttle
@@ -467,6 +472,7 @@ static int counter = 0;
 			else									// with throttle so we are flying
 			{
 				flight_mode = PLANE_IN_FLIGHT;
+				serial_send_cls();			// clear AH
 			}
 		}
 	}
@@ -490,10 +496,11 @@ static int counter = 0;
 			on_ground_cnt = 0;
 			in_flight_counter -= 20;
 			flight_mode = PLANE_LANDED;
-			serial_output("$CLS\r\n");			// clear AH
+			serial_send_cls();			// clear AH
 		}
 	}
-	else
+
+	if (flight_mode == PLANE_LANDED)
 	{
 		++on_ground_cnt;	// counter for maxes
 	}
@@ -538,7 +545,7 @@ void serial_output_8hz( void )
 	
 	if (telemetry_counter == 24 || telemetry_counter % (OSD_REMZIBI_CLS_TIME * 8) == 0)	// 3 secs after home save or about every OSD_REMZIBI_CLS_TIME secs
 	{
-		serial_output("$CLS\r\n");
+		serial_send_cls();
 	}
 
 	if (on_ground_cnt > (OSD_REMZIBI_SUMMARY_DELAY * 2))	// seconds * 2 ticks per second

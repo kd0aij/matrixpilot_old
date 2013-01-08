@@ -28,7 +28,7 @@
 // The callsign is written using characters from the OSD Font file.  (See Tools/FlashOSD/.)
 // This has to end with 0xFF.
 // Adjust the placement using OSD_LOC_CALLSIGN_HORIZ and OSD_LOC_CALLSIGN_VERT.
-#define OSD_CALL_SIGN					{0x95, 0x81, 0x82, 0x83, 0x84, 0x85, 0xFF} // K12345
+#define OSD_CALL_SIGN					{0x95, 0x81, 0x82, 0x83, 0x84, 0x85, 0xFF} // K12345 MP only
 
 #define OSD_SHOW_CENTER_DOT				0
 
