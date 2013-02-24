@@ -126,7 +126,7 @@ void udb_background_callback_triggered(void)
 	dirovergndHRmat[1] = rmat[4] ;
 	dirovergndHRmat[2] = 0 ;
 	
-	if ( gps_nav_valid() && ! use_virtual_gps() )
+	if ( gps_nav_valid() )
 	{
 		commit_gps_data() ;
 
@@ -234,30 +234,12 @@ void udb_background_callback_triggered(void)
 	}
 	else
 	{
-
-#if ( HILSIM == 1)
-		air_speed_3DGPS = as_sim.BB ; // use Xplane as a pitot
-#else
-		air_speed_3DGPS = velocity_previous  ;
-#endif
-                                
-
-#if ( GPS_RATE == 4 )
-		forward_acceleration = (air_speed_3DGPS - velocity_previous) << 2 ; // Ublox enters code 4 times per second
-#elif ( GPS_RATE == 2 )
-		forward_acceleration = (air_speed_3DGPS - velocity_previous) << 1 ; // Ublox enters code 2 times per second
-#else
-		forward_acceleration = air_speed_3DGPS - velocity_previous ; // EM406 standard GPS enters code once per second
-#endif
-	
-		velocity_previous = air_speed_3DGPS ;
 		gps_data_age = GPS_DATA_MAX_AGE+1 ;
 		dirovergndHGPS[0] = dirovergndHRmat[0] ;
 		dirovergndHGPS[1] = dirovergndHRmat[1] ;
 		dirovergndHGPS[2] = 0 ;
-		dcm_flags._.yaw_req = 1 ;  // request yaw drift correction 
+		dcm_flags._.yaw_req = 1 ;  // request yaw drift correction 	
 		dcm_flags._.gps_history_valid = 0 ; // gps history has to be restarted
-		
 	}
 	
 	return ;
