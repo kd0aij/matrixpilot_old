@@ -62,6 +62,23 @@ fractional velocityErrorEarth[] = { 0 , 0 , 0 } ;
 
 extern int16_t errorYawground[] ;
 
+
+// determine whether or not to use the virtual GPS
+// instead of the real one. For now, for testing purposes,
+// control this by turning the radio on/off.
+// later, this is where the logic will be for assessing GPS health
+boolean use_virtual_gps()
+{
+	if ( udb_flags._.radio_on == 1 )
+	{
+		return false ;
+	}
+	else
+	{
+		return true ;
+	}
+}
+
 void dead_reckon(void)
 {
 	if ( dcm_flags._.dead_reckon_enable == 1 )  // wait for startup of GPS
