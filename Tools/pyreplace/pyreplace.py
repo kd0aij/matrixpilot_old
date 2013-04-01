@@ -4,7 +4,8 @@ Created on 31 mar 2013
 @author: Matt
 '''
 
-import re, os, sys
+import re, os, sys, shutil
+from time import sleep
 
 class searchstr(object):
     def __init__(self, find, replacewith):
@@ -19,9 +20,9 @@ class replacer(object):
         self.sstr = searchstrings
         self.predelim = predelim
         self.postdelim = postdelim
-
-    def run(self):
+        self.fileList = []
         
+    def find_files(self):
         self.fileList = []
 
         for directory in self.opts.directories:
@@ -45,6 +46,9 @@ class replacer(object):
                         if(splt[1] == "hpp"):
                             self.fileList.append(f)
             
+
+
+    def run(self):     
             for filepath in self.fileList:
                 fin = open(filepath, "r")
                 fout = open(filepath + ".txt", "w")
@@ -72,12 +76,31 @@ class replacer(object):
 #                                if(prereplace == outline):
 #                                    print("replace failure")
                     fout.write(outline)
-                fin.close
+                fin.close()
+                fout.close()
+                
+                         
                 print("Finished file: " + filepath)
-            print("Complete")
+            
+            print("Completed processing")
 
+            
+    def copy(self):
+        for filepath in self.fileList:
+            src = filepath + ".txt"
+            shutil.copy2( src , filepath )
+            sleep(0.1)
+            print("copied file " + filepath)
+        print("Completed copy")
 
-    
+    def remove_processed(self):
+        for filepath in self.fileList:
+            src = filepath + ".txt"
+            os.remove(src)
+            sleep(0.05)
+            print("removed file " + src)
+        print("Completed remove")
+
 
 
 if __name__ == '__main__':
@@ -119,4 +142,15 @@ if __name__ == '__main__':
     rootdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..")
 
     rep = replacer(rootdir, opts, sstr, pre, post)
-    rep.run()
+    rep.find_files()
+    
+    action = raw_input(" (P)rocess\n (C)opy processed files to \n (R)emove processed files\n e(X)it\n")
+    action = action.upper()
+    
+    if(action == 'P'):
+        rep.run()
+    if(action == 'R'):
+        rep.remove_processed()
+    if(action == 'C'):
+        rep.copy()
+    
