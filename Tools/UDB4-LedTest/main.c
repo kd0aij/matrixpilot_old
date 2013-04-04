@@ -20,6 +20,7 @@
 
 
 #include "../../libUDB/libUDB.h"
+#include "../../libUDB/libUDB_internal.h"
 
 
 #define RATE_THRESHOLD_LED		120
@@ -43,6 +44,10 @@ int main(void)
 
 	udb_init() ;
 
+        // using legacy eeprom driver
+	udb_eeprom_init() ;
+
+
 	udb_run() ;  // This never returns.
 	return 0 ;
 }
@@ -64,14 +69,14 @@ void udb_background_callback_periodic(void)
 			break ;
 		case 7:
 			LED_GREEN = LED_OFF ;
-			LED_BLUE = LED_ON ;
-			break ;
-		case 6:
-			LED_BLUE = LED_OFF ;
 			LED_ORANGE = LED_ON ;
 			break ;
-		case 5:
+		case 6:
 			LED_ORANGE = LED_OFF ;
+			LED_BLUE = LED_ON ;
+			break ;
+		case 5:
+			LED_BLUE = LED_OFF ;
 			LED_RED = LED_ON ;
 			break ;
 		case 4:
@@ -80,14 +85,14 @@ void udb_background_callback_periodic(void)
 			break ;
 		case 3:
 			LED_GREEN = LED_OFF ;
-			LED_BLUE = LED_ON ;
-			break ;
-		case 2:
-			LED_BLUE = LED_OFF ;
 			LED_ORANGE = LED_ON ;
 			break ;
-		case 1:
+		case 2:
+			LED_BLUE = LED_ON ;
 			LED_ORANGE = LED_OFF ;
+			break ;
+		case 1:
+			LED_BLUE = LED_OFF ;
 			udb_a2d_record_offsets() ;
 			break ;
 #elif (BOARD_TYPE == AUAV3_BOARD)
@@ -237,4 +242,4 @@ int16_t udb_gps_callback_get_byte_to_send(void) { return -1 ; }
 void udb_gps_callback_received_byte(char rxchar) {}
 
 int16_t udb_serial_callback_get_byte_to_send(void) { return -1 ; }
-void udb_serial_callback_received_byte(char rxchar) {}
+void udb_serial_callback_received_byte(uint8_t rxchar){};
