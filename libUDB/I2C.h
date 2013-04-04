@@ -18,13 +18,11 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-#if (BOARD_TYPE == UDB4_BOARD)
-
 #ifndef I2C_H
 #define I2C_H
 
 //******************************************************************
-// I2C driver for UDB4
+// I2C driver for UDB4/5 and AUAV3
 //
 // To write 
 //		Set I2C1_rx_data_size to zero
@@ -68,5 +66,3 @@ extern void I2C1_trigger_service(void);
 extern void I2C1_init(void);
 
 #endif	//I2C_H
-
-#endif	// UDB4 BOARD
