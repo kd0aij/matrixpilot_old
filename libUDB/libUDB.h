@@ -129,8 +129,8 @@ void udb_servo_record_trims(void);
 // Functions only included with nv memory.
 #if(USE_NV_MEMORY == 1)
 // Call this funtion to skip doing radio trim calibration
-void udb_skip_radio_trim();
-void udb_skip_imu_calibration();
+void udb_skip_radio_trim(boolean);
+void udb_skip_imu_calibration(boolean);
 
 typedef struct tagUDB_SKIP_FLAGS
 {
@@ -238,7 +238,7 @@ void udb_serial_start_sending_data(void);
 int16_t udb_serial_callback_get_byte_to_send(void);		// Callback
 
 // Implement this callback to handle receiving a byte from the serial port
-void udb_serial_callback_received_byte(char rxchar);	// Callback
+void udb_serial_callback_received_byte(uint8_t rxchar);	// Callback
 
 
 ////////////////////////////////////////////////////////////////////////////////

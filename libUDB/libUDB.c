@@ -157,12 +157,12 @@ uint8_t rc_signal_strength ;
 #if(USE_NV_MEMORY == 1)
 UDB_SKIP_FLAGS udb_skip_flags = {0,0,0};
 
-void udb_skip_radio_trim()
+void udb_skip_radio_trim(boolean b)
 {
 	udb_skip_flags.skip_radio_trim = 1;
 }
 
-void udb_skip_imu_calibration()
+void udb_skip_imu_calibration(boolean b)
 {
 	udb_skip_flags.skip_imu_cal = 1;
 }
@@ -380,11 +380,6 @@ void udb_init(void)
 	
 #if (USE_OSD == 1)
 	udb_init_osd() ;
-#endif
-
-//FIXME: add AUAV3 support
-#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD )
-	udb_eeprom_init() ;
 #endif
 
 #if (BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)

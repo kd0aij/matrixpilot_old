@@ -187,17 +187,17 @@
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
 // For UDB4 boards: Set to 1-8
-#define NUM_INPUTS							5
+#define NUM_INPUTS							7
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
-#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
-#define AILERON_INPUT_CHANNEL				CHANNEL_1
-#define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_5
-#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_1
+#define AILERON_INPUT_CHANNEL				CHANNEL_2
+#define ELEVATOR_INPUT_CHANNEL				CHANNEL_3
+#define RUDDER_INPUT_CHANNEL				CHANNEL_4
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_6
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_MODE_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -335,7 +335,7 @@
 // SERIAL_MAVLINK is only supported on the UDB4 to ensure that sufficient RAM is available.
 // Note that SERIAL_MAVLINK defaults to using a baud rate of 57600 baud (other formats default to 19200)
 
-#define SERIAL_OUTPUT_FORMAT 	SERIAL_NONE
+#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAVLINK
 
 // MAVLink requires an aircraft Identifier (I.D) as it is deaigned to control multiple aircraft
 // Each aircraft in the sky will need a unique I.D. in the range from 0-255

@@ -24,7 +24,7 @@
 #if(USE_I2C1_DRIVER == 1)
 #include "I2C.h"
 #endif
-#if(BOARD_TYPE == UDB4_BOARD)
+#if(BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
 #include "events.h"
 #endif
 
@@ -92,7 +92,7 @@ void udb_init_clock(void)	/* initialize timers */
 {
 	TRISF = 0b1111111111101100 ;
 
-#if(BOARD_TYPE == UDB4_BOARD)
+#if(BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
 	init_events();
 #endif
 #if(USE_I2C1_DRIVER == 1)
