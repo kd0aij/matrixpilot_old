@@ -118,6 +118,37 @@ int16_t cosine ( int8_t angle )
 }
 
 
+void rotate_2D_vector_by_vector( int16_t vector[2] , int16_t rotate[2])
+{
+//	rotate the vector by the implicit angle of rotate
+//	vector[0] is x, vector[1] is y
+// 	rotate is RMAX*[ cosine(theta) , sine(theta) ] , theta is the desired rotation angle
+//	upon exit, the vector [ x , y ] will be rotated by the angle theta.
+//	theta is positive in the counter clockwise direction.
+//	This routine can also be used to do a complex multiply, with 1/RMAX scaling,
+//	and where vector and rotate are viewed as complex numbers
+	int16_t newx, newy ;
+	union longww accum ;
+	accum.WW = ((__builtin_mulss( rotate[0] , vector[0]) - __builtin_mulss( rotate[1] , vector[1] ))<<2) ;
+	newx = accum._.W1 ;
+	accum.WW = ((__builtin_mulss( rotate[1] , vector[0]) + __builtin_mulss( rotate[0] , vector[1] ))<<2) ;
+	newy = accum._.W1 ;
+	vector[0] = newx ;
+	vector[1] = newy ;	
+	return ;
+}
+
+void rotate_2D_vector_by_angle( int16_t vector[2] , int8_t angle)
+{
+//	rotate the vector by angle,
+//	where vector is [ x , y ] , angle is in byte-circular scaling
+	int16_t rotate[2] ;
+	rotate[1] = sine ( angle ) ;
+	rotate[0] = cosine ( angle ) ;
+	rotate_2D_vector_by_vector ( vector , rotate ) ;
+	return ;
+}
+
 void rotate( struct relative2D *xy , int8_t angle )
 {
 	//	rotates xy by angle, measured in a counter clockwise sense.
