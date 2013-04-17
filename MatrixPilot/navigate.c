@@ -160,25 +160,38 @@ void compute_bearing_to_goal( void )
 	temporary.WW = (  __builtin_mulss( togoal.x , goal.cosphi )
 					+ __builtin_mulss( togoal.y , goal.sinphi ))<<2 ;
 	
-
-
 	tofinish_line = temporary._.W1 ;
-	
-	
+		
 	if ( desired_behavior._.cross_track )
 	{
 		// If using Cross Tracking
 		
-#define CTDEADBAND 0
-#define CTMARGIN 32
-#define CTGAIN 1
+
+#define CTMARGIN 64
+#if ( CTMARGIN >= 1024 )
+#error ( "CTMARGIN is too large, it must be less than 1024")
+#endif
+//#define CTGAIN 1
 //#define CTDEADBAND 0
-//#define CTMARGIN 16
-//#define CTGAIN 2
-// note: CTGAIN*(CTMARGIN-CTDEADBAND) should equal 32
+
+		union longww crossVector[2] ;
+		int16_t cross_rotate[2] ;
+		int16_t crosstrack ;
+		cross_rotate[0] = goal.cosphi ;
+		cross_rotate[1] = -goal.sinphi ;
+		crossVector[0]._.W1 = goal.x ;
+		crossVector[1]._.W1 = goal.y ;
+		crossVector[0].WW -= IMUlocationx.WW +  ( ( IMUintegralAccelerationx.WW ) >> 4 )  ;
+		crossVector[1].WW -= IMUlocationy.WW +  ( ( IMUintegralAccelerationy.WW ) >> 4 )  ;
+
+		rotate_2D_long_vector_by_vector( &crossVector[0].WW , cross_rotate ) ;
+
+		crosstrack = crossVector[1]._.W1 ;
 	
 		// project the goal vector perpendicular to the desired direction vector
 		// to get the crosstrack error
+
+		/*
 		
 		temporary.WW = ( __builtin_mulss( togoal.y , goal.cosphi )
 					   - __builtin_mulss( togoal.x , goal.sinphi ))<<2 ;
@@ -189,6 +202,8 @@ void compute_bearing_to_goal( void )
 					   - __builtin_mulss( IMUintegralAccelerationx._.W1 , goal.sinphi ))>>2 ;
 
 		crosstrack -= temporary._.W1 ;
+
+		*/
 		
 		// crosstrack is measured in meters
 		// angles are measured as an 8 bit signed character, so 90 degrees is 64 binary.
@@ -197,35 +212,24 @@ void compute_bearing_to_goal( void )
 
 		desired_bearing_over_ground_vector[0] = goal.cosphi ;
 		desired_bearing_over_ground_vector[1] = goal.sinphi ;
-		
-		if ( abs(crosstrack) < ((int16_t)(CTDEADBAND)))
-		{
 
-		}
-		else if ( abs(crosstrack) < ((int16_t)(CTMARGIN)))
+		if ( abs(crosstrack) < ((int16_t)(CTMARGIN)))
 		{
-			if ( crosstrack > 0 )
-			{
-				rotate_2D_vector_by_angle ( desired_bearing_over_ground_vector , (int8_t) ( crosstrack - ((int16_t)(CTDEADBAND)) ) * ((int16_t)(CTGAIN)) ) ;
-//				desired_bearing_over_ground = goal.phi + ( crosstrack - ((int16_t)(CTDEADBAND)) ) * ((int16_t)(CTGAIN)) ;
-			}
-			else
-			{
-				rotate_2D_vector_by_angle ( desired_bearing_over_ground_vector , (int8_t) ( crosstrack + ((int16_t)(CTDEADBAND)) ) * ((int16_t)(CTGAIN)) ) ;
-//				desired_bearing_over_ground = goal.phi + ( crosstrack + ((int16_t)(CTDEADBAND)) ) * ((int16_t)(CTGAIN)) ;
-			}
+			crossVector[1].WW <<= 6 ;
+			cross_rotate[1] = crossVector[1]._.W1 ;
+			cross_rotate[0] = 64*CTMARGIN ;
+			vector2_normalize( cross_rotate , cross_rotate ) ;
+			rotate_2D_vector_by_vector ( desired_bearing_over_ground_vector , cross_rotate ) ;
 		}
 		else
 		{
 			if ( crosstrack > 0 )
 			{
 				rotate_2D_vector_by_angle ( desired_bearing_over_ground_vector , (int8_t) ( 32 )) ;
-//				desired_bearing_over_ground = goal.phi + 32 ; // 45 degrees maximum
 			}
 			else
 			{
 				rotate_2D_vector_by_angle ( desired_bearing_over_ground_vector , (int8_t) ( - 32 )) ;
-//				desired_bearing_over_ground = goal.phi - 32 ; // 45 degrees maximum
 			}
 		}
 		
@@ -362,7 +366,6 @@ uint16_t wind_gain_adjustment( void )
 	return 0x4000;
 #endif
 }
-
 
 // Values for navType:
 // 'y' = yaw/rudder, 'a' = aileron/roll, 'h' = aileron/hovering
