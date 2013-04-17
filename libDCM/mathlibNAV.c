@@ -393,8 +393,8 @@ int32_t long_scale ( int32_t arg1 , int16_t arg2 )
 		sign_result = - sign_result ;
 		arg2 = -arg2 ;
 	}
-	product = __builtin_mulss( arg2 , arg1ww._.W1 ) ;
-	accum.WW =  __builtin_mulss( arg2 , arg1ww._.W0 ) ;
+	product = __builtin_muluu( arg2 , arg1ww._.W1 ) ;
+	accum.WW =  __builtin_muluu( arg2 , arg1ww._.W0 ) ;
 	accum._.W0 = accum._.W1 ;
 	accum._.W1 = 0 ;
 	product += accum.WW ;
