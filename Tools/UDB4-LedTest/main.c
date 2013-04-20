@@ -22,224 +22,225 @@
 #include "../../libUDB/libUDB.h"
 #include "../../libUDB/libUDB_internal.h"
 
+#include "../../libUDB/spiUtils.h"
+#include <libpic30.h>
+#include "../../libUDB/mpu6000.h"
+
 
 #define RATE_THRESHOLD_LED		120
 #define ACCEL_THRESHOLD_LED		40
 
 
-int x_rate, y_rate, z_rate ;
-int x_accel, y_accel, z_accel ;
+int x_rate, y_rate, z_rate;
+int x_accel, y_accel, z_accel;
 
-char calib_countdown = 10 ;
-char eepromFailureFlashCount = 32 ;
-boolean eepromSuccess = 0 ;
+char calib_countdown = 10;
+char eepromFailureFlashCount = 32;
+boolean eepromSuccess = 0;
 
 
 extern void IOTest(void);
 
+int main(void) {
 
-int main(void)
-{
-	IOTest() ;
+    IOTest();
 
-	udb_init() ;
+    udb_init();
 
-        // using legacy eeprom driver
-	udb_eeprom_init() ;
+    // using legacy eeprom driver
+    udb_eeprom_init();
 
 
-	udb_run() ;  // This never returns.
-	return 0 ;
+    udb_run(); // This never returns.
+    return 0;
 }
 
 
 
 // Called every 1/2 second at low priority
-void udb_background_callback_periodic(void)
-{
-	switch (calib_countdown) {
+
+void udb_background_callback_periodic(void) {
+    switch (calib_countdown) {
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
-            case 9:
-			udb_background_trigger() ;
-			LED_RED = LED_ON ;
-			break ;
-		case 8:
-			LED_RED = LED_OFF ;
-			LED_GREEN = LED_ON ;
-			break ;
-		case 7:
-			LED_GREEN = LED_OFF ;
-			LED_ORANGE = LED_ON ;
-			break ;
-		case 6:
-			LED_ORANGE = LED_OFF ;
-			LED_BLUE = LED_ON ;
-			break ;
-		case 5:
-			LED_BLUE = LED_OFF ;
-			LED_RED = LED_ON ;
-			break ;
-		case 4:
-			LED_RED = LED_OFF ;
-			LED_GREEN = LED_ON ;
-			break ;
-		case 3:
-			LED_GREEN = LED_OFF ;
-			LED_ORANGE = LED_ON ;
-			break ;
-		case 2:
-			LED_BLUE = LED_ON ;
-			LED_ORANGE = LED_OFF ;
-			break ;
-		case 1:
-			LED_BLUE = LED_OFF ;
-			udb_a2d_record_offsets() ;
-			break ;
+        case 9:
+            udb_background_trigger();
+            LED_RED = LED_ON;
+            break;
+        case 8:
+            LED_RED = LED_OFF;
+            LED_GREEN = LED_ON;
+            break;
+        case 7:
+            LED_GREEN = LED_OFF;
+            LED_ORANGE = LED_ON;
+            break;
+        case 6:
+            LED_ORANGE = LED_OFF;
+            LED_BLUE = LED_ON;
+            break;
+        case 5:
+            LED_BLUE = LED_OFF;
+            LED_RED = LED_ON;
+            break;
+        case 4:
+            LED_RED = LED_OFF;
+            LED_GREEN = LED_ON;
+            break;
+        case 3:
+            LED_GREEN = LED_OFF;
+            LED_ORANGE = LED_ON;
+            break;
+        case 2:
+            LED_BLUE = LED_ON;
+            LED_ORANGE = LED_OFF;
+            break;
+        case 1:
+            LED_BLUE = LED_OFF;
+            udb_a2d_record_offsets();
+            break;
 #elif (BOARD_TYPE == AUAV3_BOARD)
-		case 9:
-			udb_background_trigger() ;
-			LED_BLUE = LED_ON ;
-			break ;
-		case 8:
-			LED_BLUE = LED_OFF ;
-			LED_RED = LED_ON ;
-			break ;
-		case 7:
-			LED_RED = LED_OFF ;
-			LED_GREEN = LED_ON ;
-			break ;
-		case 6:
-			LED_GREEN = LED_OFF ;
-			LED_ORANGE = LED_ON ;
-			break ;
-		case 5:
-			LED_ORANGE = LED_OFF ;
-			LED_BLUE = LED_ON ;
-			break ;
-		case 4:
-			LED_BLUE = LED_OFF ;
-			LED_RED = LED_ON ;
-			break ;
-		case 3:
-			LED_RED = LED_OFF ;
-			LED_GREEN = LED_ON ;
-			break ;
-		case 2:
-			LED_GREEN = LED_OFF ;
-			LED_ORANGE = LED_ON ;
-			break ;
-		case 1:
-			LED_ORANGE = LED_OFF ;
-			udb_a2d_record_offsets() ;
-			break ;
+        case 9:
+            udb_background_trigger();
+            LED_BLUE = LED_ON;
+            break;
+        case 8:
+            LED_BLUE = LED_OFF;
+            LED_RED = LED_ON;
+            break;
+        case 7:
+            LED_RED = LED_OFF;
+            LED_GREEN = LED_ON;
+            break;
+        case 6:
+            LED_GREEN = LED_OFF;
+            LED_ORANGE = LED_ON;
+            break;
+        case 5:
+            LED_ORANGE = LED_OFF;
+            LED_BLUE = LED_ON;
+            break;
+        case 4:
+            LED_BLUE = LED_OFF;
+            LED_RED = LED_ON;
+            break;
+        case 3:
+            LED_RED = LED_OFF;
+            LED_GREEN = LED_ON;
+            break;
+        case 2:
+            LED_GREEN = LED_OFF;
+            LED_ORANGE = LED_ON;
+            break;
+        case 1:
+            LED_ORANGE = LED_OFF;
+            udb_a2d_record_offsets();
+            break;
 #else
 #error "unsupported BOARD_TYPE"
 #endif
-		case 0:  // after 5 sec
-			return ;
-	}
-	
-	calib_countdown-- ;
-	return ;
+        case 0: // after 5 sec
+            return;
+    }
+
+    calib_countdown--;
+    return;
 }
 
+void udb_background_callback_triggered(void) {
+    // Write 1,2,3,4 into the first 4 bytes of the EEPROM
+    unsigned char data[4] = {1, 2, 3, 4};
+    eeprom_PageWrite(0x0000, data, 4);
 
-void udb_background_callback_triggered(void)
-{
-	// Write 1,2,3,4 into the first 4 bytes of the EEPROM
-	unsigned char data[4] = {1,2,3,4} ;
-	eeprom_PageWrite(0x0000, data, 4) ;
-	
-	// Read the first 4 bytes of the EEPROM
-	data[0] = data[1] = data[2] = data[3] = 0 ;
-	eeprom_SequentialRead(0x0000, data, 4) ;
-	
-	// Then test them
-	if (data[0] == 1 && data[1] == 2 && data[2] == 3 && data[3] == 4) {
-		eepromSuccess = 1 ;
-	}
+    // Read the first 4 bytes of the EEPROM
+    data[0] = data[1] = data[2] = data[3] = 0;
+    eeprom_SequentialRead(0x0000, data, 4);
+
+    // Then test them
+    if (data[0] == 1 && data[1] == 2 && data[2] == 3 && data[3] == 4) {
+        eepromSuccess = 1;
+    }
 }
 
 
 // Called at 40 Hz, before reseting the sensor sampling
-void udb_callback_read_sensors(void)
-{
-	x_rate = XRATE_VALUE ;
-	y_rate = YRATE_VALUE ;
-	z_rate = ZRATE_VALUE ;
-	
-	x_accel = XACCEL_VALUE ;
-	y_accel = YACCEL_VALUE ;
-	z_accel = ZACCEL_VALUE ;
-	
-	return ;
+
+void udb_callback_read_sensors(void) {
+    x_rate = XRATE_VALUE;
+    y_rate = YRATE_VALUE;
+    z_rate = ZRATE_VALUE;
+
+    x_accel = XACCEL_VALUE;
+    y_accel = YACCEL_VALUE;
+    z_accel = ZACCEL_VALUE;
+
+    return;
 }
 
 
 // Called at 40 Hz, before sending servo pulses
-void udb_servo_callback_prepare_outputs(void)
-{
-	if (calib_countdown)
-	{
-		udb_pwOut[ROLL_OUTPUT_CHANNEL] = 3000 ;
-		udb_pwOut[PITCH_OUTPUT_CHANNEL] = 3000 ;
-		udb_pwOut[YAW_OUTPUT_CHANNEL] = 3000 ;
-		udb_pwOut[X_ACCEL_OUTPUT_CHANNEL] = 3000 ;
-		udb_pwOut[Y_ACCEL_OUTPUT_CHANNEL] = 3000 ;
-		udb_pwOut[Z_ACCEL_OUTPUT_CHANNEL] = 3000 ;
-	}
-	else if (eepromSuccess == 0 && eepromFailureFlashCount) {
-		// eeprom failure!
-		if (udb_heartbeat_counter % 6 == 0) {
-			udb_led_toggle(LED_RED) ;
-			udb_led_toggle(LED_GREEN) ;
-			udb_led_toggle(LED_BLUE) ;
-			udb_led_toggle(LED_ORANGE) ;
-			eepromFailureFlashCount--;
-		}
-	}
-	else
-	{
-		union longww accum ;
-		
-		accum.WW = __builtin_mulss( y_rate , 4000 ) ;
-		udb_pwOut[ROLL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1) ;
-		
-		accum.WW = __builtin_mulss( x_rate , 4000 ) ;
-		udb_pwOut[PITCH_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1) ;
-		
-		accum.WW = __builtin_mulss( z_rate , 4000 ) ;
-		udb_pwOut[YAW_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1) ;
-		
-		accum.WW = __builtin_mulss( x_accel , 4000 ) ;
-		udb_pwOut[X_ACCEL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1) ;
-		
-		accum.WW = __builtin_mulss( y_accel , 4000 ) ;
-		udb_pwOut[Y_ACCEL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1) ;
-		
-		accum.WW = __builtin_mulss( z_accel , 4000 ) ;
-		udb_pwOut[Z_ACCEL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1) ;
-		
-		if ( (udb_heartbeat_counter / 600) % 2 == 0) {
-			LED_RED = LED_ON ;
-			LED_ORANGE = ((abs(udb_pwOut[ROLL_OUTPUT_CHANNEL]-3000) > RATE_THRESHOLD_LED) ? LED_ON : LED_OFF) ;
-			LED_BLUE = ((abs(udb_pwOut[PITCH_OUTPUT_CHANNEL]-3000) > RATE_THRESHOLD_LED) ? LED_ON : LED_OFF) ;
-			LED_GREEN = ((abs(udb_pwOut[YAW_OUTPUT_CHANNEL]-3000) > RATE_THRESHOLD_LED) ? LED_ON : LED_OFF) ;
-		}
-		else {
-			LED_RED = LED_OFF ;
-			LED_ORANGE = ((abs(udb_pwOut[X_ACCEL_OUTPUT_CHANNEL]-3000) > ACCEL_THRESHOLD_LED) ? LED_ON : LED_OFF) ;
-			LED_BLUE = ((abs(udb_pwOut[Y_ACCEL_OUTPUT_CHANNEL]-3000) > ACCEL_THRESHOLD_LED) ? LED_ON : LED_OFF) ;
-			LED_GREEN = ((abs(udb_pwOut[Z_ACCEL_OUTPUT_CHANNEL]-3000) > ACCEL_THRESHOLD_LED) ? LED_ON : LED_OFF) ;
-		}
-	}
-	
-	return ;
+
+void udb_servo_callback_prepare_outputs(void) {
+    if (calib_countdown) {
+        udb_pwOut[ROLL_OUTPUT_CHANNEL] = 3000;
+        udb_pwOut[PITCH_OUTPUT_CHANNEL] = 3000;
+        udb_pwOut[YAW_OUTPUT_CHANNEL] = 3000;
+        udb_pwOut[X_ACCEL_OUTPUT_CHANNEL] = 3000;
+        udb_pwOut[Y_ACCEL_OUTPUT_CHANNEL] = 3000;
+        udb_pwOut[Z_ACCEL_OUTPUT_CHANNEL] = 3000;
+    } else if (eepromSuccess == 0 && eepromFailureFlashCount) {
+        // eeprom failure!
+        if (udb_heartbeat_counter % 6 == 0) {
+            udb_led_toggle(LED_RED);
+            udb_led_toggle(LED_GREEN);
+            udb_led_toggle(LED_BLUE);
+            udb_led_toggle(LED_ORANGE);
+            eepromFailureFlashCount--;
+        }
+    } else {
+        union longww accum;
+
+        accum.WW = __builtin_mulss(y_rate, 4000);
+        udb_pwOut[ROLL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1);
+
+        accum.WW = __builtin_mulss(x_rate, 4000);
+        udb_pwOut[PITCH_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1);
+
+        accum.WW = __builtin_mulss(z_rate, 4000);
+        udb_pwOut[YAW_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1);
+
+        accum.WW = __builtin_mulss(x_accel, 4000);
+        udb_pwOut[X_ACCEL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1);
+
+        accum.WW = __builtin_mulss(y_accel, 4000);
+        udb_pwOut[Y_ACCEL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1);
+
+        accum.WW = __builtin_mulss(z_accel, 4000);
+        udb_pwOut[Z_ACCEL_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1);
+
+        if ((udb_heartbeat_counter / 600) % 2 == 0) {
+            LED_RED = LED_ON;
+            LED_ORANGE = ((abs(udb_pwOut[ROLL_OUTPUT_CHANNEL] - 3000) > RATE_THRESHOLD_LED) ? LED_ON : LED_OFF);
+            LED_BLUE = ((abs(udb_pwOut[PITCH_OUTPUT_CHANNEL] - 3000) > RATE_THRESHOLD_LED) ? LED_ON : LED_OFF);
+            LED_GREEN = ((abs(udb_pwOut[YAW_OUTPUT_CHANNEL] - 3000) > RATE_THRESHOLD_LED) ? LED_ON : LED_OFF);
+        } else {
+            LED_RED = LED_OFF;
+            LED_ORANGE = ((abs(udb_pwOut[X_ACCEL_OUTPUT_CHANNEL] - 3000) > ACCEL_THRESHOLD_LED) ? LED_ON : LED_OFF);
+            LED_BLUE = ((abs(udb_pwOut[Y_ACCEL_OUTPUT_CHANNEL] - 3000) > ACCEL_THRESHOLD_LED) ? LED_ON : LED_OFF);
+            LED_GREEN = ((abs(udb_pwOut[Z_ACCEL_OUTPUT_CHANNEL] - 3000) > ACCEL_THRESHOLD_LED) ? LED_ON : LED_OFF);
+        }
+    }
+
+    return;
 }
 
+int16_t udb_gps_callback_get_byte_to_send(void) {
+    return -1;
+}
 
-int16_t udb_gps_callback_get_byte_to_send(void) { return -1 ; }
-void udb_gps_callback_received_byte(char rxchar) {}
+void udb_gps_callback_received_byte(char rxchar) { }
 
-int16_t udb_serial_callback_get_byte_to_send(void) { return -1 ; }
-void udb_serial_callback_received_byte(uint8_t rxchar){};
+int16_t udb_serial_callback_get_byte_to_send(void) {
+    return -1;
+}
+
+void udb_serial_callback_received_byte(uint8_t rxchar) { };

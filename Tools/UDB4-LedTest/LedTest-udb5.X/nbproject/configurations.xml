@@ -51,12 +51,12 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/libUDB</Elem>
-    <Elem>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/libDCM</Elem>
-    <Elem>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/MatrixPilot</Elem>
-    <Elem>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/MAVLink</Elem>
-    <Elem>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/libVectorMatrix</Elem>
-    <Elem>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/Tools/UDB4-LedTest</Elem>
+    <Elem>../../../libUDB</Elem>
+    <Elem>../../../libDCM</Elem>
+    <Elem>../../../MatrixPilot</Elem>
+    <Elem>../../../MAVLink</Elem>
+    <Elem>../../../libVectorMatrix</Elem>
+    <Elem>..</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
