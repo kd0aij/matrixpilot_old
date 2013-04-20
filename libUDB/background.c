@@ -93,7 +93,7 @@ void udb_init_clock(void)	/* initialize timers */
 	TRISF = 0b1111111111101100 ;
 
 #if(BOARD_TYPE == UDB4_BOARD)
-	init_events();
+//	init_events();
 #endif
 #if(USE_I2C1_DRIVER == 1)
 	I2C1_init();

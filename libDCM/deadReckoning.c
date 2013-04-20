@@ -79,6 +79,7 @@ extern int16_t errorYawground[] ;
 // later, this is where the logic will be for assessing GPS health
 boolean use_virtual_gps()
 {
+/*
 	if ( udb_flags._.radio_on == 1 )
 	{
 		return false ;
@@ -87,6 +88,8 @@ boolean use_virtual_gps()
 	{
 		return true ;
 	}
+*/
+	return false ;
 }
 
 void compute_virtual_gps()

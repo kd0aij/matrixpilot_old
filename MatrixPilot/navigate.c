@@ -244,7 +244,7 @@ void compute_bearing_to_goal( void )
 		{
 			// progress_to_goal is the fraction of the distance from the start to the finish of
 			// the current waypoint leg, that is still remaining.  it ranges from 0 - 1<<12.
-			progress_to_goal = (((int32_t)goal.legDist - tofinish_line + ground_velocity_magnitudeXY/100)<<12) / goal.legDist ;
+			progress_to_goal = (((int32_t)goal.legDist - tofinish_line )<<12) / goal.legDist ;
 			if (progress_to_goal < 0) progress_to_goal = 0 ;
 			if (progress_to_goal > (int32_t)1<<12) progress_to_goal = (int32_t)1<<12 ;
 		}
