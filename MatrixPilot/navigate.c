@@ -72,7 +72,6 @@ void dcm_callback_gps_location_updated(void)
 		flags._.save_origin = 0 ;
 		setup_origin() ;
 	}
-
 	
 //	Ideally, navigate should take less than one second. For MatrixPilot, navigation takes only
 //	a few milliseconds.
@@ -101,16 +100,19 @@ void set_goal( struct relative3D fromPoint , struct relative3D toPoint )
 	
 	courseDirection[0] = courseLeg.x ;
 	courseDirection[1] = courseLeg.y ;
-	
+
+//	The following is the old way to define the goal angle and distance.
+//	It is left in for now because other computations, such as OSD, require
+//  an angle, and also the leg distance is required.
+//  But leg distance is produced as a by product of vector2_normalize.
+//	TODO: revise the following two lines.	
 	goal.phi = rect_to_polar ( &courseLeg ) ;
 	goal.legDist = courseLeg.x ;
-	
+
+//	New method for computing cosine and sine of course direction	
 	vector2_normalize( &courseDirection[0] , &courseDirection[0] ) ;
 	goal.cosphi = courseDirection[0] ;
 	goal.sinphi = courseDirection[1] ;
-
-//	goal.cosphi = cosine( goal.phi ) ;
-//	goal.sinphi = sine( goal.phi ) ;
 	
 	return ;
 }
@@ -141,8 +143,6 @@ int16_t desired_bearing_over_ground_vector[2] ;
 void compute_bearing_to_goal( void )
 {
 	union longww temporary ;
-	union longww crossWind ;
-	int8_t desired_dir_temp ;
 	
 	// compute the goal vector from present position to waypoint target in meters:
 	
@@ -164,54 +164,46 @@ void compute_bearing_to_goal( void )
 		
 	if ( desired_behavior._.cross_track )
 	{
-		// If using Cross Tracking
+	// If using Cross Tracking
 		
-
+	//	CTMARGIN is the value of cross track error in meters
+	//	beyond which cross tracking correction saturates at 45 degrees
 #define CTMARGIN 64
 #if ( CTMARGIN >= 1024 )
 #error ( "CTMARGIN is too large, it must be less than 1024")
 #endif
-//#define CTGAIN 1
-//#define CTDEADBAND 0
+
 
 		union longww crossVector[2] ;
 		int16_t cross_rotate[2] ;
 		int16_t crosstrack ;
+
+	//	cross_rotate is a vector parallel to the desired course track
 		cross_rotate[0] = goal.cosphi ;
 		cross_rotate[1] = -goal.sinphi ;
+
+	//	cross_vector is a weighted sum of cross track distance error and cross velocity.
+	//	IMU velocity is in centimeters per second, so right shifting by 4 produces
+	//	about 6 times the IMU velocity in meters per second. 
+	//	This sets the time constant of the exponential decay to about 6 seconds
 		crossVector[0]._.W1 = goal.x ;
 		crossVector[1]._.W1 = goal.y ;
 		crossVector[0].WW -= IMUlocationx.WW +  ( ( IMUintegralAccelerationx.WW ) >> 4 )  ;
 		crossVector[1].WW -= IMUlocationy.WW +  ( ( IMUintegralAccelerationy.WW ) >> 4 )  ;
 
+	//	The following rotation transforms the cross track error vector into the
+	//	frame of the desired course track
 		rotate_2D_long_vector_by_vector( &crossVector[0].WW , cross_rotate ) ;
 
-		crosstrack = crossVector[1]._.W1 ;
-	
-		// project the goal vector perpendicular to the desired direction vector
-		// to get the crosstrack error
+		crosstrack = crossVector[1]._.W1 ;	
 
-		/*
-		
-		temporary.WW = ( __builtin_mulss( togoal.y , goal.cosphi )
-					   - __builtin_mulss( togoal.x , goal.sinphi ))<<2 ;
-	
-		int16_t crosstrack = temporary._.W1 ;
-
-		temporary.WW = ( __builtin_mulss( IMUintegralAccelerationy._.W1 , goal.cosphi )
-					   - __builtin_mulss( IMUintegralAccelerationx._.W1 , goal.sinphi ))>>2 ;
-
-		crosstrack -= temporary._.W1 ;
-
-		*/
-		
-		// crosstrack is measured in meters
-		// angles are measured as an 8 bit signed character, so 90 degrees is 64 binary.
-
-		// initialize the target bearing vector to be parallel to the desired track
-
+	//	Compute the adjusted desired bearing over ground.
+	//	Start with the straight line between waypoints.
 		desired_bearing_over_ground_vector[0] = goal.cosphi ;
 		desired_bearing_over_ground_vector[1] = goal.sinphi ;
+
+	//	Determine if the crosstrack error is within saturation limit.
+	//	If so, then multiply by 64 to pick up an extra 6 bits of resolution.
 
 		if ( abs(crosstrack) < ((int16_t)(CTMARGIN)))
 		{
@@ -219,6 +211,9 @@ void compute_bearing_to_goal( void )
 			cross_rotate[1] = crossVector[1]._.W1 ;
 			cross_rotate[0] = 64*CTMARGIN ;
 			vector2_normalize( cross_rotate , cross_rotate ) ;
+		//	At this point, the implicit angle of the cross correction rotation
+		//	is atan of ( the cross error divided by the cross margin ).
+		//	Rotate the base course by the cross correction
 			rotate_2D_vector_by_vector ( desired_bearing_over_ground_vector , cross_rotate ) ;
 		}
 		else
@@ -231,75 +226,19 @@ void compute_bearing_to_goal( void )
 			{
 				rotate_2D_vector_by_angle ( desired_bearing_over_ground_vector , (int8_t) ( - 32 )) ;
 			}
-		}
-		
-		if ((estimatedWind[0] == 0 && estimatedWind[1] == 0) || air_speed_magnitudeXY < WIND_NAV_AIR_SPEED_MIN)
-			// last clause keeps ground testing results same as in the past. Small and changing GPS speed on the ground,
-			// combined with small wind_estimation will change calculated heading 4 times / second with result
-			// that ailerons start moving 4 times / second on the ground. This clause prevents this happening when not flying.
-			// Once flying, the GPS speed settles down to a larger figure, resulting in a smooth calculated heading.
-		{
-			desired_dir_temp = desired_bearing_over_ground ;
-		}
-		else
-		{
-			// account for the cross wind:
-			// compute the wind component that is perpendicular to the desired bearing:
-			crossWind.WW = ( __builtin_mulss( estimatedWind[0] , sine( desired_bearing_over_ground ))
-									- __builtin_mulss( estimatedWind[1] , cosine( desired_bearing_over_ground )))<<2 ;
-			if (  air_speed_magnitudeXY > abs(crossWind._.W1) )
-			{
-				// the correction to the bearing is the arcsine of the ratio of cross wind to air speed
-				desired_dir_temp = desired_bearing_over_ground
-				+ arcsine( __builtin_divsd ( crossWind.WW , air_speed_magnitudeXY )>>2 ) ;
-			}
-			else
-			{
-				desired_dir_temp = desired_bearing_over_ground ;
-			}
-		}
-	
+		}	
 	}
 	else {
-		// If not using Cross Tracking
-		
-		if ((estimatedWind[0] == 0 && estimatedWind[1] == 0) || air_speed_magnitudeXY < WIND_NAV_AIR_SPEED_MIN)
-			// last clause keeps ground testing results same as in the past. Small and changing GPS speed on the ground,
-			// combined with small wind_estimation will change calculated heading 4 times / second with result
-			// that ailerons start moving 4 times / second on the ground. This clause prevents this happening when not flying.
-			// Once flying, the GPS speed settles down to a larger figure, resulting in a smooth calculated heading.
-		{
-			desired_dir_temp = rect_to_polar( &togoal ) ;
-		}
-		else
-		{
-
+		// If not using Cross Tracking	
+			// the desired bearing unit vector is simply the normalized to goal vector
 			desired_bearing_over_ground_vector[0] = togoal.x ;
 			desired_bearing_over_ground_vector[1] = togoal.y ;
 			vector2_normalize( desired_bearing_over_ground_vector , desired_bearing_over_ground_vector  ) ;
-
-			desired_bearing_over_ground = rect_to_polar( &togoal ) ;
-			
-			// account for the cross wind:
-			// compute the wind component that is perpendicular to the desired bearing:
-			crossWind.WW = ( __builtin_mulss( estimatedWind[0] , sine( desired_bearing_over_ground ))
-									- __builtin_mulss( estimatedWind[1] , cosine( desired_bearing_over_ground )))<<2 ;
-			if (  air_speed_magnitudeXY > abs(crossWind._.W1) )
-			{
-				// the correction to the bearing is the arcsine of the ratio of cross wind to air speed
-				desired_dir_temp = desired_bearing_over_ground
-				+ arcsine( __builtin_divsd ( crossWind.WW , air_speed_magnitudeXY )>>2 ) ;
-			}
-			else
-			{
-				desired_dir_temp = desired_bearing_over_ground ;
-			}
-		}
 	}
 	
 	if ( flags._.GPS_steering )
 	{
-		desired_dir = desired_dir_temp ;
+		desired_dir = goal.phi ;
 		
 		if (goal.legDist > 0)
 		{
@@ -371,6 +310,9 @@ uint16_t wind_gain_adjustment( void )
 // 'y' = yaw/rudder, 'a' = aileron/roll, 'h' = aileron/hovering
 int16_t determine_navigation_deflection(char navType)
 {
+//	TODO: this new code is based on course over ground instead of heading.
+//	For ground testing and take off, we need use heading instead of COG,
+//	so we need to add that code.
 	union longww deflectionAccum ;
 	union longww dotprod ;
 	union longww crossprod ;
@@ -380,7 +322,8 @@ int16_t determine_navigation_deflection(char navType)
 	int16_t actualY ;
 	int16_t actualXY[2] ;
 	uint16_t yawkp ;
-	
+
+	// The following uses IMU values to get actual course over ground	
 	actualXY[0] = -IMUintegralAccelerationx._.W1 ;
 	actualXY[1] =  IMUintegralAccelerationy._.W1 ;
 	vector2_normalize( actualXY , actualXY ) ;
@@ -390,20 +333,14 @@ int16_t determine_navigation_deflection(char navType)
 	if (navType == 'y')
 	{
 		yawkp =  yawkprud  ;
-//		actualX = rmat[1] ;
-//		actualY = rmat[4] ;
 	}
 	else if (navType == 'a')
 	{
 		yawkp =  yawkpail ;
-//		actualX = rmat[1] ;
-//		actualY = rmat[4] ;
 	}
 	else if (navType == 'h')
 	{
 		yawkp = yawkpail ;
-//		actualX = rmat[2] ;
-//		actualY = rmat[5] ;
 	}
 	else
 	{
@@ -414,13 +351,6 @@ int16_t determine_navigation_deflection(char navType)
 	desiredX = -cosine ( (navType == 'y') ? 0 : 64 ) ;
 	desiredY = sine ( (navType == 'y') ? 0 : 64 ) ;
 #else
-/*
-	desiredX = -cosine( desired_dir ) ;
-	desiredY = sine( desired_dir ) ;
-*/
-//	desiredX = -cosine( desired_bearing_over_ground ) ;
-//	desiredY = sine( desired_bearing_over_ground ) ;
-
 	desiredX = - desired_bearing_over_ground_vector[0] ;
 	desiredY =  desired_bearing_over_ground_vector[1] ;
 #endif
