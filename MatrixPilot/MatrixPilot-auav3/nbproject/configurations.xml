@@ -20,7 +20,6 @@
         <itemPath>../../libUDB/events.h</itemPath>
         <itemPath>../../libUDB/I2C.h</itemPath>
         <itemPath>../../libUDB/NV_memory.h</itemPath>
-        <itemPath>../../libUDB/nv_memory_options.h</itemPath>
         <itemPath>../../libUDB/spiUtils.h</itemPath>
         <itemPath>../../libUDB/mpu6000.h</itemPath>
         <itemPath>../../libUDB/ConfigAUAV3.h</itemPath>
@@ -179,10 +178,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="f2" displayName="auav_test" projectFiles="true">
-        <itemPath>main.c</itemPath>
-        <itemPath>options.h</itemPath>
-      </logicalFolder>
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
         <itemPath>../../libDCM/estWind.c</itemPath>
         <itemPath>../../libDCM/estYawDrift.c</itemPath>
@@ -259,6 +254,11 @@
         <itemPath>../altitudeCntrlVariable.c</itemPath>
         <itemPath>../euler_angles.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="f3" displayName="MatrixPilot-auav3" projectFiles="true">
+        <itemPath>nv_memory_options.h</itemPath>
+        <itemPath>main.c</itemPath>
+        <itemPath>options.h</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -276,8 +276,8 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>1.10</languageToolchainVersion>
-        <platform>3</platform>
+        <languageToolchainVersion>1.11</languageToolchainVersion>
+        <platform>2</platform>
       </toolsSet>
       <compileType>
         <linkerTool>
@@ -313,7 +313,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../MatrixPilot-auav3"/>
+                  value="../MatrixPilot-auav3;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>
@@ -402,6 +402,7 @@
         <property key="legacy-libc" value="true"/>
         <property key="oXC16glb-macros" value=""/>
         <property key="output-file-format" value="elf"/>
+        <property key="save-temps" value="false"/>
       </C30Global>
       <PICkit3PlatformTool>
         <property key="tracecontrol.disablemacros" value="true"/>

@@ -75,7 +75,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-#define GPS_TYPE							GPS_STD
+#define GPS_TYPE							GPS_MTEK
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@
 // receiver. (Totally autonomous.)  This is just meant for simulation and debugging.  It is not
 // recommended that you actually use this option, since you'd have no manual control to fall
 // back on if things go wrong.  It may not even be legal in your area.
-#define NORADIO								0
+//#define NORADIO								0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,11 +193,11 @@
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
-#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
-#define AILERON_INPUT_CHANNEL				CHANNEL_1
-#define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_5
-#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_4
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_1
+#define AILERON_INPUT_CHANNEL				CHANNEL_2
+#define ELEVATOR_INPUT_CHANNEL				CHANNEL_3
+#define RUDDER_INPUT_CHANNEL				CHANNEL_4
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_5
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_MODE_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -629,7 +629,7 @@
 // The following can be used to do a ground check of stabilization without a GPS.
 // If you define TestGains, stabilization functions
 // will be enabled, even without GPS or Tx turned on. (Tx is optional)
-#define TestGains						// uncomment this line if you want to test your gains without using GPS
+//#define TestGains						// uncomment this line if you want to test your gains without using GPS
 
 // Set this to 1 to calculate and print out free stack space
 #define RECORD_FREE_STACK_SPACE 			0

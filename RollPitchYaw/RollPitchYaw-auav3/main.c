@@ -111,8 +111,8 @@ void dcm_servo_callback_prepare_outputs(void)
 		udb_pwOut[YAW_OUTPUT_CHANNEL] = udb_servo_pulsesat(3000 + accum._.W1) ;
 	}
 	
-	// Serial output at 2Hz  (40Hz / 20)
-	if (udb_heartbeat_counter % 20 == 0)
+	// Serial output at 10Hz  (40Hz / 4)
+	if (udb_heartbeat_counter % 4 == 0)
 	{
 		if (dcm_flags._.calib_finished)
 		{
@@ -129,7 +129,7 @@ void send_debug_line( void )
 {
 	db_index = 0 ;
         float temp = 35 + (mpu_temp.value + 521.0) / 340.0;
-	sprintf( debug_buffer , "lat: %li, long: %li, alt: %li, temp: %5.2f\r\nrmat: %i, %i, %i, %i, %i, %i, %i, %i, %i\r\n" ,
+	sprintf( debug_buffer , "lat: %li, long: %li, alt: %li, temp: %5.2f\t rmat: %5i %5i %5i %5i %5i %5i %5i %5i %5i\r\n" ,
 		lat_gps.WW , long_gps.WW , alt_sl_gps.WW , (double)temp,
 		rmat[0] , rmat[1] , rmat[2] , 
 		rmat[3] , rmat[4] , rmat[5] , 
@@ -154,7 +154,7 @@ int udb_serial_callback_get_byte_to_send(void)
 
 
 // Don't respond to serial input
-void udb_serial_callback_received_byte(char rxchar)
+void udb_serial_callback_received_byte(uint8_t rxchar)
 {
 	// Do nothing
 	return ;
