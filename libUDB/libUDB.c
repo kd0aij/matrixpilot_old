@@ -388,8 +388,6 @@ void udb_init(void)
 
 	udb_init_ADC() ;
 	SRbits.IPL = 0 ;	// turn on all interrupt priorities
-
-	return ;
 }
 
 
@@ -425,8 +423,6 @@ void udb_init_leds( void )
 
 
 #endif
-	
-	return ;
 }
 
 #ifdef INITIALIZE_VERTICAL // for VTOL, vertical initialization
@@ -467,7 +463,6 @@ void udb_a2d_record_offsets(void)
 #ifdef VREF
 	udb_vref.offset = udb_vref.value ;
 #endif
-	return ;
 }
 #endif
 
@@ -477,8 +472,6 @@ void udb_servo_record_trims(void)
 	int16_t i;
 	for (i=0; i <= NUM_INPUTS; i++)
 		udb_pwTrim[i] = udb_pwIn[i] ;
-	
-	return ;
 }
 
 

@@ -108,7 +108,8 @@ void udb_servo_callback_prepare_outputs(void)
 	}
 #endif
 //	when we move the imu step to the MPU call back, to run at 200 Hz, remove this		
-	if (dcm_flags._.calib_finished) {
+	if (dcm_flags._.calib_finished)
+	{
 		dcm_run_imu_step() ;
 	}
 	

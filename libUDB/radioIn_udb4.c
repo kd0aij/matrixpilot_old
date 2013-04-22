@@ -100,8 +100,6 @@ void udb_init_capture(void)
 	if (NUM_INPUTS > 6) _IC7IE = 1 ; 
 	if (NUM_INPUTS > 7) _IC8IE = 1 ;
 #endif
-	
-	return ;
 }
 
 

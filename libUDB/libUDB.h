@@ -192,7 +192,7 @@ void udb_callback_read_sensors(void);		// Callback
 extern fractional udb_magFieldBody[3];
 extern fractional udb_magOffset[3];
 
-// Implement thiis callback to make use of the magetometer data.  This is called each
+// Implement this callback to make use of the magetometer data.  This is called each
 // time the magnetometer reports new data.
 void udb_magnetometer_callback_data_available(void);	// Callback
 
@@ -270,7 +270,7 @@ void eeprom_ByteRead(uint16_t address, uint8_t *data);
 
 // Write numbytes of data to eeprom, starting at address. The write area can not span a
 // page boundry.  Pages start on addresses of multiples of 64.
-// Read numbytes of data from address in eeprom into data.  Note taht there is no 1-page
+// Read numbytes of data from address in eeprom into data.  Note that there is no 1-page
 // limit for sequential reads as there is for page writes.
 void eeprom_PageWrite(uint16_t address, uint8_t *data, uint8_t numbytes);
 void eeprom_SequentialRead(uint16_t address, uint8_t *data, uint16_t numbytes);

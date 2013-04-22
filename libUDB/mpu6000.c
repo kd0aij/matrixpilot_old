@@ -151,7 +151,8 @@ void MPU6000_init16(void) {
 
 }
 
-void process_MPU_data(void) {
+void process_MPU_data(void)
+{
     mpuDAV = true;
     //LED_BLUE = LED_OFF;
 
@@ -188,7 +189,6 @@ void MPU6000_read(void) {
 }
 
 #if ( MPU_SPI == 1 )
-
 void __attribute__((interrupt, no_auto_psv)) _INT1Interrupt(void) {
     _INT1IF = 0; // Clear the INT1 interrupt flag
     indicate_loading_inter;
@@ -197,9 +197,7 @@ void __attribute__((interrupt, no_auto_psv)) _INT1Interrupt(void) {
     interrupt_restore_corcon;
     return;
 }
-
 #elif ( MPU_SPI == 2 )
-
 void __attribute__((interrupt, no_auto_psv)) _INT3Interrupt(void) {
     _INT3IF = 0; // Clear the INT3 interrupt flag
     indicate_loading_inter;
@@ -213,7 +211,6 @@ void __attribute__((interrupt, no_auto_psv)) _INT3Interrupt(void) {
 #endif
 
 // Used for debugging:
-
 void MPU6000_print(void) {
     printf("%06u axyz %06i %06i %06i gxyz %06i %06i %06i t %u\r\n",
             mpuCnt, mpu_data[0], mpu_data[1], mpu_data[2], mpu_data[4], mpu_data[5], mpu_data[6], mpu_data[3]);

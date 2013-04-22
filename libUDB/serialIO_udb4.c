@@ -73,15 +73,12 @@ void udb_init_GPS(void)
 	U1MODEbits.UARTEN = 1;	// And turn the peripheral on
 
 	U1STAbits.UTXEN = 1;
-	
-	return ;
 }
 
 
 void udb_gps_set_rate(int32_t rate)
 {
 	U1BRG = UDB_BAUD(rate) ;
-	return ;
 }
 
 
@@ -94,7 +91,6 @@ boolean udb_gps_check_rate(int32_t rate)
 void udb_gps_start_sending_data(void)
 {
 	_U1TXIF = 1 ; // fire the tx interrupt
-	return ;
 }
 
 
@@ -112,7 +108,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 	}
 	
 	interrupt_restore_corcon ;
-	return ;
 }
 
 
@@ -130,7 +125,6 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U1RXInterrupt(void)
 
 	U1STAbits.OERR = 0 ;		
 	interrupt_restore_corcon ;
-	return ;
 }
 
 
@@ -186,15 +180,12 @@ void udb_init_USART(void)
 	U2MODEbits.UARTEN = 1;	// And turn the peripheral on
 
 	U2STAbits.UTXEN = 1;
-	
-	return ;
 }
 
 
 void udb_serial_set_rate(int32_t rate)
 {
 	U2BRG = UDB_BAUD(rate) ;
-	return ;
 }
 
 
@@ -207,7 +198,6 @@ boolean udb_serial_check_rate(int32_t rate)
 void udb_serial_start_sending_data(void)
 {
 	_U2TXIF = 1 ; // fire the tx interrupt
-	return ;
 }
 
 
@@ -225,7 +215,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2TXInterrupt(void)
 	}
 	
 	interrupt_restore_corcon ;
-	return ;
 }
 
 
@@ -243,7 +232,6 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U2RXInterrupt(void)
 
 	U2STAbits.OERR = 0 ;		
 	interrupt_restore_corcon ;
-	return ;
 }
 
 

@@ -46,11 +46,14 @@ uint16_t rise[NUM_INPUTS + 1]; // rising edge clock capture for radio inputs
 uint16_t rise_ppm; // rising edge clock capture for PPM radio input
 #endif
 
-void udb_init_capture(void) {
+
+void udb_init_capture(void)
+{
     int16_t i;
 
 #if(USE_NV_MEMORY == 1)
-    if (udb_skip_flags.skip_radio_trim == 0) {
+	if(udb_skip_flags.skip_radio_trim == 0)
+	{	
 #endif
         for (i = 0; i <= NUM_INPUTS; i++)
 #if (FIXED_TRIMPOINT == 1)
@@ -122,8 +125,6 @@ void udb_init_capture(void) {
     if (NUM_INPUTS > 6) _IC7IE = 1;
     if (NUM_INPUTS > 7) _IC8IE = 1;
 #endif
-
-    return;
 }
 
 
