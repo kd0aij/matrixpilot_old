@@ -43,6 +43,8 @@ extern void IOTest(void);
 
 int main(void) {
 
+	mcu_init();
+
     IOTest();
 
     udb_init();
