@@ -1,3 +1,7 @@
 21 April 2013:
     Arsov AGPS module connected and working properly on bench.
     Not getting a green LED for radio_on indication; appears to be no IC1 interrupt
+
+22 April:
+    PWM inputs working correctly now, servo outputs also seem reasonable
+    incorporated Robert's macro changes to radioIn_auav3.c
