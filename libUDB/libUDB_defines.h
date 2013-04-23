@@ -53,7 +53,7 @@ union longlongLL { int64_t LL ; struct LL _ ; struct wwww __ ; } ;
 #define UDB4_CLOCK		3
 
 
-/* Device header file */
+// Device header file
 #if defined(__XC16__)
 #include <xc.h>
 #elif defined(__C30__)

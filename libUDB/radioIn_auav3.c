@@ -37,6 +37,7 @@ int16_t failSafePulses = 0;
 int16_t noisePulses = 0;
 #define IC_INT_PRI 6
 #define TMR_FACTOR 2
+#define MIN_SYNC_PULSE_WIDTH (14000/TMR_FACTOR)	// 3.5ms
 
 void udb_init_capture(void)
 {
