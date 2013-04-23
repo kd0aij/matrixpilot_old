@@ -20,7 +20,6 @@
 
 
 #include "libUDB_internal.h"
-//#include "oscillator.h"
 #if (BOARD_TYPE == AUAV3_BOARD)
 #include "../libCommon/uart3.h"
 #include <stdio.h>
@@ -29,7 +28,31 @@ extern int __C30_UART;
 
 
 #if (BOARD_IS_CLASSIC_UDB)
-#error Classic UDB boards are no not supported in this version
+#if ( CLOCK_CONFIG == CRYSTAL_CLOCK )
+_FOSC( CSW_FSCM_OFF & HS ) ;		// external high speed crystal
+#elif ( CLOCK_CONFIG == FRC8X_CLOCK ) 
+_FOSC(CSW_FSCM_OFF & FRC_PLL8);
+#endif
+_FWDT( WDT_OFF ) ;					// no watchdog timer
+
+
+// Add compatibility for c30 V3.3
+#ifndef BORV_20
+#define BORV_20 BORV20
+#endif
+#ifndef _FICD
+#define _FICD(x) _ICD(x)
+#endif
+
+
+_FBORPOR( 	PBOR_ON &				// brown out detection on
+			BORV_20 &				// brown out set to 2.0 V
+			MCLR_EN &				// enable MCLR
+			RST_PWMPIN &			// pwm pins as pwm
+			PWMxH_ACT_HI &			// PWMH is active high
+			PWMxL_ACT_HI ) ;		// PMWL is active high
+_FGS( CODE_PROT_OFF ) ;				// no protection
+_FICD( 0xC003 ) ;					// normal use of debugging port
 
 #elif (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD )
 _FOSCSEL(FNOSC_PRIPLL); // pri plus PLL (primary osc  w/ PLL)
@@ -97,14 +120,6 @@ _FICD(	JTAGEN_OFF &
 
 #else // __XC16__
 
-_FOSCSEL(FNOSC_FRC);
-//_FOSCSEL(FNOSC_PRIPLL & IESO_OFF);
-_FOSC(FCKSM_CSECMD & OSCIOFNC_OFF & POSCMD_XT & IOL1WAY_ON);
-//_FWDT(FWDTEN_OFF & WINDIS_OFF & PLLKEN_ON & WDTPRE_PRI128 & PDTPOST_PS32768);
-_FWDT(FWDTEN_OFF);
-_FICD(ICS_PGD3);
-_FPOR(ALTI2C1_ON & ALTI2C2_ON);
-/*
 //_FOSCSEL(FNOSC_FRC);
 _FOSCSEL(FNOSC_PRIPLL & IESO_OFF);
 _FOSC(FCKSM_CSECMD & OSCIOFNC_OFF & POSCMD_XT & IOL1WAY_ON);
@@ -112,7 +127,6 @@ _FOSC(FCKSM_CSECMD & OSCIOFNC_OFF & POSCMD_XT & IOL1WAY_ON);
 _FWDT(FWDTEN_OFF & WINDIS_OFF & PLLKEN_ON);
 _FICD(ICS_PGD3);
 _FPOR(ALTI2C1_ON & ALTI2C2_ON);
- */
 
 #endif // __XC16__
 
@@ -174,13 +188,6 @@ void configurePPS(void)
     _IC6R = 30; // IC6 on RP30
     _IC7R = 20; // IC7 on RP20
     _IC8R = 104; // IC8 on RP104
-
-
-    // temporarily assign REFCLK0 to OC1 pin for PLL testing
-////    _RP112R = 0b010000; // OC1 output RP112
-//    _RP112R = 0b110001; // REFCLK0 output RP112
-//    REFOCONbits.RODIV = 7;  // divide by 128
-//    REFOCONbits.ROON = 1;   // enable refclk output
 
 //    // OC1:8 are PWM module outputs
 //
@@ -298,82 +305,11 @@ void mcu_init(void)
 		osc_fail_count = 0 ;
 	}
 	
-// new RobD
-	ANSELA = 0x0000;
-	ANSELB = 0x0000;
-	ANSELC = 0x0000;
-	ANSELD = 0x0000;
-	ANSELE = 0x0000;
-	ANSELG = 0x0000;
-
-//#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
-//	PLLFBDbits.PLLDIV = 30 ; // FOSC = 32 MHz (XT = 8.00MHz, N1=2, N2=4, M = 32)
-//#endif
-
-#if (BOARD_TYPE == AUAV3_BOARD )
-/*
-    // Configure the device PLL to obtain 60 MIPS operation. The crystal
-    // frequency is 8MHz. Divide 8MHz by 2, multiply by 60 and divide by
-    // 2. This results in Fosc of 120MHz. The CPU clock frequency is
-    // Fcy = Fosc/2 = 60MHz. Wait for the Primary PLL to lock and then
-    // configure the auxilliary PLL to provide 48MHz needed for USB 
-    // Operation.
-
-	PLLFBD = 58;				// M  = 60
-	CLKDIVbits.PLLPOST = 0;		// N1 = 2
-	CLKDIVbits.PLLPRE = 0;		// N2 = 2
-	OSCTUN = 0;
- */
-#if (FREQOSC == 128000000LL)
-#warning Fast OSC selected
-    // Configure the device PLL to obtain 64 MIPS operation. The crystal
-    // frequency is 8MHz. Divide 8MHz by 2, multiply by 64 and divide by
-    // 2. This results in Fosc of 128MHz. The CPU clock frequency is
-    // Fcy = Fosc/2 = 64MHz. Wait for the Primary PLL to lock and then
-    // configure the auxilliary PLL to provide 48MHz needed for USB 
-    // Operation.
-	PLLFBD = 62;				// M  = 64
-#elif (FREQOSC == 64000000LL)
-#warning Medium OSC selected
-    // Configure the device PLL to obtain 32 MIPS operation. The crystal
-    // frequency is 8MHz. Divide 8MHz by 2, multiply by 32 and divide by
-    // 2. This results in Fosc of 64MHz. The CPU clock frequency is
-    // Fcy = Fosc/2 = 32MHz. Wait for the Primary PLL to lock and then
-    // configure the auxilliary PLL to provide 48MHz needed for USB 
-    // Operation.
-	PLLFBD = 30;				// M  = 32
-#elif (FREQOSC == 32000000LL)
-#warning Slow OSC selected
-    // Configure the device PLL to obtain 16 MIPS operation. The crystal
-    // frequency is 8MHz. Divide 8MHz by 2, multiply by 64 and divide by
-    // 2. This results in Fosc of 32MHz. The CPU clock frequency is
-    // Fcy = Fosc/2 = 16MHz. Wait for the Primary PLL to lock and then
-    // configure the auxilliary PLL to provide 48MHz needed for USB 
-    // Operation.
-	PLLFBD = 14;				// M  = 16
-#else
-#error Invalid Oscillator Frequency
+#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
+	PLLFBDbits.PLLDIV = 30 ; // FOSC = 32 MHz (XT = 8.00MHz, N1=2, N2=4, M = 32)
 #endif
-	CLKDIVbits.PLLPOST = 0;		// N1 = 2
-	CLKDIVbits.PLLPRE = 0;		// N2 = 2
-	OSCTUN = 0;			
-
-    //	Initiate Clock Switch to Primary Oscillator with PLL (NOSC= 0x3)
-	__builtin_write_OSCCONH(0x03);		
-	__builtin_write_OSCCONL(0x01);
-	while (OSCCONbits.COSC != 0x3);       
-
-    // Configuring the auxiliary PLL, since the primary
-    // oscillator provides the source clock to the auxiliary
-    // PLL, the auxiliary oscillator is disabled. Note that
-    // the AUX PLL is enabled. The input 8MHz clock is divided
-    // by 2, multiplied by 24 and then divided by 2. Wait till 
-    // the AUX PLL locks.
-    ACLKCON3 = 0x24C1;   
-    ACLKDIV3 = 0x7;   
-    ACLKCON3bits.ENAPLL = 1;
-    while (ACLKCON3bits.APLLCK != 1); 
-
+        
+#if (BOARD_TYPE == AUAV3_BOARD)
 	configurePPS();
 	configureDigitalIO();
 	__C30_UART = 3;
@@ -387,29 +323,6 @@ void mcu_init(void)
 			(unsigned int)(trap_source & 0xffff), 
 			osc_fail_count);
 	}
-
-#if (BOARD_TYPE == UDB4_BOARD)
-    printf("MatrixPilot-UDB4\r\n");
-#elif (BOARD_TYPE == UDB5_BOARD )
-    printf("MatrixPilot-UDB5\r\n");
-#elif (BOARD_TYPE == AUAV3_BOARD )
     printf("MatrixPilot-AUAV3\r\n");
-#endif
-#endif
-}
-
-void init_leds(void)
-{
-#if (BOARD_TYPE == AUAV3_BOARD )
-    // port B
-    _LATB2 = LED_OFF; _LATB3 = LED_OFF; _LATB4 = LED_OFF; _LATB5 = LED_OFF; 
-    // port B
-    TRISBbits.TRISB2 = 0; // LED1
-    TRISBbits.TRISB3 = 0; // LED2
-    TRISBbits.TRISB4 = 0; // LED3
-    TRISBbits.TRISB5 = 0; // LED4
-#elif (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD )
-	_LATE1 = LED_OFF ;_LATE2 = LED_OFF ; _LATE3 = LED_OFF ;_LATE4 = LED_OFF ;
-	_TRISE1 = 0 ;_TRISE2 = 0 ;_TRISE3 = 0 ;_TRISE4 = 0 ;
 #endif
 }
