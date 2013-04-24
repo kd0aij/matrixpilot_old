@@ -276,10 +276,11 @@
     <itemPath>projectStatus.txt</itemPath>
   </logicalFolder>
   <sourceRootList>
+    <Elem>..</Elem>
     <Elem>../../libUDB</Elem>
     <Elem>../../libDCM</Elem>
     <Elem>../../libCommon</Elem>
-    <Elem>..</Elem>
+    <Elem>../../MAVLink</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

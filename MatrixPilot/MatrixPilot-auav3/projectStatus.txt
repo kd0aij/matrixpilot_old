@@ -5,3 +5,10 @@
 22 April:
     PWM inputs working correctly now, servo outputs also seem reasonable
     incorporated Robert's macro changes to radioIn_auav3.c
+
+23 April:
+    fixed InputCapture pin assignments for inputs 2/3 and 5/6
+
+24 April:
+    defined symbolic names for all IC and OC pins to help avoid mismatches
+    between internal and external pin numbers
