@@ -187,7 +187,7 @@
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
 // For UDB4 boards: Set to 1-8
-#define NUM_INPUTS							5
+#define NUM_INPUTS							6
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
@@ -197,7 +197,7 @@
 #define AILERON_INPUT_CHANNEL				CHANNEL_2
 #define ELEVATOR_INPUT_CHANNEL				CHANNEL_3
 #define RUDDER_INPUT_CHANNEL				CHANNEL_4
-#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_5
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_6
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_MODE_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -228,9 +228,9 @@
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
 // 
-#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
-#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
-#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_1
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_2
+#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_3
 #define RUDDER_OUTPUT_CHANNEL				CHANNEL_4
 #define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL			CHANNEL_UNUSED

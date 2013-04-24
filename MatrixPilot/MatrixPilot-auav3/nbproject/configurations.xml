@@ -4,6 +4,10 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
+        <itemPath>../../libCommon/p30sim.h</itemPath>
+        <itemPath>../../libCommon/uart3.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
         <itemPath>../../libDCM/libDCM.h</itemPath>
         <itemPath>../../libDCM/libDCM_defines.h</itemPath>
@@ -178,6 +182,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
+        <itemPath>../../libCommon/uart3.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
         <itemPath>../../libDCM/estWind.c</itemPath>
         <itemPath>../../libDCM/estYawDrift.c</itemPath>
@@ -207,6 +214,7 @@
         <itemPath>../../libUDB/radioIn_auav3.c</itemPath>
         <itemPath>../../libUDB/analog2digital_auav3.c</itemPath>
         <itemPath>../../libUDB/traps_asm.s</itemPath>
+        <itemPath>../../libUDB/mcu.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="libVectorMatrix" projectFiles="true">
         <itemPath>../../libVectorMatrix/madd.s</itemPath>

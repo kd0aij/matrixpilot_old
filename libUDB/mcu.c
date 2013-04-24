@@ -305,11 +305,10 @@ void mcu_init(void)
 		osc_fail_count = 0 ;
 	}
 	
-#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
 	PLLFBDbits.PLLDIV = 30 ; // FOSC = 32 MHz (XT = 8.00MHz, N1=2, N2=4, M = 32)
-#endif
-        
-#if (BOARD_TYPE == AUAV3_BOARD)
+
+#if (BOARD_TYPE == AUAV3_BOARD )
+
 	configurePPS();
 	configureDigitalIO();
 	__C30_UART = 3;
