@@ -12,3 +12,16 @@
 24 April:
     defined symbolic names for all IC and OC pins to help avoid mismatches
     between internal and external pin numbers
+
+25 April:
+    The latest version of the XC16 compiler, v1.11 generates the warning:
+    "Taking the address of <symbol> may require an extended pointer for this device"
+    if the address of an auto variable is taken using a standard data pointer.
+    This is due to the fact that the stack may span the 32K boundary and only the
+    low 15 bits of a standard pointer are used as the address.
+    This is not currently a problem, as the stack begins down below 0x2000, but
+    could become an issue if dataspace begins to fill toward the 32K (0x8000) boundary.
+
+    Added file stack.S to test manual allocation of 4KB stack from 0x2000 to 0x3000.
+    This range is addressable with a standard pointer. No apparent way to suppress
+    the compiler warning though.

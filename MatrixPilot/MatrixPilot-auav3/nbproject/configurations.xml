@@ -266,6 +266,8 @@
         <itemPath>nv_memory_options.h</itemPath>
         <itemPath>main.c</itemPath>
         <itemPath>options.h</itemPath>
+        <itemPath>mp-auav3.map</itemPath>
+        <itemPath>stack.S</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -316,7 +318,7 @@
       </makeCustomizationType>
       <C30>
         <property key="code-model" value="large-code"/>
-        <property key="const-model" value="default"/>
+        <property key="const-model" value="const-in-code"/>
         <property key="data-model" value="default"/>
         <property key="enable-all-warnings" value="true"/>
         <property key="enable-ansi-std" value="false"/>
@@ -343,7 +345,7 @@
         <property key="oXC16gcc-name-text-sec" value=""/>
         <property key="oXC16gcc-near-chars" value="false"/>
         <property key="oXC16gcc-no-isr-warn" value="false"/>
-        <property key="oXC16gcc-sfr-warn" value="false"/>
+        <property key="oXC16gcc-sfr-warn" value="true"/>
         <property key="oXC16gcc-smar-io-lvl" value="1"/>
         <property key="oXC16gcc-smart-io-fmt" value=""/>
         <property key="optimization-level" value="0"/>
@@ -389,11 +391,11 @@
         <property key="general-code-protect" value="no_code_protect"/>
         <property key="general-write-protect" value="no_write_protect"/>
         <property key="generate-cross-reference-file" value="false"/>
-        <property key="heap-size" value="256"/>
+        <property key="heap-size" value="4096"/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file"
-                  value="&quot;${DISTDIR}/MatrixPilot-udb4.X.${IMAGE_TYPE}.map&quot;"/>
+                  value="/home/markw/MPLABXProjects/MatrixPilot_UDB5_WJP/MatrixPilot/MatrixPilot-auav3/mp-auav3.map"/>
         <property key="oXC16ld-extra-opts" value=""/>
         <property key="oXC16ld-fill-upper" value="0"/>
         <property key="oXC16ld-force-link" value="false"/>
@@ -402,7 +404,7 @@
         <property key="oXC16ld-stackguard" value="16"/>
         <property key="preprocessor-macros" value=""/>
         <property key="remove-unused-sections" value="false"/>
-        <property key="report-memory-usage" value="false"/>
+        <property key="report-memory-usage" value="true"/>
         <property key="secure-eeprom" value="no_eeprom"/>
         <property key="secure-flash" value="no_flash"/>
         <property key="secure-ram" value="no_ram"/>
@@ -421,9 +423,6 @@
         <property key="save-temps" value="false"/>
       </C30Global>
       <PICkit3PlatformTool>
-        <property key="tracecontrol.disablemacros" value="true"/>
-        <property key="tracecontrol.medium" value="0"/>
-        <property key="tracecontrol.select" value="0"/>
       </PICkit3PlatformTool>
     </conf>
   </confs>
