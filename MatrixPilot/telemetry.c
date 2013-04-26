@@ -578,7 +578,7 @@ void serial_output_8hz( void )
 					 flags.WW, osc_fail_count,
 					 IMUvelocityx._.W1, IMUvelocityy._.W1, IMUvelocityz._.W1, goal.x, goal.y, goal.height );
 #if (RECORD_FREE_STACK_SPACE == 1)
-				serial_output("stk%d:", (int16_t)(4096-maxstack));
+				serial_output("stk%d:", (int16_t)(maxstack));
 #endif
 				serial_output("\r\n");
 			}

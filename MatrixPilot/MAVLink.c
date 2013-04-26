@@ -411,9 +411,10 @@ void mavlink_send_param_maxstack(int16_t i) {
 
 void mavlink_set_maxstack(float setting, int16_t i) {
     //send_text((uint8_t*)"Setting maxstack \r\n");
-    if ((mavlink_parameters_list[i].readonly == true) ||
-            (mavlink_parameter_out_of_bounds(setting, i) == true)) return;
-    maxstack = (int16_t) (4096 - setting);
+  //FIXME: bad type for arg1 
+//    if ((mavlink_parameters_list[i].readonly == true) ||
+//            (mavlink_parameter_out_of_bounds(setting, i) == true)) return;
+//    maxstack = (int16_t) (4096 - setting);
     return;
 }
 
