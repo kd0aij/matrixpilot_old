@@ -70,12 +70,12 @@
 //    AIRFRAME_VTAIL			Ailerons(optional), and Elevator and Rudder as V-tail controls
 //    AIRFRAME_DELTA			Aileron and Elevator as Elevons, and Rudder(optional)
 // (Note that although AIRFRAME_HELI is also recognized, the code for this airframe type is not ready.)
-#define AIRFRAME_TYPE						AIRFRAME_STANDARD
+#define AIRFRAME_TYPE AIRFRAME_STANDARD
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-#define GPS_TYPE							GPS_MTEK
+#define GPS_TYPE GPS_UBX_4HZ
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -333,9 +333,9 @@
 // SERIAL_CAM_TRACK is used to output location data to a 2nd UDB, which will target its camera at this plane.
 // SERIAL_MAVLINK is a bi-directional binary format for use with QgroundControl, HKGCS or MAVProxy (Ground Control Stations.)
 // SERIAL_MAVLINK is only supported on the UDB4 to ensure that sufficient RAM is available.
-// Note that SERIAL_MAVLINK defaults to using a baud rate of 57600 baud (other formats default to 19200)
+// Note that the default baud rate is 115200 baud
 
-#define SERIAL_OUTPUT_FORMAT 	SERIAL_UDB_EXTRA
+#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAVLINK
 
 // MAVLink requires an aircraft Identifier (I.D) as it is deaigned to control multiple aircraft
 // Each aircraft in the sky will need a unique I.D. in the range from 0-255

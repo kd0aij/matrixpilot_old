@@ -143,11 +143,11 @@ void flightplan_live_received_byte( uint8_t inbyte ) ;
 void flightplan_live_commit( void ) ;
 
 // Failsafe Type
-#define FAILSAFE_RTL					1
-#define FAILSAFE_MAIN_FLIGHTPLAN		2
+#define FAILSAFE_RTL	1
+#define FAILSAFE_MAIN_FLIGHTPLAN    2
 
-#define FP_WAYPOINTS					1
-#define FP_LOGO							2
+#define FP_WAYPOINTS	1
+#define FP_LOGO		2
 
 
 
