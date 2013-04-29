@@ -170,7 +170,7 @@ void process_MPU_data(void)
     //  This was the fastest way to revise the software.
     //	MPU data is being read at 200 Hz, IMU and control loop runs at 40 Hz.
     //  4 out of 5 samples are being ignored. IMU gets the most recent set of samples.
-    //  Everntually, we will want to run write-read synchronously, and run the IMU at 200 Hz, using every sample.
+	//  Eventually, we will want to run write-read synchronously, and run the IMU at 200 Hz, using every sample.
     //	When we are ready to run the IMU at 200 Hz, turn the following back on
             if (dcm_flags._.calib_finished) {
                     dcm_run_imu_step() ;

@@ -29,7 +29,7 @@ struct logoInstructionDef {
 	uint16_t do_fly		:  1 ;
 	uint16_t use_param	:  1 ;
 	uint16_t subcmd		:  8 ;
-	int16_t arg					: 16 ;
+	int16_t arg			: 16 ;
 } ;
 
 #define PLANE				0
@@ -262,7 +262,7 @@ int8_t interruptStackBase = 0 ;	// stack depth when entering interrupt (clear in
 struct logoStackFrame {
 	uint16_t frameType				:  2 ;
 	int16_t returnInstructionIndex	: 14 ;	// instructionIndex before the first instruction of the subroutine (a TO or REPEAT line, or -1 for MAIN)
-	int16_t arg								: 16 ;
+	int16_t arg						: 16 ;
 } ;
 struct logoStackFrame logoStack[LOGO_STACK_DEPTH] ;
 int16_t logoStackIndex = 0 ;
@@ -462,20 +462,10 @@ void run_flightplan( void )
 	}
 	else
 	{
-		if ( desired_behavior._.cross_track )
+		if ( tofinish_line < WAYPOINT_RADIUS ) // crossed the finish line
 		{
-			if ( tofinish_line < WAYPOINT_RADIUS ) // crossed the finish line
-			{
-				process_instructions() ;
-			}
-		}
-		else
-		{
-			if ( (tofinish_line < WAYPOINT_RADIUS) || (togoal.x < WAYPOINT_RADIUS) ) // crossed the finish line
-			{
-				process_instructions() ;
-			}
-		}
+			process_instructions() ;
+		}	
 	}
 	return ;
 }
@@ -1027,6 +1017,9 @@ void process_instructions( void )
 
 void flightplan_live_begin( void )
 {
+	if (logo_inject_pos == LOGO_INJECT_READY)
+		return;
+	
 	logo_inject_pos = 0 ;
 	return ;
 }
@@ -1034,6 +1027,9 @@ void flightplan_live_begin( void )
 
 void flightplan_live_received_byte( uint8_t inbyte )
 {
+	if (logo_inject_pos == LOGO_INJECT_READY)
+		return;
+	
 	switch (logo_inject_pos) {
 		case 0:
 			logo_inject_instr.cmd = inbyte ;
