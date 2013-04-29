@@ -25,3 +25,8 @@
     Added file stack.S to test manual allocation of 4KB stack from 0x2000 to 0x3000.
     This range is addressable with a standard pointer. No apparent way to suppress
     the compiler warning though.
+
+29 April:
+    changed options.h and magnetometerOptions.h to enable onboard magnetometer;
+    soldered mag enable jumper on auav3
+    still untested; need to install in aircraft and log telemetry to test
