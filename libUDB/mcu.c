@@ -215,13 +215,17 @@ void configurePPS(void)
 
     // UART2 RX, TX; This is the "USART" in MatrixPilot
     // On the AUAV3, the opto-uart port labeled "OUART1" is on nets U1RX,TX and pins RPI78,RP79
-    _U2RXR = 78;        // U2RX input RP178
-    _RP79R = 0b000011;  // U2TX output RP79
+//    _U2RXR = 78;        // U2RX input RP178
+//    _RP79R = 0b000011;  // U2TX output RP79
+    _U2RXR = 98;        // U2RX input RP98
+    _RP99R = 0b000011;  // U2TX output RP99
 
     // UART3 RX, TX
     // On the AUAV3, the uart port labeled "UART3" is on nets U3RX,TX and pins RP98,99
-    _U3RXR = 98;        // U3RX input RP98
-    _RP99R = 0b011011;  // U3TX output RP99
+//    _U3RXR = 98;        // U3RX input RP98
+//    _RP99R = 0b011011;  // U3TX output RP99
+    _U3RXR = 78;        // U3RX input RP178
+    _RP79R = 0b011011;  // U3TX output RP79
 
     // UART4 RX, TX
     // On the AUAV3, the opto-uart port labeled "OUART2" is on nets U2RX,TX and pins RP100,101
