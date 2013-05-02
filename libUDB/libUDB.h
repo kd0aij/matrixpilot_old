@@ -23,6 +23,7 @@
 #define LIB_UDB_H
 
 #include <stdint.h>
+#include <stdio.h>
 
 #include "options.h"
 #if (SILSIM == 1)

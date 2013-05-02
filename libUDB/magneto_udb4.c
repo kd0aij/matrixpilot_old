@@ -19,9 +19,8 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "libUDB_internal.h"
+//#include "interrupt.h"
 
-//FIXME: add AUAV3 support
-#if (BOARD_TYPE == UDB4_BOARD||BOARD_TYPE == UDB5_BOARD||BOARD_TYPE == AUAV3_BOARD)
 
 // These variables are not optional.  They are needed for telemetry
 int16_t udb_magOffset[3] = { 0 , 0 , 0 } ;  // magnetic offset in the body frame of reference
@@ -89,16 +88,16 @@ void rxMagnetometer(void)  // service the magnetometer
 {
 	int16_t magregIndex ;
 	I2messages++ ;
-#if ( LED_RED_MAG_CHECK == 1 )
-	if ( magMessage == 7 )
-	{
-		LED_RED = LED_OFF ;
-	}
-	else
-	{
-		LED_RED = LED_ON ;
-	}
-#endif
+//#if ( LED_RED_MAG_CHECK == 1 )
+//	if ( magMessage == 7 )
+//	{
+//		LED_RED = LED_OFF ;
+//	}
+//	else
+//	{
+//		LED_RED = LED_ON ;
+//	}
+//#endif
 	if ( _I2C2EN == 0 ) // I2C is off
 	{
 		I2C_state = &I2C_idle ; // disable response to any interrupts
@@ -193,10 +192,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _MI2C2Interrupt(void)
 {
 	indicate_loading_inter ;
 	interrupt_save_set_corcon ;
-	
+
 	_MI2C2IF = 0 ; // clear the interrupt
 	(* I2C_state) () ; // execute the service routine
-	
+
 	interrupt_restore_corcon ;
 	return ;
 }
@@ -362,7 +361,5 @@ void I2C_idle(void)
 {
 	return ;
 }
-
-#endif
 
 #endif

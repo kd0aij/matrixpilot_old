@@ -20,6 +20,10 @@
 
 
 #include "libDCM_internal.h"
+//#include "../libUDB/heartbeat.h"
+#include "../libUDB/barometer.h"
+#include "estAltitude.h"
+
 
 union dcm_fbts_word dcm_flags ;
 
@@ -67,8 +71,11 @@ void dcm_init( void )
 
 void dcm_run_init_step( void )
 {
+//	printf("%u\r\n", udb_heartbeat_counter);
+
 	if (udb_heartbeat_counter == CALIB_COUNT)
 	{
+	printf("dcm_run_init_step() - calib_finished\r\n");
 		// Finish calibration
 		dcm_flags._.calib_finished = 1 ;
 		dcm_calibrate() ;
@@ -80,8 +87,14 @@ void dcm_run_init_step( void )
 		
 		if (udb_heartbeat_counter == GPS_COUNT)
 		{
+	printf("dcm_run_init_step() - init_finished\r\n");
 			dcm_flags._.init_finished = 1 ;
 		}
+	}
+	else
+	{
+		printf("dcm_run_init_step() - init_finished\r\n");
+		dcm_flags._.init_finished = 1 ;
 	}
 	
 	return ;
@@ -92,21 +105,48 @@ void udb_callback_read_sensors(void)
 {
 	read_gyros() ; // record the average values for both DCM and for offset measurements
 	read_accel() ;
+}
 	
-	return ;
+void do_I2C_stuff(void) // currently called at 40Hz
+{
+	static int toggle = 0;
+	static int counter = 0;
+
+	if (toggle) {
+		if (counter++ > 0) {
+#if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
+			rxMagnetometer();
+#endif
+			counter = 0;
+			toggle = 0;
+}
+	} else {
+#if (BAROMETER_ALTITUDE == 1)
+		rxBarometer(udb_barometer_callback);
+#endif
+		if (counter++ > 6) {
+			counter = 0;
+			toggle = 1;
+		}
+	}
 }
 
-
-// Called at 40Hz
+// Called at HEARTBEAT_HZ
 void udb_servo_callback_prepare_outputs(void)
 {
+#if 1
+	do_I2C_stuff();
+#else
 #if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
+#warning("Not updated for HEARTBEAT_HZ")
 	// This is a simple counter to do stuff at 4hz
 	if ( udb_heartbeat_counter % 10 == 0 )
 	{
 		rxMagnetometer() ;
 	}
 #endif
+#endif
+
 //	when we move the imu step to the MPU call back, to run at 200 Hz, remove this		
 	if (dcm_flags._.calib_finished)
 	{
