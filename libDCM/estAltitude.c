@@ -51,12 +51,12 @@ void altimeter_calibrate(void)
 	printf( "altimeter_calibrate: ground temp & pres set %.1f, %.2f\r\n", (double)barometer_temperature_gnd / 10.0, (double)barometer_pressure_gnd / 100.0);
 #endif
 }
-
+//*
 #if (BAROMETER_ALTITUDE == 1)
 void udb_barometer_callback(long pressure, int temperature, char status)
 {
-	const float ground_altitude = 308.0;	// altitude at valley heights - this needs to be somehow set by the user - TODO
-//	const float p0 = 101325;     // Pressure at sea level (Pa)  -- standard
+	const float ground_altitude = 1760.0;	// altitude in meters at Denver - this needs to be somehow set by the user - TODO
+	const float p0 = 101325;     // Pressure at sea level (Pa)  -- standard
 //	const float p0 = 101660;     // Pressure at sea level (Pa)  -- currently according to BMCC weather station
 	float altitude;
 	float sea_level_pressure;
@@ -68,8 +68,8 @@ void udb_barometer_callback(long pressure, int temperature, char status)
 
 	sea_level_pressure = ((float)pressure / powf((1 - (ground_altitude/44330.0)), 5.255));
 
-// 	altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
- 	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm
+ 	altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
+// 	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm
 
 #define USE_DEBUG_IO
 
@@ -79,9 +79,9 @@ void udb_barometer_callback(long pressure, int temperature, char status)
 #define DPRINT(args...)
 #endif
 
-	if (i++ % 10 == 0) {
+//	if (i++ % 10 == 0) {
 		DPRINT( "barom %.1f, %.2f, %.2f, slp %.2f\r\n", (double)temperature / 10.0, (double)pressure / 100.0, (double)altitude, (double)sea_level_pressure / 100.0);
-	}
+//	}
 
 //#ifdef USE_DEBUG_IO
 ////	printf( "T = %.1f C, P = %.2f mB, A = %.2f m\r\n", (double)temperature / 10.0, (double)pressure / 100.0, (double)altitude);
@@ -90,29 +90,30 @@ void udb_barometer_callback(long pressure, int temperature, char status)
 
 }
 #endif
+//*/
 
 /*  rough-in draft of new algorithm adaption pending verification and revision of barometer data & functions
-#if (USE_BAROMETER == 1)
+#if (BAROMETER_ALTITUDE == 1)
 	void udb_barometer_callback(long pressure, int temperature, char status)
 	{
-	#if (USE_PA_PRESSURE == 1)		     							// **** OPTION TO USE PRESSURE OR HOME POSITION ALTITUDE  in options.h   ****
-		const float p0 = PA_PRESSURE;    							// **** Current pressure at sea level (Pa) defined in options.h   ****
-		altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
-		#if ( SONAR_ALTITUDE == 1 ) 
-			barometer_ground_altitude = ((float)44330 * (1 - pow(((float) barometer_pressure/p0), 0.190295))-(sonar_altitude/100));
-		#else 
-			barometer_ground_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/p0), 0.190295));
-		//return ;
-		#endif
-	#else
-		const float ground_altitude = (ASL_GROUND_ALT/100);			// **** defined HOME ASL GROUND ALTITUDE in options.h  ****
-	//	float altitude;
-	//	float sea_level_pressure;
-		barometer_pressure = pressure / 100;
-		barometer_temperature = temperature / 10;
-		sea_level_pressure = ((float)pressure / powf((1 - (ground_altitude/44330.0)), 5.255));
-	 	altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm for testing
-	#endif
+        #if (USE_PA_PRESSURE == 1)		     							// **** OPTION TO USE PRESSURE OR HOME POSITION ALTITUDE  in options.h   ****
+            const float p0 = PA_PRESSURE;    							// **** Current pressure at sea level (Pa) defined in options.h   ****
+            altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
+            #if ( SONAR_ALTITUDE == 1 )
+                barometer_ground_altitude = ((float)44330 * (1 - pow(((float) barometer_pressure/p0), 0.190295))-(sonar_altitude/100));
+            #else
+                barometer_ground_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/p0), 0.190295));
+            //return ;
+            #endif
+        #else
+            const float ground_altitude = (ASL_GROUND_ALT/100);			// **** defined HOME ASL GROUND ALTITUDE in options.h  ****
+        //	float altitude;
+        //	float sea_level_pressure;
+            barometer_pressure = pressure / 100;
+            barometer_temperature = temperature / 10;
+            sea_level_pressure = ((float)pressure / powf((1 - (ground_altitude/44330.0)), 5.255));
+            altitude = (float)44330 * (1 - pow(((float) pressure/sea_level_pressure), 0.190295));  // this is just the reverse of the sea_level_pressure algorithm for testing
+        #endif
 	}
 #endif
 */
