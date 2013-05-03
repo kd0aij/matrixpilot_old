@@ -263,7 +263,13 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	interrupt_save_set_corcon ;
 	
 	_THEARTBEATIF = 0 ; /* clear the interrupt */
-	
+    static int diagCounter = 0;
+    if (++diagCounter >= 40)
+    {
+        printf("heartbeat: %u\r\n", udb_heartbeat_counter);
+        diagCounter = 0;
+    }
+
 #if ( NORADIO != 1 )
 	// 20Hz testing of radio link
 	if ( udb_heartbeat_counter % 2 == 1)

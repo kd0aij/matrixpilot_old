@@ -320,7 +320,7 @@ void mcu_init(void)
 
 	if ( _SWR == 1 )
 	{
-		printf("S/W Reset: trap_flags %04x, trap_source %04x%04x, osc_fail_count %u\r\n",
+        printf("S/W Reset: trap_flags %04x, trap_source %04x%04x, osc_fail_count %u\r\n",
 			trap_flags,
 			(unsigned int)(trap_source >> 16),
 			(unsigned int)(trap_source & 0xffff),

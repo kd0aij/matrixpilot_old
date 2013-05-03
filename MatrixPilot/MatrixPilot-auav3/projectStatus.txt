@@ -30,3 +30,14 @@
     changed options.h and magnetometerOptions.h to enable onboard magnetometer;
     soldered mag enable jumper on auav3
     still untested; need to install in aircraft and log telemetry to test
+
+30 April:
+   moved telemetry output to UART3 port (by remapping I/O pins in mcu.c:configurePPS)
+   and connected OpenLog to UART3
+
+2 May:
+    getting address and stack error traps with only barometer enabled on I2C2
+    also getting address traps with only magnetometer enabled on I2C2 (over 60 minutes
+    to first trap)
+    No traps observed during a 3987 second (66.5 minutes) run with no I2C2 devices enabled
+    
