@@ -135,10 +135,30 @@
 // 
 // By default the only waypoint is defined to be 75 meters above the starting point.
 
-const struct waypointDef waypoints[] = {
-		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
-} ;
+//const struct waypointDef waypoints[] = {
+//		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
+//};
 
+const struct waypointDef waypoints[] = {
+    {
+        { 220, -63, 30}, F_NORMAL, CAM_VIEW_LAUNCH
+    }, //Waypoint 0
+    {
+        { 254, 60, 50}, F_NORMAL, CAM_VIEW_LAUNCH
+    }, //Waypoint 1
+    {
+        { -185, 204, 50}, F_NORMAL, CAM_VIEW_LAUNCH
+    }, //Waypoint 2
+    {
+        { -239, 70, 30}, F_NORMAL, CAM_VIEW_LAUNCH
+    }, //Waypoint 3
+    {
+        { -48, 14, 20}, F_NORMAL, CAM_VIEW_LAUNCH
+    }, //Waypoint 4
+    {
+        { 0, 0, 20}, F_NORMAL, CAM_VIEW_LAUNCH
+    }, //Waypoint 5
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////
