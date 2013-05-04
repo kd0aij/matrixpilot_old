@@ -1440,8 +1440,8 @@ void mavlink_output_40hz(void)
             mavlink_custom_mode = MAV_CUSTOM_UDB_MODE_MANUAL;
         }
 
-        // ovverride mavlink mode
-        mavlink_base_mode = MAV_MODE_PREFLIGHT;
+//         ovverride mavlink mode
+//        mavlink_base_mode = MAV_MODE_PREFLIGHT;
         mavlink_custom_mode = MAV_CUSTOM_UDB_MODE_MANUAL;
         mavlink_msg_heartbeat_send(MAVLINK_COMM_0, MAV_TYPE_FIXED_WING, MAV_AUTOPILOT_UDB, mavlink_base_mode, mavlink_custom_mode, MAV_STATE_ACTIVE);
         //mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint8_t type, uint8_t autopilot, uint8_t base_mode, uint32_t custom_mode, uint8_t system_status)

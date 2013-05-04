@@ -250,6 +250,10 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T5Interrupt(void)
 	return ;
 }
 
+extern struct ADchannel udb_analogInputs[NUM_ANALOG_INPUTS] ; // 0-indexed, unlike servo pwIn/Out/Trim arrays
+extern struct ADchannel udb_vcc ;
+extern struct ADchannel udb_5v ;
+extern struct ADchannel udb_rssi ;
 
 //	Executes whatever lower priority calculation needs to be done every 25 milliseconds.
 //	This is a good place to eventually compute pulse widths for servos.
@@ -266,7 +270,14 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
     static int diagCounter = 0;
     if (++diagCounter >= 40)
     {
-        printf("heartbeat: %u\r\n", udb_heartbeat_counter);
+    	uint16_t stack = WREG15 ;
+        printf("heartbeat: %u", udb_heartbeat_counter);
+    	printf(" ADC: %u %u %u %u %u %u %u",
+            udb_vcc.value, udb_5v.value, udb_rssi.value,
+            udb_analogInputs[0].value, udb_analogInputs[1].value,
+            udb_analogInputs[2].value, udb_analogInputs[3].value);
+        printf(" stack: %x", stack);
+        printf(" heading: %u \r\n", get_geo_heading_angle());
         diagCounter = 0;
     }
 

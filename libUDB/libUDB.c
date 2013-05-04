@@ -82,7 +82,7 @@ void udb_init(void)
 	
 	udb_init_leds() ;
 	udb_init_clock() ;
-        udb_init_capture() ;
+    udb_init_capture() ;
 	
 #if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
 	udb_init_I2C() ;
