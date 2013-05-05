@@ -1,3 +1,11 @@
+Mark Whitehorn's flight testing project
+    currently operational:
+        stabilization
+        navigation: RTL
+        magnetometer
+
+notes and changes:
+
 21 April 2013:
     Arsov AGPS module connected and working properly on bench.
     Not getting a green LED for radio_on indication; appears to be no IC1 interrupt
@@ -40,4 +48,9 @@
     also getting address traps with only magnetometer enabled on I2C2 (over 60 minutes
     to first trap)
     No traps observed during a 3987 second (66.5 minutes) run with no I2C2 devices enabled
+
+5 May:
+    revert changes to project and magneto_udb4.c which broke this project
+    This project is currently configured to use the magnetometer and excludes
+    the code for the I2C2 barometer as it is incompatible.
     
