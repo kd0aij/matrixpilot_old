@@ -139,7 +139,7 @@ void rxMagnetometer(void)  // service the magnetometer
 			I2C_state = &I2C_readMagData ;
 			_MI2C2IF = 1 ;
 			break ;
-		case  2:	// put magnetomter into the power up defaults on a reset
+		case  2:	// put magnetometer into the power up defaults on a reset
 			for ( magregIndex = 0 ; magregIndex < 5 ; magregIndex++ )
 			{
 				magreg[magregIndex] = resetMagnetometer[magregIndex] ;
@@ -188,7 +188,6 @@ void rxMagnetometer(void)  // service the magnetometer
 	return ;
 }
 
-/*
 void __attribute__((__interrupt__,__no_auto_psv__)) _MI2C2Interrupt(void)
 {
 	indicate_loading_inter ;
@@ -200,7 +199,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _MI2C2Interrupt(void)
 	interrupt_restore_corcon ;
 	return ;
 }
- */
+
 
 void I2C_writeMagCommand(void)
 {

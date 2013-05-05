@@ -46,7 +46,10 @@
 // altitude, expressed in meters.
 
 #define USE_FIXED_ORIGIN		0
-#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
+//#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
+
+// AAM East Field runway center 39°50'31.83"N  105°12'44.81"W
+#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 30.0 }	// AAM East Field runway center
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -141,22 +144,22 @@
 
 const struct waypointDef waypoints[] = {
     {
-        { 220, -63, 30}, F_NORMAL, CAM_VIEW_LAUNCH
+        { 237, -70, 30}, F_NORMAL, CAM_VIEW_LAUNCH
     }, //Waypoint 0
     {
-        { 254, 60, 50}, F_NORMAL, CAM_VIEW_LAUNCH
+        { 268, 54, 50}, F_NORMAL, CAM_VIEW_LAUNCH
     }, //Waypoint 1
     {
-        { -185, 204, 50}, F_NORMAL, CAM_VIEW_LAUNCH
+        { -175, 186, 50}, F_NORMAL, CAM_VIEW_LAUNCH
     }, //Waypoint 2
     {
-        { -239, 70, 30}, F_NORMAL, CAM_VIEW_LAUNCH
+        { -224, 67, 30}, F_NORMAL, CAM_VIEW_LAUNCH
     }, //Waypoint 3
     {
-        { -48, 14, 20}, F_NORMAL, CAM_VIEW_LAUNCH
+        { -34, 8, 20}, F_NORMAL, CAM_VIEW_LAUNCH
     }, //Waypoint 4
     {
-        { 0, 0, 20}, F_NORMAL, CAM_VIEW_LAUNCH
+        { 55, -16, 20}, F_NORMAL, CAM_VIEW_LAUNCH
     }, //Waypoint 5
 };
 
