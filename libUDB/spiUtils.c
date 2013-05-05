@@ -21,6 +21,9 @@
 #include "libUDB_internal.h"
 #include "libUDB.h"
 #include "spiUtils.h"
+#include "interrupt.h"
+#include "oscillator.h"
+#include <libpic30.h>
 
 //#include <stdint.h>
 #include <stdbool.h>

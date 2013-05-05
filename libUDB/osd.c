@@ -60,8 +60,6 @@ void spi_write_raw_byte(uint8_t byte)
 		byte <<= 1 ;								// Shift to get the next bit
 		OSD_SCK = 0 ;								// Toggle the clock line back down
 	}
-	
-	return ;
 }
 
 
@@ -78,8 +76,6 @@ void osd_spi_write_byte(int8_t byte)
 	Nop(); Nop(); Nop(); Nop();	// Kill some time with CS high to make a more solid pulse
 	
 	OSD_MOSI = 0 ;
-	
-	return ;
 }
 
 
@@ -97,8 +93,6 @@ void osd_spi_write(int8_t addr, int8_t byte)
 	Nop(); Nop(); Nop(); Nop();	// Kill some time with CS high to make a more solid pulse
 	
 	OSD_MOSI = 0 ;
-	
-	return ;
 }
 
 
@@ -146,8 +140,6 @@ void osd_spi_write_location(int16_t loc)
 {
 	osd_spi_write(0x05, (uint8_t)(loc>>8)) ;	// DMAH
 	osd_spi_write(0x06, (uint8_t)(loc & 0xFF)) ;	// DMAL
-	
-	return ;
 }
 
 
@@ -161,8 +153,6 @@ void osd_spi_write_string(const uint8_t *str)
 		if (*str == 0xFF) break ;
 		str++ ;
 	}
-	
-	return ;
 }
 
 
@@ -177,8 +167,6 @@ void osd_spi_write_vertical_string_at_location(int16_t loc, const uint8_t *str)
 		str++ ;
 		loc += 30 ;
 	}
-	
-	return ;
 }
 
 
@@ -192,8 +180,6 @@ void osd_spi_erase_chars(uint8_t n)
 		n-- ;
 	}
 	osd_spi_write_byte(0xFF) ;	// Disable auto-increment mode 
-	
-	return ;
 }
 
 
@@ -331,9 +317,6 @@ void osd_spi_write_number(int32_t val, int8_t num_digits, int8_t decimal_places,
 		osd_spi_write_byte(0x00) ;
 	
 	osd_spi_write_byte(0xFF) ;		// Disables auto-increment mode
-	
-	return ;
 }
-
 
 #endif

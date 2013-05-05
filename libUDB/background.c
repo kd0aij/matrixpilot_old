@@ -20,6 +20,10 @@
 
 
 #include "libUDB_internal.h"
+#include "oscillator.h"
+#include "interrupt.h"
+#include "heartbeat.h"
+#include <stdio.h>
 
 #if(USE_I2C1_DRIVER == 1)
 #include "I2C.h"
@@ -270,7 +274,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
     static int diagCounter = 0;
     if (++diagCounter >= 40)
     {
-    	uint16_t stack = WREG15 ;
+    	uint16_t stack = SP_current();
         printf("heartbeat: %u", udb_heartbeat_counter);
     	printf(" ADC: %u %u %u %u %u %u %u",
             udb_vcc.value, udb_5v.value, udb_rssi.value,

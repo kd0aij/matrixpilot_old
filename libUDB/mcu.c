@@ -20,6 +20,8 @@
 
 
 #include "libUDB_internal.h"
+#include "oscillator.h"
+
 #if (BOARD_TYPE == AUAV3_BOARD)
 #include "../libCommon/uart3.h"
 #include <stdio.h>
@@ -326,6 +328,6 @@ void mcu_init(void)
 			(unsigned int)(trap_source & 0xffff),
 			osc_fail_count);
 	}
-    printf("MatrixPilot-AUAV3\r\n");
+    printf("\r\n\r\nMatrixPilot-AUAV3 @ %u mips\r\n", MIPS);
 #endif
 }

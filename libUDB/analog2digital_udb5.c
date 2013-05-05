@@ -20,6 +20,8 @@
 
 
 #include "libUDB_internal.h"
+#include "oscillator.h"
+#include "interrupt.h"
 
 #if (BOARD_TYPE == UDB5_BOARD)
 
@@ -31,6 +33,8 @@ struct ADchannel udb_analogInputs[NUM_ANALOG_INPUTS] ; // 0-indexed, unlike serv
 struct ADchannel udb_vref ; // this is VCC/2 on the UDB5, not a band-gap reference
 struct ADchannel udb_5v ;
 
+struct ADchannel udb_vcc ; // added for linking only - RobD
+struct ADchannel udb_rssi ; // added for linking only - RobD
 
 // Number of locations for ADC buffer = 6 (AN0,15,16,17,18) x 1 = 6 words
 // Align the buffer. This is needed for peripheral indirect mode

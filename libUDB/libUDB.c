@@ -20,6 +20,8 @@
 
 
 #include "libUDB_internal.h"
+#include "oscillator.h"
+#include "interrupt.h"
 
 
 union udb_fbts_byte udb_flags ;
@@ -110,8 +112,12 @@ void udb_run(void)
 	//  nothing else to do... entirely interrupt driven
 	while (1)
 	{
+#if (USE_CONSOLE == 1)
+		console();
+#endif
 		// pause cpu counting timer while not in an ISR
 		indicate_loading_main ;
+        idle();
 	}
 	// Never returns
 }

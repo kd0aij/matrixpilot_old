@@ -21,13 +21,27 @@
 // Internal MPU6000 axis definition
 // X axis pointing to right, Y axis pointing forward and Z axis pointing up
 
-#include <stdio.h>
-#include <spi.h>
 
 #include "libUDB_internal.h"
+#include "oscillator.h"
+#include "interrupt.h"
 #include "spiUtils.h"
 #include "mpu6000.h"
 #include "../libDCM/libDCM_internal.h"
+
+// Moved the following down from spiUtils.h - RobD
+#ifndef FCY
+/* For __delay_us and __delay_ms                 */
+#define FCY (FREQOSC/2)
+#endif
+#include <libpic30.h>        
+
+//#include <stdint.h>        /* Includes uint16_t definition                    */
+#include <stdbool.h>       /* Includes true/false definition                  */
+
+#include <stdio.h>
+#include <spi.h>
+
 
 //Sensor variables
 uint16_t mpu_data[8], mpuCnt = 0;
@@ -105,7 +119,7 @@ void MPU6000_init16(void) {
     writeMPUSPIreg16(MPUREG_INT_ENABLE, BIT_DATA_RDY_EN); // INT: Raw data ready
 
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
-    // UDB4_BOARD otion is for testing purposes
+    // UDB4_BOARD option is for testing purposes
 
     // older versions of MatrixPilot run at 16 MIPS on UDB4 and UDB5
     // set prescaler for FCY/2 = 8MHz at 16 MIPS

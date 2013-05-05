@@ -49,5 +49,67 @@ save_states:	mov.w w0,_trap_flags
 .global __OscillatorFail
 .global __DefaultInterrupt
 .global __DMACError
+.global _SP_start
+.global _SP_limit
+.global _SP_current
+.global _sleep
+.global _idle
+
+.section .text
+
+_sleep:
+		pwrsav  #SLEEP_MODE     ; Put the device into SLEEP mode
+        return
+
+_idle:
+		pwrsav  #IDLE_MODE      ; Put the device into IDLE mode
+        return
+
+_SP_start:
+		mov #__SP_init, w0
+        return
+
+_SP_limit:
+		mov SPLIM, w0
+        return
+
+_SP_current:
+		mov w15, w0
+        return
+
+.global _getErrLoc
+.section .text
+
+_getErrLoc:
+        mov    w14,w2
+        sub    w2,#24,w2
+        mov    [w2++],w0
+        mov    [w2++],w1 
+        mov    #0x7f,w3     ; Mask off non-address bits
+        and    w1,w3,w1
+        mov    #2,w2        ; Decrement the address by 2
+        sub    w0,w2,w0
+        clr    w2
+        subb   w1,w2,w1
+        return
+
+; Stack Growth from Trap Error
+;1. PC[15:0]            <--- Trap Address
+;2. SR[7:0]:IPL3:PC[22:16]
+;3. RCOUNT
+;4. W0
+;5. W1
+;6. W2
+;7. W3
+;8. W4
+;9. W5
+;10. W6
+;11. W7
+;12. OLD FRAME POINTER [W14]
+;13. PC[15:0]           <---- W14 
+;14. 0:PC[22:16]
+;15.                    <---- W15
+
+
 
 

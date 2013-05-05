@@ -114,8 +114,8 @@ union longlongLL { int64_t LL ; struct LL _ ; struct wwww __ ; } ;
 #include "boardRotation_defines.h"
 
 #define BOARD_IS_CLASSIC_UDB		0
-#define FREQOSC 					32000000
-#define CLK_PHASES					2
+//#define FREQOSC 					32000000
+//#define CLK_PHASES					2
 #define CLOCK_CONFIG 				UDB4_CLOCK
 
 
@@ -165,17 +165,6 @@ struct udb_flag_bits {
 			uint16_t radio_on						: 1 ;
 			} ;
 
-// Baud Rate Generator -- See section 19.3.1 of datasheet.
-// Fcy = FREQOSC / CLK_PHASES
-// UXBRG = (Fcy/(16*BaudRate))-1
-// UXBRG = ((32000000/2)/(16*9600))-1
-// UXBRG = 103
-
-#if ( BOARD_IS_CLASSIC_UDB == 1 )
-#define UDB_BAUD(x) ((int16_t)((FREQOSC / CLK_PHASES) / ((int32_t)16 * x) - 1))
-#else
-#define UDB_BAUD(x) ((int16_t)((FREQOSC / CLK_PHASES) / ((int32_t)4 * x) - 1))
-#endif
 
 // LED states
 #define LED_ON		0

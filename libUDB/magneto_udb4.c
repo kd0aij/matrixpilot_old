@@ -19,7 +19,7 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "libUDB_internal.h"
-//#include "interrupt.h"
+#include "interrupt.h"
 
 
 // These variables are not optional.  They are needed for telemetry
@@ -188,6 +188,7 @@ void rxMagnetometer(void)  // service the magnetometer
 	return ;
 }
 
+/*
 void __attribute__((__interrupt__,__no_auto_psv__)) _MI2C2Interrupt(void)
 {
 	indicate_loading_inter ;
@@ -199,7 +200,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _MI2C2Interrupt(void)
 	interrupt_restore_corcon ;
 	return ;
 }
-
+ */
 
 void I2C_writeMagCommand(void)
 {

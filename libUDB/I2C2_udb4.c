@@ -20,8 +20,8 @@
 
 
 #include "libUDB_internal.h"
-//#include "oscillator.h"
-//#include "interrupt.h"
+#include "oscillator.h"
+#include "interrupt.h"
 #include "I2C.h"
 //#include "NV_memory.h"
 #include "events.h"
@@ -165,7 +165,6 @@ void serviceI2C2(void)  // service the I2C
 
 	return ;
 }
-
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _MI2C2Interrupt(void)
 {

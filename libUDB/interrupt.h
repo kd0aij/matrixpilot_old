@@ -23,6 +23,12 @@ extern int16_t defaultCorcon ;
 extern uint16_t cpu_timer ;
 extern uint16_t _cpu_timer ;
 
+void sleep(void);
+void idle(void);
+uint16_t SP_start(void);
+uint16_t SP_limit(void);
+uint16_t SP_current(void);
+
 //#define indicate_loading_main		//LATEbits.LATE4 = 0
 //#define indicate_loading_inter	//LATEbits.LATE4 = 1
 

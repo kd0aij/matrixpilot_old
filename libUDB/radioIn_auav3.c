@@ -19,8 +19,14 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "libUDB_internal.h"
+#include "oscillator.h"
+#include "interrupt.h"
 
 #if (BOARD_TYPE == AUAV3_BOARD)
+#define TMR_FACTOR 2
+#define MIN_SYNC_PULSE_WIDTH (14000/TMR_FACTOR)	// 3.5ms
+#define IC_INT_PRI 6
+
 
 //	Measure the pulse widths of the servo channel inputs from the radio.
 //	The dsPIC makes this rather easy to do using its capture feature.
@@ -35,9 +41,7 @@ int16_t udb_pwTrim[NUM_INPUTS + 1]; // initial pulse widths for trimming
 
 int16_t failSafePulses = 0;
 int16_t noisePulses = 0;
-#define IC_INT_PRI 6
-#define TMR_FACTOR 2
-#define MIN_SYNC_PULSE_WIDTH (14000/TMR_FACTOR)	// 3.5ms
+
 
 void udb_init_capture(void)
 {
@@ -62,16 +66,6 @@ void udb_init_capture(void)
     T2CONbits.TCKPS = 1; // prescaler = 8 option
     T2CONbits.TCS = 0; // use the internal clock
     T2CONbits.TON = 1; // turn on timer 2
-
-#define IC_INIT(x, a, b) \
-{ \
-	IC##x##CON1 = a; \
-	IC##x##CON2 = b; \
-	_IC##x##IP = IC_INT_PRI; \
-	_IC##x##IF = 0; \
-	_IC##x##IE = 1; \
-}
-
 #if ( NORADIO != 1 )
     // setup Input Capture channel(s) to use Timer2, capture every edge, 
     // IC1CONbits.ICTSEL=1<<10, IC1CONbits.ICM=1
@@ -79,15 +73,25 @@ void udb_init_capture(void)
     // SYNCSEL = 0x00: no sync, no trigger, rollover at 0xFFFF
 #define IC2VAL 0
 
-    if (NUM_INPUTS > 0) IC_INIT(1, IC1VAL, IC2VAL);
+
+#define IC_INIT(x) \
+{ \
+	IC##x##CON1 = IC1VAL; \
+	IC##x##CON2 = IC2VAL; \
+	_IC##x##IP = IC_INT_PRI; \
+	_IC##x##IF = 0; \
+	_IC##x##IE = 1; \
+}
+
+    if (NUM_INPUTS > 0) IC_INIT(1);
 #if (USE_PPM_INPUT != 1)
-    if (NUM_INPUTS > 1) IC_INIT(2, IC1VAL, IC2VAL);
-    if (NUM_INPUTS > 2) IC_INIT(3, IC1VAL, IC2VAL);
-    if (NUM_INPUTS > 3) IC_INIT(4, IC1VAL, IC2VAL);
-    if (NUM_INPUTS > 4) IC_INIT(5, IC1VAL, IC2VAL);
-    if (NUM_INPUTS > 5) IC_INIT(6, IC1VAL, IC2VAL);
-    if (NUM_INPUTS > 6) IC_INIT(7, IC1VAL, IC2VAL);
-    if (NUM_INPUTS > 7) IC_INIT(8, IC1VAL, IC2VAL);
+    if (NUM_INPUTS > 1) IC_INIT(2);
+    if (NUM_INPUTS > 2) IC_INIT(3);
+    if (NUM_INPUTS > 3) IC_INIT(4);
+    if (NUM_INPUTS > 4) IC_INIT(5);
+    if (NUM_INPUTS > 5) IC_INIT(6);
+    if (NUM_INPUTS > 6) IC_INIT(7);
+    if (NUM_INPUTS > 7) IC_INIT(8);
 #endif // USE_PPM_INPUT
 #endif // NORADIO
 }

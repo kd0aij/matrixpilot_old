@@ -20,11 +20,19 @@
 
 
 #include "libUDB_internal.h"
+#include "oscillator.h"
+#include "interrupt.h"
 
 #if (BOARD_TYPE == AUAV3_BOARD)
 
-//	Variables.
+#define ADC_HZ 500000
+#define ALMOST_ENOUGH_SAMPLES 110 // there are ? samples in a sum
 
+#if (((FCY / ADC_HZ) - 1) > 255)
+#error Invalid ADC_HZ configuration
+#endif
+
+//	Variables.
 #if (NUM_ANALOG_INPUTS >= 1)
 struct ADchannel udb_analogInputs[NUM_ANALOG_INPUTS]; // 0-indexed, unlike servo pwIn/Out/Trim arrays
 #endif
@@ -33,22 +41,18 @@ struct ADchannel udb_5v;
 struct ADchannel udb_rssi;
 struct ADchannel udb_vref; // reference voltage (deprecated, here for MAVLink compatibility)
 
-
 // Align the buffer. This is needed for peripheral indirect mode
 #define NUM_AD_CHAN 7
 __eds__ int16_t BufferA[NUM_AD_CHAN] __attribute__((eds, space(dma), aligned(32)));
 __eds__ int16_t BufferB[NUM_AD_CHAN] __attribute__((eds, space(dma), aligned(32)));
 
-
 //int16_t vref_adj ;
 int16_t sample_count;
+uint8_t DmaBuffer = 0 ;
 
 #if (RECORD_FREE_STACK_SPACE == 1)
 uint16_t maxstack = 0;
 #endif
-
-
-#define ALMOST_ENOUGH_SAMPLES 316 // there are ? samples in a sum
 
 void udb_init_ADC(void)
 {
@@ -58,17 +62,16 @@ void udb_init_ADC(void)
     AD1CON1bits.SSRC = 7;       // Sample Clock Source: Auto-conversion
     AD1CON1bits.ASAM = 1;       // ADC Sample Control: Sampling begins immediately after conversion
     AD1CON1bits.AD12B = 1;      // 12-bit ADC operation
-
     AD1CON2bits.CSCNA = 1;      // Scan Input Selections for CH0+ during Sample A bit
     AD1CON2bits.CHPS = 0;       // Converts CH0
+    AD1CON3bits.ADRC = 0;       // ADC Clock is derived from System Clock
 
-    AD1CON3bits.ADRC = 0;       // ADC Clock is derived from Systems Clock
-    AD1CON3bits.ADCS = 11;      // ADC Conversion Clock Tad=Tcy*(ADCS+1)= (1/40M)*12 = 0.3us (3333.3Khz)
-                                // ADC Conversion Time for 12-bit Tc=14*Tad = 4.2us
+	AD1CON3bits.ADCS = ((FCY / ADC_HZ) - 1) ;
+//	AD1CON3bits.ADCS = 11 ;		// ADC Conversion Clock Tad=Tcy*(ADCS+1)= (1/40M)*12 = 0.3us (3333.3Khz)
+//								// ADC Conversion Time for 12-bit Tc=14*Tad = 4.2us
+
     AD1CON3bits.SAMC = 1;       // No waiting between samples
-
     AD1CON2bits.VCFG = 0;       // use supply as reference voltage
-
     AD1CON1bits.ADDMABM = 1;    // DMA buffers are built in sequential mode
     AD1CON2bits.SMPI = (NUM_AD_CHAN - 1);
     AD1CON4bits.DMABL = 0;      // Each buffer contains 1 word
@@ -78,7 +81,6 @@ void udb_init_ADC(void)
     AD1CSSH = 0x0000;
 
     // power-on default is all analog inputs selected
-
     ANSELA = 0; // disable all analog inputs on port A
     ANSELC = 0; // disable all analog inputs on port C
     ANSELD = 0; // disable all analog inputs on port D
@@ -88,18 +90,16 @@ void udb_init_ADC(void)
     // enable specific analog inputs on port B
     // AN6:9,13:15 map to:
     // AUAV3 inputs ANA2:3, ANA0:1, V, I, RS
-    unsigned int mask = ((1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 13) | (1 << 14) | (1 << 15));
+    uint16_t mask = ((1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 13) | (1 << 14) | (1 << 15));
     ANSELB = mask;
 
     // set analog pins as inputs
     TRISB |= mask;
 
     //	include voltage monitor inputs
-
     _CSS13 = 1; // Enable AN13 for channel scan
     _CSS14 = 1; // Enable AN14 for channel scan
     _CSS15 = 1; // Enable AN15 for channel scan
-
 
     //  include the extra analog input pins
     _CSS6 = 1; // Enable AN6 for channel scan
@@ -112,11 +112,10 @@ void udb_init_ADC(void)
     _AD1IE = 0; // Do Not Enable A/D interrupt
     AD1CON1bits.ADON = 1; // Turn on the A/D converter
 
-
     //  DMA Setup
     DMA0CONbits.AMODE = 2; // Configure DMA for Peripheral indirect mode
     DMA0CONbits.MODE = 2; // Configure DMA for Continuous Ping-Pong mode
-    DMA0PAD = (unsigned int) &ADC1BUF0;
+    DMA0PAD = (uint16_t) &ADC1BUF0;
     DMA0CNT = NUM_AD_CHAN - 1;
     DMA0REQ = 13; // Select ADC1 as DMA Request source
 
@@ -130,12 +129,7 @@ void udb_init_ADC(void)
     _DMA0IP = 5; // Set the DMA ISR priority
 
     DMA0CONbits.CHEN = 1; // Enable DMA
-
-    return;
 }
-
-
-uint8_t DmaBuffer = 0;
 
 void __attribute__((__interrupt__, __no_auto_psv__)) _DMA0Interrupt(void)
 {
@@ -143,7 +137,7 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _DMA0Interrupt(void)
     interrupt_save_set_corcon;
 
 #if (RECORD_FREE_STACK_SPACE == 1)
-    uint16_t stack = WREG15;
+	uint16_t stack = SP_current() ;
     if (stack > maxstack)
     {
         maxstack = stack;
@@ -169,11 +163,10 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _DMA0Interrupt(void)
     udb_analogInputs[3].input = CurBuffer[analogInput4BUFF - 1];
 #endif
 
-#endif
+#endif // HILSIM
 
     DmaBuffer ^= 1; // Switch buffers
-    IFS0bits.DMA0IF = 0; // Clear the DMA0 Interrupt Flag
-
+    IFS0bits.DMA0IF = 0; // Clear the DMA Interrupt Flag
 
     if (udb_flags._.a2d_read == 1) // prepare for the next reading
     {
@@ -202,7 +195,6 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _DMA0Interrupt(void)
     }
 
     //	perform the integration:
-
     udb_vcc.sum += udb_vcc.input;
     udb_5v.sum += udb_5v.input;
     udb_rssi.sum += udb_rssi.input;
@@ -225,11 +217,9 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _DMA0Interrupt(void)
     //  have the new average values ready.
     if (sample_count > ALMOST_ENOUGH_SAMPLES)
     {
-
         udb_vcc.value = __builtin_divsd(udb_vcc.sum, sample_count);
         udb_5v.value = __builtin_divsd(udb_5v.sum, sample_count);
         udb_rssi.value = __builtin_divsd(udb_rssi.sum, sample_count);
-
 #if (NUM_ANALOG_INPUTS >= 1)
         udb_analogInputs[0].value = __builtin_divsd(udb_analogInputs[0].sum, sample_count);
 #endif
@@ -243,9 +233,7 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _DMA0Interrupt(void)
         udb_analogInputs[3].value = __builtin_divsd(udb_analogInputs[3].sum, sample_count);
 #endif
     }
-
     interrupt_restore_corcon;
-    return;
 }
 
-#endif
+#endif // BOARD_TYPE

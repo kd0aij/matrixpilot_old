@@ -20,13 +20,8 @@
 
 
 #include "../libUDB/libUDB.h"
-/*
-#include "defines.h"
-#include "p33Exxxx.h"
-#include "../libFlashFS/AT45D.h"
-#include "../libFlashFS/FSIO.h"
-#include "../libFlashFS/FSIO_DBG.h"
- */
+#include "../libUDB/interrupt.h"
+#include "../libDCM/estAltitude.h"
 #include "../libCommon/uart3.h"
 #include <stdint.h>
 #include <string.h>
@@ -34,11 +29,6 @@
 
 #define LOWORD(a) ((WORD)(a))
 #define HIWORD(a) ((WORD)(((DWORD)(a) >> 16) & 0xFFFF))
-
-void AT45D_FormatFS(void);
-void AT45D_WipeFS(void);
-//		DisplayFS();
-//		TestFS();
 
 typedef struct tagCmds {
 	int index;
@@ -51,21 +41,10 @@ int logging_enabled = 0;
 int cmdlen = 0;
 char cmdstr[32];
 
+
 void cmd_ver(void)
 {
 	printf("AUAV3 v0.1, " __TIME__ " " __DATE__ "\r\n");
-}
-
-void cmd_format(void)
-{
-	printf("formatting dataflash\r\n");
-//	AT45D_FormatFS();
-}
-
-void cmd_wipe(void)
-{
-	printf("wiping dataflash\r\n");
-//	AT45D_WipeFS();
 }
 
 void cmd_start(void)
@@ -80,7 +59,6 @@ void cmd_stop(void)
 	logging_enabled = 0;
 }
 
-
 void cmd_on(void)
 {
 	printf("on.\r\n");
@@ -93,11 +71,9 @@ void cmd_off(void)
 	SRbits.IPL = 7 ;	// turn off all interrupt priorities
 }
 
-//extern int heartbeat_count;
-
 void cmd_cpuload(void)
 {
-//	printf("CPU Load %u, %u.\r\n", udb_cpu_load(), heartbeat_count);
+	printf("CPU Load %u%%\r\n", udb_cpu_load());
 }
 
 void cmd_crash(void)
@@ -110,10 +86,27 @@ void cmd_crash(void)
 	cmd_crash();
 }
 
+extern struct ADchannel udb_vcc ;
+extern struct ADchannel udb_rssi ;
+
 void cmd_adc(void)
 {
-//	printf("ADC vcc %u, 5v %u, rssi %u\r\n", udb_vcc.value, udb_5v.value, udb_rssi.value);
+	printf("ADC vcc %u, 5v %u, rssi %u\r\n", udb_vcc.value, udb_5v.value, udb_rssi.value);
 }
+
+void cmd_barom(void)
+{
+ 	printf("Barometer temp %i, pres %u, alt %u, agl %u\r\n",
+         get_barometer_temperature(),
+         (uint16_t)get_barometer_pressure(),
+         (uint16_t)get_barometer_altitude(),
+         (uint16_t)get_barometer_agl_altitude());
+}
+
+void cmd_magno(void)
+{
+}
+
 
 
 void printbin16(int a)
@@ -179,13 +172,23 @@ UxCNFG2: USB CONFIGURATION REGISTER 2
 #if (RECORD_FREE_STACK_SPACE == 1)
 extern uint16_t maxstack;
 #endif
+
 void cmd_stack(void)
 {
 #if (RECORD_FREE_STACK_SPACE == 1)
-	printf("maxstack %u\r\n", maxstack);
+	printf("maxstack %x\r\n", maxstack);
+	printf("SP_start %x\r\n", SP_start());
+	printf("SP_limit %x\r\n", SP_limit());
+	printf("SP_current %x\r\n", SP_current());
+	printf("stack usage %u\r\n", maxstack - SP_start());
 #else
 	printf("stack reporting disabled.\r\n");
 #endif
+}
+
+void cmd_reset(void)
+{
+	asm("reset");
 }
 
 void cmd_help(void);
@@ -193,8 +196,6 @@ void cmd_help(void);
 const cmds_t cmdslist[] = {
 	{ 0, cmd_help,   "help" },
 	{ 0, cmd_ver,    "ver" },
-	{ 0, cmd_wipe,   "wipe" },
-	{ 0, cmd_format, "format" },
 	{ 0, cmd_start,  "start" },
 	{ 0, cmd_stop,   "stop" },
 	{ 0, cmd_on,     "on" },
@@ -202,8 +203,11 @@ const cmds_t cmdslist[] = {
 	{ 0, cmd_stack,  "stack" },
 	{ 0, cmd_reg,    "reg" },
 	{ 0, cmd_adc,    "adc" },
+	{ 0, cmd_barom,  "bar" },
 	{ 0, cmd_cpuload,"cpu" },
+	{ 0, cmd_magno,  "mag" },
 	{ 0, cmd_crash,  "crash" },
+	{ 0, cmd_reset,  "reset" },
 };
 
 void cmd_help(void)
@@ -216,17 +220,12 @@ void cmd_help(void)
 	}
 }
 
-// int strncmp(const char *string1, const char *string2, size_t count);
-// int strcmp(const char *string1, const char *string2);
-
 void command(char* cmdstr)
 {
 	int i;
 
 	for (i = 0; i < (sizeof(cmdslist)/sizeof(cmdslist[0])); i++) {
-//		printf("comparing %s with %s\r\n", cmdstr, cmdlist[i]);
 		if (strcmp(cmdslist[i].cmdstr, cmdstr) == 0) {
-//			printf("found command %u (%s)\r\n", i, cmdslist[i].cmdstr);
 			cmdslist[i].fptr();
 		}
 	}
@@ -236,14 +235,11 @@ void console(void)
 {
 	if (UART3IsPressed()) {
 		char ch = UART3GetChar();
-//		UART3PutHex((int)ch);
 		if (cmdlen < sizeof(cmdstr)) {
 			cmdstr[cmdlen] = ch;
 			if ((ch == '\r') || (ch == '\n')) {
 				cmdstr[cmdlen] = '\0';			
-//				printf("\r\n");
 				if (strlen(cmdstr) > 0) {
-//					printf("\r\nfound command: %s\r\n", cmdstr);
 					UART3PutChar('\r');
 					command(cmdstr);
 					cmdlen = 0;

@@ -222,7 +222,7 @@ void udb_gps_start_sending_data(void);
 int16_t udb_gps_callback_get_byte_to_send(void);		// Callback
 
 // Implement this callback to handle receiving a byte from the GPS
-void udb_gps_callback_received_byte(char rxchar);		// Callback
+void udb_gps_callback_received_byte(uint8_t rxchar);		// Callback
 
 
 ////////////////////////////////////////////////////////////////////////////////

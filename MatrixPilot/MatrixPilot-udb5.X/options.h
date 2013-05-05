@@ -94,6 +94,17 @@
 #define AILERON_NAVIGATION					1
 #define RUDDER_NAVIGATION					1
 
+// Cross track margin, in meters
+// This is used when the cross track option is attached to a waypoint
+// It defines the amount of cross track error at which the cross tracking
+// bearing adjustment saturates at 45 degree. You can also think of it
+// as the reciprocal of the cross tracking gain.
+// A larger value of cross track margin is more stable, a smaller one
+// holds the cross track error to smaller values.
+// 64 meters is probably the largest value you might use on a fast model jet (more than 50 meters/sec)
+// Use 32 meters for 20 to 50 meters/sec, and 16 meters for less than that.
+#define CROSS_TRACK_MARGIN 32
+
 // Wind Gain Adjustment
 // This is an option for modulating the navigation gains in flight
 // to maintain a constant turn radius in heavy winds in waypoing mode.
@@ -108,7 +119,7 @@
 // altitude is whatever altitude the plane was at when switched into stabilized mode.
 //  - In stabilized mode, when ALTITUDEHOLD_STABILIZED is set to AH_FULL, the target
 // altitude is determined by the position of the throttle stick on the transmitter.
-// NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as int32_t
+// NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
 #define ALTITUDEHOLD_STABILIZED				AH_FULL
 #define ALTITUDEHOLD_WAYPOINT				AH_FULL
@@ -141,6 +152,13 @@
 // If you select this option, you also need to set magnetometer options in
 // the magnetometerOptions.h file, including declination and magnetometer type.
 #define MAG_YAW_DRIFT 						0
+
+// Define BAROMETER_ALTITUDE to be 1 to use barometer for altitude correction.
+// Otherwise, if set to 0 only the GPS will be used.
+// If you select this option, you also need to set barometer options in
+// the barometerOptions.h file, including takeoff location altitude and/or sea level pressure
+// at the time of initialisation.
+#define BAROMETER_ALTITUDE					0
 
 // Racing Mode
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
@@ -343,6 +361,11 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Console
+// USE_CONSOLE enables the debug console.
+#define USE_CONSOLE							0
+
+////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
 // USE_OSD enables the OSD system.  Customize the OSD Layout in the osd_layout.h file.
 #define USE_OSD								0
@@ -353,7 +376,7 @@
 //   2 also enables Radio In 2 as another analog Input
 //   NOTE: Can only be set this higher than 0 if USE_PPM_INPUT is enabled above.
 // For UDB4 boards: Set to 0-4.  Analog pins are AN15 - AN18.
-#define NUM_ANALOG_INPUTS					0
+#define NUM_ANALOG_INPUTS					3
 
 // Channel numbers for each analog input
 //   - Only assign each channel number to one analog sensor

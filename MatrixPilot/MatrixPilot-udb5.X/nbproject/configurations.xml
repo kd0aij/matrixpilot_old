@@ -8,6 +8,7 @@
         <itemPath>../../libDCM/libDCM.h</itemPath>
         <itemPath>../../libDCM/libDCM_defines.h</itemPath>
         <itemPath>../../libDCM/libDCM_internal.h</itemPath>
+        <itemPath>../../libDCM/estAltitude.h</itemPath>
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../libUDB/magnetometerOptions.h</itemPath>
@@ -20,6 +21,7 @@
         <itemPath>../../libUDB/events.h</itemPath>
         <itemPath>../../libUDB/I2C.h</itemPath>
         <itemPath>../../libUDB/NV_memory.h</itemPath>
+        <itemPath>../../libUDB/barometer.h</itemPath>
       </logicalFolder>
       <logicalFolder name="MatrixPilot" displayName="MatrixPilot" projectFiles="true">
         <itemPath>../defines.h</itemPath>
@@ -36,8 +38,8 @@
         <itemPath>../airspeedCntrl.h</itemPath>
         <itemPath>../mavlink_options.h</itemPath>
         <itemPath>../euler_angles.h</itemPath>
-        <itemPath>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/MatrixPilot/nv_memory_options.h</itemPath>
-        <itemPath>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/MatrixPilot/MatrixPilot-udb5.X/options.h</itemPath>
+        <itemPath>../nv_memory_options.h</itemPath>
+        <itemPath>../options.h</itemPath>
       </logicalFolder>
       <logicalFolder name="MAVLink" displayName="MAVLink" projectFiles="true">
         <logicalFolder name="f1" displayName="common" projectFiles="true">
@@ -184,6 +186,7 @@
         <itemPath>../../libDCM/libDCM.c</itemPath>
         <itemPath>../../libDCM/deadReckoning.c</itemPath>
         <itemPath>../../libDCM/gpsParseMTEK.c</itemPath>
+        <itemPath>../../libDCM/estAltitude.c</itemPath>
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../libUDB/background.c</itemPath>
@@ -197,10 +200,12 @@
         <itemPath>../../libUDB/24LC256.c</itemPath>
         <itemPath>../../libUDB/events.c</itemPath>
         <itemPath>../../libUDB/I2C_udb4.c</itemPath>
-        <itemPath>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/libUDB/analog2digital_udb5.c</itemPath>
-        <itemPath>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/libUDB/traps_asm.s</itemPath>
-        <itemPath>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/libUDB/mpu6000.c</itemPath>
-        <itemPath>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/libUDB/spiUtils.c</itemPath>
+        <itemPath>../../libUDB/analog2digital_udb5.c</itemPath>
+        <itemPath>../../libUDB/mpu6000.c</itemPath>
+        <itemPath>../../libUDB/spiUtils.c</itemPath>
+        <itemPath>../../libUDB/traps_asm.s</itemPath>
+        <itemPath>../../libUDB/mcu.c</itemPath>
+        <itemPath>../../libUDB/barometer_udb4.c</itemPath>
       </logicalFolder>
       <logicalFolder name="MatrixPilot" displayName="MatrixPilot" projectFiles="true">
         <itemPath>../config_tests.c</itemPath>
@@ -257,7 +262,7 @@
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.10</languageToolchainVersion>
-        <platform>2</platform>
+        <platform>3</platform>
       </toolsSet>
       <compileType>
         <linkerTool>

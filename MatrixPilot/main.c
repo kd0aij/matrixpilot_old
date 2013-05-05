@@ -44,7 +44,6 @@ int main (void)
 	init_serial() ;
 	
 	udb_run() ;
-	// This never returns.
 	
 	return 0 ;
 }

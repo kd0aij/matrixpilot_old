@@ -20,6 +20,7 @@
 
 
 #include "libDCM_internal.h"
+#include "../libUDB/heartbeat.h"
 
 
 // seconds

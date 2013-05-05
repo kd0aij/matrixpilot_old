@@ -61,7 +61,7 @@ void udb_barometer_callback(long pressure, int temperature, char status)
 	float altitude;
 	float sea_level_pressure;
 
-	static int i = 0;
+//	static int i = 0;
 
 	barometer_temperature = temperature / 10;
 	barometer_pressure = pressure / 100;
@@ -153,6 +153,7 @@ long ftol(float x)
  */
 void estAltitude(void)
 {
+#if (BAROMETER_ALTITUDE == 1)
 //	barometer_altitude = (float)44330 * (1 - pow(((float) barometer_pressure/barometer_pressure_gnd), 0.190295));
 //	barometer_agl_altitude = (barometer_altitude - (ground_altitude * 100.0)) ;  //  compute above ground altitude
 
@@ -168,7 +169,7 @@ void estAltitude(void)
 //#ifdef USE_DEBUG_IO
 //	printf( "estAltitude %.2f\r\n", (double)barometer_altitude);
 //#endif
-	return ;
+#endif // BAROMETER_ALTITUDE
 }
 
 // MAVLINK_MESSAGE_INFO_SCALED_PRESSURE

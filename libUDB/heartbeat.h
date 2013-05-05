@@ -18,33 +18,21 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-
-#include "libUDB.h"
-
-extern int16_t failSafePulses ;
-extern int16_t noisePulses ;
+#ifndef HEARTBEAT_H
+#define HEARTBEAT_H
 
 
-extern volatile int16_t trap_flags ;
-extern volatile int32_t trap_source ;
-extern volatile int16_t osc_fail_count ;
+// number of heartbeats per second
+#define HEARTBEAT_HZ 40
 
-// Get flags telling the reason for the last reset (RCON)
-uint16_t udb_get_reset_flags(void) ;
+// number of servo updates per second
+#define SERVO_HZ 40
+
+// frequency of PID loop (HEARTBEAT_HZ / PID_HZ must be an integer)
+#define PID_HZ 40
+
+// Read-only value increments with each heartbeat
+extern uint16_t udb_heartbeat_counter ;
 
 
-void udb_init_leds(void) ;
-void udb_init_ADC(void) ;
-void udb_init_clock(void) ;
-void udb_init_capture(void) ;
-void udb_init_I2C(void) ;
-void udb_init_GPS(void) ;
-void udb_init_USART(void) ;
-void udb_init_pwm(void) ;
-void udb_init_osd( void ) ;
-void udb_eeprom_init( void ) ;
-void MPU6000_init16( void ) ;
-
-void start_pwm_outputs( void ) ;
-
-void calculate_analog_sensor_values( void ) ;
+#endif // HEARTBEAT_H

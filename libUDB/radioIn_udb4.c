@@ -20,6 +20,7 @@
 
 
 #include "libUDB_internal.h"
+#include "interrupt.h"
 
 #if (BOARD_TYPE == UDB4_BOARD||BOARD_TYPE == UDB5_BOARD)
 
@@ -495,6 +496,6 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _IC1Interrupt(void)
 	return ;
 }
 
-#endif
+#endif // USE_PPM_INPUT
 
-#endif
+#endif // BOARD_TYPE
