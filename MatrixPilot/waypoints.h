@@ -23,7 +23,7 @@
 // Waypoint handling
 
 // Move on to the next waypoint when getting within this distance of the current goal (in meters)
-#define WAYPOINT_RADIUS 		25
+#define WAYPOINT_RADIUS 		200
 
 // Origin Location
 // When using relative waypoints, the default is to interpret those waypoints as relative to the
@@ -136,9 +136,13 @@
 // By default the only waypoint is defined to be 75 meters above the starting point.
 
 const struct waypointDef waypoints[] = {
-		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
-} ;
-
+	{ { -739150285, 428752093, 300 } , F_ABSOLUTE + F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 1
+	{ { -738670921, 428573431, 400 } , F_ABSOLUTE + F_CROSS_TRACK, CAM_VIEW_LAUNCH } , //Waypoint 2
+	{ { -739321517, 427381872, 200 } , F_ABSOLUTE + F_CROSS_TRACK, CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { -739854526, 427645321, 100 } , F_ABSOLUTE + F_CROSS_TRACK, CAM_VIEW_LAUNCH } , //Waypoint 4
+	{ { -739332246, 428477473, -20 } , F_ABSOLUTE + F_CROSS_TRACK, CAM_VIEW_LAUNCH } , //Waypoint 5
+	{ { -739210796, 428661353, 0 } , F_ABSOLUTE + F_CROSS_TRACK + F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 6
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,9 +156,24 @@ const struct waypointDef waypoints[] = {
 // WARNING: If you set this not to include the F_LAND flag, then be very careful during ground testing
 // and after flights, since turning off the transmitter will cause the throttle to come on.
 
+
+
+const struct waypointDef rtlWaypoints[] = {
+	{ { -739150285, 428752093, 300 } , F_ABSOLUTE + F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 1
+	{ { -738670921, 428573431, 400 } , F_ABSOLUTE + F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
+	{ { -739321517, 427381872, 200 } , F_ABSOLUTE + F_CROSS_TRACK  , CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { -739854526, 427645321, 200 } , F_ABSOLUTE  + F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
+	{ { -739332246, 428477473, -20 } , F_ABSOLUTE  + F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
+	{ { -739210796, 428661353, 0 } , F_ABSOLUTE + F_CROSS_TRACK  + F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 6
+};
+
+
+
+/*
 const struct waypointDef rtlWaypoints[] = {
 		{ { 0, 0,  50 } , F_LOITER + F_LAND, CAM_VIEW_LAUNCH } ,
 } ;
+*/
 
 
 
