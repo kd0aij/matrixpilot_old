@@ -239,7 +239,7 @@ int16_t udb_gps_callback_get_byte_to_send(void) {
     return -1;
 }
 
-void udb_gps_callback_received_byte(char rxchar) { }
+void udb_gps_callback_received_byte(uint8_t rxchar) { }
 
 int16_t udb_serial_callback_get_byte_to_send(void) {
     return -1;

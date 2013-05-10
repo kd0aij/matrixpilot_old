@@ -41,7 +41,9 @@
         <itemPath>../../../libUDB/mpu6000.c</itemPath>
         <itemPath>../../../libUDB/spiUtils.c</itemPath>
         <itemPath>../../../libUDB/analog2digital_udb5.c</itemPath>
-        <itemPath>/home/markw/MPLABXProjects/gentlenav/branches/MatrixPilot_UDB5_WJP/libUDB/events.c</itemPath>
+        <itemPath>../../../libUDB/events.c</itemPath>
+        <itemPath>../../../libUDB/mcu.c</itemPath>
+        <itemPath>../../../libUDB/traps_asm.s</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -69,7 +71,7 @@
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.11</languageToolchainVersion>
-        <platform>4</platform>
+        <platform>3</platform>
       </toolsSet>
       <compileType>
         <linkerTool>
