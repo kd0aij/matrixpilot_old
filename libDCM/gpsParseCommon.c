@@ -106,6 +106,10 @@ uint16_t air_speed_3DGPS = 0 ;
 int8_t calculated_heading ;
 int16_t location_previous[] = { 0 , 0 , 0 } ;
 
+int32_t gps_lat_lon_alt_previous[] = { 0 , 0 , 0 } ;
+int16_t gps_vel_vector_previous[] = { 0 , 0 , 0 } ;
+int16_t gps_location_velocity_mismatch[] = { 0 , 0 , 0 } ;
+
 // Received a full set of GPS messages
 void udb_background_callback_triggered(void) 
 {
@@ -133,6 +137,13 @@ void udb_background_callback_triggered(void)
 		gps_data_age = 0 ;
 
 		dcm_callback_gps_location_updated() ;
+
+		gps_location_velocity_mismatch[0] = long_scale (( long_gps.WW - gps_lat_lon_alt_previous[0]) /9 , cos_lat ) ; // shift in decimeters
+		gps_location_velocity_mismatch[1] = ( ( lat_gps.WW - gps_lat_lon_alt_previous[1] ) /9 ) ; // shift in decimeters
+		gps_location_velocity_mismatch[2] =  ( ( alt_sl_gps.WW - gps_lat_lon_alt_previous[2] ) / 10 ) ; // shift in decimeters
+		gps_lat_lon_alt_previous[0] = long_gps.WW ;
+		gps_lat_lon_alt_previous[1] = lat_gps.WW ;
+		gps_lat_lon_alt_previous[2] = alt_sl_gps.WW ;
 		
 		accum_nav.WW = ((lat_gps.WW - lat_origin.WW)/90) ; // in meters, range is about 20 miles
 		location[1] = accum_nav._.W0 ;
@@ -152,7 +163,16 @@ void udb_background_callback_triggered(void)
 		// The dynamic model of the EM406 and uBlox is not well known.
 		// However, it seems likely much of it is simply reporting latency.
 		// This section of the code compensates for reporting latency.
-
+#if ( HILSIM == 1 )
+		{
+			cog_delta = 0 ;
+			sog_delta = 0 ;
+			climb_rate_delta = 0 ;
+			location_deltaXY.x = 0 ;
+			location_deltaXY.y = 0 ;
+			location_deltaZ = 0 ;
+		}
+#else
 		if ( dcm_flags._.gps_history_valid )
 		{
 			cog_delta = cog_circular - cog_previous ;
@@ -165,9 +185,14 @@ void udb_background_callback_triggered(void)
 		}
 		else
 		{
-			cog_delta = sog_delta = climb_rate_delta = 0 ;
-			location_deltaXY.x = location_deltaXY.y = location_deltaZ = 0 ;
+			cog_delta = 0 ;
+			sog_delta = 0 ;
+			climb_rate_delta = 0 ;
+			location_deltaXY.x = 0 ;
+			location_deltaXY.y = 0 ;
+			location_deltaZ = 0 ;
 		}
+#endif
 		dcm_flags._.gps_history_valid = 1 ;
 		actual_dir = cog_circular + cog_delta ;
 		cog_previous = cog_circular ;
