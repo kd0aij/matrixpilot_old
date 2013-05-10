@@ -271,19 +271,19 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _PWMInterrupt(void)
 	interrupt_save_set_corcon ;
 	
 	_THEARTBEATIF = 0 ; /* clear the interrupt */
-    static int diagCounter = 0;
-    if (++diagCounter >= 40)
-    {
-    	uint16_t stack = SP_current();
-        printf("heartbeat: %u", udb_heartbeat_counter);
-    	printf(" ADC: %u %u %u %u %u %u %u",
-            udb_vcc.value, udb_5v.value, udb_rssi.value,
-            udb_analogInputs[0].value, udb_analogInputs[1].value,
-            udb_analogInputs[2].value, udb_analogInputs[3].value);
-        printf(" stack: %x", stack);
-        printf(" heading: %u \r\n", get_geo_heading_angle());
-        diagCounter = 0;
-    }
+//    static int diagCounter = 0;
+//    if (++diagCounter >= 40)
+//    {
+//    	uint16_t stack = SP_current();
+//        printf("heartbeat: %u", udb_heartbeat_counter);
+////    	printf(" ADC: %u %u %u %u %u %u %u",
+////            udb_vcc.value, udb_5v.value, udb_rssi.value,
+////            udb_analogInputs[0].value, udb_analogInputs[1].value,
+////            udb_analogInputs[2].value, udb_analogInputs[3].value);
+//        printf(" stack: %x", stack);
+//        printf(" heading: %u \r\n", get_geo_heading_angle());
+//        diagCounter = 0;
+//    }
 
 #if ( NORADIO != 1 )
 	// 20Hz testing of radio link
