@@ -24,7 +24,7 @@
 
 #define NUM_PINS_IN_GROUP_1	22
 #define NUM_PINS_IN_GROUP_2	19
-#define PIN_IN_GROUP(g, p)	((((g)-1)*22)+(p))
+#define PIN_IN_GROUP(g, p)	((((g)-1)*NUM_PINS_IN_GROUP_1)+(p))
 
 #define OUTPUT	0
 #define INPUT	1
@@ -223,16 +223,13 @@ void IOTest(void)
 	delay(1000) ;
 
 	// Test that we're all pulled high
-	for (p=0; p<NUM_PINS_IN_GROUP_1; p++) {
-		if (getPinValue(PIN_IN_GROUP(1,p)) == 0) failPin(PIN_IN_GROUP(1,p), 0);
-	}
-	for (p=0; p<NUM_PINS_IN_GROUP_2; p++) {
-		if (getPinValue(PIN_IN_GROUP(2,p)) == 0) failPin(PIN_IN_GROUP(2,p), 0);
+	for (p=0; p<NUM_PINS_IN_GROUP_1+NUM_PINS_IN_GROUP_2; p++) {
+		if (getPinValue(p) == 0) failPin(p, 1);
 	}
 
 	int testPin;
 	for (testPin=0; testPin<NUM_PINS_IN_GROUP_1; testPin++) {
-		// Set testPin output low
+		// Set testPin in group 1 to output low
 		setPinState(PIN_IN_GROUP(1,testPin), OUTPUT);
 		setPinValue(PIN_IN_GROUP(1,testPin), 0);
 		delay(1000) ;
@@ -240,27 +237,27 @@ void IOTest(void)
 		// Test that group 1 is low, and 2 is high
 		for (p=0; p<NUM_PINS_IN_GROUP_1; p++) {
 			if (p == testPin) continue;
-			if (getPinValue(PIN_IN_GROUP(1,p)) == 1) failPin(PIN_IN_GROUP(1,p), 1);
+			if (getPinValue(PIN_IN_GROUP(1,p)) == 1) failPin(PIN_IN_GROUP(1,p), 2);
 		}
 		for (p=0; p<NUM_PINS_IN_GROUP_2; p++) {
-			if (getPinValue(PIN_IN_GROUP(2,p)) == 0) failPin(PIN_IN_GROUP(2,p), 2);
+			if (getPinValue(PIN_IN_GROUP(2,p)) == 0) failPin(PIN_IN_GROUP(2,p), 3);
 		}
 		setPinState(PIN_IN_GROUP(1,testPin), INPUT);
 	}
 
 	for (testPin=0; testPin<NUM_PINS_IN_GROUP_2; testPin++) {
-		// Set testPin output low
+		// Set testPin in group 2 to output low
 		setPinState(PIN_IN_GROUP(2,testPin), OUTPUT);
 		setPinValue(PIN_IN_GROUP(2,testPin), 0);
 		delay(1000) ;
 
 		// Test that group 1 is high, and 2 is low
 		for (p=0; p<NUM_PINS_IN_GROUP_1; p++) {
-			if (getPinValue(PIN_IN_GROUP(1,p)) == 0) failPin(PIN_IN_GROUP(1,p), 3);
+			if (getPinValue(PIN_IN_GROUP(1,p)) == 0) failPin(PIN_IN_GROUP(1,p), 4);
 		}
 		for (p=0; p<NUM_PINS_IN_GROUP_2; p++) {
 			if (p == testPin) continue;
-			if (getPinValue(PIN_IN_GROUP(2,p)) == 1) failPin(PIN_IN_GROUP(2,p), 4);
+			if (getPinValue(PIN_IN_GROUP(2,p)) == 1) failPin(PIN_IN_GROUP(2,p), 5);
 		}
 		setPinState(PIN_IN_GROUP(2,testPin), INPUT);
 	}
@@ -268,4 +265,3 @@ void IOTest(void)
 	PMD1bits.AD1MD = 0;
 	PMD3bits.AD2MD = 0;
 }
-
