@@ -49,7 +49,7 @@
 //#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
 
 // AAM East Field runway center 39°50'31.83"N  105°12'44.81"W
-#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 30.0 }	// AAM East Field runway center
+#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1808.0 }	// AAM East Field runway center
 
 
 ////////////////////////////////////////////////////////////////////////////////

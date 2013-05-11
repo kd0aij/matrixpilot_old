@@ -121,7 +121,7 @@
 // altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED AH_FULL
+#define ALTITUDEHOLD_STABILIZED AH_NONE
 #define ALTITUDEHOLD_WAYPOINT   AH_FULL
 
 // Speed Control
@@ -129,7 +129,7 @@
 // in the altitude controls, and will trim the throttle and pitch to maintain air speed.
 // Define DESIRED_SPEED to be the air speed that you want, in meters/second.
 #define SPEED_CONTROL   0
-#define DESIRED_SPEED   10.0 // meters/second
+#define DESIRED_SPEED   20.0 // meters/second
 
 // Inverted flight
 // Set these to 1 to enable stabilization of inverted flight in stabilized and/or waypoint modes.
@@ -591,7 +591,7 @@
 // The range of altitude within which to linearly vary the throttle
 // and pitch to maintain altitude.  A bigger value makes altitude hold
 // smoother, and is suggested for very fast planes.
-#define HEIGHT_MARGIN 10
+#define HEIGHT_MARGIN 20
 
 // Use ALT_HOLD_THROTTLE_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_THROTTLE_MAX and ALT_HOLD_THROTTLE_MIN
@@ -606,9 +606,9 @@
 // within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
-#define ALT_HOLD_PITCH_MIN  -15.0
-#define ALT_HOLD_PITCH_MAX   15.0
-#define ALT_HOLD_PITCH_HIGH -15.0
+#define ALT_HOLD_PITCH_MIN  -20.0
+#define ALT_HOLD_PITCH_MAX   20.0
+#define ALT_HOLD_PITCH_HIGH -20.0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -688,7 +688,7 @@
 //#define ID_VEHICLE_REGISTRATION "TW2-PDH-UK"
 //#define ID_LEAD_PILOT "Pete Hollands"
 //#define ID_DIY_DRONES_URL "http://www.diydrones.com/profile/PeterHollands"
-#define ID_VEHICLE_MODEL_NAME   "Telemaster"
+#define ID_VEHICLE_MODEL_NAME   "Polaris MP"
 #define ID_VEHICLE_REGISTRATION "KD0AIJ"
 #define ID_LEAD_PILOT           "Mark Whitehorn"
 #define ID_DIY_DRONES_URL       "http://www.diydrones.com/profile/markw"
