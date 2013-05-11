@@ -128,6 +128,13 @@ void compute_virtual_gps()
 	return ;
 }
 
+int16_t gps_previous_location[3] = { 0 , 0 , 0 } ;
+int16_t imu_previous_location[3] = { 0 , 0 , 0 } ;
+int16_t gps_previous_velocity[3] = { 0 , 0 , 0 } ;
+int16_t imu_previous_velocity[3] = { 0 , 0 , 0 } ;
+int16_t gps_location_noise[3] = { 0 , 0 , 0 } ;
+int16_t gps_velocity_noise[3] = { 0 , 0 , 0 } ;
+
 void dead_reckon(void)
 {
 	if ( dcm_flags._.dead_reckon_enable == 1 )  // wait for startup of GPS
@@ -188,6 +195,22 @@ void dead_reckon(void)
 			velocityErrorEarth[0] = DRvelocityx - IMUintegralAccelerationx._.W1 ;
 			velocityErrorEarth[1] = DRvelocityy - IMUintegralAccelerationy._.W1 ;
 			velocityErrorEarth[2] = DRvelocityz - IMUintegralAccelerationz._.W1 ;
+
+			gps_location_noise[0] += ( IMUlocationx._.W1 - imu_previous_location[0] )
+									- ( GPSlocation.x - gps_previous_location[0] )
+									- ( ( gps_location_noise[0] ) >> 2 ) ;
+			gps_location_noise[1] += ( IMUlocationy._.W1 - imu_previous_location[1] )
+									- ( GPSlocation.y - gps_previous_location[1] )
+									- ( ( gps_location_noise[1] ) >> 2 ) ;
+			gps_location_noise[2] += ( IMUlocationz._.W1 - imu_previous_location[2] ) 
+									- ( GPSlocation.z - gps_previous_location[2] )
+									- ( ( gps_location_noise[2] ) >> 2 ) ;
+			imu_previous_location[0] = IMUlocationx._.W1 ;
+			imu_previous_location[1] = IMUlocationy._.W1 ;
+			imu_previous_location[2] = IMUlocationz._.W1 ;
+			gps_previous_location[0] = GPSlocation.x ;
+			gps_previous_location[1] = GPSlocation.y ;
+			gps_previous_location[2] = GPSlocation.z ;
 		}
 	}
 	else
