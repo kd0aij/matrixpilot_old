@@ -205,7 +205,7 @@
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
 // For UDB4 boards: Set to 1-8
-#define NUM_INPUTS  8
+#define NUM_INPUTS  7
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
