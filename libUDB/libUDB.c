@@ -191,7 +191,16 @@ void udb_servo_record_trims(void)
 {
 	int16_t i;
 	for (i=0; i <= NUM_INPUTS; i++)
-		udb_pwTrim[i] = udb_pwIn[i] ;
+    {
+#if (HARD_TRIMS != 0)
+#warning("initial udb_pwTrim values set to NEUTRAL_TRIM and THROTTLE_IDLE")
+        udb_pwTrim[i] = NEUTRAL_TRIM;
+#else
+        udb_pwTrim[i] = udb_pwIn[i] ;
+#endif
+    }
+    // throttle trim never changes
+    udb_pwTrim[THROTTLE_INPUT_CHANNEL] = THROTTLE_IDLE;
 }
 
 
