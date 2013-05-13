@@ -87,12 +87,12 @@
 #define ROLL_STABILIZATION_RUDDER	0
 #define PITCH_STABILIZATION		1
 #define YAW_STABILIZATION_RUDDER	1
-#define YAW_STABILIZATION_AILERON	1
+#define YAW_STABILIZATION_AILERON	0
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
 #define AILERON_NAVIGATION		1
-#define RUDDER_NAVIGATION		1
+#define RUDDER_NAVIGATION		0
 
 // Cross track margin, in meters
 // This is used when the cross track option is attached to a waypoint
@@ -121,8 +121,8 @@
 // altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED AH_NONE
-#define ALTITUDEHOLD_WAYPOINT   AH_FULL
+#define ALTITUDEHOLD_STABILIZED AH_PITCH_ONLY
+#define ALTITUDEHOLD_WAYPOINT   AH_PITCH_ONLY
 
 // Speed Control
 // If you define SPEED_CONTROL to be 1, MatrixPilot will take air speed into account
@@ -267,9 +267,9 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED		HW_SWITCH_1
-#define ELEVATOR_CHANNEL_REVERSED		HW_SWITCH_2
-#define RUDDER_CHANNEL_REVERSED			HW_SWITCH_3
+#define AILERON_CHANNEL_REVERSED		0
+#define ELEVATOR_CHANNEL_REVERSED		0
+#define RUDDER_CHANNEL_REVERSED			0
 #define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
 #define THROTTLE_CHANNEL_REVERSED		0 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
@@ -312,7 +312,7 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL  THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN	1500
+#define FAILSAFE_INPUT_MIN	2100
 #define FAILSAFE_INPUT_MAX	4500
 
 // FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
@@ -452,9 +452,9 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP		0.20
-#define ROLLKD		0.05
-#define YAWKP_AILERON	0.10
+#define ROLLKP		0.1
+#define ROLLKD		0.025
+#define YAWKP_AILERON	0.20
 #define YAWKD_AILERON	0.05
 #define AILERON_BOOST	1.00
 
