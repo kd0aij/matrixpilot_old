@@ -6,6 +6,7 @@
                    projectFiles="true">
       <logicalFolder name="LedTest" displayName="LedTest" projectFiles="true">
         <itemPath>options.h</itemPath>
+        <itemPath>../nv_memory_options.h</itemPath>
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../../libUDB/magnetometerOptions.h</itemPath>
@@ -41,6 +42,9 @@
         <itemPath>../../../libUDB/eeprom_auav3.c</itemPath>
         <itemPath>../../../libUDB/analog2digital_auav3.c</itemPath>
         <itemPath>../../../libUDB/serialIO_udb4.c</itemPath>
+        <itemPath>../../../libUDB/mcu.c</itemPath>
+        <itemPath>../../../libCommon/uart3.c</itemPath>
+        <itemPath>../../../libUDB/events.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -99,7 +103,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../../../libUDB;../LedTest-auav3"/>
+                  value="../LedTest-auav3;../../UDB4-LedTest;../../../libUDB;../../../libCommon;../../../MatrixPilot"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>

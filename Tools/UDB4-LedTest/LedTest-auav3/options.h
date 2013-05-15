@@ -121,6 +121,9 @@
 #define Y_ACCEL_OUTPUT_CHANNEL				CHANNEL_5
 #define Z_ACCEL_OUTPUT_CHANNEL				CHANNEL_6
 
+#define THROTTLE_INPUT_CHANNEL  1
+#define THROTTLE_IDLE           3000
+#define NUM_ANALOG_INPUTS       4
 
 ////////////////////////////////////////////////////////////////////////////////
 // The Failsafe Channel is the RX channel that is monitored for loss of signal

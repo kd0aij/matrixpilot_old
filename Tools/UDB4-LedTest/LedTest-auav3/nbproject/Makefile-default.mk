@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/1472/io_test_auav3.o ${OBJECTDIR}/_ext/1159519357/background.o ${OBJECTDIR}/_ext/1159519357/libUDB.o ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o ${OBJECTDIR}/_ext/1159519357/servoOut.o ${OBJECTDIR}/_ext/1159519357/mpu6000.o ${OBJECTDIR}/_ext/1159519357/spiUtils.o ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1472/main.o.d ${OBJECTDIR}/_ext/1472/io_test_auav3.o.d ${OBJECTDIR}/_ext/1159519357/background.o.d ${OBJECTDIR}/_ext/1159519357/libUDB.o.d ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d ${OBJECTDIR}/_ext/1159519357/servoOut.o.d ${OBJECTDIR}/_ext/1159519357/mpu6000.o.d ${OBJECTDIR}/_ext/1159519357/spiUtils.o.d ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/1472/io_test_auav3.o ${OBJECTDIR}/_ext/1159519357/background.o ${OBJECTDIR}/_ext/1159519357/libUDB.o ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o ${OBJECTDIR}/_ext/1159519357/servoOut.o ${OBJECTDIR}/_ext/1159519357/mpu6000.o ${OBJECTDIR}/_ext/1159519357/spiUtils.o ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o ${OBJECTDIR}/_ext/1159519357/mcu.o ${OBJECTDIR}/_ext/1655021343/uart3.o ${OBJECTDIR}/_ext/1159519357/events.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1472/main.o.d ${OBJECTDIR}/_ext/1472/io_test_auav3.o.d ${OBJECTDIR}/_ext/1159519357/background.o.d ${OBJECTDIR}/_ext/1159519357/libUDB.o.d ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d ${OBJECTDIR}/_ext/1159519357/servoOut.o.d ${OBJECTDIR}/_ext/1159519357/mpu6000.o.d ${OBJECTDIR}/_ext/1159519357/spiUtils.o.d ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d ${OBJECTDIR}/_ext/1159519357/mcu.o.d ${OBJECTDIR}/_ext/1655021343/uart3.o.d ${OBJECTDIR}/_ext/1159519357/events.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/1472/io_test_auav3.o ${OBJECTDIR}/_ext/1159519357/background.o ${OBJECTDIR}/_ext/1159519357/libUDB.o ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o ${OBJECTDIR}/_ext/1159519357/servoOut.o ${OBJECTDIR}/_ext/1159519357/mpu6000.o ${OBJECTDIR}/_ext/1159519357/spiUtils.o ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o
+OBJECTFILES=${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/1472/io_test_auav3.o ${OBJECTDIR}/_ext/1159519357/background.o ${OBJECTDIR}/_ext/1159519357/libUDB.o ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o ${OBJECTDIR}/_ext/1159519357/servoOut.o ${OBJECTDIR}/_ext/1159519357/mpu6000.o ${OBJECTDIR}/_ext/1159519357/spiUtils.o ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o ${OBJECTDIR}/_ext/1159519357/mcu.o ${OBJECTDIR}/_ext/1655021343/uart3.o ${OBJECTDIR}/_ext/1159519357/events.o
 
 
 CFLAGS=
@@ -76,147 +76,183 @@ ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 ${OBJECTDIR}/_ext/1472/main.o: ../main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1472 
 	@${RM} ${OBJECTDIR}/_ext/1472/main.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../main.c  -o ${OBJECTDIR}/_ext/1472/main.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1472/main.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../main.c  -o ${OBJECTDIR}/_ext/1472/main.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1472/main.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1472/main.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1472/io_test_auav3.o: ../io_test_auav3.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1472 
 	@${RM} ${OBJECTDIR}/_ext/1472/io_test_auav3.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../io_test_auav3.c  -o ${OBJECTDIR}/_ext/1472/io_test_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1472/io_test_auav3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../io_test_auav3.c  -o ${OBJECTDIR}/_ext/1472/io_test_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1472/io_test_auav3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1472/io_test_auav3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/background.o: ../../../libUDB/background.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/background.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/background.c  -o ${OBJECTDIR}/_ext/1159519357/background.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/background.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/background.c  -o ${OBJECTDIR}/_ext/1159519357/background.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/background.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/background.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/libUDB.o: ../../../libUDB/libUDB.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/libUDB.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/libUDB.c  -o ${OBJECTDIR}/_ext/1159519357/libUDB.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/libUDB.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/libUDB.c  -o ${OBJECTDIR}/_ext/1159519357/libUDB.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/libUDB.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/libUDB.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o: ../../../libUDB/magneto_udb4.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/magneto_udb4.c  -o ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/magneto_udb4.c  -o ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/servoOut.o: ../../../libUDB/servoOut.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/servoOut.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/servoOut.c  -o ${OBJECTDIR}/_ext/1159519357/servoOut.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/servoOut.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/servoOut.c  -o ${OBJECTDIR}/_ext/1159519357/servoOut.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/servoOut.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/servoOut.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/mpu6000.o: ../../../libUDB/mpu6000.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/mpu6000.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/mpu6000.c  -o ${OBJECTDIR}/_ext/1159519357/mpu6000.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/mpu6000.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/mpu6000.c  -o ${OBJECTDIR}/_ext/1159519357/mpu6000.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/mpu6000.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/mpu6000.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/spiUtils.o: ../../../libUDB/spiUtils.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/spiUtils.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/spiUtils.c  -o ${OBJECTDIR}/_ext/1159519357/spiUtils.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/spiUtils.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/spiUtils.c  -o ${OBJECTDIR}/_ext/1159519357/spiUtils.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/spiUtils.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/spiUtils.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o: ../../../libUDB/radioIn_auav3.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/radioIn_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/radioIn_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o: ../../../libUDB/eeprom_auav3.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/eeprom_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/eeprom_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o: ../../../libUDB/analog2digital_auav3.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/analog2digital_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/analog2digital_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o: ../../../libUDB/serialIO_udb4.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/serialIO_udb4.c  -o ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/serialIO_udb4.c  -o ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/_ext/1159519357/mcu.o: ../../../libUDB/mcu.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
+	@${RM} ${OBJECTDIR}/_ext/1159519357/mcu.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/mcu.c  -o ${OBJECTDIR}/_ext/1159519357/mcu.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/mcu.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/mcu.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/_ext/1655021343/uart3.o: ../../../libCommon/uart3.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1655021343 
+	@${RM} ${OBJECTDIR}/_ext/1655021343/uart3.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libCommon/uart3.c  -o ${OBJECTDIR}/_ext/1655021343/uart3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1655021343/uart3.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1655021343/uart3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/_ext/1159519357/events.o: ../../../libUDB/events.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
+	@${RM} ${OBJECTDIR}/_ext/1159519357/events.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/events.c  -o ${OBJECTDIR}/_ext/1159519357/events.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/events.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/events.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 else
 ${OBJECTDIR}/_ext/1472/main.o: ../main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1472 
 	@${RM} ${OBJECTDIR}/_ext/1472/main.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../main.c  -o ${OBJECTDIR}/_ext/1472/main.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1472/main.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../main.c  -o ${OBJECTDIR}/_ext/1472/main.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1472/main.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1472/main.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1472/io_test_auav3.o: ../io_test_auav3.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1472 
 	@${RM} ${OBJECTDIR}/_ext/1472/io_test_auav3.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../io_test_auav3.c  -o ${OBJECTDIR}/_ext/1472/io_test_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1472/io_test_auav3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../io_test_auav3.c  -o ${OBJECTDIR}/_ext/1472/io_test_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1472/io_test_auav3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1472/io_test_auav3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/background.o: ../../../libUDB/background.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/background.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/background.c  -o ${OBJECTDIR}/_ext/1159519357/background.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/background.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/background.c  -o ${OBJECTDIR}/_ext/1159519357/background.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/background.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/background.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/libUDB.o: ../../../libUDB/libUDB.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/libUDB.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/libUDB.c  -o ${OBJECTDIR}/_ext/1159519357/libUDB.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/libUDB.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/libUDB.c  -o ${OBJECTDIR}/_ext/1159519357/libUDB.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/libUDB.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/libUDB.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o: ../../../libUDB/magneto_udb4.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/magneto_udb4.c  -o ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/magneto_udb4.c  -o ${OBJECTDIR}/_ext/1159519357/magneto_udb4.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/magneto_udb4.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/servoOut.o: ../../../libUDB/servoOut.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/servoOut.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/servoOut.c  -o ${OBJECTDIR}/_ext/1159519357/servoOut.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/servoOut.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/servoOut.c  -o ${OBJECTDIR}/_ext/1159519357/servoOut.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/servoOut.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/servoOut.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/mpu6000.o: ../../../libUDB/mpu6000.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/mpu6000.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/mpu6000.c  -o ${OBJECTDIR}/_ext/1159519357/mpu6000.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/mpu6000.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/mpu6000.c  -o ${OBJECTDIR}/_ext/1159519357/mpu6000.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/mpu6000.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/mpu6000.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/spiUtils.o: ../../../libUDB/spiUtils.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/spiUtils.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/spiUtils.c  -o ${OBJECTDIR}/_ext/1159519357/spiUtils.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/spiUtils.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/spiUtils.c  -o ${OBJECTDIR}/_ext/1159519357/spiUtils.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/spiUtils.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/spiUtils.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o: ../../../libUDB/radioIn_auav3.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/radioIn_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/radioIn_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/radioIn_auav3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o: ../../../libUDB/eeprom_auav3.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/eeprom_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/eeprom_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/eeprom_auav3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o: ../../../libUDB/analog2digital_auav3.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/analog2digital_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/analog2digital_auav3.c  -o ${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/analog2digital_auav3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o: ../../../libUDB/serialIO_udb4.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
 	@${RM} ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/serialIO_udb4.c  -o ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../../../libUDB" -I"../LedTest-auav3" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/serialIO_udb4.c  -o ${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/serialIO_udb4.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/_ext/1159519357/mcu.o: ../../../libUDB/mcu.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
+	@${RM} ${OBJECTDIR}/_ext/1159519357/mcu.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/mcu.c  -o ${OBJECTDIR}/_ext/1159519357/mcu.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/mcu.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/mcu.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/_ext/1655021343/uart3.o: ../../../libCommon/uart3.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1655021343 
+	@${RM} ${OBJECTDIR}/_ext/1655021343/uart3.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libCommon/uart3.c  -o ${OBJECTDIR}/_ext/1655021343/uart3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1655021343/uart3.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1655021343/uart3.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/_ext/1159519357/events.o: ../../../libUDB/events.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1159519357 
+	@${RM} ${OBJECTDIR}/_ext/1159519357/events.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../../../libUDB/events.c  -o ${OBJECTDIR}/_ext/1159519357/events.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1159519357/events.o.d"        -g -omf=elf -legacy-libc -mlarge-data -msmall-scalar -O0 -I"../LedTest-auav3" -I"../../UDB4-LedTest" -I"../../../libUDB" -I"../../../libCommon" -I"../../../MatrixPilot" -mcci -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1159519357/events.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
