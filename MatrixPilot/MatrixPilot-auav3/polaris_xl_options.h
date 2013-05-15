@@ -87,11 +87,11 @@
 #define ROLL_STABILIZATION_RUDDER	0
 #define PITCH_STABILIZATION         1
 #define YAW_STABILIZATION_RUDDER	1
-#define YAW_STABILIZATION_AILERON	1
+#define YAW_STABILIZATION_AILERON	0
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
-#define AILERON_NAVIGATION		1
+#define AILERON_NAVIGATION		0
 #define RUDDER_NAVIGATION		1
 
 // Cross track margin, in meters
@@ -121,20 +121,20 @@
 // altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED				AH_NONE
-#define ALTITUDEHOLD_WAYPOINT				AH_FULL
+#define ALTITUDEHOLD_STABILIZED AH_PITCH_ONLY
+#define ALTITUDEHOLD_WAYPOINT   AH_PITCH_ONLY
 
 // Speed Control
 // If you define SPEED_CONTROL to be 1, MatrixPilot will take air speed into account
 // in the altitude controls, and will trim the throttle and pitch to maintain air speed.
 // Define DESIRED_SPEED to be the air speed that you want, in meters/second.
 #define SPEED_CONTROL   0
-#define DESIRED_SPEED  16.0 // meters/second
+#define DESIRED_SPEED   20.0 // meters/second
 
 // Inverted flight
 // Set these to 1 to enable stabilization of inverted flight in stabilized and/or waypoint modes.
-#define INVERTED_FLIGHT_STABILIZED_MODE		1
-#define INVERTED_FLIGHT_WAYPOINT_MODE		1
+#define INVERTED_FLIGHT_STABILIZED_MODE 0
+#define INVERTED_FLIGHT_WAYPOINT_MODE   0
 
 // Hovering
 // Set these to 1 to enable stabilization of hovering in stabilized and/or waypoint modes.
@@ -164,8 +164,8 @@
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
 // RACING_MODE_WP_THROTTLE is the throttle value to use, and should be set between 0.0 and 1.0.
 // Racing performance can be improved by disabling cross tracking for your waypoints.
-#define RACING_MODE							1
-#define RACING_MODE_WP_THROTTLE				0.65
+#define RACING_MODE		0
+#define RACING_MODE_WP_THROTTLE	1.0
 
 // Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
 // receiver. (Totally autonomous.)  This is just meant for simulation and debugging.  It is not
@@ -195,10 +195,10 @@
 // PPM_NUMBER_OF_CHANNELS is the number of channels sent on the PWM signal.  This is
 // often different from the NUM_INPUTS value below, and should usually be left at 8.
 // 
-#define USE_PPM_INPUT						0
-#define PPM_NUMBER_OF_CHANNELS				8
-#define PPM_SIGNAL_INVERTED					0
-#define PPM_ALT_OUTPUT_PINS					0
+#define USE_PPM_INPUT		0
+#define PPM_NUMBER_OF_CHANNELS	8
+#define PPM_SIGNAL_INVERTED	0
+#define PPM_ALT_OUTPUT_PINS	0
 
 // make this non-zero if you want the UDB to respect your TX trim settings
 #define HARD_TRIMS      1
@@ -239,7 +239,7 @@
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
 // For UDB4 boards: Set to 3-8 (or up to 10 using pins RA4 and RA1.)
-#define NUM_OUTPUTS 5
+#define NUM_OUTPUTS 4
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -256,7 +256,7 @@
 #define AILERON_OUTPUT_CHANNEL              CHANNEL_2
 #define ELEVATOR_OUTPUT_CHANNEL             CHANNEL_3
 #define RUDDER_OUTPUT_CHANNEL               CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL    CHANNEL_5
+#define AILERON_SECONDARY_OUTPUT_CHANNEL    CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL         CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL           CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL              CHANNEL_UNUSED
@@ -273,13 +273,13 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED            0
-#define ELEVATOR_CHANNEL_REVERSED           1
-#define RUDDER_CHANNEL_REVERSED             0
-#define AILERON_SECONDARY_CHANNEL_REVERSED	1
-#define THROTTLE_CHANNEL_REVERSED           0
+#define AILERON_CHANNEL_REVERSED		0
+#define ELEVATOR_CHANNEL_REVERSED		0
+#define RUDDER_CHANNEL_REVERSED			0
+#define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
+#define THROTTLE_CHANNEL_REVERSED		0 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
-#define CAMERA_YAW_CHANNEL_REVERSED         0
+#define CAMERA_YAW_CHANNEL_REVERSED		0
 
 // Set this to 1 if you need to switch the left and right elevon or vtail surfaces
 #define ELEVON_VTAIL_SURFACES_REVERSED		0
@@ -458,11 +458,11 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP				0.08 //0.22
-#define ROLLKD				0.02
-#define YAWKP_AILERON		0.07 // 0.05
-#define YAWKD_AILERON		0.11 //0.05
-#define AILERON_BOOST		0.5
+#define ROLLKP		0.1
+#define ROLLKD		0.025
+#define YAWKP_AILERON	0.20
+#define YAWKD_AILERON	0.05
+#define AILERON_BOOST	1.00
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
@@ -470,15 +470,15 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
-#define PITCHGAIN			0.06 // 0.150
-#define PITCHKD				0.015 // 0.075
-#define RUDDER_ELEV_MIX		0.04
-#define ROLL_ELEV_MIX		0.02
-#define ELEVATOR_BOOST		0.5
+#define PITCHGAIN	0.10
+#define PITCHKD		0.04
+#define RUDDER_ELEV_MIX	0.20
+#define ROLL_ELEV_MIX	0.05
+#define ELEVATOR_BOOST	0.50
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
 // Use this to add extra "up" elevator while the plane is inverted, to avoid losing altitude.
-#define INVERTED_NEUTRAL_PITCH	4.0
+#define INVERTED_NEUTRAL_PITCH 8.0
 
 // Rudder/Yaw Control Gains
 // YAWKP_RUDDER is the proportional feedback gain for rudder navigation
@@ -488,12 +488,12 @@
 // MANUAL_AILERON_RUDDER_MIX is the fraction of manual aileron control to mix into the rudder when
 // in stabilized or waypoint mode.  This mainly helps aileron-initiated turning while in stabilized.
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER				0.03 // 0.1
-#define YAWKD_RUDDER				0.03 // 0.1
-#define ROLLKP_RUDDER				0.03
-#define ROLLKD_RUDDER				0.05
-#define MANUAL_AILERON_RUDDER_MIX	0.0
-#define RUDDER_BOOST				0.5
+#define YAWKP_RUDDER                0.05
+#define YAWKD_RUDDER                0.05
+#define ROLLKP_RUDDER               0.06
+#define ROLLKD_RUDDER               0.05
+#define MANUAL_AILERON_RUDDER_MIX   0.00
+#define RUDDER_BOOST                1.00
 
 // Gains for Hovering
 // Gains are named based on plane's frame of reference (roll means ailerons)
@@ -510,13 +510,13 @@
 //                            value is proportionally scaled down.
 #define HOVER_ROLLKP                0.05
 #define HOVER_ROLLKD                0.05
-#define HOVER_PITCHGAIN             0.3
-#define HOVER_PITCHKD               0.2
+#define HOVER_PITCHGAIN             0.2
+#define HOVER_PITCHKD               0.25
 #define HOVER_PITCH_OFFSET          0.0		// + leans towards top, - leans towards bottom
-#define HOVER_YAWKP                 0.3
-#define HOVER_YAWKD                 0.2
+#define HOVER_YAWKP                 0.2
+#define HOVER_YAWKD                 0.25
 #define HOVER_YAW_OFFSET            0.0
-#define HOVER_PITCH_TOWARDS_WP      15.0
+#define HOVER_PITCH_TOWARDS_WP      30.0
 #define HOVER_NAV_MAX_PITCH_RADIUS  20
 
 
@@ -597,24 +597,24 @@
 // The range of altitude within which to linearly vary the throttle
 // and pitch to maintain altitude.  A bigger value makes altitude hold
 // smoother, and is suggested for very fast planes.
-#define HEIGHT_MARGIN 10
+#define HEIGHT_MARGIN 20
 
 // Use ALT_HOLD_THROTTLE_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_THROTTLE_MAX and ALT_HOLD_THROTTLE_MIN
 // when within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
-#define ALT_HOLD_THROTTLE_MIN 0.25
-#define ALT_HOLD_THROTTLE_MAX 0.45
+#define ALT_HOLD_THROTTLE_MIN 0.35
+#define ALT_HOLD_THROTTLE_MAX 1.0
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_PITCH_MAX and ALT_HOLD_PITCH_MIN when
 // within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
-#define ALT_HOLD_PITCH_MIN  -15.0
+#define ALT_HOLD_PITCH_MIN  -20.0
 #define ALT_HOLD_PITCH_MAX   20.0
-#define ALT_HOLD_PITCH_HIGH -15.0
+#define ALT_HOLD_PITCH_HIGH -20.0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -694,7 +694,7 @@
 //#define ID_VEHICLE_REGISTRATION "TW2-PDH-UK"
 //#define ID_LEAD_PILOT "Pete Hollands"
 //#define ID_DIY_DRONES_URL "http://www.diydrones.com/profile/PeterHollands"
-#define ID_VEHICLE_MODEL_NAME   "Typhoon2"
+#define ID_VEHICLE_MODEL_NAME   "Polaris MP"
 #define ID_VEHICLE_REGISTRATION "KD0AIJ"
 #define ID_LEAD_PILOT           "Mark Whitehorn"
 #define ID_DIY_DRONES_URL       "http://www.diydrones.com/profile/markw"
