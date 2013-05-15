@@ -80,6 +80,18 @@
 #define NORADIO								1
 
 
+// set these to the zero-trim values for your RX/TX if you use HARD_TRIMS
+#define NEUTRAL_TRIM    3040
+#define THROTTLE_IDLE   2250
+
+// NUM_ANALOG_INPUTS:
+// For classic boards: Set to 0, 1, or 2
+//   1 enables Radio In 1 as an analog Input
+//   2 also enables Radio In 2 as another analog Input
+//   NOTE: Can only be set this higher than 0 if USE_PPM_INPUT is enabled above.
+// For UDB4 boards: Set to 0-4.  Analog pins are AN15 - AN18.
+#define NUM_ANALOG_INPUTS 4
+
 ////////////////////////////////////////////////////////////////////////////////
 // Configure Input and Output Channels
 //
@@ -87,6 +99,7 @@
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
 #define NUM_INPUTS	0
+#define THROTTLE_INPUT_CHANNEL		CHANNEL_1
 
 // NUM_OUTPUTS: Set to 3, 4, 5, or 6
 //   3 enables only the standard 3 output channels
