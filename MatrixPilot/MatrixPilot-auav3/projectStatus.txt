@@ -53,4 +53,10 @@ notes and changes:
     revert changes to project and magneto_udb4.c which broke this project
     This project is currently configured to use the magnetometer and excludes
     the code for the I2C2 barometer as it is incompatible.
+
+16 May:
+    modified options.h for Typhoon (copy in typhoon_options.h), with dual aileron
+    servos. Demonstrated stabilized mode and observed erratic but stable behavior
+    in auto mode on 15 May. Need to soften the auto mode turns, route battery cables
+    away from magnetometer and fly again.
     
