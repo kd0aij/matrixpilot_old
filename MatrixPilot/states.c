@@ -49,7 +49,13 @@ static void manualS(void) ;
 static void stabilizedS(void) ;
 static void waypointS(void) ;
 static void returnS(void) ;
+
+#ifdef CATAPULT_LAUNCH_ENABLE
+#define LAUNCH_DELAY 1      // wait 0.5 seconds (dependent on FSM clock rate of 2Hz)
+static int16_t launch_timer = LAUNCH_DELAY;
 static void cat_armedS(void) ;
+static void cat_delayS(void) ;
+#endif
 
 static void ent_returnS(void) ;
 
@@ -187,7 +193,7 @@ static void ent_stabilizedS(void)
 
 #ifdef CATAPULT_LAUNCH_ENABLE
 //  State: catapult launch armed
-//  entered
+//  entered from manual or stabilize if launch_enabled()
 static void ent_cat_armedS(void)
 {
 	DPRINT("ent_cat_armedS\r\n");
@@ -199,6 +205,16 @@ static void ent_cat_armedS(void)
     LED_ORANGE = LED_ON;
 
 	stateS = &cat_armedS;
+}
+// State: catapult launch delay
+// entered from cat_armed if launch_detected()
+static void ent_cat_delayS(void)
+{
+	DPRINT("ent_cat_delayS\r\n");
+
+    launch_timer = LAUNCH_DELAY;
+    stateS = &cat_delayS;
+
 }
 #endif
 
@@ -345,6 +361,15 @@ static void cat_armedS(void)
     // transition to waypointS iff launch detected
     else if (dcm_flags._.launch_detected) {
         LED_ORANGE = LED_OFF;
+        ent_cat_delayS();
+    }
+}
+// State: catapult launch delay
+// entered from cat_armedS when launch_detected
+static void cat_delayS(void)
+{
+    if (--launch_timer == 0)
+    {
         ent_waypointS();
     }
 }
