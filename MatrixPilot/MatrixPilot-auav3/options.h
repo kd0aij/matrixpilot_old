@@ -273,7 +273,7 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED            0
+#define AILERON_CHANNEL_REVERSED            1
 #define ELEVATOR_CHANNEL_REVERSED           1
 #define RUDDER_CHANNEL_REVERSED             0
 #define AILERON_SECONDARY_CHANNEL_REVERSED	1
@@ -458,7 +458,7 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP				0.08 //0.22
+#define ROLLKP				0.04 //0.22
 #define ROLLKD				0.02
 #define YAWKP_AILERON		0.07 // 0.05
 #define YAWKD_AILERON		0.11 //0.05
@@ -470,7 +470,7 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
-#define PITCHGAIN			0.06 // 0.150
+#define PITCHGAIN			0.03 // 0.150
 #define PITCHKD				0.015 // 0.075
 #define RUDDER_ELEV_MIX		0.04
 #define ROLL_ELEV_MIX		0.02
