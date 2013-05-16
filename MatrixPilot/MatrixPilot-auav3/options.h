@@ -41,6 +41,7 @@
 // See the MatrixPilot wiki for more details on different UDB boards.
 // If building for the UDB4, use the MatrixPilot-udb4.mcw project workspace. 
 #define BOARD_TYPE AUAV3_BOARD
+#define CATAPULT_LAUNCH_ENABLE
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,13 +216,12 @@
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
-//   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
-//     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
 #define THROTTLE_INPUT_CHANNEL		CHANNEL_1
 #define AILERON_INPUT_CHANNEL		CHANNEL_2
 #define ELEVATOR_INPUT_CHANNEL		CHANNEL_3
 #define RUDDER_INPUT_CHANNEL		CHANNEL_4
 #define MODE_SWITCH_INPUT_CHANNEL	CHANNEL_6
+#define LAUNCH_ARM_INPUT_CHANNEL    CHANNEL_5
 #define CAMERA_PITCH_INPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_MODE_INPUT_CHANNEL	CHANNEL_UNUSED

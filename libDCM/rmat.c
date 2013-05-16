@@ -203,6 +203,12 @@ void read_accel(void)
 	gplane[1] =   YACCEL_VALUE ;
 	gplane[2] =   ZACCEL_VALUE ;
 #endif
+
+#ifdef CATAPULT_LAUNCH_ENABLE
+    if (gplane[1] > GRAVITY) {
+        dcm_flags._.launch_detected = 1;
+    }
+#endif
 	
 	accelEarth[0] =  VectorDotProduct( 3 , &rmat[0] , gplane )<<1;
 	accelEarth[1] = - VectorDotProduct( 3 , &rmat[3] , gplane )<<1;
@@ -428,7 +434,8 @@ void roll_pitch_drift()
 		//	error_body = Rtranspose * error_earth
 
 		//	*** Note: this accomplishes multiplication rmat transpose times errorRP_earth!!
-		MatrixMultiply( 1 , 3 , 3 , errorRP , errorRP_earth , rmat ) ;
+		MatrixMultiply( 1 , 3 , 3 , errorRP , errorRP_earth , rmat ) ;
+
 		accelerometer_earth_integral[0] = accelerometer_earth_integral[1] = accelerometer_earth_integral[2] = 0 ;
 		accelerometer_samples = 0 ;
 		dcm_flags._.rollpitch_req = 0 ;

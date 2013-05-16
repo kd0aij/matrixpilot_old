@@ -49,6 +49,7 @@ static void manualS(void) ;
 static void stabilizedS(void) ;
 static void waypointS(void) ;
 static void returnS(void) ;
+static void cat_armedS(void) ;
 
 static void ent_returnS(void) ;
 
@@ -184,6 +185,23 @@ static void ent_stabilizedS(void)
 	stateS = &stabilizedS ;
 }
 
+#ifdef CATAPULT_LAUNCH_ENABLE
+//  State: catapult launch armed
+//  entered
+static void ent_cat_armedS(void)
+{
+	DPRINT("ent_cat_armedS\r\n");
+
+    // this flag is only relevant in cat_armed state
+    // and is cleared here and in dcm_init
+    dcm_flags._.launch_detected = 0;
+
+    LED_ORANGE = LED_ON;
+
+	stateS = &cat_armedS;
+}
+#endif
+
 //	Same as the come home state, except the radio is on.
 //	Come home is commanded by the mode switch channel (defaults to channel 4).
 static void ent_waypointS(void)
@@ -308,10 +326,39 @@ static void acquiringS(void)
 	}
 }
 
+#ifdef CATAPULT_LAUNCH_ENABLE
+boolean launch_enabled(void)
+{
+    return (udb_pwIn[LAUNCH_ARM_INPUT_CHANNEL] > 3000);
+}
+//  State: catapult launch armed
+//  entered only from manualS iff (radio_on and gear_up and nav_capable and switch_home)
+static void cat_armedS(void)
+{
+    // transition to manual if flight_mode_switch no longer in waypoint mode
+    // or link lost or gps lost
+    if (flight_mode_switch_manual() | !udb_flags._.radio_on | !dcm_flags._.nav_capable) {
+        LED_ORANGE = LED_OFF;
+        ent_manualS();
+    }
+
+    // transition to waypointS iff launch detected
+    else if (dcm_flags._.launch_detected) {
+        LED_ORANGE = LED_OFF;
+        ent_waypointS();
+    }
+}
+#endif
+
 static void manualS(void) 
 {
 	if ( udb_flags._.radio_on )
 	{
+#ifdef CATAPULT_LAUNCH_ENABLE
+		if ( launch_enabled() & flight_mode_switch_home() & dcm_flags._.nav_capable )
+			ent_cat_armedS() ;
+        else
+#endif
 		if ( flight_mode_switch_home() & dcm_flags._.nav_capable )
 			ent_waypointS() ;
 		else if ( flight_mode_switch_auto() )
@@ -331,6 +378,11 @@ static void stabilizedS(void)
 {
 	if ( udb_flags._.radio_on )
 	{
+#ifdef CATAPULT_LAUNCH_ENABLE
+		if ( launch_enabled() & flight_mode_switch_home() & dcm_flags._.nav_capable )
+			ent_cat_armedS() ;
+        else
+#endif
 		if ( flight_mode_switch_home() & dcm_flags._.nav_capable )
 			ent_waypointS() ;
 		else if ( flight_mode_switch_manual() )
