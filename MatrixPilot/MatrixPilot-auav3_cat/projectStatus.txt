@@ -1,0 +1,11 @@
+catapult launch testing project
+    currently operational:
+        stabilization
+        navigation: RTL
+
+notes and changes:
+
+16 May:
+    copied from MatrixPilot-auav3 with CATAPULT_LAUNCH_ENABLE defined
+    and MAY_YAW_DRIFT = 0, gps set to MTEK
+    Appears to be executing correct state sequence as specified by state transition diagram
