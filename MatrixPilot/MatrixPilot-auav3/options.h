@@ -41,7 +41,6 @@
 // See the MatrixPilot wiki for more details on different UDB boards.
 // If building for the UDB4, use the MatrixPilot-udb4.mcw project workspace. 
 #define BOARD_TYPE AUAV3_BOARD
-#define CATAPULT_LAUNCH_ENABLE
 
 
 ////////////////////////////////////////////////////////////////////////////////
