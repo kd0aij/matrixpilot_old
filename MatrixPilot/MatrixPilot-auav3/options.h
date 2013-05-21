@@ -77,7 +77,7 @@
 //    AIRFRAME_VTAIL			Ailerons(optional), and Elevator and Rudder as V-tail controls
 //    AIRFRAME_DELTA			Aileron and Elevator as Elevons, and Rudder(optional)
 // (Note that although AIRFRAME_HELI is also recognized, the code for this airframe type is not ready.)
-#define AIRFRAME_TYPE AIRFRAME_STANDARD
+#define AIRFRAME_TYPE						AIRFRAME_STANDARD
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,16 +90,16 @@
 //
 // Roll, Pitch, and Yaw Stabilization
 // Set any of these to 0 to disable the stabilization in that axis.
-#define ROLL_STABILIZATION_AILERONS	1
-#define ROLL_STABILIZATION_RUDDER	0
-#define PITCH_STABILIZATION         1
-#define YAW_STABILIZATION_RUDDER	1
-#define YAW_STABILIZATION_AILERON	1
+#define ROLL_STABILIZATION_AILERONS			1
+#define ROLL_STABILIZATION_RUDDER			0
+#define PITCH_STABILIZATION					1
+#define YAW_STABILIZATION_RUDDER			1
+#define YAW_STABILIZATION_AILERON			1
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
-#define AILERON_NAVIGATION		1
-#define RUDDER_NAVIGATION		1
+#define AILERON_NAVIGATION					1
+#define RUDDER_NAVIGATION					1
 
 // Cross track margin, in meters
 // This is used when the cross track option is attached to a waypoint
@@ -110,13 +110,13 @@
 // holds the cross track error to smaller values.
 // 64 meters is probably the largest value you might use on a fast model jet (more than 50 meters/sec)
 // Use 32 meters for 20 to 50 meters/sec, and 16 meters for less than that.
-#define CROSS_TRACK_MARGIN 32
+#define CROSS_TRACK_MARGIN					32
 
 // Wind Gain Adjustment
 // This is an option for modulating the navigation gains in flight
 // to maintain a constant turn radius in heavy winds in waypoing mode.
 // Define WIND_GAIN_ADJUSTMENT as 1 to turn this feature on.
-#define WIND_GAIN_ADJUSTMENT 0
+#define WIND_GAIN_ADJUSTMENT				0
 
 // Altitude Hold
 // Use altitude hold in stabilized mode?  In waypoint mode?
@@ -135,8 +135,8 @@
 // If you define SPEED_CONTROL to be 1, MatrixPilot will take air speed into account
 // in the altitude controls, and will trim the throttle and pitch to maintain air speed.
 // Define DESIRED_SPEED to be the air speed that you want, in meters/second.
-#define SPEED_CONTROL   0
-#define DESIRED_SPEED  16.0 // meters/second
+#define SPEED_CONTROL						0
+#define DESIRED_SPEED						16.0 // meters/second
 
 // Inverted flight
 // Set these to 1 to enable stabilization of inverted flight in stabilized and/or waypoint modes.
@@ -145,20 +145,20 @@
 
 // Hovering
 // Set these to 1 to enable stabilization of hovering in stabilized and/or waypoint modes.
-#define HOVERING_STABILIZED_MODE    0
-#define HOVERING_WAYPOINT_MODE      0
+#define HOVERING_STABILIZED_MODE    		0
+#define HOVERING_WAYPOINT_MODE      		0
 
 // Note: As of MatrixPilot 3.0, Dead Reckoning and Wind Estimation are automatically enabled.
 
 // Camera Stabilization
 // Set this value to 1, for camera to be stabilized using camera options further below.
-#define USE_CAMERA_STABILIZATION    0
+#define USE_CAMERA_STABILIZATION    		0
 
 // Define MAG_YAW_DRIFT to be 1 to use magnetometer for yaw drift correction.
 // Otherwise, if set to 0 the GPS will be used.
 // If you select this option, you also need to set magnetometer options in
 // the magnetometerOptions.h file, including declination and magnetometer type.
-#define MAG_YAW_DRIFT 1
+#define MAG_YAW_DRIFT						1
 
 // Define BAROMETER_ALTITUDE to be 1 to use barometer for altitude correction.
 // Otherwise, if set to 0 only the GPS will be used.
@@ -205,7 +205,7 @@
 // PPM_NUMBER_OF_CHANNELS is the number of channels sent on the PWM signal.  This is
 // often different from the NUM_INPUTS value below, and should usually be left at 8.
 // 
-#define USE_PPM_INPUT						0
+#define USE_PPM_INPUT						2
 #define PPM_NUMBER_OF_CHANNELS				8
 #define PPM_SIGNAL_INVERTED					0
 #define PPM_ALT_OUTPUT_PINS					0
@@ -221,26 +221,27 @@
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
 // For UDB4 boards: Set to 1-8
-#define NUM_INPUTS  7
+#define NUM_INPUTS							7
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
-#define THROTTLE_INPUT_CHANNEL			CHANNEL_3
-#define AILERON_INPUT_CHANNEL			CHANNEL_1
-#define ELEVATOR_INPUT_CHANNEL			CHANNEL_2
-#define RUDDER_INPUT_CHANNEL			CHANNEL_4
-#define MODE_SWITCH_INPUT_CHANNEL		CHANNEL_4
-#define LAUNCH_ARM_INPUT_CHANNEL    	CHANNEL_6
-#define CAMERA_PITCH_INPUT_CHANNEL		CHANNEL_UNUSED
-#define CAMERA_YAW_INPUT_CHANNEL		CHANNEL_UNUSED
-#define CAMERA_MODE_INPUT_CHANNEL		CHANNEL_UNUSED
-#define OSD_MODE_SWITCH_INPUT_CHANNEL   CHANNEL_UNUSED
-#define PASSTHROUGH_A_INPUT_CHANNEL		CHANNEL_UNUSED
-#define PASSTHROUGH_B_INPUT_CHANNEL		CHANNEL_UNUSED
-#define PASSTHROUGH_C_INPUT_CHANNEL		CHANNEL_UNUSED
-#define PASSTHROUGH_D_INPUT_CHANNEL		CHANNEL_UNUSED
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
+#define AILERON_INPUT_CHANNEL				CHANNEL_1
+#define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
+#define RUDDER_INPUT_CHANNEL				CHANNEL_4
+
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_5
+#define LAUNCH_ARM_INPUT_CHANNEL    		CHANNEL_6
+#define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
+#define CAMERA_MODE_INPUT_CHANNEL			CHANNEL_UNUSED
+#define OSD_MODE_SWITCH_INPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_A_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_B_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_C_INPUT_CHANNEL			CHANNEL_UNUSED
+#define PASSTHROUGH_D_INPUT_CHANNEL			CHANNEL_UNUSED
 
 // NUM_OUTPUTS:
 // For classic boards: Set to 3, 4, 5, or 6
@@ -250,7 +251,7 @@
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
 // For UDB4 boards: Set to 3-8 (or up to 10 using pins RA4 and RA1.)
-#define NUM_OUTPUTS 5
+#define NUM_OUTPUTS							5
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -382,7 +383,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
 // USE_OSD enables the OSD system.  Customize the OSD Layout in the osd_layout.h file.
-#define USE_OSD	0
+#define USE_OSD								0
 
 // NUM_ANALOG_INPUTS: 
 // For classic boards: Set to 0, 1, or 2
@@ -390,7 +391,7 @@
 //   2 also enables Radio In 2 as another analog Input
 //   NOTE: Can only be set this higher than 0 if USE_PPM_INPUT is enabled above.
 // For UDB4 boards: Set to 0-4.  Analog pins are AN15 - AN18.
-#define NUM_ANALOG_INPUTS 4
+#define NUM_ANALOG_INPUTS					4
 
 // Channel numbers for each analog input
 //   - Only assign each channel number to one analog sensor
@@ -449,10 +450,10 @@
 
 // Note, durations in milliseconds are rounded down to the nearest 25ms.
 
-#define TRIGGER_TYPE		TRIGGER_TYPE_NONE
-#define TRIGGER_ACTION		TRIGGER_PULSE_HIGH
-#define TRIGGER_SERVO_LOW	2000
-#define TRIGGER_SERVO_HIGH	4000
+#define TRIGGER_TYPE			TRIGGER_TYPE_NONE
+#define TRIGGER_ACTION			TRIGGER_PULSE_HIGH
+#define TRIGGER_SERVO_LOW		2000
+#define TRIGGER_SERVO_HIGH		4000
 #define TRIGGER_PULSE_DURATION	250
 #define TRIGGER_REPEAT_PERIOD	4000
 
@@ -581,10 +582,10 @@
 // All number should be integers
 #define CAM_PITCH_SERVO_THROW               95      // Camera lens rotation at maximum PWM change (2000 to 4000), in degrees.
 #define CAM_PITCH_SERVO_MAX                 85      // Max pitch up that plane can tilt and keep camera level, in degrees.
-#define CAM_PITCH_SERVO_MIN                -22     // Max pitch down that plane can tilt and keep camera level, in degrees.
+#define CAM_PITCH_SERVO_MIN                -22		// Max pitch down that plane can tilt and keep camera level, in degrees.
 #define CAM_PITCH_OFFSET_CENTRED            38      // Offset in degrees of servo that results in a level camera.
-											    // Example: 30 would mean that a centered pitch servo points the camera
-												// 30 degrees down from horizontal when looking to the front of the plane.
+												    // Example: 30 would mean that a centered pitch servo points the camera
+													// 30 degrees down from horizontal when looking to the front of the plane.
 
 #define CAM_YAW_SERVO_THROW                 350     // Camera yaw movement for maximum yaw PWM change (2000 to 4000) in Degrees.
 #define CAM_YAW_SERVO_MAX                   130     // Max positive yaw of camera relative to front of plane in Degrees.

@@ -14,6 +14,7 @@
         <itemPath>../../libDCM/libDCM_defines.h</itemPath>
         <itemPath>../../libDCM/libDCM_internal.h</itemPath>
         <itemPath>../../libDCM/estAltitude.h</itemPath>
+        <itemPath>../../libDCM/rmat.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="libFlashFS" projectFiles="true">
         <itemPath>../../libFlashFS/AT45D.h</itemPath>
@@ -45,8 +46,10 @@
         <itemPath>../../libUDB/ConfigAUAV3.h</itemPath>
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/barometer.h</itemPath>
-        <itemPath>../../../MatrixPilot_AUAV3/libUDB/interrupt.h</itemPath>
-        <itemPath>../../libUDB/barometer_udb4.c</itemPath>
+        <itemPath>../../libUDB/heartbeat.h</itemPath>
+        <itemPath>../../libUDB/magnetometer.h</itemPath>
+        <itemPath>../../libUDB/oscillator.h</itemPath>
+        <itemPath>../../libUDB/interrupt.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="libUSB" projectFiles="true">
         <itemPath>../../Microchip/Include/USB/usb.h</itemPath>
@@ -74,6 +77,14 @@
         <itemPath>../mavlink_options.h</itemPath>
         <itemPath>../euler_angles.h</itemPath>
         <itemPath>../preflight.h</itemPath>
+        <itemPath>../config.h</itemPath>
+        <itemPath>../FlyByWire.h</itemPath>
+        <itemPath>../HardwareProfile.h</itemPath>
+        <itemPath>../nv_memory_options.h</itemPath>
+        <itemPath>../options.h</itemPath>
+        <itemPath>../redef.h</itemPath>
+        <itemPath>../telemetry_log.h</itemPath>
+        <itemPath>../usb_config.h</itemPath>
       </logicalFolder>
       <logicalFolder name="MAVLink" displayName="MAVLink" projectFiles="true">
         <logicalFolder name="f1" displayName="common" projectFiles="true">
@@ -259,6 +270,7 @@
         <itemPath>../../libUDB/traps.c</itemPath>
         <itemPath>../../libUDB/I2C1.c</itemPath>
         <itemPath>../../libUDB/I2C2.c</itemPath>
+        <itemPath>../../libUDB/barometer.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f6" displayName="libUSB" projectFiles="true">
         <itemPath>../../Microchip/USB/usb_device.c</itemPath>
@@ -310,6 +322,9 @@
         <itemPath>../altitudeCntrlVariable.c</itemPath>
         <itemPath>../euler_angles.c</itemPath>
         <itemPath>../preflight.c</itemPath>
+        <itemPath>../config.c</itemPath>
+        <itemPath>../FlyByWire.c</itemPath>
+        <itemPath>../telemetry_log.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="MatrixPilot-auav3" projectFiles="true">
         <itemPath>nv_memory_options.h</itemPath>

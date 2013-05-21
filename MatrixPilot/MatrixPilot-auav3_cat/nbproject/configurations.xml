@@ -46,7 +46,6 @@
         <itemPath>../../libUDB/ConfigAUAV3.h</itemPath>
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/barometer.h</itemPath>
-        <itemPath>../../../MatrixPilot_AUAV3/libUDB/interrupt.h</itemPath>
         <itemPath>../../libUDB/heartbeat.h</itemPath>
         <itemPath>../../libUDB/interrupt.h</itemPath>
         <itemPath>../../libUDB/magnetometer.h</itemPath>
@@ -271,6 +270,7 @@
         <itemPath>../../libUDB/I2C1.c</itemPath>
         <itemPath>../../libUDB/I2C2.c</itemPath>
         <itemPath>../../libUDB/barometer.c</itemPath>
+        <itemPath>../../libUDB/traps.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f6" displayName="libUSB" projectFiles="true">
         <itemPath>../../Microchip/USB/usb_device.c</itemPath>
@@ -325,7 +325,6 @@
         <itemPath>../config.c</itemPath>
         <itemPath>../FlyByWire.c</itemPath>
         <itemPath>../preflight.c</itemPath>
-        <itemPath>../redef.c</itemPath>
         <itemPath>../telemetry_log.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="projectSpecific" projectFiles="true">

@@ -21,13 +21,44 @@
 
 #include "../defines.h"
 
+#if (USE_TELELOG == 1)
+#include "../telemetry_log.h"
+#endif
+
+#if (BOARD_TYPE == AUAV3_BOARD)
+#include "../preflight.h"
+#endif
+
+#if (USE_CONFIGFILE == 1)
+#include "../config.h"
+#endif
+
 //	main program for testing the IMU.
 
+#if (SILSIM == 1)
+int mp_argc;
+char **mp_argv;
+int main(int argc, char** argv)
+{
+	// keep these values available for later
+	mp_argc = argc;
+	mp_argv = argv;
+#else
 int main (void)
 {
 	mcu_init() ;
+#endif
+#if (USE_TELELOG == 1)
+	log_init();
+#endif
+#if (BOARD_TYPE == AUAV3_BOARD)
+	preflight();
+#endif
 	udb_init() ;
 	dcm_init() ;
+#if (USE_CONFIGFILE == 1)
+	init_config();
+#endif
 	init_servoPrepare() ;
 	init_states() ;
 	init_behavior() ;

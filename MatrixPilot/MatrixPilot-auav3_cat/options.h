@@ -164,7 +164,7 @@
 // Otherwise, if set to 0 only the GPS will be used.
 // If you select this option, you also need to correctly set the LAUNCH_ALTITUDE
 // to your takeoff location altitude at the time of initialisation.
-#define BAROMETER_ALTITUDE 					1
+#define BAROMETER_ALTITUDE 					0
 
 // Set your takeoff/launch/initialisation altitude in meters.
 #define LAUNCH_ALTITUDE						300
@@ -742,7 +742,7 @@
 // #define TestGains						// uncomment this line if you want to test your gains without using GPS
 
 // Set this to 1 to calculate and print out free stack space
-#define RECORD_FREE_STACK_SPACE 			1
+#define RECORD_FREE_STACK_SPACE 			0
 
 // Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
 // UART 3 and 4 option only available with the AUAV3 board.
