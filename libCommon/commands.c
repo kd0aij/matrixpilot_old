@@ -22,10 +22,11 @@
 #include "../libUDB/libUDB.h"
 #include "../libUDB/interrupt.h"
 #include "../libDCM/estAltitude.h"
-#include "../libCommon/uart3.h"
-#include <stdint.h>
+#include "../libCommon/uart.h"
 #include <string.h>
 #include <stdio.h>
+
+#if (USE_CONSOLE != 0)
 
 #define LOWORD(a) ((WORD)(a))
 #define HIWORD(a) ((WORD)(((DWORD)(a) >> 16) & 0xFFFF))
@@ -37,26 +38,23 @@ typedef struct tagCmds {
 } cmds_t;
 
 
-int logging_enabled = 0;
 int cmdlen = 0;
 char cmdstr[32];
 
 
 void cmd_ver(void)
 {
-	printf("AUAV3 v0.1, " __TIME__ " " __DATE__ "\r\n");
+	printf("MatrixPilot v0.1, " __TIME__ " " __DATE__ "\r\n");
 }
 
 void cmd_start(void)
 {
 	printf("starting.\r\n");
-	logging_enabled = 1;
 }
 
 void cmd_stop(void)
 {
 	printf("stopped.\r\n");
-	logging_enabled = 0;
 }
 
 void cmd_on(void)
@@ -144,6 +142,7 @@ const char *word_to_binary(int x)
 
 void cmd_reg(void)
 {
+#if (BOARD_TYPE == AUAV3_BOARD)
 	printf("USB Registers:\r\n");
 	printf("\tU1OTGSTAT = %s\r\n", word_to_binary(U1OTGSTAT));
 	printf("\tU1OTGCON  = %s\r\n", word_to_binary(U1OTGCON));
@@ -153,6 +152,13 @@ void cmd_reg(void)
 	printf("\tU1CNFG2   = %s\r\n", word_to_binary(U1CNFG2));
 	printf("\tU1OTGIR   = %s\r\n", word_to_binary(U1OTGIR));
 	printf("\tU1OTGIE   = %s\r\n", word_to_binary(U1OTGIE));
+
+	printf("IC Registers:\r\n");
+	printf("\tIC1CON1 = %s %04x\r\n", word_to_binary(IC1CON1), IC1CON1);
+	printf("\tIC1CON2 = %s %04x\r\n", word_to_binary(IC1CON2), IC1CON2);
+	printf("\tIC2CON1 = %s %04x\r\n", word_to_binary(IC2CON1), IC2CON1);
+	printf("\tIC2CON2 = %s %04x\r\n", word_to_binary(IC2CON2), IC2CON2);
+#endif // BOARD_TYPE
 /*
 UxOTGSTAT: USB OTG STATUS REGISTER
 VBUSVD: A-VBUS Valid Indicator bit
@@ -193,6 +199,15 @@ void cmd_reset(void)
 
 void cmd_help(void);
 
+void log_close(void);
+
+void cmd_close(void)
+{
+#if (USE_TELELOG == 1)
+	log_close();
+#endif
+}
+
 const cmds_t cmdslist[] = {
 	{ 0, cmd_help,   "help" },
 	{ 0, cmd_ver,    "ver" },
@@ -208,6 +223,7 @@ const cmds_t cmdslist[] = {
 	{ 0, cmd_magno,  "mag" },
 	{ 0, cmd_crash,  "crash" },
 	{ 0, cmd_reset,  "reset" },
+	{ 0, cmd_close,  "close" },
 };
 
 void cmd_help(void)
@@ -231,21 +247,26 @@ void command(char* cmdstr)
 	}
 }
 
+void init_console(void)
+{
+	Init();
+}
+
 void console(void)
 {
-	if (UART3IsPressed()) {
-		char ch = UART3GetChar();
+    if (kbhit()) {
+		char ch = getch();
 		if (cmdlen < sizeof(cmdstr)) {
 			cmdstr[cmdlen] = ch;
 			if ((ch == '\r') || (ch == '\n')) {
 				cmdstr[cmdlen] = '\0';			
 				if (strlen(cmdstr) > 0) {
-					UART3PutChar('\r');
+					putch('\r');
 					command(cmdstr);
 					cmdlen = 0;
 				}
 			} else {
-				UART3PutChar(ch);
+				putch(ch);
 				cmdlen++;
 			}
 		} else {
@@ -254,3 +275,4 @@ void console(void)
 	}
 }
 
+#endif // USE_CONSOLE

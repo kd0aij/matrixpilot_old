@@ -29,19 +29,13 @@
 #include "mpu6000.h"
 #include "../libDCM/libDCM_internal.h"
 
-// Moved the following down from spiUtils.h - RobD
-#ifndef FCY
-/* For __delay_us and __delay_ms                 */
-#define FCY (FREQOSC/2)
-#endif
+#if (BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
+
+#include "HardwareProfile.h"
 #include <libpic30.h>        
-
-//#include <stdint.h>        /* Includes uint16_t definition                    */
-#include <stdbool.h>       /* Includes true/false definition                  */
-
+#include <stdbool.h>
 #include <stdio.h>
 #include <spi.h>
-
 
 //Sensor variables
 uint16_t mpu_data[8], mpuCnt = 0;
@@ -211,6 +205,7 @@ void __attribute__((interrupt, no_auto_psv)) _INT1Interrupt(void) {
     interrupt_restore_corcon;
     return;
 }
+
 #elif ( MPU_SPI == 2 )
 void __attribute__((interrupt, no_auto_psv)) _INT3Interrupt(void) {
     _INT3IF = 0; // Clear the INT3 interrupt flag
@@ -230,3 +225,4 @@ void MPU6000_print(void) {
             mpuCnt, mpu_data[0], mpu_data[1], mpu_data[2], mpu_data[4], mpu_data[5], mpu_data[6], mpu_data[3]);
 }
 
+#endif // BOARD_TYPE

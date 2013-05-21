@@ -20,13 +20,22 @@
 
 
 #include "defines.h"
+#if (USE_TELELOG == 1)
+#include "telemetry_log.h"
+#endif
+#include "../libUDB/heartbeat.h"
 #if (SILSIM != 1)
 #include "../libUDB/libUDB_internal.h" // Needed for access to RCON
 #endif
 #include "../libDCM/libDCM_internal.h" // Needed for access to internal DCM values
-
+#include "../libDCM/estAltitude.h"
+#include <string.h>
 
 #if (SERIAL_OUTPUT_FORMAT != SERIAL_MAVLINK) // All MAVLink telemetry code is in MAVLink.c
+
+#if (FLYBYWIRE_ENABLED == 1)
+#include "FlyByWire.h"
+#endif
 
 #define _ADDED_C_LIB 1 // Needed to get vsnprintf()
 #include <stdio.h>
@@ -46,6 +55,8 @@ void sio_fp_checksum( uint8_t inchar ) ;
 void sio_cam_data( uint8_t inchar ) ;
 void sio_cam_checksum( uint8_t inchar ) ;
 
+void sio_fbw_data( unsigned char inchar ) ;
+
 char fp_high_byte;
 uint8_t fp_checksum;
 
@@ -53,11 +64,9 @@ void (* sio_parse ) ( uint8_t inchar ) = &sio_newMsg ;
 
 
 #define SERIAL_BUFFER_SIZE 256
-char serial_buffer[SERIAL_BUFFER_SIZE] ;
+char serial_buffer[SERIAL_BUFFER_SIZE+1] ;
 int16_t sb_index = 0 ;
 int16_t end_index = 0 ;
-
-
 
 void init_serial()
 {
@@ -288,15 +297,80 @@ void sio_cam_checksum( uint8_t inchar )
 		sio_parse = &sio_newMsg ;
 	}
 }
+#endif // CAM_USE_EXTERNAL_TARGET_DATA
 
-#endif
 
+#if (FLYBYWIRE_ENABLED == 1)
+void sio_fbw_data( unsigned char inchar )
+{
+	if (get_fbw_pos() < LENGTH_OF_PACKET)
+	{
+		fp_checksum += inchar;
+		if (!fbw_live_received_byte(inchar))
+			fbw_live_begin();
+	}
+	else if (get_fbw_pos() == LENGTH_OF_PACKET)
+	{
+ 		// UART has an extra BYTE for checksum, IP doesn't need it.
+ 		if (inchar == fp_checksum)
+		{
+			fbw_live_commit();
+		}
+		sio_parse = &sio_newMsg ;
+		fbw_live_begin();
+	}
+	else
+	{
+		sio_parse = &sio_newMsg ;
+		fbw_live_begin();
+	}
+}
+#endif // (FLYBYWIRE_ENABLED == 1)
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
 // Output Serial Data
 //
 
+#if (USE_TELELOG == 1)
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+void serial_output( char* format, ... )
+{
+	char telebuf[200];
+
+	va_list arglist ;
+	va_start(arglist, format) ;
+	
+	int16_t len = vsnprintf(telebuf, sizeof(telebuf), format, arglist);
+
+//	static int maxlen = 0;
+//	if (len > maxlen) {
+//		maxlen = len;
+//		printf("maxlen %u\r\n", maxlen);
+//	}
+
+	int16_t start_index = end_index ;
+	int16_t remaining = (SERIAL_BUFFER_SIZE - start_index) ;
+	if (remaining < len) {
+		printf("SERBUF discarding %u bytes\r\n", len - remaining);
+	}
+	if (remaining > 1)
+	{
+		strncpy( (char*)(&serial_buffer[start_index]), telebuf, MIN(remaining, len)) ;
+		end_index = start_index + MIN(remaining, len);
+		serial_buffer[end_index] = '\0';
+	}
+	if (sb_index == 0)
+	{
+		udb_serial_start_sending_data();
+	}
+	log_telemetry(telebuf, len);
+
+	va_end(arglist);
+}
+#else
 // add this text to the output buffer
 void serial_output( char* format, ... )
 {
@@ -320,7 +394,7 @@ void serial_output( char* format, ... )
 	
 	va_end(arglist);
 }
-
+#endif // USE_TELELOG
 
 int16_t udb_serial_callback_get_byte_to_send(void)
 {
@@ -335,7 +409,6 @@ int16_t udb_serial_callback_get_byte_to_send(void)
 		sb_index = 0 ;
 		end_index = 0 ;
 	}
-	
 	return -1;
 }
 

@@ -6,13 +6,21 @@
                    projectFiles="true">
       <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
         <itemPath>../../libCommon/p30sim.h</itemPath>
-        <itemPath>../../libCommon/uart3.h</itemPath>
+        <itemPath>../../libCommon/commands.h</itemPath>
+        <itemPath>../../libCommon/uart.h</itemPath>
       </logicalFolder>
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
         <itemPath>../../libDCM/libDCM.h</itemPath>
         <itemPath>../../libDCM/libDCM_defines.h</itemPath>
         <itemPath>../../libDCM/libDCM_internal.h</itemPath>
         <itemPath>../../libDCM/estAltitude.h</itemPath>
+        <itemPath>../../libDCM/rmat.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="libFlashFS" projectFiles="true">
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="libMDD" projectFiles="true">
+        <itemPath>../../Microchip/Include/MDD File System/FSDefs.h</itemPath>
+        <itemPath>../../Microchip/Include/MDD File System/FSIO.h</itemPath>
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../libUDB/magnetometerOptions.h</itemPath>
@@ -31,7 +39,18 @@
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/barometer.h</itemPath>
         <itemPath>../../../MatrixPilot_AUAV3/libUDB/interrupt.h</itemPath>
-        <itemPath>../../libUDB/barometer_udb4.c</itemPath>
+        <itemPath>../../libUDB/heartbeat.h</itemPath>
+        <itemPath>../../libUDB/interrupt.h</itemPath>
+        <itemPath>../../libUDB/magnetometer.h</itemPath>
+        <itemPath>../../libUDB/nv_memory_options.h</itemPath>
+        <itemPath>../../libUDB/oscillator.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="libUSB" projectFiles="true">
+        <itemPath>../../Microchip/Include/USB/usb.h</itemPath>
+        <itemPath>../../Microchip/Include/USB/usb_ch9.h</itemPath>
+        <itemPath>../../Microchip/Include/USB/usb_common.h</itemPath>
+        <itemPath>../../Microchip/Include/USB/usb_device.h</itemPath>
+        <itemPath>../../Microchip/Include/USB/usb_hal.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="libVectorMatrix" projectFiles="true">
         <itemPath>../../libVectorMatrix/dspcommon.inc</itemPath>
@@ -51,6 +70,15 @@
         <itemPath>../airspeedCntrl.h</itemPath>
         <itemPath>../mavlink_options.h</itemPath>
         <itemPath>../euler_angles.h</itemPath>
+        <itemPath>../config.h</itemPath>
+        <itemPath>../FlyByWire.h</itemPath>
+        <itemPath>../HardwareProfile.h</itemPath>
+        <itemPath>../nv_memory_options.h</itemPath>
+        <itemPath>../options.h</itemPath>
+        <itemPath>../preflight.h</itemPath>
+        <itemPath>../redef.h</itemPath>
+        <itemPath>../telemetry_log.h</itemPath>
+        <itemPath>../usb_config.h</itemPath>
       </logicalFolder>
       <logicalFolder name="MAVLink" displayName="MAVLink" projectFiles="true">
         <logicalFolder name="f1" displayName="common" projectFiles="true">
@@ -187,10 +215,10 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
-        <itemPath>../../libCommon/uart3.c</itemPath>
         <itemPath>../../libCommon/commands.c</itemPath>
         <itemPath>../../libCommon/read.c</itemPath>
         <itemPath>../../libCommon/write.c</itemPath>
+        <itemPath>../../libCommon/uart.c</itemPath>
       </logicalFolder>
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
         <itemPath>../../libDCM/estWind.c</itemPath>
@@ -205,14 +233,23 @@
         <itemPath>../../libDCM/gpsParseMTEK.c</itemPath>
         <itemPath>../../libDCM/estAltitude.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="f4" displayName="libFlashFS" projectFiles="true">
+        <itemPath>../../libFlashFS/AT45D.c</itemPath>
+        <itemPath>../../libFlashFS/AT45D_DMA.c</itemPath>
+        <itemPath>../../libFlashFS/AT45D_FS.c</itemPath>
+        <itemPath>../../libFlashFS/MDD_AT45D.c</itemPath>
+        <itemPath>../../libFlashFS/minIni.c</itemPath>
+        <itemPath>../../libFlashFS/usb.c</itemPath>
+        <itemPath>../../libFlashFS/usb_descriptors.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="libMDD" projectFiles="true">
+        <itemPath>../../Microchip/MDD File System/FSIO.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../libUDB/background.c</itemPath>
         <itemPath>../../libUDB/libUDB.c</itemPath>
         <itemPath>../../libUDB/analog2digital_udb4.c</itemPath>
-        <itemPath>../../libUDB/magneto_udb4.c</itemPath>
-        <itemPath>../../libUDB/radioIn_udb4.c</itemPath>
         <itemPath>../../libUDB/servoOut.c</itemPath>
-        <itemPath>../../libUDB/serialIO_udb4.c</itemPath>
         <itemPath>../../libUDB/osd.c</itemPath>
         <itemPath>../../libUDB/24LC256.c</itemPath>
         <itemPath>../../libUDB/events.c</itemPath>
@@ -221,7 +258,13 @@
         <itemPath>../../libUDB/analog2digital_auav3.c</itemPath>
         <itemPath>../../libUDB/traps_asm.s</itemPath>
         <itemPath>../../libUDB/mcu.c</itemPath>
-        <itemPath>../../libUDB/radioIn_auav3.c</itemPath>
+        <itemPath>../../libUDB/radioIn.c</itemPath>
+        <itemPath>../../libUDB/magnetometer.c</itemPath>
+        <itemPath>../../libUDB/serialIO.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6" displayName="libUSB" projectFiles="true">
+        <itemPath>../../Microchip/USB/usb_device.c</itemPath>
+        <itemPath>../../Microchip/USB/MSD Device Driver/usb_function_msd.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="libVectorMatrix" projectFiles="true">
         <itemPath>../../libVectorMatrix/madd.s</itemPath>
@@ -269,6 +312,11 @@
         <itemPath>../altitudeCntrlVariable.c</itemPath>
         <itemPath>../euler_angles.c</itemPath>
         <itemPath>../main.c</itemPath>
+        <itemPath>../config.c</itemPath>
+        <itemPath>../FlyByWire.c</itemPath>
+        <itemPath>../preflight.c</itemPath>
+        <itemPath>../redef.c</itemPath>
+        <itemPath>../telemetry_log.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="projectSpecific" projectFiles="true">
         <itemPath>nv_memory_options.h</itemPath>
@@ -301,7 +349,7 @@
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.10</languageToolchainVersion>
-        <platform>2</platform>
+        <platform>3</platform>
       </toolsSet>
       <compileType>
         <linkerTool>
@@ -325,7 +373,7 @@
       <C30>
         <property key="code-model" value="large-code"/>
         <property key="const-model" value="const-in-code"/>
-        <property key="data-model" value="default"/>
+        <property key="data-model" value="large-data"/>
         <property key="enable-all-warnings" value="true"/>
         <property key="enable-ansi-std" value="false"/>
         <property key="enable-ansi-warnings" value="false"/>
@@ -337,7 +385,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../MatrixPilot-auav3_cat;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot"/>
+                  value="../MatrixPilot-auav3_cat;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot;../../libFlashFS;../../Microchip/Include"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>
@@ -357,7 +405,7 @@
         <property key="optimization-level" value="0"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
-        <property key="preprocessor-macros" value=""/>
+        <property key="preprocessor-macros" value="AUAV3"/>
         <property key="scalar-model" value="default"/>
         <property key="use-cci" value="false"/>
       </C30>
@@ -401,7 +449,7 @@
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file"
-                  value="/home/markw/MPLABXProjects/MatrixPilot_UDB5_WJP/MatrixPilot/MatrixPilot-auav3/dist/default/production/MatrixPilot-auav3.production.map"/>
+                  value="../../MatrixPilot/MatrixPilot-auav3/dist/default/production/MatrixPilot-auav3.production.map"/>
         <property key="oXC16ld-extra-opts" value=""/>
         <property key="oXC16ld-fill-upper" value="0"/>
         <property key="oXC16ld-force-link" value="false"/>

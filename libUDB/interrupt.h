@@ -29,9 +29,10 @@ uint16_t SP_start(void);
 uint16_t SP_limit(void);
 uint16_t SP_current(void);
 
-//#define indicate_loading_main		//LATEbits.LATE4 = 0
-//#define indicate_loading_inter	//LATEbits.LATE4 = 1
-
+#if (USE_MCU_IDLE == 1)
+#define indicate_loading_inter	{}
+#define indicate_loading_main	{}
+#else
 #define indicate_loading_inter	{							\
 									T5CONbits.TON = 1 ;		\
 								}
@@ -39,13 +40,14 @@ uint16_t SP_current(void);
 #define indicate_loading_main	{							\
 									T5CONbits.TON = 0 ;		\
 								}
-
+#endif // USE_MCU_IDLE
 
 // The dsp math calls change and restore CORCON internally, so if we fire an
 // ISR in the middle of a dsp math call, CORCON can be set to an unexpected value.
 // To prevent this, we restore CORCON to the application default when entering
 // each ISR, which we saved in main().  Then, when exiting each ISR, we restore
 // CORCON to the value it had when we entered.
+
 #define interrupt_save_set_corcon		\
 	{										\
 		__asm__("push CORCON");				\
@@ -56,3 +58,4 @@ uint16_t SP_current(void);
 	{										\
 		__asm__("pop CORCON");				\
 	}
+

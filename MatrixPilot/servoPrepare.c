@@ -20,6 +20,7 @@
 
 
 #include "defines.h"
+#include "../libUDB/heartbeat.h"
 #include "mode_switch.h"
 #include "airspeedCntrl.h"
 
@@ -75,7 +76,7 @@ void dcm_servo_callback_prepare_outputs(void)
 #endif	
 #if(ALTITUDE_GAINS_VARIABLE == 1)
 		airspeedCntrl();
-#endif // ALTITUDE_GAINS_VARIABLE == 1
+#endif // ALTITUDE_GAINS_VARIABLE
 		updateBehavior() ;
 		wind_gain = wind_gain_adjustment () ;
 		rollCntrl() ;

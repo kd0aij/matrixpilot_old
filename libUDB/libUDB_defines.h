@@ -42,17 +42,16 @@ union longlongLL { int64_t LL ; struct LL _ ; struct wwww __ ; } ;
 #endif
 
 // Build for the specific board type
+#define RED_BOARD		1	// red board with vertical LISY gyros, no longer in production
+#define GREEN_BOARD		2	// green board with Analog Devices 75 degree/second gyros, no longer in production
+#define UDB3_BOARD		3	// red board with daughter boards 500 degree/second Invensense gyros
+#define RUSTYS_BOARD	4	// Red board with Rusty's IXZ-500_RAD2a patch board
 #define UDB4_BOARD		5	// board with dsPIC33 and integrally mounted 500 degree/second Invensense gyros
 #define CAN_INTERFACE	6
 #define UDB5_BOARD		8	// board with dsPIC33 and MPU6000
 #define AUAV3_BOARD		9	// Nick Arsov's AUAV3 with dsPIC33EP and MPU6000
 
-// Clock configurations
-#define CRYSTAL_CLOCK	1
-#define FRC8X_CLOCK		2
-#define UDB4_CLOCK		3
-
-
+#if (SILSIM != 1)
 // Device header file
 #if defined(__XC16__)
 #include <xc.h>
@@ -80,6 +79,8 @@ union longlongLL { int64_t LL ; struct LL _ ; struct wwww __ ; } ;
 #error "unsupported value for BOARD_TYPE"
 #endif
 
+#endif // (SILSIM != 1)
+
 #if (SILSIM == 1)
 #undef HILSIM
 #define HILSIM 1
@@ -89,8 +90,8 @@ union longlongLL { int64_t LL ; struct LL _ ; struct wwww __ ; } ;
 #include "ConfigHILSIM.h"
 #endif
 
-
-#if (USE_PPM_INPUT == 1)
+// TODO: check this as it seems to be related to CLASSIC boards only
+#if (USE_PPM_INPUT == 1 && BOARD_TYPE != AUAV3_BOARD)
 #undef MAX_INPUTS
 #define MAX_INPUTS 8
 #undef MAX_OUTPUTS
@@ -113,10 +114,9 @@ union longlongLL { int64_t LL ; struct LL _ ; struct wwww __ ; } ;
 
 #include "boardRotation_defines.h"
 
-#define BOARD_IS_CLASSIC_UDB		0
-//#define FREQOSC 					32000000
-//#define CLK_PHASES					2
-#define CLOCK_CONFIG 				UDB4_CLOCK
+//#define BOARD_IS_CLASSIC_UDB		0
+// Clock configurations
+#define CLOCK_CONFIG 				3 // legacy definition for telemetry output
 
 
 // Dead reckoning
@@ -192,7 +192,7 @@ struct udb_flag_bits {
 
 
 // Constants
-#define RMAX   0b0100000000000000	//	1.0 in 2.14 fractional format
+#define RMAX   16384//0b0100000000000000	//	1.0 in 2.14 fractional format
 #define GRAVITY ((int32_t)(5280.0/SCALEACCEL))  // gravity in AtoD/2 units
 
 #define SERVOCENTER 3000
@@ -209,4 +209,9 @@ struct udb_flag_bits {
 extern int16_t magMessage ;
 extern int16_t vref_adj ;
 
-#endif
+#define NETWORK_INTERFACE_NONE                  0
+#define NETWORK_INTERFACE_WIFI_MRF24WG          1
+#define NETWORK_INTERFACE_ETHERNET_ENC624J600   2
+#define NETWORK_INTERFACE_ETHERNET_ENC28J60     3
+
+#endif // UDB_DEFINES_H

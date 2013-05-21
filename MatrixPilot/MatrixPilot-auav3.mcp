@@ -6,9 +6,9 @@ device=dsPIC33EP512MU810
 BuildDirPolicy=BuildDirIsProjectDir
 dir_src=
 dir_bin=
-dir_tmp=build/udb4
+dir_tmp=build/auav3
 dir_sin=..\libVectorMatrix
-dir_inc=..\MAVLink\include;.
+dir_inc=..\MAVLink\include;..\libFlashFS;.;..\Microchip\Include
 dir_lib=C:\Program Files\Microchip\MPLAB C30\lib
 dir_lkr=
 [CAT_FILTERS]
@@ -18,8 +18,8 @@ filter_obj=*.o
 filter_lib=*.a
 filter_lkr=*.gld
 [CAT_SUBFOLDERS]
-subfolder_src=MatrixPilot;libCommon;libDCM;libUDB;libVectorMatrix
-subfolder_inc=MAVLink;MatrixPilot;libCommon;libDCM;libUDB;libVectorMatrix
+subfolder_src=MatrixPilot;libCommon;libDCM;libFlashFS;libMDD;libUDB;libUSB;libVectorMatrix
+subfolder_inc=MAVLink;MatrixPilot;libCommon;libDCM;libFlashFS;libMDD;libUDB;libUSB;libVectorMatrix
 subfolder_obj=
 subfolder_lib=
 subfolder_lkr=
@@ -804,7 +804,7 @@ file_065=..\libUDB\analog2digital_auav3.c
 file_066=..\libUDB\traps_asm.s
 file_067=..\libUDB\radioIn_auav3.c
 file_068=..\libCommon\read.c
-file_069=..\libCommon\uart3.c
+file_069=..\libCommon\uart.c
 file_070=..\libCommon\write.c
 file_071=..\libUDB\analog2digital_udb4.c
 file_072=..\libUDB\analog2digital_udb5.c
@@ -964,7 +964,7 @@ file_225=euler_angles.h
 file_226=..\libUDB\ConfigAUAV3.h
 file_227=..\libUDB\mpu6000.h
 file_228=..\libUDB\spiUtils.h
-file_229=..\libCommon\uart3.h
+file_229=..\libCommon\uart.h
 file_230=HardwareProfile.h
 file_231=..\libDCM\estAltitude.h
 file_232=..\libUDB\oscillator.h
@@ -976,7 +976,7 @@ suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=
 [TOOL_SETTINGS]
 TS{7D9C6ECE-785D-44CB-BA22-17BF2E119622}=--defsym=PSV_ERRATA=1 -g
-TS{25AC22BD-2378-4FDB-BFB6-7345A15512D3}=-g -Wall -mlarge-code
+TS{25AC22BD-2378-4FDB-BFB6-7345A15512D3}=-g -Wall -DAUAV3 -mlarge-code -mlarge-data
 TS{7DAC9A1D-4C45-45D6-B25A-D117C74E8F5A}=-Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)" -legacy-libc
 TS{509E5861-1E2A-483B-8B6B-CA8DB7F2DD78}=
 [INSTRUMENTED_TRACE]

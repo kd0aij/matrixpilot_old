@@ -22,6 +22,8 @@
 #include "libUDB.h"
 #include "spiUtils.h"
 #include "interrupt.h"
+#if (BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
+
 #include "oscillator.h"
 #include <libpic30.h>
 
@@ -424,3 +426,4 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _SPI2Interrupt(void) {
     return;
 }
 
+#endif // BOARD_TYPE

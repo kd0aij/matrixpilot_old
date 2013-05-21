@@ -21,40 +21,17 @@
 
 #include "libUDB_internal.h"
 #include "oscillator.h"
+#include "interrupt.h"
 
-#if (BOARD_TYPE == AUAV3_BOARD)
-#include "../libCommon/uart3.h"
+#if (USE_CONSOLE != 0)
+#include "../libCommon/commands.h"
+#include "../libCommon/uart.h"
 #include <stdio.h>
 extern int __C30_UART;
-#endif
-
+#endif // USE_CONSOLE
 
 #if (BOARD_IS_CLASSIC_UDB)
-#if ( CLOCK_CONFIG == CRYSTAL_CLOCK )
-_FOSC( CSW_FSCM_OFF & HS ) ;		// external high speed crystal
-#elif ( CLOCK_CONFIG == FRC8X_CLOCK ) 
-_FOSC(CSW_FSCM_OFF & FRC_PLL8);
-#endif
-_FWDT( WDT_OFF ) ;					// no watchdog timer
-
-
-// Add compatibility for c30 V3.3
-#ifndef BORV_20
-#define BORV_20 BORV20
-#endif
-#ifndef _FICD
-#define _FICD(x) _ICD(x)
-#endif
-
-
-_FBORPOR( 	PBOR_ON &				// brown out detection on
-			BORV_20 &				// brown out set to 2.0 V
-			MCLR_EN &				// enable MCLR
-			RST_PWMPIN &			// pwm pins as pwm
-			PWMxH_ACT_HI &			// PWMH is active high
-			PWMxL_ACT_HI ) ;		// PMWL is active high
-_FGS( CODE_PROT_OFF ) ;				// no protection
-_FICD( 0xC003 ) ;					// normal use of debugging port
+#error Classic UDB boards are no not supported in this version
 
 #elif (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD )
 _FOSCSEL(FNOSC_PRIPLL); // pri plus PLL (primary osc  w/ PLL)
@@ -132,7 +109,7 @@ _FPOR(ALTI2C1_ON & ALTI2C2_ON);
 
 #endif // __XC16__
 
-#endif
+#endif // BOARD_TYPE
 
 
 int16_t defaultCorcon = 0 ;
@@ -142,6 +119,11 @@ volatile int16_t trap_flags __attribute__ ((persistent, near));
 volatile int32_t trap_source __attribute__ ((persistent, near));
 volatile int16_t osc_fail_count __attribute__ ((persistent, near)) ;
 
+
+uint16_t get_reset_flags(void)
+{
+	return RCON;
+}
 
 #if (BOARD_TYPE == AUAV3_BOARD )
 // This method assigns all PPS registers
@@ -215,15 +197,27 @@ void configurePPS(void)
     _U1RXR = 86;        // U1RX input RPI86
     _RP85R = 0b000001;  // U1TX output RP85
 
+#define TELEPORT    2
+
     // UART2 RX, TX; This is the "USART" in MatrixPilot
-    // assign it to the non-opto UART labeled "UART3" on nets U3RX,TX and pins RP98,99
+    // On the AUAV3, the opto-uart port labeled "OUART1" is on nets U1RX,TX and pins RPI78,RP79
+#if (TELEPORT == 2)
+    _U2RXR = 78;        // U2RX input RP178
+    _RP79R = 0b000011;  // U2TX output RP79
+#else
     _U2RXR = 98;        // U2RX input RP98
     _RP99R = 0b000011;  // U2TX output RP99
+#endif
 
-    // UART3 RX, TX; This is Robert's debug port
-    // assign it to the opto-uart port labeled "OUART1" on nets U1RX,TX and pins RPI78,RP79
+    // UART3 RX, TX
+    // On the AUAV3, the uart port labeled "UART3" is on nets U3RX,TX and pins RP98,99
+#if (TELEPORT == 2)
+    _U3RXR = 98;        // U3RX input RP98
+    _RP99R = 0b011011;  // U3TX output RP99
+#else
     _U3RXR = 78;        // U3RX input RP178
     _RP79R = 0b011011;  // U3TX output RP79
+#endif
 
     // UART4 RX, TX
     // On the AUAV3, the opto-uart port labeled "OUART2" is on nets U2RX,TX and pins RP100,101
@@ -293,7 +287,33 @@ void configureDigitalIO(void)
     TRISAbits.TRISA7 = 0; // DIG1
     TRISEbits.TRISE1 = 0; // DIG0
 }
+#else
+void configureDigitalIO(void)
+{
+	_TRISD8 = 1 ;
+#if (USE_PPM_INPUT == 0)
+	_TRISD9 = _TRISD10 = _TRISD11 = _TRISD12 = _TRISD13 = _TRISD14 = _TRISD15 = _TRISD8 ;
 #endif
+}
+#endif
+
+void init_leds(void)
+{
+#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD )
+	_LATE1 = LED_OFF;_LATE2 = LED_OFF; _LATE3 = LED_OFF;_LATE4 = LED_OFF;
+	_TRISE1 = 0;_TRISE2 = 0;_TRISE3 = 0;_TRISE4 = 0;
+#elif (BOARD_TYPE == AUAV3_BOARD )
+    // port B
+    _LATB2 = LED_OFF; _LATB3 = LED_OFF; _LATB4 = LED_OFF; _LATB5 = LED_OFF;
+    // port B
+    TRISBbits.TRISB2 = 0; // LED1
+    TRISBbits.TRISB3 = 0; // LED2
+    TRISBbits.TRISB4 = 0; // LED3
+    TRISBbits.TRISB5 = 0; // LED4
+#else
+#error Invalid BOARD_TYPE
+#endif
+}
 
 void mcu_init(void)
 {
@@ -312,10 +332,11 @@ void mcu_init(void)
 #if (BOARD_TYPE == AUAV3_BOARD )
 
 	configurePPS();
-	configureDigitalIO();
-	__C30_UART = 3;
-	UART3Init();
+#if (USE_CONSOLE != 0)
+	__C30_UART = USE_CONSOLE;
+	init_console();
 
+    printf("\r\n\r\nMatrixPilot " __TIME__ " " __DATE__ " @ %u mips\r\n", MIPS);
 	if ( _SWR == 1 )
 	{
         printf("S/W Reset: trap_flags %04x, trap_source %04x%04x, osc_fail_count %u\r\n",
@@ -324,6 +345,9 @@ void mcu_init(void)
 			(unsigned int)(trap_source & 0xffff),
 			osc_fail_count);
 	}
-    printf("\r\n\r\nMatrixPilot-AUAV3 @ %u mips\r\n", MIPS);
-#endif
+#endif // USE_CONSOLE
+#endif // BOARD_TYPE
+
+	configureDigitalIO();
+    init_leds();
 }

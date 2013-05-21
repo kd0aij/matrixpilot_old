@@ -22,7 +22,15 @@
 #include "libUDB_internal.h"
 #include "oscillator.h"
 #include "interrupt.h"
-
+#if (USE_TELELOG == 1)
+#include "telemetry_log.h"
+#endif
+#if (BOARD_TYPE == AUAV3_BOARD)
+#include "preflight.h"
+#endif
+#if (USE_CONSOLE != 0)
+#include "../libCommon/commands.h"
+#endif
 
 union udb_fbts_byte udb_flags ;
 
@@ -82,18 +90,19 @@ void udb_init(void)
 	rc_signal_strength = 0 ;
 #endif
 	
-	udb_init_leds() ;
 	udb_init_clock() ;
     udb_init_capture() ;
 	
 #if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
 	udb_init_I2C() ;
 #endif
-	
+#if (USE_CONSOLE != 1)	
 	udb_init_GPS() ;
+#endif
+#if (USE_CONSOLE != 2)
 	udb_init_USART() ;
+#endif
 	udb_init_pwm() ;
-	
 #if (USE_OSD == 1)
 	udb_init_osd() ;
 #endif
@@ -112,37 +121,27 @@ void udb_run(void)
 	//  nothing else to do... entirely interrupt driven
 	while (1)
 	{
-#if (USE_CONSOLE == 1)
+#if (USE_TELELOG == 1)
+		telemetry_log();
+#endif
+
+#if (BOARD_TYPE == AUAV3_BOARD)
+		USBPollingService();
+#endif
+
+#if (USE_CONSOLE != 0)
 		console();
 #endif
+
+#if (USE_MCU_IDLE == 1)
+		Idle();
+#else
 		// pause cpu counting timer while not in an ISR
 		indicate_loading_main ;
-        idle();
+#endif
+        // TODO: is the LPRC disabled?
 	}
 	// Never returns
-}
-
-
-void udb_init_leds( void )
-{
-	
-#if (BOARD_IS_CLASSIC_UDB == 1)
-	TRISFbits.TRISF0 = 0 ;
-	
-#elif (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD )
-	_LATE1 = LED_OFF ;_LATE2 = LED_OFF ; _LATE3 = LED_OFF ;_LATE4 = LED_OFF ;
-	_TRISE1 = 0 ;_TRISE2 = 0 ;_TRISE3 = 0 ;_TRISE4 = 0 ;
-#elif (BOARD_TYPE == AUAV3_BOARD )
-    // port B
-    _LATB2 = LED_OFF; _LATB3 = LED_OFF; _LATB4 = LED_OFF; _LATB5 = LED_OFF; 
-    // port B
-    TRISBbits.TRISB2 = 0; // LED1
-    TRISBbits.TRISB3 = 0; // LED2
-    TRISBbits.TRISB4 = 0; // LED3
-    TRISBbits.TRISB5 = 0; // LED4
-
-
-#endif
 }
 
 #ifdef INITIALIZE_VERTICAL // for VTOL, vertical initialization
@@ -163,7 +162,6 @@ void udb_a2d_record_offsets(void)
 #ifdef VREF
 	udb_vref.offset = udb_vref.value ;
 #endif
-	return ;
 }
 #else  // horizontal initialization
 void udb_a2d_record_offsets(void)
@@ -184,7 +182,7 @@ void udb_a2d_record_offsets(void)
 	udb_vref.offset = udb_vref.value ;
 #endif
 }
-#endif
+#endif // INITIALIZE_VERTICAL
 
 
 void udb_servo_record_trims(void)
@@ -241,10 +239,4 @@ void calculate_analog_sensor_values( void )
 	else
 		rc_signal_strength = (uint8_t)rssi_accum._.W1 ;
 #endif
-}
-
-
-uint16_t udb_get_reset_flags(void)
-{
-	return RCON ;
 }

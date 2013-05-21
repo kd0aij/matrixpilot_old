@@ -21,7 +21,7 @@
 // To do: select magnetometer type, set MAGNETICDECLINATION,
 // and select orientation of the magnetometer, and remove the next 3 lines.
 #if ( MAG_YAW_DRIFT == 1 && HILSIM != 1)
-//#error "Set magnetometer options."
+//#warning "Check magnetometer options."
 #endif
 
 // Define which magnetometer you are using by uncommenting one
@@ -36,7 +36,9 @@
 
 // Define magneticDeclination to be the magnectic declination, in degrees, measured
 // clockwise from the north, east is plus, west is minus.
-
+//  Mississauga, ON is Lat 45.58 N and Long 79.65 W, Mag. Decl. therefore is 10deg21' W or -10.35 degrees
+//  Bennet Field Springvale, ON is Lat 42deg58' N and Long 80deg9' W, Mag. Decl. therefore is 9deg48' W or -9.48 degrees
+  //Salinas, CA Magnetic Variation: 16E (1980), http://www.airport-data.com/airport/SNS/
 #define MAGNETICDECLINATION 8.78
 
 // Set to 0 for fixed declination angle or 1 for variable declination angle

@@ -27,19 +27,11 @@
 
 
 // Check RC Inputs
-#if (BOARD_IS_CLASSIC_UDB == 1)
-	#if (USE_PPM_INPUT != 1 && NUM_INPUTS > 5)
-		#error("NUM_INPUTS can't be more than 5 without using PPM Input.")
-	#elif (USE_PPM_INPUT == 1 && NUM_INPUTS > 9)
-		#error("NUM_INPUTS can't be more than 9 when using PPM Input.")
-	#endif
-#else
 	// UDB4
-	#if (USE_PPM_INPUT != 1 && NUM_INPUTS > 8)
+#if (USE_PPM_INPUT == 0 && NUM_INPUTS > 8)
 		#error("NUM_INPUTS can't be more than 8 without using PPM Input.")
-	#elif (USE_PPM_INPUT == 1 && NUM_INPUTS > 9)
+#elif (USE_PPM_INPUT != 0 && NUM_INPUTS > 9)
 		#error("NUM_INPUTS can't be more than 9 when using PPM Input.")
-	#endif
 #endif
 
 #if (THROTTLE_INPUT_CHANNEL > NUM_INPUTS)
@@ -93,17 +85,9 @@
 
 
 // Check RC Outputs
-#if (BOARD_IS_CLASSIC_UDB == 1)
-	#if (USE_PPM_INPUT != 1 && NUM_OUTPUTS > 6)
-		#error("NUM_OUTPUTS can't be more than 6 without using PPM Input.")
-	#elif (USE_PPM_INPUT == 1 && NUM_OUTPUTS > 9)
-		#error("NUM_OUTPUTS can't be more than 9 when using PPM Input.")
-	#endif
-#else
 	// UDB4
-	#if (NUM_OUTPUTS > 10)
-		#error("NUM_OUTPUTS can't be more than 10.")
-	#endif
+#if (NUM_OUTPUTS > 10)
+	#error("NUM_OUTPUTS can't be more than 10.")
 #endif
 
 #if (THROTTLE_OUTPUT_CHANNEL > NUM_OUTPUTS)
@@ -162,40 +146,10 @@
 #endif
 
 
-#if (BOARD_IS_CLASSIC_UDB == 1)
-
-// Check OSD Settings
-#if (USE_OSD == 1 && CLOCK_CONFIG == CRYSTAL_CLOCK )
-	#error("When using the OSD, CLOCK_CONFIG must be set to FRC8X_CLOCK.")
+// UDB4
+#if (NUM_ANALOG_INPUTS > 4)
+	#error("Only 4 extra Analog Inputs are available the UDB4.")
 #endif
-
-
-// Check MediaTek Settings
-#if (UGPS_TYPE == GPS_MTEK && CLOCK_CONFIG == CRYSTAL_CLOCK )
-	#error("When using GPS_MTEK, CLOCK_CONFIG must be set to FRC8X_CLOCK.")
-#endif
-
-
-// Check for Analog Sensor Pin Conflicts
-#if (NUM_ANALOG_INPUTS >= 1)
-	#if (USE_PPM_INPUT == 0)
-		#error("Using the Analog Inputs requires using PPM Input.")
-	#elif (NUM_ANALOG_INPUTS > 2)
-		#error("Only 2 Analog Inputs are available on this UDB model.")
-	#elif (PPM_ALT_OUTPUT_PINS != 1 && NUM_OUTPUTS + NUM_ANALOG_INPUTS > 6)
-		#error("Using the Analog Inputs with PPM_ALT_OUTPUT_PINS set to 0 requires NUM_OUTPUTS + NUM_ANALOG_INPUTS to be no more than 6.")
-	#elif (PPM_ALT_OUTPUT_PINS == 1 && NUM_OUTPUTS + NUM_ANALOG_INPUTS > 9)
-		#error("Using the Analog Inputs with PPM_ALT_OUTPUT_PINS set to 1 requires NUM_OUTPUTS + NUM_ANALOG_INPUTS to be no more than 9.")
-	#endif
-#endif
-
-#else
-	// UDB4
-	#if (NUM_ANALOG_INPUTS > 4)
-		#error("Only 4 extra Analog Inputs are available the UDB4.")
-	#endif
-#endif
-
 
 // Check Analog Inputs
 #if (ANALOG_CURRENT_INPUT_CHANNEL > NUM_ANALOG_INPUTS)
@@ -232,16 +186,6 @@
 	#error("Must use SERIAL_MAVLINK with flexifunction mixing on UDB4+ only")
 #endif
 
-// Check non volatile memory services are not being used with classic UDB
-#if( (USE_I2C1_DRIVER == 1) && ( BOARD_IS_CLASSIC_UDB == 1 ) )
-	#error("I2C1 driver can't be used with classic UDB types")
-#endif
-
-// Check non volatile memory services are not being used with classic UDB
-#if( (USE_I2C2_DRIVER == 1) && ( BOARD_IS_CLASSIC_UDB == 1 ) )
-	#error("I2C2 driver can't be used with classic UDB types")
-#endif
-
 // Check that I2C1 drivers are active when using NV memory drivers
 #if( (USE_NV_MEMORY == 1) && ( USE_I2C1_DRIVER == 0) )
 	#error("NV memory must use I2C1 driver with USE_I2C1_DRIVER = 1")
@@ -254,9 +198,18 @@
 
 // Check that declination variable is only used with the magnetometer
 #if( (DECLINATIONANGLE_VARIABLE == 1) && (MAG_YAW_DRIFT != 1) )
-{
 	#error("Can't use variable declination angle with no magnetometer. Set MAG_YAW_DRIFT = 1 or DECLINATIONANGLE_VARIABLE = 0")
-}
 #endif
 
+#if ((USE_CONSOLE > 2) && (BOARD_TYPE != AUAV3_BOARD))
+	#error("Console ports greater than 2 only supported on AUAV3 board"
+#endif
+
+#if ((USE_TELELOG == 1) && (BOARD_TYPE != AUAV3_BOARD))
+	#error("USE_TELELOG only supported on AUAV3 board"
+#endif
+
+#if ((USE_CONFIGFILE == 1) && (BOARD_TYPE != AUAV3_BOARD))
+	#error("USE_CONFIGFILE only supported on AUAV3 board"
+#endif
 
