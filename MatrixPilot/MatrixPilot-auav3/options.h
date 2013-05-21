@@ -33,20 +33,27 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
-// GREEN_BOARD - Board is green and includes 2 vertical gyro daugter-boards.
-// RED_BOARD   - Board is red, and includes 2 vertical gyro daugter-boards.
-// UDB3_BOARD  - Board is red, and includes a single, flat, multi-gyro daugter-board.
-// UDB4_BOARD  - Board is red, has 8 inputs, 8 output and no gyro daughter-board.
-// AUAV1_BOARD - Nick Arsov's UDB3 clone, version one
-// See the MatrixPilot wiki for more details on different UDB boards.
-// If building for the UDB4, use the MatrixPilot-udb4.mcw project workspace. 
+// See the MatrixPilot wiki for more details on different board types.
+#ifdef UDB4
+#define BOARD_TYPE 							UDB4_BOARD
+#endif
+#ifdef UDB5
+#define BOARD_TYPE 							UDB5_BOARD
+#endif
+#ifdef AUAV3
 #define BOARD_TYPE AUAV3_BOARD
+#endif
+
+#ifndef BOARD_TYPE
+#define BOARD_TYPE 							UDB5_BOARD
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Use board orientation to change the mounting direction of the board.
-// Note: For UDB3 and older versions of UDB, Y arrow points to the front, GPS connector is on the front.
+// Note: 
 //       For UDB4, X arrow points to the front, GPS connectors are on the front.
+//
 // The following 6 orientations have the board parallel with the ground.
 // ORIENTATION_FORWARDS:  Component-side up,   GPS connector front
 // ORIENTATION_BACKWARDS: Component-side up,   GPS connector back
@@ -75,7 +82,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-#define GPS_TYPE GPS_UBX_4HZ
+#define GPS_TYPE							GPS_MTEK
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -155,10 +162,13 @@
 
 // Define BAROMETER_ALTITUDE to be 1 to use barometer for altitude correction.
 // Otherwise, if set to 0 only the GPS will be used.
-// If you select this option, you also need to set barometer options in
-// the barometerOptions.h file, including takeoff location altitude and/or sea level pressure
-// at the time of initialisation.
-#define BAROMETER_ALTITUDE 0
+// If you select this option, you also need to correctly set the LAUNCH_ALTITUDE
+// to your takeoff location altitude at the time of initialisation.
+#define BAROMETER_ALTITUDE 					0
+
+// Set your takeoff/launch/initialisation altitude in meters.
+#define LAUNCH_ALTITUDE						300
+
 
 // Racing Mode
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
@@ -215,20 +225,22 @@
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
-#define THROTTLE_INPUT_CHANNEL		CHANNEL_1
-#define AILERON_INPUT_CHANNEL		CHANNEL_2
-#define ELEVATOR_INPUT_CHANNEL		CHANNEL_3
-#define RUDDER_INPUT_CHANNEL		CHANNEL_4
-#define MODE_SWITCH_INPUT_CHANNEL	CHANNEL_6
-#define LAUNCH_ARM_INPUT_CHANNEL    CHANNEL_5
-#define CAMERA_PITCH_INPUT_CHANNEL	CHANNEL_UNUSED
-#define CAMERA_YAW_INPUT_CHANNEL	CHANNEL_UNUSED
-#define CAMERA_MODE_INPUT_CHANNEL	CHANNEL_UNUSED
+//   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
+//     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
+#define THROTTLE_INPUT_CHANNEL			CHANNEL_3
+#define AILERON_INPUT_CHANNEL			CHANNEL_1
+#define ELEVATOR_INPUT_CHANNEL			CHANNEL_2
+#define RUDDER_INPUT_CHANNEL			CHANNEL_4
+#define MODE_SWITCH_INPUT_CHANNEL		CHANNEL_4
+#define LAUNCH_ARM_INPUT_CHANNEL    	CHANNEL_6
+#define CAMERA_PITCH_INPUT_CHANNEL		CHANNEL_UNUSED
+#define CAMERA_YAW_INPUT_CHANNEL		CHANNEL_UNUSED
+#define CAMERA_MODE_INPUT_CHANNEL		CHANNEL_UNUSED
 #define OSD_MODE_SWITCH_INPUT_CHANNEL   CHANNEL_UNUSED
-#define PASSTHROUGH_A_INPUT_CHANNEL	CHANNEL_UNUSED
-#define PASSTHROUGH_B_INPUT_CHANNEL	CHANNEL_UNUSED
-#define PASSTHROUGH_C_INPUT_CHANNEL	CHANNEL_UNUSED
-#define PASSTHROUGH_D_INPUT_CHANNEL	CHANNEL_UNUSED
+#define PASSTHROUGH_A_INPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_B_INPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_C_INPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_D_INPUT_CHANNEL		CHANNEL_UNUSED
 
 // NUM_OUTPUTS:
 // For classic boards: Set to 3, 4, 5, or 6
@@ -301,7 +313,7 @@
 // switch state back in stabilized. The important design concept is that Manual position is always Manual state immediately.
 // Stabilized position is Stabilized mode unless you try  hard to reach Autonomous mode.
 // Set MODE_SWITCH_TWO_POSITION	to 0 for a normal three position mode switch.	
-#define MODE_SWITCH_TWO_POSITION    0
+#define MODE_SWITCH_TWO_POSITION			1
 
 ////////////////////////////////////////////////////////////////////////////////
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
@@ -317,8 +329,10 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL  THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN	2100
-#define FAILSAFE_INPUT_MAX	4500
+//#define FAILSAFE_INPUT_MIN	2100
+//#define FAILSAFE_INPUT_MAX	4500
+#define FAILSAFE_INPUT_MIN	2020
+#define FAILSAFE_INPUT_MAX	4040
 
 // FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
 // signal.  (Set to FAILSAFE_RTL or FAILSAFE_MAIN_FLIGHTPLAN.)
@@ -446,6 +460,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Control gains.
 // All gains should be positive real numbers.
+// Proportional gains should be less than 4.0.
+// Rate gains should be less than 0.8.
+// Proportional gains include ROLLKP, YAWKP_AILERON, AILERON_BOOST, PITCHGAIN, 
+// RUDDER_ELEV_MIX, ROLL_ELEV_MIX, ELEVATOR_BOOST, YAWKP_RUDDER, ROLLKP_RUDDER, 
+// MANUAL_AILERON_RUDDER_MIX, RUDDER_BOOST, HOVER_ROLLKP, HOVER_PITCHGAIN, HOVER_YAWKP
+// Rate gains include ROLLKD, YAWKD_AILERON, PITCHKD, YAWKD_RUDDER, ROLLKD_RUDDER, 
+// HOVER_ROLLKD, HOVER_PITCHKD, HOVER_YAWKD
 
 // SERVOSAT limits servo throw by controlling pulse width saturation.
 // set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want
@@ -664,18 +685,6 @@
 #define FLIGHT_PLAN_TYPE					FP_WAYPOINTS
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Debugging defines
-
-// The following can be used to do a ground check of stabilization without a GPS.
-// If you define TestGains, stabilization functions
-// will be enabled, even without GPS or Tx turned on. (Tx is optional)
-//#define TestGains						// uncomment this line if you want to test your gains without using GPS
-
-// Set this to 1 to calculate and print out free stack space
-#define RECORD_FREE_STACK_SPACE 0
-
-
 ///////////////////////////////////////////////////////////////////////////////////
 // Vehicle and Pilot Identification
 
@@ -702,3 +711,52 @@
 // The following define is used to enable vertical initialization for VTOL
 // To enable vertical initialization, uncomment the line
 //#define INITIALIZE_VERTICAL
+
+
+////////////////////////////////////////////////////////////////////////////////
+// TCP/UDP/IP protocols with Network interface
+// Enable a network interface over SPI for internet access.
+// WiFi is for short range use. For testing use the home WiFi and then a cell phone hotspot on-board.
+// For Ethernet a wired router with a high-gain WiFi antenna can work quite far with a directional basestation antenna
+// For additional IP tweaks see TCPIPConfig.h, HardwareProfile.h, MyIpOptions.h and edit MyTelemetry[]
+// Select a network interface by defining one of these options:
+// NETWORK_INTERFACE_NONE
+// NETWORK_INTERFACE_WIFI_MRF24WG           // 802.11g 54 MBit
+// NETWORK_INTERFACE_ETHERNET_ENC624J600    // 10/100 MBit
+// NETWORK_INTERFACE_ETHERNET_ENC28J60      // 10 MBit
+
+#define NETWORK_INTERFACE               (NETWORK_INTERFACE_NONE)
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Fly-By-Wire Configure
+// This allows the FlyByWire module to use either IP or the UART Rx pins for flight control.
+#define FLYBYWIRE_ENABLED               0
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Debugging defines
+
+// The following can be used to do a ground check of stabilization without a GPS.
+// If you define TestGains, stabilization functions
+// will be enabled, even without GPS or Tx turned on. (Tx is optional)
+// #define TestGains						// uncomment this line if you want to test your gains without using GPS
+
+// Set this to 1 to calculate and print out free stack space
+#define RECORD_FREE_STACK_SPACE 			0
+
+// Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
+// UART 3 and 4 option only available with the AUAV3 board.
+#define USE_CONSOLE							3
+
+// Optionally enable the new power saving idle mode of the MCU during mainloop
+#define USE_MCU_IDLE						1
+
+////////////////////////////////////////////////////////////////////////////////
+// AUAV3 only options
+
+// Set this to 1 to enable logging telemetry to dataflash on AUAV3
+#define USE_TELELOG							0
+
+// Set this to 1 to enable loading options settings from a config file on AUAV3
+#define USE_CONFIGFILE						0

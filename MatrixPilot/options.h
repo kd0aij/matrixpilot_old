@@ -48,6 +48,7 @@
 #define BOARD_TYPE 							UDB5_BOARD
 #endif
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Use board orientation to change the mounting direction of the board.
 // Note: 

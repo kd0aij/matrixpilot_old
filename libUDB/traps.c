@@ -40,7 +40,6 @@
 extern volatile int16_t trap_flags ;
 extern volatile int32_t trap_source ;
 extern volatile int16_t osc_fail_count ;
-
 extern volatile int16_t stack_ptr ;
 
 uint32_t getErrLoc(void);  // Get Address Error Loc
@@ -56,7 +55,7 @@ void reset(int16_t flags, uint32_t addrs)
 {
 	trap_flags = flags;
 	trap_source = addrs;
-	stack_ptr = SP_current();
+//	stack_ptr = SP_current();
 	asm("reset");
 }
 

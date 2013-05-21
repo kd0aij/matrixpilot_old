@@ -37,10 +37,7 @@
 #define SERVO_OUT_PIN_8			_LATD7
 #define SERVO_OUT_PIN_9			_LATA4
 #define SERVO_OUT_PIN_10		_LATA1
-
 #define ACTION_OUT_PIN			SERVO_OUT_PIN_9
-
-#define SCALE_FOR_PWM_OUT(x)	(x)
 
 #elif (BOARD_TYPE == AUAV3_BOARD)
 
@@ -54,52 +51,25 @@
 #define SERVO_OUT_PIN_8			_LATF12
 #define SERVO_OUT_PIN_9			_LATF12
 #define SERVO_OUT_PIN_10		_LATF12
-
 #define ACTION_OUT_PIN			SERVO_OUT_PIN_8
 
-#define SCALE_FOR_PWM_OUT(x)	(x)
+#if (NUM_OUTPUTS > 8)
+#error "max of 8 servo outputs currently supported for AUAV3"
+#endif
 
-
-#else //#if (BOARD_IS_CLASSIC_UDB == 1)
-
-#define SERVO_OUT_PIN_1			_LATE1
-#define SERVO_OUT_PIN_2			_LATE3
-#define SERVO_OUT_PIN_3			_LATE5
-
-#if (USE_PPM_INPUT != 1)
-	#define SERVO_OUT_PIN_4		_LATE0
-	#define SERVO_OUT_PIN_5		_LATE2
-	#define SERVO_OUT_PIN_6		_LATE4
-	#define SERVO_OUT_PIN_7		_LATE4	// 7th Output is not valid without PPM
-	#define SERVO_OUT_PIN_8		_LATE4	// 8th Output is not valid without PPM
-	#define SERVO_OUT_PIN_9		_LATE4	// 9th Output is not valid without PPM
-#elif (PPM_ALT_OUTPUT_PINS != 1)
-	#define SERVO_OUT_PIN_4		_LATD1
-	#define SERVO_OUT_PIN_5		_LATB5
-	#define SERVO_OUT_PIN_6		_LATB4
-	#define SERVO_OUT_PIN_7		_LATE0
-	#define SERVO_OUT_PIN_8		_LATE2
-	#define SERVO_OUT_PIN_9		_LATE4
 #else
-	#define SERVO_OUT_PIN_4		_LATE0
-	#define SERVO_OUT_PIN_5		_LATE2
-	#define SERVO_OUT_PIN_6		_LATE4
-	#define SERVO_OUT_PIN_7		_LATD1
-	#define SERVO_OUT_PIN_8		_LATB5
-	#define SERVO_OUT_PIN_9		_LATB4
+#error Invalid BOARD_TYPE
 #endif
 
-#define ACTION_OUT_PIN			SERVO_OUT_PIN_6
-
-#if ( CLOCK_CONFIG == CRYSTAL_CLOCK )
-#define SCALE_FOR_PWM_OUT(x)		((x) << 1)
-#elif ( CLOCK_CONFIG == FRC8X_CLOCK )
-#define PWMOUTSCALE					60398	// = 256*256*(3.6864/4)
-#define SCALE_FOR_PWM_OUT(x)		(((union longww)(int32_t)__builtin_muluu( (x) ,  PWMOUTSCALE ))._.W1)
+#if (MIPS == 64)
+#define SCALE_FOR_PWM_OUT(x)	(x/2)
+#elif (MIPS == 32)
+#define SCALE_FOR_PWM_OUT(x)	(x*2)
+#elif (MIPS == 16)
+#define SCALE_FOR_PWM_OUT(x)	(x)
+#else
+#error Invalid MIPS Configuration
 #endif
-
-#endif
-
 
 int16_t udb_pwOut[NUM_OUTPUTS+1] ;	// pulse widths for servo outputs
 int16_t outputNum ;
@@ -115,7 +85,9 @@ void udb_init_pwm( void )	// initialize the PWM
 	{
 		// Set up Timer 4.  Use it to send PWM outputs manually, at high priority.
 		T4CON = 0b1000000000000000  ;		// turn on timer 4 with no prescaler
-#if ( (BOARD_IS_CLASSIC_UDB == 1 && CLOCK_CONFIG == FRC8X_CLOCK) || BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
+#if (MIPS == 64)
+		T4CONbits.TCKPS = 2 ;				// prescaler 64:1
+#else
 		T4CONbits.TCKPS = 1 ;				// prescaler 8:1
 #endif
 		_T4IP = 7 ;							// priority 7
@@ -124,7 +96,7 @@ void udb_init_pwm( void )	// initialize the PWM
 	
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
 	_TRISD0 =  0 ; _TRISD1 =  0 ; _TRISD2 =  0 ; _TRISD3 =  0 ; _TRISD4 =  0 ; _TRISD5 =  0 ; _TRISD6 = _TRISD7 = 0 ;
-	if (NUM_OUTPUTS >= 9)  _TRISA4 = 0 ;
+	if (NUM_OUTPUTS >= 9)  _TRISA4 = 0 ;	
 	if (NUM_OUTPUTS >= 10) _TRISA1 = 0 ;
 #elif (BOARD_TYPE == AUAV3_BOARD)
         // port D
@@ -139,35 +111,8 @@ void udb_init_pwm( void )	// initialize the PWM
         TRISGbits.TRISG13 = 0; // O3
         TRISGbits.TRISG14 = 0; // O5
         TRISGbits.TRISG1 = 0; // O6
-
-#if (NUM_OUTPUTS >= 9)
-#error "max of 8 servo outputs currently supported for AUAV3"
-#endif
-
-
 #else // Classic board
-	TRISE = 0b1111111111000000 ;
-	
-	if (NUM_OUTPUTS >= 1)
-	{
-#if (USE_PPM_INPUT == 1)
-#if (PPM_ALT_OUTPUT_PINS != 1)
-		_TRISD1 = 0 ;						// Set D1 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 5) _TRISB5 = 0 ;	// Set B5 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 6) _TRISB4 = 0 ;	// Set B4 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 7) _TRISE0 = 0 ;	// Set E0 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 8) _TRISE2 = 0 ;	// Set E2 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 9) _TRISE4 = 0 ;	// Set E4 to be an output if we're using PPM
-#else
-		_TRISE0 = 0 ;						// Set E0 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 5) _TRISE2 = 0 ;	// Set E2 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 6) _TRISE4 = 0 ;	// Set E4 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 7) _TRISD1 = 0 ;	// Set D1 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 8) _TRISB5 = 0 ;	// Set B5 to be an output if we're using PPM
-		if (NUM_OUTPUTS >= 9) _TRISB4 = 0 ;	// Set B4 to be an output if we're using PPM
-#endif
-#endif
-	}
+#error Invalid BOARD_TYPE
 #endif
 }
 
@@ -263,7 +208,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 		case 8:
 			SERVO_OUT_PIN_8 = 0 ;
 			HANDLE_SERVO_OUT(9, SERVO_OUT_PIN_9) ;
-                        break ;
+			break ;
 #ifdef SERVO_OUT_PIN_10
 		case 9:
 			SERVO_OUT_PIN_9 = 0 ;

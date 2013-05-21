@@ -48,6 +48,7 @@
 #define BOARD_TYPE 							UDB5_BOARD
 #endif
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Use board orientation to change the mounting direction of the board.
 // Note: 
@@ -157,13 +158,13 @@
 // Otherwise, if set to 0 the GPS will be used.
 // If you select this option, you also need to set magnetometer options in
 // the magnetometerOptions.h file, including declination and magnetometer type.
-#define MAG_YAW_DRIFT 0
+#define MAG_YAW_DRIFT 						1
 
 // Define BAROMETER_ALTITUDE to be 1 to use barometer for altitude correction.
 // Otherwise, if set to 0 only the GPS will be used.
 // If you select this option, you also need to correctly set the LAUNCH_ALTITUDE
 // to your takeoff location altitude at the time of initialisation.
-#define BAROMETER_ALTITUDE 					0
+#define BAROMETER_ALTITUDE 					1
 
 // Set your takeoff/launch/initialisation altitude in meters.
 #define LAUNCH_ALTITUDE						300
@@ -204,7 +205,7 @@
 // PPM_NUMBER_OF_CHANNELS is the number of channels sent on the PWM signal.  This is
 // often different from the NUM_INPUTS value below, and should usually be left at 8.
 // 
-#define USE_PPM_INPUT						0
+#define USE_PPM_INPUT						2
 #define PPM_NUMBER_OF_CHANNELS				8
 #define PPM_SIGNAL_INVERTED					0
 #define PPM_ALT_OUTPUT_PINS					0
@@ -224,12 +225,15 @@
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
-#define THROTTLE_INPUT_CHANNEL		CHANNEL_1
-#define AILERON_INPUT_CHANNEL		CHANNEL_2
-#define ELEVATOR_INPUT_CHANNEL		CHANNEL_3
+//   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
+//     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
+#define AILERON_INPUT_CHANNEL				CHANNEL_1
+#define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
 #define RUDDER_INPUT_CHANNEL		CHANNEL_4
-#define MODE_SWITCH_INPUT_CHANNEL	CHANNEL_6
-#define LAUNCH_ARM_INPUT_CHANNEL    CHANNEL_5
+
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_5
+#define LAUNCH_ARM_INPUT_CHANNEL    CHANNEL_6
 #define CAMERA_PITCH_INPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_MODE_INPUT_CHANNEL	CHANNEL_UNUSED
@@ -260,11 +264,11 @@
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
 // 
-#define THROTTLE_OUTPUT_CHANNEL             CHANNEL_1
-#define AILERON_OUTPUT_CHANNEL              CHANNEL_2
-#define ELEVATOR_OUTPUT_CHANNEL             CHANNEL_3
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
+#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL               CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL    CHANNEL_5
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL         CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL           CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL              CHANNEL_UNUSED
@@ -281,11 +285,11 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED            1
-#define ELEVATOR_CHANNEL_REVERSED           1
-#define RUDDER_CHANNEL_REVERSED             0
-#define AILERON_SECONDARY_CHANNEL_REVERSED	1
-#define THROTTLE_CHANNEL_REVERSED           0
+#define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
+#define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
+#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
+#define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
+#define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED         0
 
@@ -310,7 +314,7 @@
 // switch state back in stabilized. The important design concept is that Manual position is always Manual state immediately.
 // Stabilized position is Stabilized mode unless you try  hard to reach Autonomous mode.
 // Set MODE_SWITCH_TWO_POSITION	to 0 for a normal three position mode switch.	
-#define MODE_SWITCH_TWO_POSITION    0
+#define MODE_SWITCH_TWO_POSITION			1
 
 ////////////////////////////////////////////////////////////////////////////////
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
@@ -326,8 +330,8 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL  THROTTLE_INPUT_CHANNEL
-#define FAILSAFE_INPUT_MIN	2100
-#define FAILSAFE_INPUT_MAX	4500
+#define FAILSAFE_INPUT_MIN	2020
+#define FAILSAFE_INPUT_MAX	4040
 
 // FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
 // signal.  (Set to FAILSAFE_RTL or FAILSAFE_MAIN_FLIGHTPLAN.)
@@ -648,7 +652,7 @@
 // HILSIM_BAUD is the serial speed for communications with the X-Plane plugin.  Default is
 // now 38400.  Make sure the X-Plane plugin's Setup file has its speed set to match.
 #define HILSIM 								0
-#define HILSIM_BAUD							19200
+#define HILSIM_BAUD							38400
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -738,7 +742,7 @@
 // #define TestGains						// uncomment this line if you want to test your gains without using GPS
 
 // Set this to 1 to calculate and print out free stack space
-#define RECORD_FREE_STACK_SPACE 			0
+#define RECORD_FREE_STACK_SPACE 			1
 
 // Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
 // UART 3 and 4 option only available with the AUAV3 board.

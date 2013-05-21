@@ -94,7 +94,8 @@ void udb_callback_read_sensors(void)
 	read_gyros() ; // record the average values for both DCM and for offset measurements
 	read_accel() ;
 }
-	
+
+#if (BAROMETER_ALTITUDE == 1)
 void do_I2C_stuff(void)
 {
 	static int toggle = 0;
@@ -103,34 +104,34 @@ void do_I2C_stuff(void)
 	if (toggle) {
 		if (counter++ > 0) {
 #if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
-			rxMagnetometer();
+//printf("rxMag %u\r\n", udb_heartbeat_counter);
+			rxMagnetometer(udb_magnetometer_callback);
 #endif
 			counter = 0;
 			toggle = 0;
 }
 	} else {
-#if (BAROMETER_ALTITUDE == 1)
 		rxBarometer(udb_barometer_callback);
-#endif
 		if (counter++ > 6) {
 			counter = 0;
 			toggle = 1;
 		}
 	}
 }
+#endif // BAROMETER_ALTITUDE
 
 // Called at HEARTBEAT_HZ
 void udb_servo_callback_prepare_outputs(void)
 {
-#if 1
+#if (BAROMETER_ALTITUDE == 1)
 	do_I2C_stuff();
 #else
 #if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
-#warning("Not updated for HEARTBEAT_HZ")
 	// This is a simple counter to do stuff at 4hz
-	if ( udb_heartbeat_counter % 10 == 0 )
+//	if (udb_heartbeat_counter % 10 == 0)
+	if (udb_heartbeat_counter % (HEARTBEAT_HZ / 4) == 0)
 	{
-		rxMagnetometer() ;
+		rxMagnetometer(udb_magnetometer_callback) ;
 	}
 #endif
 #endif // BAROMETER_ALTITUDE

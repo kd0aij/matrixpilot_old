@@ -99,6 +99,14 @@ _FICD(	JTAGEN_OFF &
 
 #else // __XC16__
 
+_FOSCSEL(FNOSC_FRC);
+//_FOSCSEL(FNOSC_PRIPLL & IESO_OFF);
+_FOSC(FCKSM_CSECMD & OSCIOFNC_OFF & POSCMD_XT & IOL1WAY_ON);
+//_FWDT(FWDTEN_OFF & WINDIS_OFF & PLLKEN_ON & WDTPRE_PRI128 & PDTPOST_PS32768);
+_FWDT(FWDTEN_OFF);
+_FICD(ICS_PGD3);
+_FPOR(ALTI2C1_ON & ALTI2C2_ON);
+/*
 //_FOSCSEL(FNOSC_FRC);
 _FOSCSEL(FNOSC_PRIPLL & IESO_OFF);
 _FOSC(FCKSM_CSECMD & OSCIOFNC_OFF & POSCMD_XT & IOL1WAY_ON);
@@ -106,6 +114,7 @@ _FOSC(FCKSM_CSECMD & OSCIOFNC_OFF & POSCMD_XT & IOL1WAY_ON);
 _FWDT(FWDTEN_OFF & WINDIS_OFF & PLLKEN_ON);
 _FICD(ICS_PGD3);
 _FPOR(ALTI2C1_ON & ALTI2C2_ON);
+ */
 
 #endif // __XC16__
 
@@ -114,11 +123,9 @@ _FPOR(ALTI2C1_ON & ALTI2C2_ON);
 
 int16_t defaultCorcon = 0 ;
 
-
 volatile int16_t trap_flags __attribute__ ((persistent, near));
 volatile int32_t trap_source __attribute__ ((persistent, near));
 volatile int16_t osc_fail_count __attribute__ ((persistent, near)) ;
-
 
 uint16_t get_reset_flags(void)
 {
@@ -326,10 +333,82 @@ void mcu_init(void)
 		trap_source = 0 ;
 		osc_fail_count = 0 ;
 	}
+
+// new RobD
+	ANSELA = 0x0000;
+	ANSELB = 0x0000;
+	ANSELC = 0x0000;
+	ANSELD = 0x0000;
+	ANSELE = 0x0000;
+	ANSELG = 0x0000;
 	
+#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
 	PLLFBDbits.PLLDIV = 30 ; // FOSC = 32 MHz (XT = 8.00MHz, N1=2, N2=4, M = 32)
+#endif
 
 #if (BOARD_TYPE == AUAV3_BOARD )
+/*
+    // Configure the device PLL to obtain 60 MIPS operation. The crystal
+    // frequency is 8MHz. Divide 8MHz by 2, multiply by 60 and divide by
+    // 2. This results in Fosc of 120MHz. The CPU clock frequency is
+    // Fcy = Fosc/2 = 60MHz. Wait for the Primary PLL to lock and then
+    // configure the auxilliary PLL to provide 48MHz needed for USB 
+    // Operation.
+
+	PLLFBD = 58;				// M  = 60
+	CLKDIVbits.PLLPOST = 0;		// N1 = 2
+	CLKDIVbits.PLLPRE = 0;		// N2 = 2
+	OSCTUN = 0;
+ */
+#if (MIPS == 64)
+#warning Fast OSC selected
+    // Configure the device PLL to obtain 64 MIPS operation. The crystal
+    // frequency is 8MHz. Divide 8MHz by 2, multiply by 64 and divide by
+    // 2. This results in Fosc of 128MHz. The CPU clock frequency is
+    // Fcy = Fosc/2 = 64MHz. Wait for the Primary PLL to lock and then
+    // configure the auxilliary PLL to provide 48MHz needed for USB 
+    // Operation.
+	PLLFBD = 62;				// M  = 64
+#elif (MIPS == 32)
+#warning Medium OSC selected
+    // Configure the device PLL to obtain 32 MIPS operation. The crystal
+    // frequency is 8MHz. Divide 8MHz by 2, multiply by 32 and divide by
+    // 2. This results in Fosc of 64MHz. The CPU clock frequency is
+    // Fcy = Fosc/2 = 32MHz. Wait for the Primary PLL to lock and then
+    // configure the auxilliary PLL to provide 48MHz needed for USB 
+    // Operation.
+	PLLFBD = 30;				// M  = 32
+#elif (MIPS == 16)
+#warning Slow OSC selected
+    // Configure the device PLL to obtain 16 MIPS operation. The crystal
+    // frequency is 8MHz. Divide 8MHz by 2, multiply by 64 and divide by
+    // 2. This results in Fosc of 32MHz. The CPU clock frequency is
+    // Fcy = Fosc/2 = 16MHz. Wait for the Primary PLL to lock and then
+    // configure the auxilliary PLL to provide 48MHz needed for USB 
+    // Operation.
+	PLLFBD = 14;				// M  = 16
+#else
+#error Invalid MIPS Configuration
+#endif // MIPS
+	CLKDIVbits.PLLPOST = 0;		// N1 = 2
+	CLKDIVbits.PLLPRE = 0;		// N2 = 2
+	OSCTUN = 0;			
+
+    //	Initiate Clock Switch to Primary Oscillator with PLL (NOSC= 0x3)
+	__builtin_write_OSCCONH(0x03);		
+	__builtin_write_OSCCONL(0x01);
+	while (OSCCONbits.COSC != 0x3);       
+
+    // Configuring the auxiliary PLL, since the primary
+    // oscillator provides the source clock to the auxiliary
+    // PLL, the auxiliary oscillator is disabled. Note that
+    // the AUX PLL is enabled. The input 8MHz clock is divided
+    // by 2, multiplied by 24 and then divided by 2. Wait till 
+    // the AUX PLL locks.
+    ACLKCON3 = 0x24C1;   
+    ACLKDIV3 = 0x7;   
+    ACLKCON3bits.ENAPLL = 1;
+    while (ACLKCON3bits.APLLCK != 1); 
 
 	configurePPS();
 #if (USE_CONSOLE != 0)

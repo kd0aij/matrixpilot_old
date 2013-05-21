@@ -17,6 +17,14 @@
         <itemPath>../../libDCM/rmat.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="libFlashFS" projectFiles="true">
+        <itemPath>../../libFlashFS/AT45D.h</itemPath>
+        <itemPath>../../libFlashFS/Compiler.h</itemPath>
+        <itemPath>../../libFlashFS/FSconfig.h</itemPath>
+        <itemPath>../../libFlashFS/GenericTypeDefs.h</itemPath>
+        <itemPath>../../libFlashFS/MDD_AT45D.h</itemPath>
+        <itemPath>../../libFlashFS/minGlue-mdd.h</itemPath>
+        <itemPath>../../libFlashFS/minGlue.h</itemPath>
+        <itemPath>../../libFlashFS/minIni.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="libMDD" projectFiles="true">
         <itemPath>../../Microchip/Include/MDD File System/FSDefs.h</itemPath>
@@ -74,7 +82,6 @@
         <itemPath>../FlyByWire.h</itemPath>
         <itemPath>../HardwareProfile.h</itemPath>
         <itemPath>../nv_memory_options.h</itemPath>
-        <itemPath>../options.h</itemPath>
         <itemPath>../preflight.h</itemPath>
         <itemPath>../redef.h</itemPath>
         <itemPath>../telemetry_log.h</itemPath>

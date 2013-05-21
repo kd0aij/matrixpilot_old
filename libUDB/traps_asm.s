@@ -13,6 +13,7 @@
 ; unhandled interrupt 16
 ; DMACError 32
 
+/*
 .extern	_trap_flags
 .extern _trap_source
 .extern _osc_fail_count
@@ -49,6 +50,8 @@ save_states:	mov.w w0,_trap_flags
 .global __OscillatorFail
 .global __DefaultInterrupt
 .global __DMACError
+ */
+
 .global _SP_start
 .global _SP_limit
 .global _SP_current
@@ -101,6 +104,52 @@ _getErrLoc:
 ;13. PC[15:0]           <---- W14 
 ;14. 0:PC[22:16]
 ;15.                    <---- W15
+
+/*
+.global __AddressError
+.global _AddrErrInstructionAddrLow, _AddrErrInstructionAddrHigh
+
+.section .bss
+_AddrErrInstructionAddrLow: .space 2
+_AddrErrInstructionAddrHigh: .space 2
+
+.section .text
+
+__AddressError:
+        mov     #_AddrErrInstructionAddrHigh, w1
+        pop     [w1--]                  ;Pop the Program Counter (PC) from the stack
+        pop     [w1++]                  ;Remember that the PC(PCH and PCL) is stacked
+        bclr    [w1], #7                ;along with the SRL byte and IPL3 bit from
+        inc     w1, w1                  ;CORCON. So we need to extract just the 24-bit
+        clr.b   [w1]                    ;PCH:PCL information from the stack
+        mov     #_AddrErrInstructionAddrLow, w1  ;Decrement that value by 2
+        mov     #2, w2                  ;Store the 24-bit result into 2x16-bit words
+        subr    w2, [w1], [w1++]        ;in RAM at- AddrErrInstructionAddrHigh:Low
+        clr     w2
+        subbr   w2, [w1], [w1]
+        bclr    INTCON1, #ADDRERR       ;Clear the trap flag
+StayTrappedAddrErr:                     ;Stay in this routine
+        bra     StayTrappedAddrErr
+        ;Place a breakpoint above and halt the Debugging process and view
+        ;the variables named: AddrErrInstructionAddrHigh:Low
+        retfie
+ */
+
+.global _gentrap
+
+.section .text
+_gentrap:
+        mov     #0xFFFF, w0     ;Load an unimplemented address into w0
+        mov     #0xFFFF, w0     ;Load an unimplemented address into w1
+
+trap_causing_mov_instruction:
+        mov     [w0], [w1]      ;Perform an illegal mov instruction that
+                                ;the tools will not be able to detect at
+                                ;compile-time.
+                                ;This mov instruction tries to fetch and
+                                ;store values from and to unimplemented addresses
+                                ;Also, it performs a misaligned access.
+done:   bra     done            ;Code execution never reaches here.
 
 
 
