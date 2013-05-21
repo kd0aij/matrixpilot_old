@@ -204,24 +204,26 @@ void configurePPS(void)
     _U1RXR = 86;        // U1RX input RPI86
     _RP85R = 0b000001;  // U1TX output RP85
 
-#define TELEPORT    2
+    // use UART3 to connect OpenLog, since it supplies 5V power
+    // use OUART1 to connect to Xbee using separate 5V power source
+#define TELEPORT UART3
 
     // UART2 RX, TX; This is the "USART" in MatrixPilot
     // On the AUAV3, the opto-uart port labeled "OUART1" is on nets U1RX,TX and pins RPI78,RP79
-#if (TELEPORT == 2)
+#if (TELEPORT == OUART1)
     _U2RXR = 78;        // U2RX input RP178
     _RP79R = 0b000011;  // U2TX output RP79
-#else
+#else if (TELEPORT == UART3)
     _U2RXR = 98;        // U2RX input RP98
     _RP99R = 0b000011;  // U2TX output RP99
 #endif
 
     // UART3 RX, TX
     // On the AUAV3, the uart port labeled "UART3" is on nets U3RX,TX and pins RP98,99
-#if (TELEPORT == 2)
+#if (TELEPORT == OUART1)
     _U3RXR = 98;        // U3RX input RP98
     _RP99R = 0b011011;  // U3TX output RP99
-#else
+#else if (TELEPORT == UART3)
     _U3RXR = 78;        // U3RX input RP178
     _RP79R = 0b011011;  // U3TX output RP79
 #endif
