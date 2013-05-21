@@ -1,0 +1,22 @@
+build/default/production/_ext/1472/nv_memory_table.o:  \
+ ../nv_memory_table.c  \
+../parameter_table.h  \
+../../libDCM/libDCM_internal.h  \
+ ../../libDCM/libDCM.h  \
+../../libDCM/../libUDB/libUDB.h  \
+ ../MatrixPilot-auav3/options.h  \
+../../libDCM/../libUDB/fixDeps.h  \
+ ../../libDCM/../libUDB/libUDB_defines.h  \
+ ../../libDCM/../libUDB/ConfigAUAV3.h  \
+ ../../libDCM/../libUDB/boardRotation_defines.h  \
+ ../../libDCM/../libUDB/magnetometerOptions.h  \
+ ../MatrixPilot-auav3/nv_memory_options.h  \
+../../libDCM/libDCM_defines.h  \
+ ../../MAVLink/include/mavlink_types.h  \
+../parameter_datatypes.h  \
+ ../gain_variables.h  \
+../../libUDB/libUDB.h  \
+../data_services.h  \
+ ../data_storage.h  \
+../../libUDB/libUDB_internal.h  \
+../../libUDB/libUDB.h 

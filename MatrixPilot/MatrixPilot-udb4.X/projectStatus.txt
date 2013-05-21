@@ -1,0 +1,4 @@
+2 April 2013: setting _EVENTM_TRIGGERIF to 1 in trigger_event()
+    does not seem to result in subsequent entry of _EVENTM_INTERUPT ISR
+    -- found problem in background.c; init_events was not being called
+    qgroundcontrol and mavproxy now working; parameter get/set and nvram storage OK on UDB4

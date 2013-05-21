@@ -1,0 +1,62 @@
+Mark Whitehorn's flight testing project
+    currently operational:
+        stabilization
+        navigation: RTL
+        magnetometer
+
+notes and changes:
+
+21 April 2013:
+    Arsov AGPS module connected and working properly on bench.
+    Not getting a green LED for radio_on indication; appears to be no IC1 interrupt
+
+22 April:
+    PWM inputs working correctly now, servo outputs also seem reasonable
+    incorporated Robert's macro changes to radioIn_auav3.c
+
+23 April:
+    fixed InputCapture pin assignments for inputs 2/3 and 5/6
+
+24 April:
+    defined symbolic names for all IC and OC pins to help avoid mismatches
+    between internal and external pin numbers
+
+25 April:
+    The latest version of the XC16 compiler, v1.11 generates the warning:
+    "Taking the address of <symbol> may require an extended pointer for this device"
+    if the address of an auto variable is taken using a standard data pointer.
+    This is due to the fact that the stack may span the 32K boundary and only the
+    low 15 bits of a standard pointer are used as the address.
+    This is not currently a problem, as the stack begins down below 0x2000, but
+    could become an issue if dataspace begins to fill toward the 32K (0x8000) boundary.
+
+    Added file stack.S to test manual allocation of 4KB stack from 0x2000 to 0x3000.
+    This range is addressable with a standard pointer. No apparent way to suppress
+    the compiler warning though.
+
+29 April:
+    changed options.h and magnetometerOptions.h to enable onboard magnetometer;
+    soldered mag enable jumper on auav3
+    still untested; need to install in aircraft and log telemetry to test
+
+30 April:
+   moved telemetry output to UART3 port (by remapping I/O pins in mcu.c:configurePPS)
+   and connected OpenLog to UART3
+
+2 May:
+    getting address and stack error traps with only barometer enabled on I2C2
+    also getting address traps with only magnetometer enabled on I2C2 (over 60 minutes
+    to first trap)
+    No traps observed during a 3987 second (66.5 minutes) run with no I2C2 devices enabled
+
+5 May:
+    revert changes to project and magneto_udb4.c which broke this project
+    This project is currently configured to use the magnetometer and excludes
+    the code for the I2C2 barometer as it is incompatible.
+
+16 May:
+    modified options.h for Typhoon (copy in typhoon_options.h), with dual aileron
+    servos. Demonstrated stabilized mode and observed erratic but stable behavior
+    in auto mode on 15 May. Need to soften the auto mode turns, route battery cables
+    away from magnetometer and fly again.
+    
