@@ -192,12 +192,12 @@ void configurePPS(void)
     OC_RPIN8 = 0b010111;
 */
     // UART mapping:
-    // #  MatrixPilot | AUAV3               | AUAV3 Net
+    // #  MatrixPilot | AUAV3 silk          | AUAV3 Net
     // ------------------------------------------------
     // 1: GPS           GPS                   GPS_RX,TX
-    // 2: USART         TLM (optoisolated)    U1RX,TX
+    // 2: USART         OUART1 (optoisolated) U1RX,TX
     // 3: ---           UART3                 U3RX,TX
-    // 4: ---           OSD (optoisolated)    U2RX,TX
+    // 4: ---           OUART2 (optoisolated) U2RX,TX
 
     // UART1 RX, TX: This is the GPS UART in MatrixPilot
     // On the AUAV3, GPS_RX,TX are pins RPI86,RP85
@@ -213,7 +213,7 @@ void configurePPS(void)
 #if (TELEPORT == OUART1)
     _U2RXR = 78;        // U2RX input RP178
     _RP79R = 0b000011;  // U2TX output RP79
-#else if (TELEPORT == UART3)
+#elif (TELEPORT == UART3)
     _U2RXR = 98;        // U2RX input RP98
     _RP99R = 0b000011;  // U2TX output RP99
 #endif
@@ -223,7 +223,7 @@ void configurePPS(void)
 #if (TELEPORT == OUART1)
     _U3RXR = 98;        // U3RX input RP98
     _RP99R = 0b011011;  // U3TX output RP99
-#else if (TELEPORT == UART3)
+#elif (TELEPORT == UART3)
     _U3RXR = 78;        // U3RX input RP178
     _RP79R = 0b011011;  // U3TX output RP79
 #endif
