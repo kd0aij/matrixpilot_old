@@ -200,8 +200,8 @@
 #define PPM_SIGNAL_INVERTED					0
 #define PPM_ALT_OUTPUT_PINS					0
 
-// make this non-zero if you want the UDB to respect your TX trim settings
-#define HARD_TRIMS      1
+// make this non-zero if you want the UDB to use fixed trim settings
+#define HARD_TRIMS      0
 // set these to the zero-trim values for your RX/TX if you use HARD_TRIMS
 #define NEUTRAL_TRIM    3040
 #define THROTTLE_IDLE   2250
@@ -274,7 +274,7 @@
 // as you define below), that servo will be sent reversed controls.
 #define AILERON_CHANNEL_REVERSED            1
 #define ELEVATOR_CHANNEL_REVERSED           1
-#define RUDDER_CHANNEL_REVERSED             0
+#define RUDDER_CHANNEL_REVERSED             1
 #define AILERON_SECONDARY_CHANNEL_REVERSED	1
 #define THROTTLE_CHANNEL_REVERSED           0
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
@@ -446,6 +446,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Control gains.
 // All gains should be positive real numbers.
+// Proportional gains should be less than 4.0.
+// Rate gains should be less than 0.8.
+// Proportional gains include ROLLKP, YAWKP_AILERON, AILERON_BOOST, PITCHGAIN,
+// RUDDER_ELEV_MIX, ROLL_ELEV_MIX, ELEVATOR_BOOST, YAWKP_RUDDER, ROLLKP_RUDDER,
+// MANUAL_AILERON_RUDDER_MIX, RUDDER_BOOST, HOVER_ROLLKP, HOVER_PITCHGAIN, HOVER_YAWKP
+// Rate gains include ROLLKD, YAWKD_AILERON, PITCHKD, YAWKD_RUDDER, ROLLKD_RUDDER,
+// HOVER_ROLLKD, HOVER_PITCHKD, HOVER_YAWKD
 
 // SERVOSAT limits servo throw by controlling pulse width saturation.
 // set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want
@@ -457,9 +464,9 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP				0.04 //0.22
+#define ROLLKP				0.08 //0.22
 #define ROLLKD				0.02
-#define YAWKP_AILERON		0.07 // 0.05
+#define YAWKP_AILERON		0.05 // 0.05
 #define YAWKD_AILERON		0.11 //0.05
 #define AILERON_BOOST		0.5
 
@@ -469,11 +476,11 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
-#define PITCHGAIN			0.03 // 0.150
+#define PITCHGAIN			0.08 // 0.150
 #define PITCHKD				0.015 // 0.075
 #define RUDDER_ELEV_MIX		0.04
-#define ROLL_ELEV_MIX		0.02
-#define ELEVATOR_BOOST		0.5
+#define ROLL_ELEV_MIX		0.08
+#define ELEVATOR_BOOST		1.0
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
 // Use this to add extra "up" elevator while the plane is inverted, to avoid losing altitude.

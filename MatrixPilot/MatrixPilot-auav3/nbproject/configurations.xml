@@ -30,8 +30,8 @@
         <itemPath>../../libUDB/ConfigAUAV3.h</itemPath>
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/barometer.h</itemPath>
+        <itemPath>../../../MatrixPilot_AUAV3/libUDB/interrupt.h</itemPath>
         <itemPath>../../libUDB/barometer_udb4.c</itemPath>
-        <itemPath>../../libUDB/interrupt.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="libVectorMatrix" projectFiles="true">
         <itemPath>../../libVectorMatrix/dspcommon.inc</itemPath>
@@ -300,8 +300,8 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>1.11</languageToolchainVersion>
-        <platform>3</platform>
+        <languageToolchainVersion>1.10</languageToolchainVersion>
+        <platform>2</platform>
       </toolsSet>
       <compileType>
         <linkerTool>
@@ -401,7 +401,7 @@
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file"
-                  value="C:\Stuff\MatrixPilot_UDB5_WJP2\MatrixPilot\MatrixPilot-auav3\MatrixPilot-auav3.production.map"/>
+                  value="../MatrixPilot-auav3/MatrixPilot-auav3.production.map"/>
         <property key="oXC16ld-extra-opts" value=""/>
         <property key="oXC16ld-fill-upper" value="0"/>
         <property key="oXC16ld-force-link" value="false"/>
@@ -410,7 +410,7 @@
         <property key="oXC16ld-stackguard" value="16"/>
         <property key="preprocessor-macros" value=""/>
         <property key="remove-unused-sections" value="false"/>
-        <property key="report-memory-usage" value="true"/>
+        <property key="report-memory-usage" value="false"/>
         <property key="secure-eeprom" value="no_eeprom"/>
         <property key="secure-flash" value="no_flash"/>
         <property key="secure-ram" value="no_ram"/>
