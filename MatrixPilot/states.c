@@ -134,7 +134,7 @@ static void ent_acquiringS(void)
 	flags._.pitch_feedback = 0 ;
 	flags._.altitude_hold_throttle = 0 ;
 	flags._.altitude_hold_pitch = 0 ;
-	
+
 	// almost ready to turn the control on, save the trims and sensor offsets
 #if (FIXED_TRIMPOINT != 1)	// Do not alter trims from preset when they are fixed
  #if(USE_NV_MEMORY == 1)
@@ -147,7 +147,7 @@ static void ent_acquiringS(void)
  #endif
 #endif
 	dcm_calibrate() ;
-	
+
 	waggle = WAGGLE_SIZE ;
 	throttleFiltered._.W1 = 0 ;
 	stateS = &acquiringS ;
@@ -173,7 +173,7 @@ static void ent_manualS(void)
 	stateS = &manualS ;
 }
 
-//	Auto state provides augmented control. 
+//	Auto state provides augmented control.
 static void ent_stabilizedS(void)
 {
 	DPRINT("ent_stabilizedS\r\n");
@@ -183,7 +183,7 @@ static void ent_stabilizedS(void)
 	// that the plane was at when entering stabilized mode.
 	setTargetAltitude(IMUlocationz._.W1) ;
 #endif
-	
+
 	flags._.GPS_steering = 0 ;
 	flags._.pitch_feedback = 1 ;
 	flags._.altitude_hold_throttle = (ALTITUDEHOLD_STABILIZED == AH_FULL) ;
@@ -232,12 +232,12 @@ static void ent_waypointS(void)
 	flags._.pitch_feedback = 1 ;
 	flags._.altitude_hold_throttle = (ALTITUDEHOLD_WAYPOINT == AH_FULL) ;
 	flags._.altitude_hold_pitch = (ALTITUDEHOLD_WAYPOINT == AH_FULL || ALTITUDEHOLD_WAYPOINT == AH_PITCH_ONLY) ;
-	
+
 	if ( !(FAILSAFE_TYPE == FAILSAFE_MAIN_FLIGHTPLAN && stateS == &returnS) )
 	{
 		init_flightplan( 0 ) ; // Only reset non-rtl waypoints if not already following waypoints
 	}
-	
+
 	waggle = 0 ;
 #if ( LED_RED_MAG_CHECK == 0 )
 	LED_RED = LED_ON ;
@@ -256,7 +256,7 @@ static void ent_returnS(void)
 	flags._.altitude_hold_pitch = (ALTITUDEHOLD_WAYPOINT == AH_FULL || ALTITUDEHOLD_WAYPOINT == AH_PITCH_ONLY) ;
 #if (FAILSAFE_HOLD == 1)
 	flags._.rtl_hold = 1 ;
-#endif	
+#endif
 	#if ( FAILSAFE_TYPE == FAILSAFE_RTL )
 	init_flightplan( 1 ) ;
 #elif ( FAILSAFE_TYPE == FAILSAFE_MAIN_FLIGHTPLAN )
@@ -265,7 +265,7 @@ static void ent_returnS(void)
 		init_flightplan( 0 ) ; // Only reset non-rtl waypoints if not already following waypoints
 	}
 #endif
-	
+
 	waggle = 0 ;
 #if ( LED_RED_MAG_CHECK == 0 )
 	LED_RED = LED_ON ;
@@ -307,7 +307,7 @@ static void acquiringS(void)
 	ent_manualS();
 	return;
 #endif
-	
+
 	if ( dcm_flags._.nav_capable && ( ( MAG_YAW_DRIFT == 0 ) || ( magMessage == 7 ) ) )
 	{
 #if (NORADIO == 1)
@@ -322,7 +322,7 @@ static void acquiringS(void)
 				waggle = - waggle ;
 			else
 				waggle = 0 ;
-			
+
 			standby_timer-- ;
 			if ( standby_timer == 6 )
 			{
@@ -380,18 +380,18 @@ static void cat_delayS(void)
 }
 #endif
 
-static void manualS(void) 
+static void manualS(void)
 {
 	if ( udb_flags._.radio_on )
 	{
 #ifdef CATAPULT_LAUNCH_ENABLE
-		if ( launch_enabled() & flight_mode_switch_home() & dcm_flags._.nav_capable )
+		if ( launch_enabled() & flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
 			ent_cat_armedS() ;
         else
 #endif
-		if ( flight_mode_switch_home() & dcm_flags._.nav_capable )
+		if ( flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
 			ent_waypointS() ;
-		else if ( flight_mode_switch_auto() )
+		else if ( flight_mode_switch_stabilize() )
 			ent_stabilizedS() ;
 	}
 	else
@@ -403,16 +403,16 @@ static void manualS(void)
 	}
 }
 
-static void stabilizedS(void) 
+static void stabilizedS(void)
 {
 	if ( udb_flags._.radio_on )
 	{
 #ifdef CATAPULT_LAUNCH_ENABLE
-		if ( launch_enabled() & flight_mode_switch_home() & dcm_flags._.nav_capable )
+		if ( launch_enabled() & flight_mode_switch_stabilize() & dcm_flags._.nav_capable )
 			ent_cat_armedS() ;
         else
 #endif
-		if ( flight_mode_switch_home() & dcm_flags._.nav_capable )
+		if ( flight_mode_switch_stabilize() & dcm_flags._.nav_capable )
 			ent_waypointS() ;
 		else if ( flight_mode_switch_manual() )
 			ent_manualS() ;
@@ -433,7 +433,7 @@ static void waypointS(void)
 	{
 		if ( flight_mode_switch_manual() )
 			ent_manualS() ;
-		else if ( flight_mode_switch_auto() )
+		else if ( flight_mode_switch_stabilize() )
 			ent_stabilizedS() ;
 	}
 	else
@@ -448,9 +448,9 @@ static void returnS(void)
 	{
 		if ( flight_mode_switch_manual() )
 			ent_manualS() ;
-		else if ( flight_mode_switch_auto() )
+		else if ( flight_mode_switch_stabilize() )
 			ent_stabilizedS() ;
-		else if ( flight_mode_switch_home() & dcm_flags._.nav_capable )
+		else if ( flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
 			ent_waypointS() ;
 	}
 	else
@@ -458,5 +458,5 @@ static void returnS(void)
 #if (FAILSAFE_HOLD == 1)
 		flags._.rtl_hold = 1 ;
 #endif
-	}		
+	}
 }
