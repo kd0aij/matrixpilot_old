@@ -41,11 +41,11 @@
 #define BOARD_TYPE 							UDB5_BOARD
 #endif
 #ifdef AUAV3
-#define BOARD_TYPE AUAV3_BOARD
+#define BOARD_TYPE							AUAV3_BOARD
 #endif
 
 #ifndef BOARD_TYPE
-#define BOARD_TYPE 							UDB5_BOARD
+#define BOARD_TYPE							AUAV3_BOARD
 #endif
 
 
@@ -211,7 +211,7 @@
 #define PPM_ALT_OUTPUT_PINS					0
 
 // make this non-zero if you want the UDB to respect your TX trim settings
-#define HARD_TRIMS      1
+#define HARD_TRIMS      0
 // set these to the zero-trim values for your RX/TX if you use HARD_TRIMS
 #define NEUTRAL_TRIM    3040
 #define THROTTLE_IDLE   2250
@@ -233,7 +233,7 @@
 #define RUDDER_INPUT_CHANNEL				CHANNEL_4
 
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_5
-#define LAUNCH_ARM_INPUT_CHANNEL    		CHANNEL_6
+#define LAUNCH_ARM_INPUT_CHANNEL			CHANNEL_6
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_MODE_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -264,11 +264,11 @@
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
 // 
-#define THROTTLE_OUTPUT_CHANNEL             CHANNEL_1
-#define AILERON_OUTPUT_CHANNEL              CHANNEL_2
-#define ELEVATOR_OUTPUT_CHANNEL             CHANNEL_3
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
+#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL               CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL    CHANNEL_5
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
 #define CAMERA_PITCH_OUTPUT_CHANNEL         CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL           CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL              CHANNEL_UNUSED
@@ -285,11 +285,11 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED            1
-#define ELEVATOR_CHANNEL_REVERSED           1
-#define RUDDER_CHANNEL_REVERSED             0
+#define AILERON_CHANNEL_REVERSED			1
+#define ELEVATOR_CHANNEL_REVERSED			1
+#define RUDDER_CHANNEL_REVERSED				1
 #define AILERON_SECONDARY_CHANNEL_REVERSED	1
-#define THROTTLE_CHANNEL_REVERSED           0
+#define THROTTLE_CHANNEL_REVERSED			0
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED         0
 
@@ -314,7 +314,7 @@
 // switch state back in stabilized. The important design concept is that Manual position is always Manual state immediately.
 // Stabilized position is Stabilized mode unless you try  hard to reach Autonomous mode.
 // Set MODE_SWITCH_TWO_POSITION	to 0 for a normal three position mode switch.	
-#define MODE_SWITCH_TWO_POSITION			1
+#define MODE_SWITCH_TWO_POSITION	1
 
 ////////////////////////////////////////////////////////////////////////////////
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
@@ -330,8 +330,6 @@
 // FAILSAFE_INPUT_MIN and _MAX define the range within which we consider the radio on.
 // Normal signals should fall within about 2000 - 4000.
 #define FAILSAFE_INPUT_CHANNEL  THROTTLE_INPUT_CHANNEL
-//#define FAILSAFE_INPUT_MIN	2100
-//#define FAILSAFE_INPUT_MAX	4500
 #define FAILSAFE_INPUT_MIN	2020
 #define FAILSAFE_INPUT_MAX	4040
 
@@ -373,17 +371,18 @@
 // SERIAL_MAVLINK is only supported on the UDB4 to ensure that sufficient RAM is available.
 // Note that the default baud rate is 115200 baud
 
-#define SERIAL_OUTPUT_FORMAT SERIAL_MAVLINK
+#define SERIAL_OUTPUT_FORMAT 	SERIAL_MAVLINK
+//#define SERIAL_OUTPUT_FORMAT 	SERIAL_UDB_EXTRA
 
 // MAVLink requires an aircraft Identifier (I.D) as it is deaigned to control multiple aircraft
 // Each aircraft in the sky will need a unique I.D. in the range from 0-255
-#define MAVLINK_SYSID 55
+#define MAVLINK_SYSID			55
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // On Screen Display
 // USE_OSD enables the OSD system.  Customize the OSD Layout in the osd_layout.h file.
-#define USE_OSD								0
+#define USE_OSD					0
 
 // NUM_ANALOG_INPUTS: 
 // For classic boards: Set to 0, 1, or 2
@@ -391,7 +390,7 @@
 //   2 also enables Radio In 2 as another analog Input
 //   NOTE: Can only be set this higher than 0 if USE_PPM_INPUT is enabled above.
 // For UDB4 boards: Set to 0-4.  Analog pins are AN15 - AN18.
-#define NUM_ANALOG_INPUTS					4
+#define NUM_ANALOG_INPUTS		4
 
 // Channel numbers for each analog input
 //   - Only assign each channel number to one analog sensor
@@ -741,23 +740,27 @@
 // The following can be used to do a ground check of stabilization without a GPS.
 // If you define TestGains, stabilization functions
 // will be enabled, even without GPS or Tx turned on. (Tx is optional)
-// #define TestGains						// uncomment this line if you want to test your gains without using GPS
+// #define TestGains					// uncomment this line if you want to test your gains without using GPS
 
 // Set this to 1 to calculate and print out free stack space
-#define RECORD_FREE_STACK_SPACE 			0
+#define RECORD_FREE_STACK_SPACE 		0
 
 // Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
 // UART 3 and 4 option only available with the AUAV3 board.
-#define USE_CONSOLE							3
+#define USE_CONSOLE						3
 
 // Optionally enable the new power saving idle mode of the MCU during mainloop
-#define USE_MCU_IDLE						1
+#define USE_MCU_IDLE					0
 
 ////////////////////////////////////////////////////////////////////////////////
 // AUAV3 only options
 
 // Set this to 1 to enable logging telemetry to dataflash on AUAV3
-#define USE_TELELOG							0
+#define USE_TELELOG						0
 
 // Set this to 1 to enable loading options settings from a config file on AUAV3
-#define USE_CONFIGFILE						0
+#define USE_CONFIGFILE					0
+
+// Set this to 1 to enable the USB stack
+#define USE_USB							0
+

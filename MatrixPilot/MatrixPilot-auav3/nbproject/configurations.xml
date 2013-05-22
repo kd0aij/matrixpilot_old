@@ -325,10 +325,10 @@
         <itemPath>../config.c</itemPath>
         <itemPath>../FlyByWire.c</itemPath>
         <itemPath>../telemetry_log.c</itemPath>
+        <itemPath>../main.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="MatrixPilot-auav3" projectFiles="true">
         <itemPath>nv_memory_options.h</itemPath>
-        <itemPath>main.c</itemPath>
         <itemPath>options.h</itemPath>
         <itemPath>stack.S</itemPath>
       </logicalFolder>

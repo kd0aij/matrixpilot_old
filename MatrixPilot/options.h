@@ -753,5 +753,3 @@
 
 // Set this to 1 to enable loading options settings from a config file on AUAV3
 #define USE_CONFIGFILE						0
-
-#define CATAPULT_LAUNCH_ENABLE

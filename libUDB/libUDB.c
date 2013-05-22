@@ -25,7 +25,7 @@
 #if (USE_TELELOG == 1)
 #include "telemetry_log.h"
 #endif
-#if (BOARD_TYPE == AUAV3_BOARD)
+#if (USE_USB == 1)
 #include "preflight.h"
 #endif
 #if (USE_CONSOLE != 0)
@@ -125,7 +125,7 @@ void udb_run(void)
 		telemetry_log();
 #endif
 
-#if (BOARD_TYPE == AUAV3_BOARD)
+#if (USE_USB == 1)
 		USBPollingService();
 #endif
 

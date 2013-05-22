@@ -98,7 +98,6 @@ _FICD(	JTAGEN_OFF &
 #pragma config APLK = OFF               // Auxiliary Segment Key bits (Aux Flash Write Protection and Code Protection is Disabled)
 
 #else // __XC16__
-
 _FOSCSEL(FNOSC_FRC);
 //_FOSCSEL(FNOSC_PRIPLL & IESO_OFF);
 _FOSC(FCKSM_CSECMD & OSCIOFNC_OFF & POSCMD_XT & IOL1WAY_ON);
@@ -115,11 +114,8 @@ _FWDT(FWDTEN_OFF & WINDIS_OFF & PLLKEN_ON);
 _FICD(ICS_PGD3);
 _FPOR(ALTI2C1_ON & ALTI2C2_ON);
  */
-
 #endif // __XC16__
-
 #endif // BOARD_TYPE
-
 
 int16_t defaultCorcon = 0 ;
 
@@ -134,14 +130,9 @@ uint16_t get_reset_flags(void)
 
 #if (BOARD_TYPE == AUAV3_BOARD )
 // This method assigns all PPS registers
-
 void configurePPS(void) 
 {
-    // configure PPS registers
-
-    //*************************************************************
     // Unlock Registers
-    //*************************************************************
     __builtin_write_OSCCONL(OSCCON & ~(1 << 6));
 
     // CAN module 1 I/O
@@ -233,20 +224,15 @@ void configurePPS(void)
     _U4RXR = 100;       // U4RX input RP100
     _RP101R = 0b011101; // U4TX output RP101
 
-
-    //*************************************************************
     // Lock Registers
-    //*************************************************************
     __builtin_write_OSCCONL(OSCCON | (1 << 6));
-
 }
 
 // This method configures TRISx for the digital IOs
-
 void configureDigitalIO(void)
 {
     // TRIS registers have no effect on pins mapped to peripherals
-    // and TRIS assignments are made in the initialization methods for each function
+    // TRIS assignments are made in the initialization methods for each function
 
     // port A
     TRISAbits.TRISA6 = 1; // DIG2
@@ -290,7 +276,6 @@ void configureDigitalIO(void)
     TRISGbits.TRISG14 = 0; // O5
     TRISGbits.TRISG1 = 0; // O6
 
-///////////////////////////////////////////////////////////////////////////////
 // Configure the DIGx pins as outputs for scope tracing
     TRISAbits.TRISA6 = 0; // DIG2
     TRISAbits.TRISA7 = 0; // DIG1
@@ -319,15 +304,13 @@ void init_leds(void)
     TRISBbits.TRISB3 = 0; // LED2
     TRISBbits.TRISB4 = 0; // LED3
     TRISBbits.TRISB5 = 0; // LED4
-#else
-#error Invalid BOARD_TYPE
 #endif
 }
 
 void mcu_init(void)
 {
-        defaultCorcon = CORCON ;
-	
+	defaultCorcon = CORCON ;
+
 	if ( _SWR == 0 )
 	{
 		// if there was not a software reset (trap error) clear the trap data
@@ -336,32 +319,9 @@ void mcu_init(void)
 		osc_fail_count = 0 ;
 	}
 
-// new RobD
-	ANSELA = 0x0000;
-	ANSELB = 0x0000;
-	ANSELC = 0x0000;
-	ANSELD = 0x0000;
-	ANSELE = 0x0000;
-	ANSELG = 0x0000;
-	
-#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
+#ifndef USE_NEW_CLK
 	PLLFBDbits.PLLDIV = 30 ; // FOSC = 32 MHz (XT = 8.00MHz, N1=2, N2=4, M = 32)
-#endif
-
-#if (BOARD_TYPE == AUAV3_BOARD )
-/*
-    // Configure the device PLL to obtain 60 MIPS operation. The crystal
-    // frequency is 8MHz. Divide 8MHz by 2, multiply by 60 and divide by
-    // 2. This results in Fosc of 120MHz. The CPU clock frequency is
-    // Fcy = Fosc/2 = 60MHz. Wait for the Primary PLL to lock and then
-    // configure the auxilliary PLL to provide 48MHz needed for USB 
-    // Operation.
-
-	PLLFBD = 58;				// M  = 60
-	CLKDIVbits.PLLPOST = 0;		// N1 = 2
-	CLKDIVbits.PLLPRE = 0;		// N2 = 2
-	OSCTUN = 0;
- */
+#else
 #if (MIPS == 64)
 #warning Fast OSC selected
     // Configure the device PLL to obtain 64 MIPS operation. The crystal
@@ -400,7 +360,17 @@ void mcu_init(void)
 	__builtin_write_OSCCONH(0x03);		
 	__builtin_write_OSCCONL(0x01);
 	while (OSCCONbits.COSC != 0x3);       
+#endif // USE_NEW_CLK
 
+#if (BOARD_TYPE == AUAV3_BOARD )
+    // new RobD
+	ANSELA = 0x0000;
+	ANSELB = 0x0000;
+	ANSELC = 0x0000;
+	ANSELD = 0x0000;
+	ANSELE = 0x0000;
+	ANSELG = 0x0000;
+#if (USE_USB == 1)
     // Configuring the auxiliary PLL, since the primary
     // oscillator provides the source clock to the auxiliary
     // PLL, the auxiliary oscillator is disabled. Note that
@@ -411,8 +381,13 @@ void mcu_init(void)
     ACLKDIV3 = 0x7;   
     ACLKCON3bits.ENAPLL = 1;
     while (ACLKCON3bits.APLLCK != 1); 
+#endif // USE_USB
+    configurePPS();
+#endif // BOARD_TYPE
 
-	configurePPS();
+	configureDigitalIO();
+    init_leds();
+
 #if (USE_CONSOLE != 0)
 	__C30_UART = USE_CONSOLE;
 	init_console();
@@ -427,8 +402,4 @@ void mcu_init(void)
 			osc_fail_count);
 	}
 #endif // USE_CONSOLE
-#endif // BOARD_TYPE
-
-	configureDigitalIO();
-    init_leds();
 }

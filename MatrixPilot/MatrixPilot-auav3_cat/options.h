@@ -41,11 +41,11 @@
 #define BOARD_TYPE 							UDB5_BOARD
 #endif
 #ifdef AUAV3
-#define BOARD_TYPE AUAV3_BOARD
+#define BOARD_TYPE							AUAV3_BOARD
 #endif
 
 #ifndef BOARD_TYPE
-#define BOARD_TYPE 							UDB5_BOARD
+#define BOARD_TYPE							AUAV3_BOARD
 #endif
 
 
@@ -158,7 +158,7 @@
 // Otherwise, if set to 0 the GPS will be used.
 // If you select this option, you also need to set magnetometer options in
 // the magnetometerOptions.h file, including declination and magnetometer type.
-#define MAG_YAW_DRIFT 						1
+#define MAG_YAW_DRIFT 						0
 
 // Define BAROMETER_ALTITUDE to be 1 to use barometer for altitude correction.
 // Otherwise, if set to 0 only the GPS will be used.
@@ -225,23 +225,20 @@
 
 // Channel numbers for each input.
 // Use as is, or edit to match your setup.
-//   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
-//     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
-#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
-#define AILERON_INPUT_CHANNEL				CHANNEL_1
-#define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL		CHANNEL_4
-
-#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_5
-#define LAUNCH_ARM_INPUT_CHANNEL    CHANNEL_6
-#define CAMERA_PITCH_INPUT_CHANNEL	CHANNEL_UNUSED
-#define CAMERA_YAW_INPUT_CHANNEL	CHANNEL_UNUSED
-#define CAMERA_MODE_INPUT_CHANNEL	CHANNEL_UNUSED
-#define OSD_MODE_SWITCH_INPUT_CHANNEL   CHANNEL_UNUSED
-#define PASSTHROUGH_A_INPUT_CHANNEL	CHANNEL_UNUSED
-#define PASSTHROUGH_B_INPUT_CHANNEL	CHANNEL_UNUSED
-#define PASSTHROUGH_C_INPUT_CHANNEL	CHANNEL_UNUSED
-#define PASSTHROUGH_D_INPUT_CHANNEL	CHANNEL_UNUSED
+#define THROTTLE_INPUT_CHANNEL			CHANNEL_3
+#define AILERON_INPUT_CHANNEL			CHANNEL_1
+#define ELEVATOR_INPUT_CHANNEL			CHANNEL_2
+#define RUDDER_INPUT_CHANNEL			CHANNEL_4
+#define MODE_SWITCH_INPUT_CHANNEL		CHANNEL_5
+#define LAUNCH_ARM_INPUT_CHANNEL    	CHANNEL_6
+#define CAMERA_PITCH_INPUT_CHANNEL		CHANNEL_UNUSED
+#define CAMERA_YAW_INPUT_CHANNEL		CHANNEL_UNUSED
+#define CAMERA_MODE_INPUT_CHANNEL		CHANNEL_UNUSED
+#define OSD_MODE_SWITCH_INPUT_CHANNEL	CHANNEL_UNUSED
+#define PASSTHROUGH_A_INPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_B_INPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_C_INPUT_CHANNEL		CHANNEL_UNUSED
+#define PASSTHROUGH_D_INPUT_CHANNEL		CHANNEL_UNUSED
 
 // NUM_OUTPUTS:
 // For classic boards: Set to 3, 4, 5, or 6
@@ -268,7 +265,7 @@
 #define AILERON_OUTPUT_CHANNEL				CHANNEL_1
 #define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
 #define RUDDER_OUTPUT_CHANNEL               CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
 #define CAMERA_PITCH_OUTPUT_CHANNEL         CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL           CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL              CHANNEL_UNUSED
@@ -285,11 +282,11 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED			HW_SWITCH_1
-#define ELEVATOR_CHANNEL_REVERSED			HW_SWITCH_2
-#define RUDDER_CHANNEL_REVERSED				HW_SWITCH_3
-#define AILERON_SECONDARY_CHANNEL_REVERSED	0 // Hardcoded to be unreversed, since we have only 3 switches.
-#define THROTTLE_CHANNEL_REVERSED			0 // Set to 1 to hardcode a channel to be reversed
+#define AILERON_CHANNEL_REVERSED			1
+#define ELEVATOR_CHANNEL_REVERSED			1
+#define RUDDER_CHANNEL_REVERSED				0
+#define AILERON_SECONDARY_CHANNEL_REVERSED	1
+#define THROTTLE_CHANNEL_REVERSED			0
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED         0
 
@@ -314,7 +311,7 @@
 // switch state back in stabilized. The important design concept is that Manual position is always Manual state immediately.
 // Stabilized position is Stabilized mode unless you try  hard to reach Autonomous mode.
 // Set MODE_SWITCH_TWO_POSITION	to 0 for a normal three position mode switch.	
-#define MODE_SWITCH_TWO_POSITION			1
+#define MODE_SWITCH_TWO_POSITION	1
 
 ////////////////////////////////////////////////////////////////////////////////
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
@@ -369,7 +366,7 @@
 // SERIAL_CAM_TRACK is used to output location data to a 2nd UDB, which will target its camera at this plane.
 // SERIAL_MAVLINK is a bi-directional binary format for use with QgroundControl, HKGCS or MAVProxy (Ground Control Stations.)
 // SERIAL_MAVLINK is only supported on the UDB4 to ensure that sufficient RAM is available.
-// Note that SERIAL_MAVLINK defaults to using a baud rate of 57600 baud (other formats default to 19200)
+// Note that the default baud rate is 115200 baud
 
 #define SERIAL_OUTPUT_FORMAT SERIAL_MAVLINK
 
@@ -459,13 +456,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Control gains.
 // All gains should be positive real numbers.
-// Proportional gains should be less than 4.0.
-// Rate gains should be less than 0.8.
-// Proportional gains include ROLLKP, YAWKP_AILERON, AILERON_BOOST, PITCHGAIN, 
-// RUDDER_ELEV_MIX, ROLL_ELEV_MIX, ELEVATOR_BOOST, YAWKP_RUDDER, ROLLKP_RUDDER, 
-// MANUAL_AILERON_RUDDER_MIX, RUDDER_BOOST, HOVER_ROLLKP, HOVER_PITCHGAIN, HOVER_YAWKP
-// Rate gains include ROLLKD, YAWKD_AILERON, PITCHKD, YAWKD_RUDDER, ROLLKD_RUDDER, 
-// HOVER_ROLLKD, HOVER_PITCHKD, HOVER_YAWKD
 
 // SERVOSAT limits servo throw by controlling pulse width saturation.
 // set it to 1.0 if you want full servo throw, otherwise set it to the portion that you want
@@ -652,7 +642,7 @@
 // HILSIM_BAUD is the serial speed for communications with the X-Plane plugin.  Default is
 // now 38400.  Make sure the X-Plane plugin's Setup file has its speed set to match.
 #define HILSIM 								0
-#define HILSIM_BAUD							38400
+#define HILSIM_BAUD							19200
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -739,25 +729,33 @@
 // The following can be used to do a ground check of stabilization without a GPS.
 // If you define TestGains, stabilization functions
 // will be enabled, even without GPS or Tx turned on. (Tx is optional)
-// #define TestGains						// uncomment this line if you want to test your gains without using GPS
+// #define TestGains					// uncomment this line if you want to test your gains without using GPS
 
 // Set this to 1 to calculate and print out free stack space
-#define RECORD_FREE_STACK_SPACE 			0
+#define RECORD_FREE_STACK_SPACE 		0
 
 // Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
 // UART 3 and 4 option only available with the AUAV3 board.
-#define USE_CONSOLE							3
+#define USE_CONSOLE						3
 
 // Optionally enable the new power saving idle mode of the MCU during mainloop
-#define USE_MCU_IDLE						1
+#define USE_MCU_IDLE					0
 
 ////////////////////////////////////////////////////////////////////////////////
 // AUAV3 only options
 
 // Set this to 1 to enable logging telemetry to dataflash on AUAV3
-#define USE_TELELOG							0
+#define USE_TELELOG						0
 
 // Set this to 1 to enable loading options settings from a config file on AUAV3
-#define USE_CONFIGFILE						0
+#define USE_CONFIGFILE					0
+
+// Set this to 1 to enable the USB stack
+#define USE_USB							0
+
+////////////////////////////////////////////////////////////////////////////////
+// User/Application specific options
 
 #define CATAPULT_LAUNCH_ENABLE
+#define USE_DEBUG_IO
+
