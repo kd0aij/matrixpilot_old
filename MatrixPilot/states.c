@@ -408,11 +408,11 @@ static void stabilizedS(void)
 	if ( udb_flags._.radio_on )
 	{
 #ifdef CATAPULT_LAUNCH_ENABLE
-		if ( launch_enabled() & flight_mode_switch_stabilize() & dcm_flags._.nav_capable )
+		if ( launch_enabled() & flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
 			ent_cat_armedS() ;
         else
 #endif
-		if ( flight_mode_switch_stabilize() & dcm_flags._.nav_capable )
+		if ( flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
 			ent_waypointS() ;
 		else if ( flight_mode_switch_manual() )
 			ent_manualS() ;
