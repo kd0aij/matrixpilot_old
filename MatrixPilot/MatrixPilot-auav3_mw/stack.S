@@ -3,7 +3,7 @@
  // need at least 470 + guard for MatrixPilot_UDB5_WJP project MatrixPilot-auav3
  #define STACK_SIZE 4096
  // allow 8KB of data below stack
- #define STACK_BOT   0X2000
+ #define STACK_BOT   0X6000
 
 
  .section non_eds_stack, stack, address(STACK_BOT)

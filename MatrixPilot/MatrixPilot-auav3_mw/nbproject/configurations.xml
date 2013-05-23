@@ -312,7 +312,7 @@
         <itemPath>../preflight.c</itemPath>
         <itemPath>../main.c</itemPath>
       </logicalFolder>
-      <logicalFolder name="f3" displayName="MatrixPilot-auav3" projectFiles="true">
+      <logicalFolder name="f3" displayName="projectSpecific" projectFiles="true">
         <itemPath>nv_memory_options.h</itemPath>
         <itemPath>options.h</itemPath>
         <itemPath>stack.S</itemPath>
@@ -442,8 +442,7 @@
         <property key="heap-size" value="0"/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
-        <property key="map-file"
-                  value="../../MatrixPilot/MatrixPilot-auav3/dist/default/production/MatrixPilot-auav3.production.map"/>
+        <property key="map-file" value="../MatrixPilot-auav3_mw.production.map"/>
         <property key="oXC16ld-extra-opts" value=""/>
         <property key="oXC16ld-fill-upper" value="0"/>
         <property key="oXC16ld-force-link" value="false"/>

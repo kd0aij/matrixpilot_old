@@ -45,7 +45,7 @@
 // examine the telemetry after a flight, take a look in the .csv file, it will be easy to spot the
 // altitude, expressed in meters.
 
-#define USE_FIXED_ORIGIN		1
+#define USE_FIXED_ORIGIN		0
 //#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
 
 // AAM East Field runway center 39°50'31.83"N  105°12'44.81"W
@@ -144,23 +144,11 @@
 
 const struct waypointDef waypoints[] = {
     {
-        { 237, -70, 30}, F_NORMAL, CAM_VIEW_LAUNCH
+        { 100, 0, 50}, F_NORMAL, CAM_VIEW_LAUNCH
     }, //Waypoint 0
     {
-        { 268, 54, 50}, F_NORMAL, CAM_VIEW_LAUNCH
+        { 0, 0, 50}, F_NORMAL, CAM_VIEW_LAUNCH
     }, //Waypoint 1
-    {
-        { -175, 186, 50}, F_NORMAL, CAM_VIEW_LAUNCH
-    }, //Waypoint 2
-    {
-        { -224, 67, 30}, F_NORMAL, CAM_VIEW_LAUNCH
-    }, //Waypoint 3
-    {
-        { -34, 8, 20}, F_NORMAL, CAM_VIEW_LAUNCH
-    }, //Waypoint 4
-    {
-        { 55, -16, 20}, F_NORMAL, CAM_VIEW_LAUNCH
-    }, //Waypoint 5
 };
 
 

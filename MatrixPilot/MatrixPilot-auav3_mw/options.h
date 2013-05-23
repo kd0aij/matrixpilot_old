@@ -82,7 +82,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-#define GPS_TYPE GPS_MTEK
+#define GPS_TYPE GPS_UBX_4HZ
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@
 // PPM_NUMBER_OF_CHANNELS is the number of channels sent on the PWM signal.  This is
 // often different from the NUM_INPUTS value below, and should usually be left at 8.
 // 
-#define USE_PPM_INPUT						2
+#define USE_PPM_INPUT						0
 #define PPM_NUMBER_OF_CHANNELS				8
 #define PPM_SIGNAL_INVERTED					0
 #define PPM_ALT_OUTPUT_PINS					0
@@ -264,9 +264,9 @@
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
 // 
-#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
-#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
-#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
+#define THROTTLE_OUTPUT_CHANNEL             CHANNEL_1
+#define AILERON_OUTPUT_CHANNEL              CHANNEL_2
+#define ELEVATOR_OUTPUT_CHANNEL             CHANNEL_3
 #define RUDDER_OUTPUT_CHANNEL               CHANNEL_4
 #define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
 #define CAMERA_PITCH_OUTPUT_CHANNEL         CHANNEL_UNUSED
