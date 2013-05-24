@@ -219,7 +219,7 @@ void init_mavlink( void )
 
     // QGroundControl GCS lets user send message to increase stream rate
     streamRates[MAV_DATA_STREAM_RC_CHANNELS] = MAVLINK_RATE_RC_CHAN;
-    streamRates[MAV_DATA_STREAM_RAW_SENSORS] = MAVLINK_RATE_IMU_RAW;
+    streamRates[MAV_DATA_STREAM_RAW_SENSORS] = MAVLINK_RATE_RAW_SENSORS;
     streamRates[MAV_DATA_STREAM_POSITION] = MAVLINK_RATE_POSITION;
 
     streamRates[MAV_DATA_STREAM_EXTRA1] = MAVLINK_RATE_SUE;
@@ -385,6 +385,7 @@ int16_t send_by_index = 0;
 // http://www.qgroundcontrol.org/parameter_interface
 
 #include "parameter_table.h"
+#include "estAltitude.h"
 
 #if ( RECORD_FREE_STACK_SPACE ==  1)
 void mavlink_send_param_maxstack(int16_t);
@@ -1585,6 +1586,30 @@ void mavlink_output_40hz(void)
         else
             gps_fix_type = 0;
         mavlink_msg_gps_raw_int_send(MAVLINK_COMM_0, usec, gps_fix_type, lat_gps.WW, long_gps.WW, alt_sl_gps.WW, hdop, 65535, sog_gps.BB, cog_gps.BB, svs);
+
+    }
+
+    // raw barometer reading
+    spread_transmission_load = 8;   // TODO: determine optimum value
+	if (mavlink_frequency_send( streamRates[MAV_DATA_STREAM_RAW_SENSORS] , mavlink_counter_40hz + spread_transmission_load))
+	{
+        int16_t gps_fix_type;
+        if (gps_nav_valid())
+            gps_fix_type = 3;
+        else
+            gps_fix_type = 0;
+
+//	_mav_put_int16_t(buf, 8, press_abs);
+//	_mav_put_int16_t(buf, 10, press_diff1);
+//	_mav_put_int16_t(buf, 12, press_diff2);
+//	_mav_put_int16_t(buf, 14, temperature);
+
+        // use press_abs for the high word of barometer_pressure
+        // and press_diff1 for the low word
+
+        union longww bp; // ww._.W1 is the high word, ww._.W0 is the low word
+        bp.WW = get_barometer_pressure();
+        mavlink_msg_raw_pressure_send(MAVLINK_COMM_0, usec, bp._.W1, bp._.W0, 0, get_barometer_temperature());
 
     }
 

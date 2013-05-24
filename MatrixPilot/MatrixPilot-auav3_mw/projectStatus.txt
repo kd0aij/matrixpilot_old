@@ -64,3 +64,9 @@ notes and changes:
     configure for testing Typhoon stabilization: problems recovering from vertical dive
     * turned off inverted mode stabilization
     * set all KDs to zero
+
+24 May:
+    modified states.c to use Pete's asap flag with launch detection
+    added mavlink message for raw barometer pressure and temp
+    ***now getting glitches on PWM output channels when changing flight modes
+    ***also lost the console output on UART3
