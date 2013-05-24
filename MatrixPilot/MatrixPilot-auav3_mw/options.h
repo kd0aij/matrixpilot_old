@@ -158,13 +158,13 @@
 // Otherwise, if set to 0 the GPS will be used.
 // If you select this option, you also need to set magnetometer options in
 // the magnetometerOptions.h file, including declination and magnetometer type.
-#define MAG_YAW_DRIFT						1
+#define MAG_YAW_DRIFT 1
 
 // Define BAROMETER_ALTITUDE to be 1 to use barometer for altitude correction.
 // Otherwise, if set to 0 only the GPS will be used.
 // If you select this option, you also need to correctly set the LAUNCH_ALTITUDE
 // to your takeoff location altitude at the time of initialisation.
-#define BAROMETER_ALTITUDE 0
+#define BAROMETER_ALTITUDE 1
 
 // Set your takeoff/launch/initialisation altitude in meters.
 #define LAUNCH_ALTITUDE						300
@@ -174,7 +174,7 @@
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
 // RACING_MODE_WP_THROTTLE is the throttle value to use, and should be set between 0.0 and 1.0.
 // Racing performance can be improved by disabling cross tracking for your waypoints.
-#define RACING_MODE							1
+#define RACING_MODE							0
 #define RACING_MODE_WP_THROTTLE				0.65
 
 // Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
@@ -482,7 +482,7 @@
 #define ROLLKD				0 //0.02
 #define YAWKP_AILERON		0.05 // 0.05
 #define YAWKD_AILERON		0 //0.11 //0.05
-#define AILERON_BOOST		0.5
+#define AILERON_BOOST		0.25
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
@@ -764,3 +764,5 @@
 // Set this to 1 to enable the USB stack
 #define USE_USB							0
 
+// define this to enable catapult launch arming
+#define CATAPULT_LAUNCH_ENABLE

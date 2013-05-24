@@ -35,9 +35,10 @@ union fbts_int flags ;
 int16_t waggle = 0 ;
 uint8_t counter = 0;
 
-#define CALIB_PAUSE 21		// wait for 10.5 seconds of runs through the state machine
-#define STANDBY_PAUSE 48	// pause for 24 seconds of runs through the state machine
-#define NUM_WAGGLES 4		// waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
+#define FSM_CLK 2  // clock frequency for state machine
+#define CALIB_PAUSE (10.5 * FSM_CLK)    // wait for 10.5 seconds of runs through the state machine
+#define STANDBY_PAUSE (24 * FSM_CLK)	// pause for 24 seconds of runs through the state machine
+#define NUM_WAGGLES 4  // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
 #define WAGGLE_SIZE 300
 
 static int16_t calib_timer = CALIB_PAUSE ;
@@ -52,7 +53,7 @@ static void waypointS(void) ;
 static void returnS(void) ;
 
 #ifdef CATAPULT_LAUNCH_ENABLE
-#define LAUNCH_DELAY 1      // wait 0.5 seconds (dependent on FSM clock rate of 2Hz)
+#define LAUNCH_DELAY (0.5 * FSM_CLK)      // wait 0.5 seconds
 static int16_t launch_timer = LAUNCH_DELAY;
 static void cat_armedS(void) ;
 static void cat_delayS(void) ;
@@ -296,7 +297,6 @@ static void calibrateS(void)
 	}
 	else
 	{
-//		DPRINT("calibrateS()\r\n");
 		ent_calibrateS() ;
 	}
 }
@@ -358,7 +358,7 @@ static void cat_armedS(void)
 {
     // transition to manual if flight_mode_switch no longer in waypoint mode
     // or link lost or gps lost
-    if (flight_mode_switch_manual() | !udb_flags._.radio_on | !dcm_flags._.nav_capable) {
+    if (flight_mode_switch_manual()) { // | !udb_flags._.radio_on | !dcm_flags._.nav_capable) {
         LED_ORANGE = LED_OFF;
         ent_manualS();
     }

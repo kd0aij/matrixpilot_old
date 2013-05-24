@@ -46,7 +46,6 @@
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/barometer.h</itemPath>
         <itemPath>../../../MatrixPilot_AUAV3/libUDB/interrupt.h</itemPath>
-        <itemPath>../../libUDB/barometer_udb4.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="libUSB" projectFiles="true">
         <itemPath>../../Microchip/Include/USB/usb.h</itemPath>
@@ -259,6 +258,7 @@
         <itemPath>../../libUDB/traps.c</itemPath>
         <itemPath>../../libUDB/I2C1.c</itemPath>
         <itemPath>../../libUDB/I2C2.c</itemPath>
+        <itemPath>../../libUDB/barometer.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f6" displayName="libUSB" projectFiles="true">
         <itemPath>../../Microchip/USB/usb_device.c</itemPath>

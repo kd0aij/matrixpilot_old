@@ -22,6 +22,11 @@
 #include "libDCM_internal.h"
 #include "../libUDB/magnetometerOptions.h"
 
+#ifdef CATAPULT_LAUNCH_ENABLE
+#include "defines.h"
+extern union fbts_int flags ;
+#endif
+
 //		These are the routines for maintaining a direction cosine matrix
 //		that can be used to transform vectors between the earth and plane
 //		coordinate systems. The 9 direction cosines in the matrix completely
@@ -205,8 +210,9 @@ void read_accel(void)
 #endif
 
 #ifdef CATAPULT_LAUNCH_ENABLE
-    if (gplane[1] > GRAVITY) {
+    if (gplane[1] < -(GRAVITY/2)) {
         dcm_flags._.launch_detected = 1;
+    	flags._.update_autopilot_state_asap = 1 ;
     }
 #endif
 	
