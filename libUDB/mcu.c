@@ -25,9 +25,7 @@
 
 #if (USE_CONSOLE != 0)
 #include "../libCommon/commands.h"
-#include "../libCommon/uart.h"
 #include <stdio.h>
-extern int __C30_UART;
 #endif // USE_CONSOLE
 
 #if (BOARD_IS_CLASSIC_UDB)
@@ -389,9 +387,7 @@ void mcu_init(void)
     init_leds();
 
 #if (USE_CONSOLE != 0)
-	__C30_UART = USE_CONSOLE;
 	init_console();
-
     printf("\r\n\r\nMatrixPilot " __TIME__ " " __DATE__ " @ %u mips\r\n", MIPS);
 	if ( _SWR == 1 )
 	{

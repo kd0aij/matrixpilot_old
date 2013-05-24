@@ -24,6 +24,8 @@
 #include "minIni.h"
 #include <stdio.h>
 
+#if (USE_CONFIGFILE == 1)
+
 union config_word config;
 struct gains_variables gains;
 union network_module_word nw_mod;
@@ -223,11 +225,9 @@ void init_config(void)
 	load_config();
 	load_gains();
 
-#if (USE_CONFIGFILE == 1)
-	init_yawCntrl();
+    init_yawCntrl();
 	init_rollCntrl();
 	init_pitchCntrl();
-#endif
 }
 
 /*
@@ -236,3 +236,5 @@ int   ini_puts(const mTCHAR *Section, const mTCHAR *Key, const mTCHAR *Value, co
 #if defined INI_REAL
 int   ini_putf(const mTCHAR *Section, const mTCHAR *Key, INI_REAL Value, const mTCHAR *Filename);
  */
+
+#endif // USE_CONFIGFILE
