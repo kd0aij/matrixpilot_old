@@ -35,7 +35,9 @@ extern int __C30_UART;
 #define LOWORD(a) ((WORD)(a))
 #define HIWORD(a) ((WORD)(((DWORD)(a) >> 16) & 0xFFFF))
 
+#if (USE_CONFIGFILE != 0)
 void AT45D_FormatFS(void);
+#endif
 
 typedef struct tagCmds {
 	int index;
@@ -53,11 +55,13 @@ void cmd_ver(void)
 	printf("MatrixPilot v0.1, " __TIME__ " " __DATE__ "\r\n");
 }
 
+#if (USE_CONFIGFILE != 0)
 void cmd_format(void)
 {
 	printf("formatting dataflash\r\n");
 	AT45D_FormatFS();
 }
+#endif
 
 void cmd_start(void)
 {
@@ -251,7 +255,9 @@ void cmd_close(void)
 const cmds_t cmdslist[] = {
 	{ 0, cmd_help,   "help" },
 	{ 0, cmd_ver,    "ver" },
+#if (USE_CONFIGFILE != 0)
 	{ 0, cmd_format, "format" },
+#endif
 	{ 0, cmd_start,  "start" },
 	{ 0, cmd_stop,   "stop" },
 	{ 0, cmd_on,     "on" },
