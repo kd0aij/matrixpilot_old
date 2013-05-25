@@ -80,7 +80,15 @@
 
 #endif // #if defined (__C30__)
 
-
+//void Init(void) {
+//    U3BRG = BAUDRATEREG;
+//    U3MODE = 0;
+//    U3MODEbits.BRGH = BRGHX;
+//    U3STA = 0;
+//    U3MODEbits.UARTEN = 1;
+//    U3STAbits.UTXEN = 1;
+//    IFS5bits.U3RXIF = 0;
+//}
 #define _INIT(x, y) \
 void Init(void) \
 { \

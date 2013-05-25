@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
-        <itemPath>../../libCommon/p30sim.h</itemPath>
         <itemPath>../../libCommon/commands.h</itemPath>
         <itemPath>../../libCommon/uart.h</itemPath>
       </logicalFolder>

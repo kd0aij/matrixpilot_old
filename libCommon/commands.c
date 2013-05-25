@@ -30,7 +30,7 @@
 
 #if (USE_CONSOLE != 0)
 
-extern int __C30_UART;
+int __C30_UART = USE_CONSOLE;
 
 #define LOWORD(a) ((WORD)(a))
 #define HIWORD(a) ((WORD)(((DWORD)(a) >> 16) & 0xFFFF))

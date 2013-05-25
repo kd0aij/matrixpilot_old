@@ -1,19 +1,19 @@
-//#include <p33Exxxx.h>
-#include "p30sim.h"
+#include <p33Exxxx.h>
+//#include "p30sim.h"
 //#include <stdio.h>
 //#include "simio.h"
 
 extern int __C30_UART;
 
-extern volatile UxMODEBITS U3MODEbits __attribute__((__sfr__,weak));
-extern volatile UxSTABITS U3STAbits __attribute__((__sfr__,weak));
-extern volatile unsigned int U3RXREG __attribute__((__sfr__,weak));
-extern volatile unsigned int U3BRG __attribute__((__sfr__,weak));
-
-extern volatile UxMODEBITS U4MODEbits __attribute__((__sfr__,weak));
-extern volatile UxSTABITS U4STAbits __attribute__((__sfr__,weak));
-extern volatile unsigned int U4RXREG __attribute__((__sfr__,weak));
-extern volatile unsigned int U4BRG __attribute__((__sfr__,weak));
+//extern volatile UxMODEBITS U3MODEbits __attribute__((__sfr__,weak));
+//extern volatile UxSTABITS U3STAbits __attribute__((__sfr__,weak));
+//extern volatile unsigned int U3RXREG __attribute__((__sfr__,weak));
+//extern volatile unsigned int U3BRG __attribute__((__sfr__,weak));
+//
+//extern volatile UxMODEBITS U4MODEbits __attribute__((__sfr__,weak));
+//extern volatile UxSTABITS U4STAbits __attribute__((__sfr__,weak));
+//extern volatile unsigned int U4RXREG __attribute__((__sfr__,weak));
+//extern volatile unsigned int U4BRG __attribute__((__sfr__,weak));
 
 int __attribute__((__weak__, __section__(".libc")))
 read(int handle, void *buffer, unsigned int len)

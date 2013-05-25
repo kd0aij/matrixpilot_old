@@ -1,19 +1,19 @@
-//#include <p33Exxxx.h>
-#include "p30sim.h"
+#include <p33Exxxx.h>
+//#include "p30sim.h"
 //#include <stdio.h>
 //#include "simio.h"
 
 extern int __C30_UART;
 
-extern volatile UxMODEBITS U3MODEbits __attribute__((__sfr__,weak));
-extern volatile UxSTABITS U3STAbits __attribute__((__sfr__,weak));
-extern volatile unsigned int U3TXREG __attribute__((__sfr__,weak));
-extern volatile unsigned int U3BRG __attribute__((__sfr__,weak));
-
-extern volatile UxMODEBITS U4MODEbits __attribute__((__sfr__,weak));
-extern volatile UxSTABITS U4STAbits __attribute__((__sfr__,weak));
-extern volatile unsigned int U4TXREG __attribute__((__sfr__,weak));
-extern volatile unsigned int U4BRG __attribute__((__sfr__,weak));
+//extern volatile UxMODEBITS U3MODEbits __attribute__((__sfr__,weak));
+//extern volatile UxSTABITS U3STAbits __attribute__((__sfr__,weak));
+//extern volatile unsigned int U3TXREG __attribute__((__sfr__,weak));
+//extern volatile unsigned int U3BRG __attribute__((__sfr__,weak));
+//
+//extern volatile UxMODEBITS U4MODEbits __attribute__((__sfr__,weak));
+//extern volatile UxSTABITS U4STAbits __attribute__((__sfr__,weak));
+//extern volatile unsigned int U4TXREG __attribute__((__sfr__,weak));
+//extern volatile unsigned int U4BRG __attribute__((__sfr__,weak));
 
 //static void __inline__ dowrite(PSIMIO psimio) {
 //  __asm__(".pword 0xDAC000" :: "a" (psimio) : "memory");
