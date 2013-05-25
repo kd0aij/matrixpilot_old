@@ -6,7 +6,7 @@ Tool Name:
 Command:
   -p33EP512MU810 \
   -o \
-  dist/default/production/MatrixPilot-auav3_mw.production.elf \
+  dist/default/production/MatrixPilot-auav3_noFS_MDD_USB.production.elf \
   -L/opt/microchip/xc16/v1.10/bin/bin/.. \
   -L/opt/microchip/xc16/v1.10/bin/bin/../../lib \
   -L/opt/microchip/xc16/v1.10/bin/bin/../../lib/PIC24E \
@@ -24,6 +24,7 @@ Command:
   build/default/production/_ext/1658199856/read.o \
   build/default/production/_ext/1658199856/write.o \
   build/default/production/_ext/1658199856/uart.o \
+  build/default/production/_ext/1658199856/commands.o \
   build/default/production/_ext/1077471063/estWind.o \
   build/default/production/_ext/1077471063/estYawDrift.o \
   build/default/production/_ext/1077471063/gpsParseCommon.o \
@@ -98,7 +99,6 @@ Command:
   build/default/production/_ext/1472/euler_angles.o \
   build/default/production/_ext/1472/main.o \
   build/default/production/stack.o \
-  build/default/production/_ext/1658199856/commands.o \
   --defsym=__MPLAB_BUILD=1 \
   -Tp33EP512MU810.gld.00 \
   --heap=0 \
@@ -203,19 +203,19 @@ Archive member included because of file (symbol)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(memchr.EPeo)
                               /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xputfld.EPeo) (_memchr)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(memcpy.EPeo)
-                              build/default/production/_ext/1472/MAVLink.o (_memcpy)
+                              build/default/production/_ext/1658199856/commands.o (_memcpy)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(memset.EPeo)
                               build/default/production/_ext/1472/MAVLink.o (_memset)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(putchar.EPeo)
                               build/default/production/_ext/1658199856/commands.o (_putchar)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(puts.EPeo)
-                              build/default/production/_ext/1077471063/libDCM.o (_puts)
+                              build/default/production/_ext/1658199856/commands.o (_puts)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(strchr.EPeo)
                               /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xprintf.EPeo) (_strchr)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(strcmp.EPeo)
-                              build/default/production/_ext/1472/MAVLink.o (_strcmp)
+                              build/default/production/_ext/1658199856/commands.o (_strcmp)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(strlen.EPeo)
-                              build/default/production/_ext/1077471063/gpsParseCommon.o (_strlen)
+                              build/default/production/_ext/1658199856/commands.o (_strlen)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xfiles.EPeo)
                               /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(printf.EPeo) (__Stdout)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xfwprep.EPeo)
@@ -249,7 +249,7 @@ Archive member included because of file (symbol)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xldscale.EPelo)
                               /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xldtob.EPeo) (__LDscale)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(printf_cdnopuxX.EPeo)
-                              build/default/production/_ext/1077454706/mpu6000.o (__printf_cdnopuxX)
+                              build/default/production/_ext/1658199856/commands.o (__printf_cdnopuxX)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(sprintf_cdnopuxX.EPeo)
                               build/default/production/_ext/1658199856/commands.o (__sprintf_cdnopuxX)
 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xprintf_cdnopuxX.EPeo)
@@ -350,17 +350,18 @@ Data Memory  [Origin = 0x1000, Length = 0xd000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-_0x41b78c9451a0bd1b         0x1000                   0             0x4  (4)
-_0x41b78c3851a0bd1b         0x1004                   0             0x2  (2)
-_0x41b78cf051a0bd1b         0x1006                   0             0x2  (2)
+_0x41b78c9451a0c1d5         0x1000                   0             0x4  (4)
+_0x41b78c3851a0c1d5         0x1004                   0             0x2  (2)
+_0x41b78cf051a0c1d5         0x1006                   0             0x2  (2)
 .nbss                       0x1008                   0             0x2  (2)
 .bss                        0x100a                   0           0x7f2  (2034)
 .data._Stdin                0x17fc                   0            0x88  (136)
 .data                       0x1884                   0            0x66  (102)
 .bss                        0x18ea                   0           0x160  (352)
 .data.pows                  0x1a4a                   0            0x48  (72)
-.data                       0x1a92                   0            0x3c  (60)
-.bss                        0x1ace                   0            0xae  (174)
+.bss                        0x1a92                   0            0x3c  (60)
+.data                       0x1ace                   0            0x3c  (60)
+.bss                        0x1b0a                   0            0x72  (114)
 .data                       0x1b7c                   0            0x68  (104)
 .bss                        0x1be4                   0            0x52  (82)
 .data.udigs                 0x1c36                   0            0x22  (34)
@@ -382,17 +383,18 @@ _0x41b78cf051a0bd1b         0x1006                   0             0x2  (2)
 .bss                        0x1e20                   0             0x6  (6)
 .data._Aldata               0x1e26                   0             0x6  (6)
 .data                       0x1e2c                   0            0x18  (24)
-.bss                        0x1e44                   0             0x6  (6)
-.data                       0x1e4a                   0             0x6  (6)
-.bss                        0x1e50                   0             0x8  (8)
-.data                       0x1e58                   0             0x2  (2)
+.bss                        0x1e44                   0             0x4  (4)
+.data                       0x1e48                   0             0x2  (2)
+.bss                        0x1e4a                   0             0x2  (2)
+.data                       0x1e4c                   0             0x6  (6)
+.bss                        0x1e52                   0             0x8  (8)
 .data.__C30_UART            0x1e5a                   0             0x2  (2)
 .bss                        0x1e5c                   0             0x2  (2)
 .data                       0x1e5e                   0             0x2  (2)
 .bss                        0x1e60                   0             0x2  (2)
 non_eds_stack               0x6000                   0          0x1000  (4096)
-_0x41c230b851a0bd1a         0xdfc0                   0             0xe  (14)
-_0x41c2305c51a0bd1a         0xdfe0                   0             0xe  (14)
+_0x41c230b851a0c1d4         0xdfc0                   0             0xe  (14)
+_0x41c2305c51a0c1d4         0xdfe0                   0             0xe  (14)
 
                         Total data memory used (bytes):         0x1e7e  (7806) 14%
 
@@ -460,32 +462,32 @@ External Symbols in Data Memory (by address):
                     0x1a34                  _udb_rssi
                     0x1a3e                  _udb_vref
                     0x1a48                  _sample_count
-                    0x1a92                  _dcm_declination_angle
-                    0x1a94                  _mavlink_process_message_handle
-                    0x1a96                  _handling_of_message_completed
-                    0x1a98                  _voltage_milis
-                    0x1a9a                  _mavlink_counter_40hz
-                    0x1a9c                  _usec
-                    0x1aa4                  _msec
-                    0x1aa8                  _sb_index
-                    0x1aaa                  _end_index
-                    0x1aac                  _serial_interrupt_stopped
-                    0x1aae                  _previous_earth_pitch
-                    0x1ab2                  _previous_earth_roll
-                    0x1ab6                  _previous_earth_yaw
-                    0x1aba                  _mavlink_waypoint_timeout
-                    0x1abc                  _number_of_waypoint_retries
-                    0x1abd                  _mavlink_waypoint_frame
-                    0x1abe                  _mavlink_waypoint_current
-                    0x1ac0                  _mavlink_command_ack_command
-                    0x1ac2                  _mavlink_send_command_ack
-                    0x1ac4                  _mavlink_command_ack_result
-                    0x1ac6                  _mavlink_sue_telemetry_counter
-                    0x1ac8                  _mavlink_sue_telemetry_f2_a
-                    0x1ac9                  _mavlink_message_index
-                    0x1aca                  _send_variables_counter
-                    0x1acc                  _send_by_index
-                    0x1ace                  _cmdstr
+                    0x1a92                  _cmdstr
+                    0x1ace                  _dcm_declination_angle
+                    0x1ad0                  _mavlink_process_message_handle
+                    0x1ad2                  _handling_of_message_completed
+                    0x1ad4                  _voltage_milis
+                    0x1ad6                  _mavlink_counter_40hz
+                    0x1ad8                  _usec
+                    0x1ae0                  _msec
+                    0x1ae4                  _sb_index
+                    0x1ae6                  _end_index
+                    0x1ae8                  _serial_interrupt_stopped
+                    0x1aea                  _previous_earth_pitch
+                    0x1aee                  _previous_earth_roll
+                    0x1af2                  _previous_earth_yaw
+                    0x1af6                  _mavlink_waypoint_timeout
+                    0x1af8                  _number_of_waypoint_retries
+                    0x1af9                  _mavlink_waypoint_frame
+                    0x1afa                  _mavlink_waypoint_current
+                    0x1afc                  _mavlink_command_ack_command
+                    0x1afe                  _mavlink_send_command_ack
+                    0x1b00                  _mavlink_command_ack_result
+                    0x1b02                  _mavlink_sue_telemetry_counter
+                    0x1b04                  _mavlink_sue_telemetry_f2_a
+                    0x1b05                  _mavlink_message_index
+                    0x1b06                  _send_variables_counter
+                    0x1b08                  _send_by_index
                     0x1b0a                  _lat_gps
                     0x1b0e                  _long_gps
                     0x1b12                  _alt_sl_gps
@@ -676,14 +678,14 @@ External Symbols in Data Memory (by address):
                     0x1e42                  _barometer_callback
                     0x1e44                  _current_orientation
                     0x1e46                  _desired_behavior
-                    0x1e48                  _udb_flags
-                    0x1e4a                  _event_init_done
-                    0x1e4c                  _DmaBuffer
-                    0x1e4e                  _defaultCorcon
-                    0x1e50                  _dmaRWErrLoc
-                    0x1e52                  _flags
-                    0x1e54                  _desiredHeight
-                    0x1e58                  _cmdlen
+                    0x1e48                  _cmdlen
+                    0x1e4a                  _udb_flags
+                    0x1e4c                  _event_init_done
+                    0x1e4e                  _DmaBuffer
+                    0x1e50                  _defaultCorcon
+                    0x1e52                  _dmaRWErrLoc
+                    0x1e54                  _flags
+                    0x1e56                  _desiredHeight
                     0x1e5a                  ___C30_UART
                     0x1e60                  ___curbrk
                     0xdfc0                  _BufferB
@@ -695,7 +697,7 @@ External Symbols in Data Memory (by name):
                     0xdfc0                  _BufferB
                     0x1b52                  _CK_A
                     0x1b53                  _CK_B
-                    0x1e4c                  _DmaBuffer
+                    0x1e4e                  _DmaBuffer
                     0x1c78                  _GPSlocation
                     0x1c7e                  _GPSvelocity
                     0x1b96                  _IMUintegralAccelerationx
@@ -767,8 +769,8 @@ External Symbols in Data Memory (by name):
                     0x1b46                  _checksum
                     0x1b1e                  _climb_gps
                     0x1b6c                  _climb_gps_
-                    0x1e58                  _cmdlen
-                    0x1ace                  _cmdstr
+                    0x1e48                  _cmdlen
+                    0x1a92                  _cmdstr
                     0x1b1c                  _cog_gps
                     0x1b68                  _cog_gps_
                     0x1c84                  _cos_lat
@@ -780,11 +782,11 @@ External Symbols in Data Memory (by name):
                     0x1e44                  _current_orientation
                     0x1e1a                  _cyclesUntilStartTriggerAction
                     0x1e1c                  _cyclesUntilStopTriggerAction
-                    0x1a92                  _dcm_declination_angle
+                    0x1ace                  _dcm_declination_angle
                     0x1e08                  _dcm_flags
                     0x1b7c                  _dead_reckon_clock
-                    0x1e4e                  _defaultCorcon
-                    0x1e54                  _desiredHeight
+                    0x1e50                  _defaultCorcon
+                    0x1e56                  _desiredHeight
                     0x1c72                  _desiredSpeed
                     0x1d10                  _desired_bearing_over_ground
                     0x1d12                  _desired_bearing_over_ground_vector
@@ -794,16 +796,16 @@ External Symbols in Data Memory (by name):
                     0x18d4                  _dirovergndHRmat
                     0x1e38                  _dmaErrFlag
                     0x1e3a                  _dmaPWErrLoc
-                    0x1e50                  _dmaRWErrLoc
+                    0x1e52                  _dmaRWErrLoc
                     0x1e24                  _elevInput
-                    0x1aaa                  _end_index
+                    0x1ae6                  _end_index
                     0x18da                  _errorYawground
                     0x1e02                  _estimatedWind
-                    0x1e4a                  _event_init_done
+                    0x1e4c                  _event_init_done
                     0x18ea                  _events
                     0x1e34                  _failSafePulses
                     0x1c5e                  _filterManual
-                    0x1e52                  _flags
+                    0x1e54                  _flags
                     0x1c8e                  _forward_acceleration
                     0x1db8                  _frame_errors
                     0x1884                  _ggain
@@ -814,7 +816,7 @@ External Symbols in Data Memory (by name):
                     0x1c88                  _gps_out_buffer_length
                     0x1c8a                  _gps_out_index
                     0x1c8c                  _ground_velocity_magnitudeXY
-                    0x1a96                  _handling_of_message_completed
+                    0x1ad2                  _handling_of_message_completed
                     0x1b24                  _hdop
                     0x1b78                  _hdop_
                     0x1c64                  _height_margin
@@ -842,22 +844,22 @@ External Symbols in Data Memory (by name):
                     0x1cba                  _magFieldRaw
                     0x1c9c                  _magGain
                     0x1ca8                  _magMessage
-                    0x1ac0                  _mavlink_command_ack_command
-                    0x1ac4                  _mavlink_command_ack_result
-                    0x1a9a                  _mavlink_counter_40hz
+                    0x1afc                  _mavlink_command_ack_command
+                    0x1b00                  _mavlink_command_ack_result
+                    0x1ad6                  _mavlink_counter_40hz
                     0x1128                  _mavlink_flags
-                    0x1ac9                  _mavlink_message_index
-                    0x1a94                  _mavlink_process_message_handle
-                    0x1ac2                  _mavlink_send_command_ack
-                    0x1ac6                  _mavlink_sue_telemetry_counter
-                    0x1ac8                  _mavlink_sue_telemetry_f2_a
+                    0x1b05                  _mavlink_message_index
+                    0x1ad0                  _mavlink_process_message_handle
+                    0x1afe                  _mavlink_send_command_ack
+                    0x1b02                  _mavlink_sue_telemetry_counter
+                    0x1b04                  _mavlink_sue_telemetry_f2_a
                     0x100a                  _mavlink_system
-                    0x1abe                  _mavlink_waypoint_current
+                    0x1afa                  _mavlink_waypoint_current
                     0x1127                  _mavlink_waypoint_dest_compid
                     0x1126                  _mavlink_waypoint_dest_sysid
-                    0x1abd                  _mavlink_waypoint_frame
+                    0x1af9                  _mavlink_waypoint_frame
                     0x1124                  _mavlink_waypoint_requested_sequence_number
-                    0x1aba                  _mavlink_waypoint_timeout
+                    0x1af6                  _mavlink_waypoint_timeout
                     0x1d56                  _maximum_airspeed
                     0x1d54                  _minimum_airspeed
                     0x1d52                  _minimum_groundspeed
@@ -865,7 +867,7 @@ External Symbols in Data Memory (by name):
                     0x1e2e                  _mpuDAV
                     0x194a                  _mpu_data
                     0x1996                  _mpu_temp
-                    0x1aa4                  _msec
+                    0x1ae0                  _msec
                     0x1156                  _msg
                     0x1b48                  _msg_class
                     0x1b4a                  _msg_id
@@ -876,7 +878,7 @@ External Symbols in Data Memory (by name):
                     0x1db4                  _nmea_passthru_countdown
                     0x1e36                  _noisePulses
                     0x1df6                  _numPointsInCurrentSet
-                    0x1abc                  _number_of_waypoint_retries
+                    0x1af8                  _number_of_waypoint_retries
                     0x1df0                  _number_of_waypoints
                     0x18c2                  _omegaAccum
                     0x18b6                  _omegagyro
@@ -888,9 +890,9 @@ External Symbols in Data Memory (by name):
                     0x1dba                  _pitchgain
                     0x1dbc                  _pitchkd
                     0x1e20                  _pitchrate
-                    0x1aae                  _previous_earth_pitch
-                    0x1ab2                  _previous_earth_roll
-                    0x1ab6                  _previous_earth_yaw
+                    0x1aea                  _previous_earth_pitch
+                    0x1aee                  _previous_earth_roll
+                    0x1af2                  _previous_earth_yaw
                     0x1d9e                  _progress_to_goal
                     0x112a                  _pwIn_save
                     0x1140                  _pwOut_save
@@ -907,12 +909,12 @@ External Symbols in Data Memory (by name):
                     0x1c70                  _rtl_pitch_down
                     0x1dc2                  _rudderElevMixGain
                     0x1a48                  _sample_count
-                    0x1aa8                  _sb_index
+                    0x1ae4                  _sb_index
                     0x1d4e                  _sea_level_pressure
-                    0x1acc                  _send_by_index
-                    0x1aca                  _send_variables_counter
+                    0x1b08                  _send_by_index
+                    0x1b06                  _send_variables_counter
                     0x1010                  _serial_buffer
-                    0x1aac                  _serial_interrupt_stopped
+                    0x1ae8                  _serial_interrupt_stopped
                     0x1b1a                  _sog_gps
                     0x1b64                  _sog_gps_
                     0x1c74                  _speed_height
@@ -936,7 +938,7 @@ External Symbols in Data Memory (by name):
                     0x1000                  _trap_source
                     0x1a2a                  _udb_5v
                     0x19f8                  _udb_analogInputs
-                    0x1e48                  _udb_flags
+                    0x1e4a                  _udb_flags
                     0x1e18                  _udb_heartbeat_counter
                     0x1cb4                  _udb_magFieldBody
                     0x1c96                  _udb_magOffset
@@ -953,10 +955,10 @@ External Symbols in Data Memory (by name):
                     0x196e                  _udb_zaccel
                     0x198c                  _udb_zrate
                     0x1b54                  _un
-                    0x1a9c                  _usec
+                    0x1ad8                  _usec
                     0x1bac                  _velocityErrorEarth
                     0x1d7a                  _view_location
-                    0x1a98                  _voltage_milis
+                    0x1ad4                  _voltage_milis
                     0x19a0                  _vref_adj
                     0x1dc6                  _waggle
                     0x1df2                  _waypointIndex
@@ -1996,6 +1998,7 @@ Linker script and memory map
 LOAD build/default/production/_ext/1658199856/read.o
 LOAD build/default/production/_ext/1658199856/write.o
 LOAD build/default/production/_ext/1658199856/uart.o
+LOAD build/default/production/_ext/1658199856/commands.o
 LOAD build/default/production/_ext/1077471063/estWind.o
 LOAD build/default/production/_ext/1077471063/estYawDrift.o
 LOAD build/default/production/_ext/1077471063/gpsParseCommon.o
@@ -2070,7 +2073,6 @@ LOAD build/default/production/_ext/1472/altitudeCntrlVariable.o
 LOAD build/default/production/_ext/1472/euler_angles.o
 LOAD build/default/production/_ext/1472/main.o
 LOAD build/default/production/stack.o
-LOAD build/default/production/_ext/1658199856/commands.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD /opt/microchip/xc16/v1.10/bin/bin/../../lib/dsPIC33E/libp33EP512MU810-elf.a
                     0xf80004                  __FGS = 0xf80004
@@ -2466,85 +2468,85 @@ __FUID0
  *(.comment)
  .comment         0x000000         0x5e /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xfiles.EPeo)
 
-.debug_info       0x000000      0x28fb2
+.debug_info       0x000000      0x292b4
  *(.debug_info)
- .debug_info      0x000000        0x58f build/default/production/_ext/1658199856/read.o
- .debug_info      0x00058f        0x574 build/default/production/_ext/1658199856/write.o
- .debug_info      0x000b03        0x9e6 build/default/production/_ext/1658199856/uart.o
- .debug_info      0x0014e9        0x6c5 build/default/production/_ext/1077471063/estWind.o
- .debug_info      0x001bae        0x4a5 build/default/production/_ext/1077471063/estYawDrift.o
- .debug_info      0x002053        0xbe2 build/default/production/_ext/1077471063/gpsParseCommon.o
- .debug_info      0x002c35        0x174 build/default/production/_ext/1077471063/gpsParseSTD.o
- .debug_info      0x002da9       0x1158 build/default/production/_ext/1077471063/gpsParseUBX.o
- .debug_info      0x003f01        0x8f0 build/default/production/_ext/1077471063/mathlibNAV.o
- .debug_info      0x0047f1       0x1287 build/default/production/_ext/1077471063/rmat.o
- .debug_info      0x005a78        0x6f8 build/default/production/_ext/1077471063/libDCM.o
- .debug_info      0x006170        0x709 build/default/production/_ext/1077471063/deadReckoning.o
- .debug_info      0x006879        0x175 build/default/production/_ext/1077471063/gpsParseMTEK.o
- .debug_info      0x0069ee        0x3fb build/default/production/_ext/1077471063/estAltitude.o
- .debug_info      0x006de9       0x1b8f build/default/production/_ext/1077454706/background.o
- .debug_info      0x008978        0x6ed build/default/production/_ext/1077454706/libUDB.o
- .debug_info      0x009065        0x173 build/default/production/_ext/1077454706/analog2digital_udb4.o
- .debug_info      0x0091d8       0x137e build/default/production/_ext/1077454706/servoOut.o
- .debug_info      0x00a556        0x163 build/default/production/_ext/1077454706/osd.o
- .debug_info      0x00a6b9        0x167 build/default/production/_ext/1077454706/24LC256.o
- .debug_info      0x00a820        0xf17 build/default/production/_ext/1077454706/events.o
- .debug_info      0x00b737        0xe59 build/default/production/_ext/1077454706/mpu6000.o
- .debug_info      0x00c590       0x1621 build/default/production/_ext/1077454706/spiUtils.o
- .debug_info      0x00dbb1       0x1a9f build/default/production/_ext/1077454706/analog2digital_auav3.o
- .debug_info      0x00f650         0xbb build/default/production/_ext/1077454706/traps_asm.o
- .debug_info      0x00f70b       0x333f build/default/production/_ext/1077454706/mcu.o
- .debug_info      0x012a4a        0x4e8 build/default/production/_ext/1077454706/magnetometer.o
- .debug_info      0x012f32       0x2bbd build/default/production/_ext/1077454706/radioIn.o
- .debug_info      0x015aef       0x18d2 build/default/production/_ext/1077454706/serialIO.o
- .debug_info      0x0173c1        0x51d build/default/production/_ext/1077454706/traps.o
- .debug_info      0x0178de        0x164 build/default/production/_ext/1077454706/I2C1.o
- .debug_info      0x017a42       0x1199 build/default/production/_ext/1077454706/I2C2.o
- .debug_info      0x018bdb        0x6a5 build/default/production/_ext/1077454706/barometer.o
- .debug_info      0x019280         0xbf build/default/production/_ext/679848855/madd.o
- .debug_info      0x01933f         0xbf build/default/production/_ext/679848855/mmul.o
- .debug_info      0x0193fe         0xbf build/default/production/_ext/679848855/mscl.o
- .debug_info      0x0194bd         0xbf build/default/production/_ext/679848855/msub.o
- .debug_info      0x01957c         0xbf build/default/production/_ext/679848855/mtrp.o
- .debug_info      0x01963b         0xbf build/default/production/_ext/679848855/vadd.o
- .debug_info      0x0196fa         0xbf build/default/production/_ext/679848855/vcon.o
- .debug_info      0x0197b9         0xc0 build/default/production/_ext/679848855/vcopy.o
- .debug_info      0x019879         0xbf build/default/production/_ext/679848855/vcor.o
- .debug_info      0x019938         0xbf build/default/production/_ext/679848855/vdot.o
- .debug_info      0x0199f7         0xbf build/default/production/_ext/679848855/vmax.o
- .debug_info      0x019ab6         0xbf build/default/production/_ext/679848855/vmin.o
- .debug_info      0x019b75         0xbf build/default/production/_ext/679848855/vmul.o
- .debug_info      0x019c34         0xbf build/default/production/_ext/679848855/vneg.o
- .debug_info      0x019cf3         0xbf build/default/production/_ext/679848855/vpow.o
- .debug_info      0x019db2         0xbf build/default/production/_ext/679848855/vscl.o
- .debug_info      0x019e71         0xbf build/default/production/_ext/679848855/vsub.o
- .debug_info      0x019f30         0xc0 build/default/production/_ext/679848855/vzpad.o
- .debug_info      0x019ff0        0x16b build/default/production/_ext/1472/config_tests.o
- .debug_info      0x01a15b        0x6a4 build/default/production/_ext/1472/behavior.o
- .debug_info      0x01a7ff        0x50e build/default/production/_ext/1472/cameraCntrl.o
- .debug_info      0x01ad0d        0xc47 build/default/production/_ext/1472/navigate.o
- .debug_info      0x01b954        0x8a2 build/default/production/_ext/1472/pitchCntrl.o
- .debug_info      0x01c1f6        0x702 build/default/production/_ext/1472/rollCntrl.o
- .debug_info      0x01c8f8        0x5d7 build/default/production/_ext/1472/servoMix.o
- .debug_info      0x01cecf        0xb34 build/default/production/_ext/1472/states.o
- .debug_info      0x01da03        0x801 build/default/production/_ext/1472/yawCntrl.o
- .debug_info      0x01e204        0x168 build/default/production/_ext/1472/telemetry.o
- .debug_info      0x01e36c        0x4d9 build/default/production/_ext/1472/servoPrepare.o
- .debug_info      0x01e845        0x9ab build/default/production/_ext/1472/flightplan-waypoints.o
- .debug_info      0x01f1f0        0x16e build/default/production/_ext/1472/flightplan-logo.o
- .debug_info      0x01f35e        0x165 build/default/production/_ext/1472/mp_osd.o
- .debug_info      0x01f4c3        0xaff build/default/production/_ext/1472/altitudeCntrl.o
- .debug_info      0x01ffc2       0x68c9 build/default/production/_ext/1472/MAVLink.o
- .debug_info      0x02688b        0x4ef build/default/production/_ext/1472/mode_switch.o
- .debug_info      0x026d7a        0x163 build/default/production/_ext/1472/data_services.o
- .debug_info      0x026edd        0x162 build/default/production/_ext/1472/data_storage.o
- .debug_info      0x02703f        0x16e build/default/production/_ext/1472/nv_memory_table.o
- .debug_info      0x0271ad        0xc58 build/default/production/_ext/1472/parameter_table.o
- .debug_info      0x027e05        0x2c6 build/default/production/_ext/1472/airspeedCntrl.o
- .debug_info      0x0280cb        0x174 build/default/production/_ext/1472/altitudeCntrlVariable.o
- .debug_info      0x02823f        0x253 build/default/production/_ext/1472/euler_angles.o
- .debug_info      0x028492        0x17b build/default/production/_ext/1472/main.o
- .debug_info      0x02860d        0x9a5 build/default/production/_ext/1658199856/commands.o
+ .debug_info      0x000000        0x599 build/default/production/_ext/1658199856/read.o
+ .debug_info      0x000599        0x57e build/default/production/_ext/1658199856/write.o
+ .debug_info      0x000b17        0x9f0 build/default/production/_ext/1658199856/uart.o
+ .debug_info      0x001507        0x9af build/default/production/_ext/1658199856/commands.o
+ .debug_info      0x001eb6        0x6cf build/default/production/_ext/1077471063/estWind.o
+ .debug_info      0x002585        0x4af build/default/production/_ext/1077471063/estYawDrift.o
+ .debug_info      0x002a34        0xbec build/default/production/_ext/1077471063/gpsParseCommon.o
+ .debug_info      0x003620        0x17e build/default/production/_ext/1077471063/gpsParseSTD.o
+ .debug_info      0x00379e       0x1162 build/default/production/_ext/1077471063/gpsParseUBX.o
+ .debug_info      0x004900        0x8fa build/default/production/_ext/1077471063/mathlibNAV.o
+ .debug_info      0x0051fa       0x1291 build/default/production/_ext/1077471063/rmat.o
+ .debug_info      0x00648b        0x702 build/default/production/_ext/1077471063/libDCM.o
+ .debug_info      0x006b8d        0x713 build/default/production/_ext/1077471063/deadReckoning.o
+ .debug_info      0x0072a0        0x17f build/default/production/_ext/1077471063/gpsParseMTEK.o
+ .debug_info      0x00741f        0x405 build/default/production/_ext/1077471063/estAltitude.o
+ .debug_info      0x007824       0x1b99 build/default/production/_ext/1077454706/background.o
+ .debug_info      0x0093bd        0x6f7 build/default/production/_ext/1077454706/libUDB.o
+ .debug_info      0x009ab4        0x17d build/default/production/_ext/1077454706/analog2digital_udb4.o
+ .debug_info      0x009c31       0x1388 build/default/production/_ext/1077454706/servoOut.o
+ .debug_info      0x00afb9        0x16d build/default/production/_ext/1077454706/osd.o
+ .debug_info      0x00b126        0x171 build/default/production/_ext/1077454706/24LC256.o
+ .debug_info      0x00b297        0xf21 build/default/production/_ext/1077454706/events.o
+ .debug_info      0x00c1b8        0xe63 build/default/production/_ext/1077454706/mpu6000.o
+ .debug_info      0x00d01b       0x162b build/default/production/_ext/1077454706/spiUtils.o
+ .debug_info      0x00e646       0x1aa9 build/default/production/_ext/1077454706/analog2digital_auav3.o
+ .debug_info      0x0100ef         0xc5 build/default/production/_ext/1077454706/traps_asm.o
+ .debug_info      0x0101b4       0x3349 build/default/production/_ext/1077454706/mcu.o
+ .debug_info      0x0134fd        0x4f2 build/default/production/_ext/1077454706/magnetometer.o
+ .debug_info      0x0139ef       0x2bc7 build/default/production/_ext/1077454706/radioIn.o
+ .debug_info      0x0165b6       0x18dc build/default/production/_ext/1077454706/serialIO.o
+ .debug_info      0x017e92        0x527 build/default/production/_ext/1077454706/traps.o
+ .debug_info      0x0183b9        0x16e build/default/production/_ext/1077454706/I2C1.o
+ .debug_info      0x018527       0x11a3 build/default/production/_ext/1077454706/I2C2.o
+ .debug_info      0x0196ca        0x6af build/default/production/_ext/1077454706/barometer.o
+ .debug_info      0x019d79         0xc9 build/default/production/_ext/679848855/madd.o
+ .debug_info      0x019e42         0xc9 build/default/production/_ext/679848855/mmul.o
+ .debug_info      0x019f0b         0xc9 build/default/production/_ext/679848855/mscl.o
+ .debug_info      0x019fd4         0xc9 build/default/production/_ext/679848855/msub.o
+ .debug_info      0x01a09d         0xc9 build/default/production/_ext/679848855/mtrp.o
+ .debug_info      0x01a166         0xc9 build/default/production/_ext/679848855/vadd.o
+ .debug_info      0x01a22f         0xc9 build/default/production/_ext/679848855/vcon.o
+ .debug_info      0x01a2f8         0xca build/default/production/_ext/679848855/vcopy.o
+ .debug_info      0x01a3c2         0xc9 build/default/production/_ext/679848855/vcor.o
+ .debug_info      0x01a48b         0xc9 build/default/production/_ext/679848855/vdot.o
+ .debug_info      0x01a554         0xc9 build/default/production/_ext/679848855/vmax.o
+ .debug_info      0x01a61d         0xc9 build/default/production/_ext/679848855/vmin.o
+ .debug_info      0x01a6e6         0xc9 build/default/production/_ext/679848855/vmul.o
+ .debug_info      0x01a7af         0xc9 build/default/production/_ext/679848855/vneg.o
+ .debug_info      0x01a878         0xc9 build/default/production/_ext/679848855/vpow.o
+ .debug_info      0x01a941         0xc9 build/default/production/_ext/679848855/vscl.o
+ .debug_info      0x01aa0a         0xc9 build/default/production/_ext/679848855/vsub.o
+ .debug_info      0x01aad3         0xca build/default/production/_ext/679848855/vzpad.o
+ .debug_info      0x01ab9d        0x175 build/default/production/_ext/1472/config_tests.o
+ .debug_info      0x01ad12        0x6ae build/default/production/_ext/1472/behavior.o
+ .debug_info      0x01b3c0        0x518 build/default/production/_ext/1472/cameraCntrl.o
+ .debug_info      0x01b8d8        0xc51 build/default/production/_ext/1472/navigate.o
+ .debug_info      0x01c529        0x8ac build/default/production/_ext/1472/pitchCntrl.o
+ .debug_info      0x01cdd5        0x70c build/default/production/_ext/1472/rollCntrl.o
+ .debug_info      0x01d4e1        0x5e1 build/default/production/_ext/1472/servoMix.o
+ .debug_info      0x01dac2        0xb3e build/default/production/_ext/1472/states.o
+ .debug_info      0x01e600        0x80b build/default/production/_ext/1472/yawCntrl.o
+ .debug_info      0x01ee0b        0x172 build/default/production/_ext/1472/telemetry.o
+ .debug_info      0x01ef7d        0x4e3 build/default/production/_ext/1472/servoPrepare.o
+ .debug_info      0x01f460        0x9b5 build/default/production/_ext/1472/flightplan-waypoints.o
+ .debug_info      0x01fe15        0x178 build/default/production/_ext/1472/flightplan-logo.o
+ .debug_info      0x01ff8d        0x16f build/default/production/_ext/1472/mp_osd.o
+ .debug_info      0x0200fc        0xb09 build/default/production/_ext/1472/altitudeCntrl.o
+ .debug_info      0x020c05       0x68d3 build/default/production/_ext/1472/MAVLink.o
+ .debug_info      0x0274d8        0x4f9 build/default/production/_ext/1472/mode_switch.o
+ .debug_info      0x0279d1        0x16d build/default/production/_ext/1472/data_services.o
+ .debug_info      0x027b3e        0x16c build/default/production/_ext/1472/data_storage.o
+ .debug_info      0x027caa        0x178 build/default/production/_ext/1472/nv_memory_table.o
+ .debug_info      0x027e22        0xc62 build/default/production/_ext/1472/parameter_table.o
+ .debug_info      0x028a84        0x2d0 build/default/production/_ext/1472/airspeedCntrl.o
+ .debug_info      0x028d54        0x17e build/default/production/_ext/1472/altitudeCntrlVariable.o
+ .debug_info      0x028ed2        0x25d build/default/production/_ext/1472/euler_angles.o
+ .debug_info      0x02912f        0x185 build/default/production/_ext/1472/main.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000       0x3af0
@@ -2552,250 +2554,250 @@ __FUID0
  .debug_abbrev    0x000000         0xeb build/default/production/_ext/1658199856/read.o
  .debug_abbrev    0x0000eb         0xe2 build/default/production/_ext/1658199856/write.o
  .debug_abbrev    0x0001cd        0x1eb build/default/production/_ext/1658199856/uart.o
- .debug_abbrev    0x0003b8         0xeb build/default/production/_ext/1077471063/estWind.o
- .debug_abbrev    0x0004a3         0xcf build/default/production/_ext/1077471063/estYawDrift.o
- .debug_abbrev    0x000572        0x142 build/default/production/_ext/1077471063/gpsParseCommon.o
- .debug_abbrev    0x0006b4         0x1f build/default/production/_ext/1077471063/gpsParseSTD.o
- .debug_abbrev    0x0006d3        0x196 build/default/production/_ext/1077471063/gpsParseUBX.o
- .debug_abbrev    0x000869        0x182 build/default/production/_ext/1077471063/mathlibNAV.o
- .debug_abbrev    0x0009eb        0x215 build/default/production/_ext/1077471063/rmat.o
- .debug_abbrev    0x000c00        0x111 build/default/production/_ext/1077471063/libDCM.o
- .debug_abbrev    0x000d11         0xda build/default/production/_ext/1077471063/deadReckoning.o
- .debug_abbrev    0x000deb         0x1f build/default/production/_ext/1077471063/gpsParseMTEK.o
- .debug_abbrev    0x000e0a         0xa9 build/default/production/_ext/1077471063/estAltitude.o
- .debug_abbrev    0x000eb3        0x169 build/default/production/_ext/1077454706/background.o
- .debug_abbrev    0x00101c        0x1ac build/default/production/_ext/1077454706/libUDB.o
- .debug_abbrev    0x0011c8         0x1f build/default/production/_ext/1077454706/analog2digital_udb4.o
- .debug_abbrev    0x0011e7        0x12e build/default/production/_ext/1077454706/servoOut.o
- .debug_abbrev    0x001315         0x1f build/default/production/_ext/1077454706/osd.o
- .debug_abbrev    0x001334         0x1f build/default/production/_ext/1077454706/24LC256.o
- .debug_abbrev    0x001353        0x1b6 build/default/production/_ext/1077454706/events.o
- .debug_abbrev    0x001509        0x128 build/default/production/_ext/1077454706/mpu6000.o
- .debug_abbrev    0x001631        0x1e1 build/default/production/_ext/1077454706/spiUtils.o
- .debug_abbrev    0x001812        0x186 build/default/production/_ext/1077454706/analog2digital_auav3.o
- .debug_abbrev    0x001998         0x14 build/default/production/_ext/1077454706/traps_asm.o
- .debug_abbrev    0x0019ac        0x124 build/default/production/_ext/1077454706/mcu.o
- .debug_abbrev    0x001ad0        0x107 build/default/production/_ext/1077454706/magnetometer.o
- .debug_abbrev    0x001bd7        0x18c build/default/production/_ext/1077454706/radioIn.o
- .debug_abbrev    0x001d63        0x153 build/default/production/_ext/1077454706/serialIO.o
- .debug_abbrev    0x001eb6         0xe3 build/default/production/_ext/1077454706/traps.o
- .debug_abbrev    0x001f99         0x1f build/default/production/_ext/1077454706/I2C1.o
- .debug_abbrev    0x001fb8        0x1e9 build/default/production/_ext/1077454706/I2C2.o
- .debug_abbrev    0x0021a1        0x178 build/default/production/_ext/1077454706/barometer.o
- .debug_abbrev    0x002319         0x14 build/default/production/_ext/679848855/madd.o
- .debug_abbrev    0x00232d         0x14 build/default/production/_ext/679848855/mmul.o
- .debug_abbrev    0x002341         0x14 build/default/production/_ext/679848855/mscl.o
- .debug_abbrev    0x002355         0x14 build/default/production/_ext/679848855/msub.o
- .debug_abbrev    0x002369         0x14 build/default/production/_ext/679848855/mtrp.o
- .debug_abbrev    0x00237d         0x14 build/default/production/_ext/679848855/vadd.o
- .debug_abbrev    0x002391         0x14 build/default/production/_ext/679848855/vcon.o
- .debug_abbrev    0x0023a5         0x14 build/default/production/_ext/679848855/vcopy.o
- .debug_abbrev    0x0023b9         0x14 build/default/production/_ext/679848855/vcor.o
- .debug_abbrev    0x0023cd         0x14 build/default/production/_ext/679848855/vdot.o
- .debug_abbrev    0x0023e1         0x14 build/default/production/_ext/679848855/vmax.o
- .debug_abbrev    0x0023f5         0x14 build/default/production/_ext/679848855/vmin.o
- .debug_abbrev    0x002409         0x14 build/default/production/_ext/679848855/vmul.o
- .debug_abbrev    0x00241d         0x14 build/default/production/_ext/679848855/vneg.o
- .debug_abbrev    0x002431         0x14 build/default/production/_ext/679848855/vpow.o
- .debug_abbrev    0x002445         0x14 build/default/production/_ext/679848855/vscl.o
- .debug_abbrev    0x002459         0x14 build/default/production/_ext/679848855/vsub.o
- .debug_abbrev    0x00246d         0x14 build/default/production/_ext/679848855/vzpad.o
- .debug_abbrev    0x002481         0x1f build/default/production/_ext/1472/config_tests.o
- .debug_abbrev    0x0024a0         0xff build/default/production/_ext/1472/behavior.o
- .debug_abbrev    0x00259f        0x103 build/default/production/_ext/1472/cameraCntrl.o
- .debug_abbrev    0x0026a2        0x18c build/default/production/_ext/1472/navigate.o
- .debug_abbrev    0x00282e        0x135 build/default/production/_ext/1472/pitchCntrl.o
- .debug_abbrev    0x002963        0x117 build/default/production/_ext/1472/rollCntrl.o
- .debug_abbrev    0x002a7a         0xf2 build/default/production/_ext/1472/servoMix.o
- .debug_abbrev    0x002b6c        0x18b build/default/production/_ext/1472/states.o
- .debug_abbrev    0x002cf7        0x124 build/default/production/_ext/1472/yawCntrl.o
- .debug_abbrev    0x002e1b         0x1f build/default/production/_ext/1472/telemetry.o
- .debug_abbrev    0x002e3a         0xd7 build/default/production/_ext/1472/servoPrepare.o
- .debug_abbrev    0x002f11        0x18d build/default/production/_ext/1472/flightplan-waypoints.o
- .debug_abbrev    0x00309e         0x1f build/default/production/_ext/1472/flightplan-logo.o
- .debug_abbrev    0x0030bd         0x1f build/default/production/_ext/1472/mp_osd.o
- .debug_abbrev    0x0030dc        0x19f build/default/production/_ext/1472/altitudeCntrl.o
- .debug_abbrev    0x00327b        0x322 build/default/production/_ext/1472/MAVLink.o
- .debug_abbrev    0x00359d         0xd7 build/default/production/_ext/1472/mode_switch.o
- .debug_abbrev    0x003674         0x1f build/default/production/_ext/1472/data_services.o
- .debug_abbrev    0x003693         0x1f build/default/production/_ext/1472/data_storage.o
- .debug_abbrev    0x0036b2         0x1f build/default/production/_ext/1472/nv_memory_table.o
- .debug_abbrev    0x0036d1        0x11a build/default/production/_ext/1472/parameter_table.o
- .debug_abbrev    0x0037eb         0x3d build/default/production/_ext/1472/airspeedCntrl.o
- .debug_abbrev    0x003828         0x1f build/default/production/_ext/1472/altitudeCntrlVariable.o
- .debug_abbrev    0x003847         0x8f build/default/production/_ext/1472/euler_angles.o
- .debug_abbrev    0x0038d6         0x36 build/default/production/_ext/1472/main.o
- .debug_abbrev    0x00390c        0x1e4 build/default/production/_ext/1658199856/commands.o
+ .debug_abbrev    0x0003b8        0x1e4 build/default/production/_ext/1658199856/commands.o
+ .debug_abbrev    0x00059c         0xeb build/default/production/_ext/1077471063/estWind.o
+ .debug_abbrev    0x000687         0xcf build/default/production/_ext/1077471063/estYawDrift.o
+ .debug_abbrev    0x000756        0x142 build/default/production/_ext/1077471063/gpsParseCommon.o
+ .debug_abbrev    0x000898         0x1f build/default/production/_ext/1077471063/gpsParseSTD.o
+ .debug_abbrev    0x0008b7        0x196 build/default/production/_ext/1077471063/gpsParseUBX.o
+ .debug_abbrev    0x000a4d        0x182 build/default/production/_ext/1077471063/mathlibNAV.o
+ .debug_abbrev    0x000bcf        0x215 build/default/production/_ext/1077471063/rmat.o
+ .debug_abbrev    0x000de4        0x111 build/default/production/_ext/1077471063/libDCM.o
+ .debug_abbrev    0x000ef5         0xda build/default/production/_ext/1077471063/deadReckoning.o
+ .debug_abbrev    0x000fcf         0x1f build/default/production/_ext/1077471063/gpsParseMTEK.o
+ .debug_abbrev    0x000fee         0xa9 build/default/production/_ext/1077471063/estAltitude.o
+ .debug_abbrev    0x001097        0x169 build/default/production/_ext/1077454706/background.o
+ .debug_abbrev    0x001200        0x1ac build/default/production/_ext/1077454706/libUDB.o
+ .debug_abbrev    0x0013ac         0x1f build/default/production/_ext/1077454706/analog2digital_udb4.o
+ .debug_abbrev    0x0013cb        0x12e build/default/production/_ext/1077454706/servoOut.o
+ .debug_abbrev    0x0014f9         0x1f build/default/production/_ext/1077454706/osd.o
+ .debug_abbrev    0x001518         0x1f build/default/production/_ext/1077454706/24LC256.o
+ .debug_abbrev    0x001537        0x1b6 build/default/production/_ext/1077454706/events.o
+ .debug_abbrev    0x0016ed        0x128 build/default/production/_ext/1077454706/mpu6000.o
+ .debug_abbrev    0x001815        0x1e1 build/default/production/_ext/1077454706/spiUtils.o
+ .debug_abbrev    0x0019f6        0x186 build/default/production/_ext/1077454706/analog2digital_auav3.o
+ .debug_abbrev    0x001b7c         0x14 build/default/production/_ext/1077454706/traps_asm.o
+ .debug_abbrev    0x001b90        0x124 build/default/production/_ext/1077454706/mcu.o
+ .debug_abbrev    0x001cb4        0x107 build/default/production/_ext/1077454706/magnetometer.o
+ .debug_abbrev    0x001dbb        0x18c build/default/production/_ext/1077454706/radioIn.o
+ .debug_abbrev    0x001f47        0x153 build/default/production/_ext/1077454706/serialIO.o
+ .debug_abbrev    0x00209a         0xe3 build/default/production/_ext/1077454706/traps.o
+ .debug_abbrev    0x00217d         0x1f build/default/production/_ext/1077454706/I2C1.o
+ .debug_abbrev    0x00219c        0x1e9 build/default/production/_ext/1077454706/I2C2.o
+ .debug_abbrev    0x002385        0x178 build/default/production/_ext/1077454706/barometer.o
+ .debug_abbrev    0x0024fd         0x14 build/default/production/_ext/679848855/madd.o
+ .debug_abbrev    0x002511         0x14 build/default/production/_ext/679848855/mmul.o
+ .debug_abbrev    0x002525         0x14 build/default/production/_ext/679848855/mscl.o
+ .debug_abbrev    0x002539         0x14 build/default/production/_ext/679848855/msub.o
+ .debug_abbrev    0x00254d         0x14 build/default/production/_ext/679848855/mtrp.o
+ .debug_abbrev    0x002561         0x14 build/default/production/_ext/679848855/vadd.o
+ .debug_abbrev    0x002575         0x14 build/default/production/_ext/679848855/vcon.o
+ .debug_abbrev    0x002589         0x14 build/default/production/_ext/679848855/vcopy.o
+ .debug_abbrev    0x00259d         0x14 build/default/production/_ext/679848855/vcor.o
+ .debug_abbrev    0x0025b1         0x14 build/default/production/_ext/679848855/vdot.o
+ .debug_abbrev    0x0025c5         0x14 build/default/production/_ext/679848855/vmax.o
+ .debug_abbrev    0x0025d9         0x14 build/default/production/_ext/679848855/vmin.o
+ .debug_abbrev    0x0025ed         0x14 build/default/production/_ext/679848855/vmul.o
+ .debug_abbrev    0x002601         0x14 build/default/production/_ext/679848855/vneg.o
+ .debug_abbrev    0x002615         0x14 build/default/production/_ext/679848855/vpow.o
+ .debug_abbrev    0x002629         0x14 build/default/production/_ext/679848855/vscl.o
+ .debug_abbrev    0x00263d         0x14 build/default/production/_ext/679848855/vsub.o
+ .debug_abbrev    0x002651         0x14 build/default/production/_ext/679848855/vzpad.o
+ .debug_abbrev    0x002665         0x1f build/default/production/_ext/1472/config_tests.o
+ .debug_abbrev    0x002684         0xff build/default/production/_ext/1472/behavior.o
+ .debug_abbrev    0x002783        0x103 build/default/production/_ext/1472/cameraCntrl.o
+ .debug_abbrev    0x002886        0x18c build/default/production/_ext/1472/navigate.o
+ .debug_abbrev    0x002a12        0x135 build/default/production/_ext/1472/pitchCntrl.o
+ .debug_abbrev    0x002b47        0x117 build/default/production/_ext/1472/rollCntrl.o
+ .debug_abbrev    0x002c5e         0xf2 build/default/production/_ext/1472/servoMix.o
+ .debug_abbrev    0x002d50        0x18b build/default/production/_ext/1472/states.o
+ .debug_abbrev    0x002edb        0x124 build/default/production/_ext/1472/yawCntrl.o
+ .debug_abbrev    0x002fff         0x1f build/default/production/_ext/1472/telemetry.o
+ .debug_abbrev    0x00301e         0xd7 build/default/production/_ext/1472/servoPrepare.o
+ .debug_abbrev    0x0030f5        0x18d build/default/production/_ext/1472/flightplan-waypoints.o
+ .debug_abbrev    0x003282         0x1f build/default/production/_ext/1472/flightplan-logo.o
+ .debug_abbrev    0x0032a1         0x1f build/default/production/_ext/1472/mp_osd.o
+ .debug_abbrev    0x0032c0        0x19f build/default/production/_ext/1472/altitudeCntrl.o
+ .debug_abbrev    0x00345f        0x322 build/default/production/_ext/1472/MAVLink.o
+ .debug_abbrev    0x003781         0xd7 build/default/production/_ext/1472/mode_switch.o
+ .debug_abbrev    0x003858         0x1f build/default/production/_ext/1472/data_services.o
+ .debug_abbrev    0x003877         0x1f build/default/production/_ext/1472/data_storage.o
+ .debug_abbrev    0x003896         0x1f build/default/production/_ext/1472/nv_memory_table.o
+ .debug_abbrev    0x0038b5        0x11a build/default/production/_ext/1472/parameter_table.o
+ .debug_abbrev    0x0039cf         0x3d build/default/production/_ext/1472/airspeedCntrl.o
+ .debug_abbrev    0x003a0c         0x1f build/default/production/_ext/1472/altitudeCntrlVariable.o
+ .debug_abbrev    0x003a2b         0x8f build/default/production/_ext/1472/euler_angles.o
+ .debug_abbrev    0x003aba         0x36 build/default/production/_ext/1472/main.o
 
 .debug_line       0x000000       0xce4b
  *(.debug_line)
  .debug_line      0x000000        0x174 build/default/production/_ext/1658199856/read.o
  .debug_line      0x000174        0x165 build/default/production/_ext/1658199856/write.o
  .debug_line      0x0002d9        0x3dd build/default/production/_ext/1658199856/uart.o
- .debug_line      0x0006b6        0x2ee build/default/production/_ext/1077471063/estWind.o
- .debug_line      0x0009a4        0x1ae build/default/production/_ext/1077471063/estYawDrift.o
- .debug_line      0x000b52        0x3ff build/default/production/_ext/1077471063/gpsParseCommon.o
- .debug_line      0x000f51         0x24 build/default/production/_ext/1077471063/gpsParseSTD.o
- .debug_line      0x000f75        0x809 build/default/production/_ext/1077471063/gpsParseUBX.o
- .debug_line      0x00177e        0x7d4 build/default/production/_ext/1077471063/mathlibNAV.o
- .debug_line      0x001f52        0xb38 build/default/production/_ext/1077471063/rmat.o
- .debug_line      0x002a8a        0x31b build/default/production/_ext/1077471063/libDCM.o
- .debug_line      0x002da5        0x32e build/default/production/_ext/1077471063/deadReckoning.o
- .debug_line      0x0030d3         0x24 build/default/production/_ext/1077471063/gpsParseMTEK.o
- .debug_line      0x0030f7        0x140 build/default/production/_ext/1077471063/estAltitude.o
- .debug_line      0x003237        0x413 build/default/production/_ext/1077454706/background.o
- .debug_line      0x00364a        0x24a build/default/production/_ext/1077454706/libUDB.o
- .debug_line      0x003894         0x24 build/default/production/_ext/1077454706/analog2digital_udb4.o
- .debug_line      0x0038b8        0x318 build/default/production/_ext/1077454706/servoOut.o
- .debug_line      0x003bd0         0x24 build/default/production/_ext/1077454706/osd.o
- .debug_line      0x003bf4         0x24 build/default/production/_ext/1077454706/24LC256.o
- .debug_line      0x003c18        0x339 build/default/production/_ext/1077454706/events.o
- .debug_line      0x003f51        0x2b0 build/default/production/_ext/1077454706/mpu6000.o
- .debug_line      0x004201        0x4cd build/default/production/_ext/1077454706/spiUtils.o
- .debug_line      0x0046ce        0x3ff build/default/production/_ext/1077454706/analog2digital_auav3.o
- .debug_line      0x004acd         0x5b build/default/production/_ext/1077454706/traps_asm.o
- .debug_line      0x004b28        0x42f build/default/production/_ext/1077454706/mcu.o
- .debug_line      0x004f57        0x303 build/default/production/_ext/1077454706/magnetometer.o
- .debug_line      0x00525a        0x2a3 build/default/production/_ext/1077454706/radioIn.o
- .debug_line      0x0054fd        0x50b build/default/production/_ext/1077454706/serialIO.o
- .debug_line      0x005a08        0x219 build/default/production/_ext/1077454706/traps.o
- .debug_line      0x005c21         0x24 build/default/production/_ext/1077454706/I2C1.o
- .debug_line      0x005c45        0x827 build/default/production/_ext/1077454706/I2C2.o
- .debug_line      0x00646c        0x36d build/default/production/_ext/1077454706/barometer.o
- .debug_line      0x0067d9         0x69 build/default/production/_ext/679848855/madd.o
- .debug_line      0x006842         0x83 build/default/production/_ext/679848855/mmul.o
- .debug_line      0x0068c5         0x69 build/default/production/_ext/679848855/mscl.o
- .debug_line      0x00692e         0x6e build/default/production/_ext/679848855/msub.o
- .debug_line      0x00699c         0x6b build/default/production/_ext/679848855/mtrp.o
- .debug_line      0x006a07         0x68 build/default/production/_ext/679848855/vadd.o
- .debug_line      0x006a6f         0xc0 build/default/production/_ext/679848855/vcon.o
- .debug_line      0x006b2f         0x52 build/default/production/_ext/679848855/vcopy.o
- .debug_line      0x006b81         0x61 build/default/production/_ext/679848855/vcor.o
- .debug_line      0x006be2         0x68 build/default/production/_ext/679848855/vdot.o
- .debug_line      0x006c4a         0x56 build/default/production/_ext/679848855/vmax.o
- .debug_line      0x006ca0         0x56 build/default/production/_ext/679848855/vmin.o
- .debug_line      0x006cf6         0x69 build/default/production/_ext/679848855/vmul.o
- .debug_line      0x006d5f         0x6b build/default/production/_ext/679848855/vneg.o
- .debug_line      0x006dca         0x67 build/default/production/_ext/679848855/vpow.o
- .debug_line      0x006e31         0x69 build/default/production/_ext/679848855/vscl.o
- .debug_line      0x006e9a         0x6d build/default/production/_ext/679848855/vsub.o
- .debug_line      0x006f07         0x58 build/default/production/_ext/679848855/vzpad.o
- .debug_line      0x006f5f         0x24 build/default/production/_ext/1472/config_tests.o
- .debug_line      0x006f83        0x33a build/default/production/_ext/1472/behavior.o
- .debug_line      0x0072bd        0x1bf build/default/production/_ext/1472/cameraCntrl.o
- .debug_line      0x00747c        0x5aa build/default/production/_ext/1472/navigate.o
- .debug_line      0x007a26        0x320 build/default/production/_ext/1472/pitchCntrl.o
- .debug_line      0x007d46        0x251 build/default/production/_ext/1472/rollCntrl.o
- .debug_line      0x007f97        0x210 build/default/production/_ext/1472/servoMix.o
- .debug_line      0x0081a7        0x84e build/default/production/_ext/1472/states.o
- .debug_line      0x0089f5        0x27e build/default/production/_ext/1472/yawCntrl.o
- .debug_line      0x008c73         0x24 build/default/production/_ext/1472/telemetry.o
- .debug_line      0x008c97        0x1e9 build/default/production/_ext/1472/servoPrepare.o
- .debug_line      0x008e80        0x42f build/default/production/_ext/1472/flightplan-waypoints.o
- .debug_line      0x0092af         0x24 build/default/production/_ext/1472/flightplan-logo.o
- .debug_line      0x0092d3         0x24 build/default/production/_ext/1472/mp_osd.o
- .debug_line      0x0092f7        0x457 build/default/production/_ext/1472/altitudeCntrl.o
- .debug_line      0x00974e       0x2a2e build/default/production/_ext/1472/MAVLink.o
- .debug_line      0x00c17c        0x231 build/default/production/_ext/1472/mode_switch.o
- .debug_line      0x00c3ad         0x24 build/default/production/_ext/1472/data_services.o
- .debug_line      0x00c3d1         0x24 build/default/production/_ext/1472/data_storage.o
- .debug_line      0x00c3f5         0x24 build/default/production/_ext/1472/nv_memory_table.o
- .debug_line      0x00c419        0x1a4 build/default/production/_ext/1472/parameter_table.o
- .debug_line      0x00c5bd         0xc0 build/default/production/_ext/1472/airspeedCntrl.o
- .debug_line      0x00c67d         0x24 build/default/production/_ext/1472/altitudeCntrlVariable.o
- .debug_line      0x00c6a1        0x156 build/default/production/_ext/1472/euler_angles.o
- .debug_line      0x00c7f7         0x93 build/default/production/_ext/1472/main.o
- .debug_line      0x00c88a         0x1a build/default/production/stack.o
- .debug_line      0x00c8a4        0x5a7 build/default/production/_ext/1658199856/commands.o
+ .debug_line      0x0006b6        0x5a7 build/default/production/_ext/1658199856/commands.o
+ .debug_line      0x000c5d        0x2ee build/default/production/_ext/1077471063/estWind.o
+ .debug_line      0x000f4b        0x1ae build/default/production/_ext/1077471063/estYawDrift.o
+ .debug_line      0x0010f9        0x3ff build/default/production/_ext/1077471063/gpsParseCommon.o
+ .debug_line      0x0014f8         0x24 build/default/production/_ext/1077471063/gpsParseSTD.o
+ .debug_line      0x00151c        0x809 build/default/production/_ext/1077471063/gpsParseUBX.o
+ .debug_line      0x001d25        0x7d4 build/default/production/_ext/1077471063/mathlibNAV.o
+ .debug_line      0x0024f9        0xb38 build/default/production/_ext/1077471063/rmat.o
+ .debug_line      0x003031        0x31b build/default/production/_ext/1077471063/libDCM.o
+ .debug_line      0x00334c        0x32e build/default/production/_ext/1077471063/deadReckoning.o
+ .debug_line      0x00367a         0x24 build/default/production/_ext/1077471063/gpsParseMTEK.o
+ .debug_line      0x00369e        0x140 build/default/production/_ext/1077471063/estAltitude.o
+ .debug_line      0x0037de        0x413 build/default/production/_ext/1077454706/background.o
+ .debug_line      0x003bf1        0x24a build/default/production/_ext/1077454706/libUDB.o
+ .debug_line      0x003e3b         0x24 build/default/production/_ext/1077454706/analog2digital_udb4.o
+ .debug_line      0x003e5f        0x318 build/default/production/_ext/1077454706/servoOut.o
+ .debug_line      0x004177         0x24 build/default/production/_ext/1077454706/osd.o
+ .debug_line      0x00419b         0x24 build/default/production/_ext/1077454706/24LC256.o
+ .debug_line      0x0041bf        0x339 build/default/production/_ext/1077454706/events.o
+ .debug_line      0x0044f8        0x2b0 build/default/production/_ext/1077454706/mpu6000.o
+ .debug_line      0x0047a8        0x4cd build/default/production/_ext/1077454706/spiUtils.o
+ .debug_line      0x004c75        0x3ff build/default/production/_ext/1077454706/analog2digital_auav3.o
+ .debug_line      0x005074         0x5b build/default/production/_ext/1077454706/traps_asm.o
+ .debug_line      0x0050cf        0x42f build/default/production/_ext/1077454706/mcu.o
+ .debug_line      0x0054fe        0x303 build/default/production/_ext/1077454706/magnetometer.o
+ .debug_line      0x005801        0x2a3 build/default/production/_ext/1077454706/radioIn.o
+ .debug_line      0x005aa4        0x50b build/default/production/_ext/1077454706/serialIO.o
+ .debug_line      0x005faf        0x219 build/default/production/_ext/1077454706/traps.o
+ .debug_line      0x0061c8         0x24 build/default/production/_ext/1077454706/I2C1.o
+ .debug_line      0x0061ec        0x827 build/default/production/_ext/1077454706/I2C2.o
+ .debug_line      0x006a13        0x36d build/default/production/_ext/1077454706/barometer.o
+ .debug_line      0x006d80         0x69 build/default/production/_ext/679848855/madd.o
+ .debug_line      0x006de9         0x83 build/default/production/_ext/679848855/mmul.o
+ .debug_line      0x006e6c         0x69 build/default/production/_ext/679848855/mscl.o
+ .debug_line      0x006ed5         0x6e build/default/production/_ext/679848855/msub.o
+ .debug_line      0x006f43         0x6b build/default/production/_ext/679848855/mtrp.o
+ .debug_line      0x006fae         0x68 build/default/production/_ext/679848855/vadd.o
+ .debug_line      0x007016         0xc0 build/default/production/_ext/679848855/vcon.o
+ .debug_line      0x0070d6         0x52 build/default/production/_ext/679848855/vcopy.o
+ .debug_line      0x007128         0x61 build/default/production/_ext/679848855/vcor.o
+ .debug_line      0x007189         0x68 build/default/production/_ext/679848855/vdot.o
+ .debug_line      0x0071f1         0x56 build/default/production/_ext/679848855/vmax.o
+ .debug_line      0x007247         0x56 build/default/production/_ext/679848855/vmin.o
+ .debug_line      0x00729d         0x69 build/default/production/_ext/679848855/vmul.o
+ .debug_line      0x007306         0x6b build/default/production/_ext/679848855/vneg.o
+ .debug_line      0x007371         0x67 build/default/production/_ext/679848855/vpow.o
+ .debug_line      0x0073d8         0x69 build/default/production/_ext/679848855/vscl.o
+ .debug_line      0x007441         0x6d build/default/production/_ext/679848855/vsub.o
+ .debug_line      0x0074ae         0x58 build/default/production/_ext/679848855/vzpad.o
+ .debug_line      0x007506         0x24 build/default/production/_ext/1472/config_tests.o
+ .debug_line      0x00752a        0x33a build/default/production/_ext/1472/behavior.o
+ .debug_line      0x007864        0x1bf build/default/production/_ext/1472/cameraCntrl.o
+ .debug_line      0x007a23        0x5aa build/default/production/_ext/1472/navigate.o
+ .debug_line      0x007fcd        0x320 build/default/production/_ext/1472/pitchCntrl.o
+ .debug_line      0x0082ed        0x251 build/default/production/_ext/1472/rollCntrl.o
+ .debug_line      0x00853e        0x210 build/default/production/_ext/1472/servoMix.o
+ .debug_line      0x00874e        0x84e build/default/production/_ext/1472/states.o
+ .debug_line      0x008f9c        0x27e build/default/production/_ext/1472/yawCntrl.o
+ .debug_line      0x00921a         0x24 build/default/production/_ext/1472/telemetry.o
+ .debug_line      0x00923e        0x1e9 build/default/production/_ext/1472/servoPrepare.o
+ .debug_line      0x009427        0x42f build/default/production/_ext/1472/flightplan-waypoints.o
+ .debug_line      0x009856         0x24 build/default/production/_ext/1472/flightplan-logo.o
+ .debug_line      0x00987a         0x24 build/default/production/_ext/1472/mp_osd.o
+ .debug_line      0x00989e        0x457 build/default/production/_ext/1472/altitudeCntrl.o
+ .debug_line      0x009cf5       0x2a2e build/default/production/_ext/1472/MAVLink.o
+ .debug_line      0x00c723        0x231 build/default/production/_ext/1472/mode_switch.o
+ .debug_line      0x00c954         0x24 build/default/production/_ext/1472/data_services.o
+ .debug_line      0x00c978         0x24 build/default/production/_ext/1472/data_storage.o
+ .debug_line      0x00c99c         0x24 build/default/production/_ext/1472/nv_memory_table.o
+ .debug_line      0x00c9c0        0x1a4 build/default/production/_ext/1472/parameter_table.o
+ .debug_line      0x00cb64         0xc0 build/default/production/_ext/1472/airspeedCntrl.o
+ .debug_line      0x00cc24         0x24 build/default/production/_ext/1472/altitudeCntrlVariable.o
+ .debug_line      0x00cc48        0x156 build/default/production/_ext/1472/euler_angles.o
+ .debug_line      0x00cd9e         0x93 build/default/production/_ext/1472/main.o
+ .debug_line      0x00ce31         0x1a build/default/production/stack.o
 
 .debug_frame      0x000000       0x2364
  *(.debug_frame)
  .debug_frame     0x000000         0x24 build/default/production/_ext/1658199856/read.o
  .debug_frame     0x000024         0x24 build/default/production/_ext/1658199856/write.o
  .debug_frame     0x000048         0xe4 build/default/production/_ext/1658199856/uart.o
- .debug_frame     0x00012c         0x24 build/default/production/_ext/1077471063/estWind.o
- .debug_frame     0x000150         0x34 build/default/production/_ext/1077471063/estYawDrift.o
- .debug_frame     0x000184         0x64 build/default/production/_ext/1077471063/gpsParseCommon.o
- .debug_frame     0x0001e8        0x134 build/default/production/_ext/1077471063/gpsParseUBX.o
- .debug_frame     0x00031c        0x114 build/default/production/_ext/1077471063/mathlibNAV.o
- .debug_frame     0x000430        0x144 build/default/production/_ext/1077471063/rmat.o
- .debug_frame     0x000574         0x94 build/default/production/_ext/1077471063/libDCM.o
- .debug_frame     0x000608         0x24 build/default/production/_ext/1077471063/deadReckoning.o
- .debug_frame     0x00062c         0x84 build/default/production/_ext/1077471063/estAltitude.o
- .debug_frame     0x0006b0         0x84 build/default/production/_ext/1077454706/background.o
- .debug_frame     0x000734         0x74 build/default/production/_ext/1077454706/libUDB.o
- .debug_frame     0x0007a8         0x54 build/default/production/_ext/1077454706/servoOut.o
- .debug_frame     0x0007fc         0x74 build/default/production/_ext/1077454706/events.o
- .debug_frame     0x000870         0xb4 build/default/production/_ext/1077454706/mpu6000.o
- .debug_frame     0x000924         0xa4 build/default/production/_ext/1077454706/spiUtils.o
- .debug_frame     0x0009c8         0x34 build/default/production/_ext/1077454706/analog2digital_auav3.o
- .debug_frame     0x0009fc         0xb4 build/default/production/_ext/1077454706/mcu.o
- .debug_frame     0x000ab0         0x44 build/default/production/_ext/1077454706/magnetometer.o
- .debug_frame     0x000af4         0xb4 build/default/production/_ext/1077454706/radioIn.o
- .debug_frame     0x000ba8         0xd4 build/default/production/_ext/1077454706/serialIO.o
- .debug_frame     0x000c7c         0x74 build/default/production/_ext/1077454706/traps.o
- .debug_frame     0x000cf0        0x1a4 build/default/production/_ext/1077454706/I2C2.o
- .debug_frame     0x000e94         0x84 build/default/production/_ext/1077454706/barometer.o
- .debug_frame     0x000f18         0x84 build/default/production/_ext/1472/behavior.o
- .debug_frame     0x000f9c         0x64 build/default/production/_ext/1472/cameraCntrl.o
- .debug_frame     0x001000         0x94 build/default/production/_ext/1472/navigate.o
- .debug_frame     0x001094         0x44 build/default/production/_ext/1472/pitchCntrl.o
- .debug_frame     0x0010d8         0x44 build/default/production/_ext/1472/rollCntrl.o
- .debug_frame     0x00111c         0x34 build/default/production/_ext/1472/servoMix.o
- .debug_frame     0x001150        0x17c build/default/production/_ext/1472/states.o
- .debug_frame     0x0012cc         0x44 build/default/production/_ext/1472/yawCntrl.o
- .debug_frame     0x001310         0x44 build/default/production/_ext/1472/servoPrepare.o
- .debug_frame     0x001354        0x168 build/default/production/_ext/1472/flightplan-waypoints.o
- .debug_frame     0x0014bc         0x84 build/default/production/_ext/1472/altitudeCntrl.o
- .debug_frame     0x001540        0x97c build/default/production/_ext/1472/MAVLink.o
- .debug_frame     0x001ebc         0x64 build/default/production/_ext/1472/mode_switch.o
- .debug_frame     0x001f20         0x24 build/default/production/_ext/1472/euler_angles.o
- .debug_frame     0x001f44         0x24 build/default/production/_ext/1472/main.o
- .debug_frame     0x001f68        0x3fc build/default/production/_ext/1658199856/commands.o
+ .debug_frame     0x00012c        0x3fc build/default/production/_ext/1658199856/commands.o
+ .debug_frame     0x000528         0x24 build/default/production/_ext/1077471063/estWind.o
+ .debug_frame     0x00054c         0x34 build/default/production/_ext/1077471063/estYawDrift.o
+ .debug_frame     0x000580         0x64 build/default/production/_ext/1077471063/gpsParseCommon.o
+ .debug_frame     0x0005e4        0x134 build/default/production/_ext/1077471063/gpsParseUBX.o
+ .debug_frame     0x000718        0x114 build/default/production/_ext/1077471063/mathlibNAV.o
+ .debug_frame     0x00082c        0x144 build/default/production/_ext/1077471063/rmat.o
+ .debug_frame     0x000970         0x94 build/default/production/_ext/1077471063/libDCM.o
+ .debug_frame     0x000a04         0x24 build/default/production/_ext/1077471063/deadReckoning.o
+ .debug_frame     0x000a28         0x84 build/default/production/_ext/1077471063/estAltitude.o
+ .debug_frame     0x000aac         0x84 build/default/production/_ext/1077454706/background.o
+ .debug_frame     0x000b30         0x74 build/default/production/_ext/1077454706/libUDB.o
+ .debug_frame     0x000ba4         0x54 build/default/production/_ext/1077454706/servoOut.o
+ .debug_frame     0x000bf8         0x74 build/default/production/_ext/1077454706/events.o
+ .debug_frame     0x000c6c         0xb4 build/default/production/_ext/1077454706/mpu6000.o
+ .debug_frame     0x000d20         0xa4 build/default/production/_ext/1077454706/spiUtils.o
+ .debug_frame     0x000dc4         0x34 build/default/production/_ext/1077454706/analog2digital_auav3.o
+ .debug_frame     0x000df8         0xb4 build/default/production/_ext/1077454706/mcu.o
+ .debug_frame     0x000eac         0x44 build/default/production/_ext/1077454706/magnetometer.o
+ .debug_frame     0x000ef0         0xb4 build/default/production/_ext/1077454706/radioIn.o
+ .debug_frame     0x000fa4         0xd4 build/default/production/_ext/1077454706/serialIO.o
+ .debug_frame     0x001078         0x74 build/default/production/_ext/1077454706/traps.o
+ .debug_frame     0x0010ec        0x1a4 build/default/production/_ext/1077454706/I2C2.o
+ .debug_frame     0x001290         0x84 build/default/production/_ext/1077454706/barometer.o
+ .debug_frame     0x001314         0x84 build/default/production/_ext/1472/behavior.o
+ .debug_frame     0x001398         0x64 build/default/production/_ext/1472/cameraCntrl.o
+ .debug_frame     0x0013fc         0x94 build/default/production/_ext/1472/navigate.o
+ .debug_frame     0x001490         0x44 build/default/production/_ext/1472/pitchCntrl.o
+ .debug_frame     0x0014d4         0x44 build/default/production/_ext/1472/rollCntrl.o
+ .debug_frame     0x001518         0x34 build/default/production/_ext/1472/servoMix.o
+ .debug_frame     0x00154c        0x17c build/default/production/_ext/1472/states.o
+ .debug_frame     0x0016c8         0x44 build/default/production/_ext/1472/yawCntrl.o
+ .debug_frame     0x00170c         0x44 build/default/production/_ext/1472/servoPrepare.o
+ .debug_frame     0x001750        0x168 build/default/production/_ext/1472/flightplan-waypoints.o
+ .debug_frame     0x0018b8         0x84 build/default/production/_ext/1472/altitudeCntrl.o
+ .debug_frame     0x00193c        0x97c build/default/production/_ext/1472/MAVLink.o
+ .debug_frame     0x0022b8         0x64 build/default/production/_ext/1472/mode_switch.o
+ .debug_frame     0x00231c         0x24 build/default/production/_ext/1472/euler_angles.o
+ .debug_frame     0x002340         0x24 build/default/production/_ext/1472/main.o
 
 .debug_str        0x000000       0x2cb7
  *(.debug_str)
  .debug_str       0x000000         0x5f build/default/production/_ext/1658199856/read.o
  .debug_str       0x00005f         0x5f build/default/production/_ext/1658199856/write.o
  .debug_str       0x0000be         0x3e build/default/production/_ext/1658199856/uart.o
- .debug_str       0x0000fc         0x24 build/default/production/_ext/1077471063/estWind.o
- .debug_str       0x000120         0x5b build/default/production/_ext/1077471063/estYawDrift.o
- .debug_str       0x00017b        0x14e build/default/production/_ext/1077471063/gpsParseCommon.o
- .debug_str       0x0002c9        0x2c3 build/default/production/_ext/1077471063/gpsParseUBX.o
- .debug_str       0x00058c         0x5e build/default/production/_ext/1077471063/mathlibNAV.o
- .debug_str       0x0005ea        0x1a6 build/default/production/_ext/1077471063/rmat.o
- .debug_str       0x000790         0x42 build/default/production/_ext/1077471063/libDCM.o
- .debug_str       0x0007d2        0x138 build/default/production/_ext/1077471063/deadReckoning.o
- .debug_str       0x00090a         0xa7 build/default/production/_ext/1077471063/estAltitude.o
- .debug_str       0x0009b1         0xf2 build/default/production/_ext/1077454706/background.o
- .debug_str       0x000aa3         0x67 build/default/production/_ext/1077454706/libUDB.o
- .debug_str       0x000b0a         0x8f build/default/production/_ext/1077454706/servoOut.o
- .debug_str       0x000b99         0x82 build/default/production/_ext/1077454706/events.o
- .debug_str       0x000c1b         0xad build/default/production/_ext/1077454706/mpu6000.o
- .debug_str       0x000cc8        0x10b build/default/production/_ext/1077454706/spiUtils.o
- .debug_str       0x000dd3         0xfe build/default/production/_ext/1077454706/analog2digital_auav3.o
- .debug_str       0x000ed1        0x174 build/default/production/_ext/1077454706/mcu.o
- .debug_str       0x001045         0x42 build/default/production/_ext/1077454706/magnetometer.o
- .debug_str       0x001087        0x187 build/default/production/_ext/1077454706/radioIn.o
- .debug_str       0x00120e         0xa5 build/default/production/_ext/1077454706/serialIO.o
- .debug_str       0x0012b3         0x67 build/default/production/_ext/1077454706/traps.o
- .debug_str       0x00131a         0x7a build/default/production/_ext/1077454706/I2C2.o
- .debug_str       0x001394         0x1c build/default/production/_ext/1077454706/barometer.o
- .debug_str       0x0013b0         0x84 build/default/production/_ext/1472/behavior.o
- .debug_str       0x001434         0x97 build/default/production/_ext/1472/cameraCntrl.o
- .debug_str       0x0014cb        0x118 build/default/production/_ext/1472/navigate.o
- .debug_str       0x0015e3        0x100 build/default/production/_ext/1472/pitchCntrl.o
- .debug_str       0x0016e3         0x71 build/default/production/_ext/1472/rollCntrl.o
- .debug_str       0x001754         0xc2 build/default/production/_ext/1472/servoMix.o
- .debug_str       0x001816         0x56 build/default/production/_ext/1472/states.o
- .debug_str       0x00186c         0xa4 build/default/production/_ext/1472/yawCntrl.o
- .debug_str       0x001910         0x6a build/default/production/_ext/1472/servoPrepare.o
- .debug_str       0x00197a         0xe0 build/default/production/_ext/1472/flightplan-waypoints.o
- .debug_str       0x001a5a         0xe6 build/default/production/_ext/1472/altitudeCntrl.o
- .debug_str       0x001b40        0xeb5 build/default/production/_ext/1472/MAVLink.o
- .debug_str       0x0029f5         0x13 build/default/production/_ext/1472/mode_switch.o
- .debug_str       0x002a08        0x283 build/default/production/_ext/1472/parameter_table.o
- .debug_str       0x002c8b         0x2c build/default/production/_ext/1658199856/commands.o
+ .debug_str       0x0000fc         0x2c build/default/production/_ext/1658199856/commands.o
+ .debug_str       0x000128         0x24 build/default/production/_ext/1077471063/estWind.o
+ .debug_str       0x00014c         0x5b build/default/production/_ext/1077471063/estYawDrift.o
+ .debug_str       0x0001a7        0x14e build/default/production/_ext/1077471063/gpsParseCommon.o
+ .debug_str       0x0002f5        0x2c3 build/default/production/_ext/1077471063/gpsParseUBX.o
+ .debug_str       0x0005b8         0x5e build/default/production/_ext/1077471063/mathlibNAV.o
+ .debug_str       0x000616        0x1a6 build/default/production/_ext/1077471063/rmat.o
+ .debug_str       0x0007bc         0x42 build/default/production/_ext/1077471063/libDCM.o
+ .debug_str       0x0007fe        0x138 build/default/production/_ext/1077471063/deadReckoning.o
+ .debug_str       0x000936         0xa7 build/default/production/_ext/1077471063/estAltitude.o
+ .debug_str       0x0009dd         0xf2 build/default/production/_ext/1077454706/background.o
+ .debug_str       0x000acf         0x67 build/default/production/_ext/1077454706/libUDB.o
+ .debug_str       0x000b36         0x8f build/default/production/_ext/1077454706/servoOut.o
+ .debug_str       0x000bc5         0x82 build/default/production/_ext/1077454706/events.o
+ .debug_str       0x000c47         0xad build/default/production/_ext/1077454706/mpu6000.o
+ .debug_str       0x000cf4        0x10b build/default/production/_ext/1077454706/spiUtils.o
+ .debug_str       0x000dff         0xfe build/default/production/_ext/1077454706/analog2digital_auav3.o
+ .debug_str       0x000efd        0x174 build/default/production/_ext/1077454706/mcu.o
+ .debug_str       0x001071         0x42 build/default/production/_ext/1077454706/magnetometer.o
+ .debug_str       0x0010b3        0x187 build/default/production/_ext/1077454706/radioIn.o
+ .debug_str       0x00123a         0xa5 build/default/production/_ext/1077454706/serialIO.o
+ .debug_str       0x0012df         0x67 build/default/production/_ext/1077454706/traps.o
+ .debug_str       0x001346         0x7a build/default/production/_ext/1077454706/I2C2.o
+ .debug_str       0x0013c0         0x1c build/default/production/_ext/1077454706/barometer.o
+ .debug_str       0x0013dc         0x84 build/default/production/_ext/1472/behavior.o
+ .debug_str       0x001460         0x97 build/default/production/_ext/1472/cameraCntrl.o
+ .debug_str       0x0014f7        0x118 build/default/production/_ext/1472/navigate.o
+ .debug_str       0x00160f        0x100 build/default/production/_ext/1472/pitchCntrl.o
+ .debug_str       0x00170f         0x71 build/default/production/_ext/1472/rollCntrl.o
+ .debug_str       0x001780         0xc2 build/default/production/_ext/1472/servoMix.o
+ .debug_str       0x001842         0x56 build/default/production/_ext/1472/states.o
+ .debug_str       0x001898         0xa4 build/default/production/_ext/1472/yawCntrl.o
+ .debug_str       0x00193c         0x6a build/default/production/_ext/1472/servoPrepare.o
+ .debug_str       0x0019a6         0xe0 build/default/production/_ext/1472/flightplan-waypoints.o
+ .debug_str       0x001a86         0xe6 build/default/production/_ext/1472/altitudeCntrl.o
+ .debug_str       0x001b6c        0xeb5 build/default/production/_ext/1472/MAVLink.o
+ .debug_str       0x002a21         0x13 build/default/production/_ext/1472/mode_switch.o
+ .debug_str       0x002a34        0x283 build/default/production/_ext/1472/parameter_table.o
 
 .debug_loc
  *(.debug_loc)
@@ -2813,87 +2815,87 @@ __FUID0
  .debug_pubnames
                   0x000037         0xd1 build/default/production/_ext/1658199856/uart.o
  .debug_pubnames
-                  0x000108         0x35 build/default/production/_ext/1077471063/estWind.o
+                  0x000108        0x168 build/default/production/_ext/1658199856/commands.o
  .debug_pubnames
-                  0x00013d         0x46 build/default/production/_ext/1077471063/estYawDrift.o
+                  0x000270         0x35 build/default/production/_ext/1077471063/estWind.o
  .debug_pubnames
-                  0x000183        0x25f build/default/production/_ext/1077471063/gpsParseCommon.o
+                  0x0002a5         0x46 build/default/production/_ext/1077471063/estYawDrift.o
  .debug_pubnames
-                  0x0003e2        0x4d3 build/default/production/_ext/1077471063/gpsParseUBX.o
+                  0x0002eb        0x25f build/default/production/_ext/1077471063/gpsParseCommon.o
  .debug_pubnames
-                  0x0008b5        0x145 build/default/production/_ext/1077471063/mathlibNAV.o
+                  0x00054a        0x4d3 build/default/production/_ext/1077471063/gpsParseUBX.o
  .debug_pubnames
-                  0x0009fa        0x1a8 build/default/production/_ext/1077471063/rmat.o
+                  0x000a1d        0x145 build/default/production/_ext/1077471063/mathlibNAV.o
  .debug_pubnames
-                  0x000ba2         0xe4 build/default/production/_ext/1077471063/libDCM.o
+                  0x000b62        0x1a8 build/default/production/_ext/1077471063/rmat.o
  .debug_pubnames
-                  0x000c86        0x148 build/default/production/_ext/1077471063/deadReckoning.o
+                  0x000d0a         0xe4 build/default/production/_ext/1077471063/libDCM.o
  .debug_pubnames
-                  0x000dce        0x18f build/default/production/_ext/1077471063/estAltitude.o
+                  0x000dee        0x148 build/default/production/_ext/1077471063/deadReckoning.o
  .debug_pubnames
-                  0x000f5d         0xcc build/default/production/_ext/1077454706/background.o
+                  0x000f36        0x18f build/default/production/_ext/1077471063/estAltitude.o
  .debug_pubnames
-                  0x001029         0xa9 build/default/production/_ext/1077454706/libUDB.o
+                  0x0010c5         0xcc build/default/production/_ext/1077454706/background.o
  .debug_pubnames
-                  0x0010d2         0x7f build/default/production/_ext/1077454706/servoOut.o
+                  0x001191         0xa9 build/default/production/_ext/1077454706/libUDB.o
  .debug_pubnames
-                  0x001151         0x9d build/default/production/_ext/1077454706/events.o
+                  0x00123a         0x7f build/default/production/_ext/1077454706/servoOut.o
  .debug_pubnames
-                  0x0011ee        0x104 build/default/production/_ext/1077454706/mpu6000.o
+                  0x0012b9         0x9d build/default/production/_ext/1077454706/events.o
  .debug_pubnames
-                  0x0012f2        0x18b build/default/production/_ext/1077454706/spiUtils.o
+                  0x001356        0x104 build/default/production/_ext/1077454706/mpu6000.o
  .debug_pubnames
-                  0x00147d         0xb3 build/default/production/_ext/1077454706/analog2digital_auav3.o
+                  0x00145a        0x18b build/default/production/_ext/1077454706/spiUtils.o
  .debug_pubnames
-                  0x001530         0xad build/default/production/_ext/1077454706/mcu.o
+                  0x0015e5         0xb3 build/default/production/_ext/1077454706/analog2digital_auav3.o
  .debug_pubnames
-                  0x0015dd         0x9a build/default/production/_ext/1077454706/magnetometer.o
+                  0x001698         0xad build/default/production/_ext/1077454706/mcu.o
  .debug_pubnames
-                  0x001677        0x107 build/default/production/_ext/1077454706/radioIn.o
+                  0x001745         0x9a build/default/production/_ext/1077454706/magnetometer.o
  .debug_pubnames
-                  0x00177e        0x121 build/default/production/_ext/1077454706/serialIO.o
+                  0x0017df        0x107 build/default/production/_ext/1077454706/radioIn.o
  .debug_pubnames
-                  0x00189f         0x9f build/default/production/_ext/1077454706/traps.o
+                  0x0018e6        0x121 build/default/production/_ext/1077454706/serialIO.o
  .debug_pubnames
-                  0x00193e         0x8d build/default/production/_ext/1077454706/I2C2.o
+                  0x001a07         0x9f build/default/production/_ext/1077454706/traps.o
  .debug_pubnames
-                  0x0019cb         0x85 build/default/production/_ext/1077454706/barometer.o
+                  0x001aa6         0x8d build/default/production/_ext/1077454706/I2C2.o
  .debug_pubnames
-                  0x001a50        0x136 build/default/production/_ext/1472/behavior.o
+                  0x001b33         0x85 build/default/production/_ext/1077454706/barometer.o
  .debug_pubnames
-                  0x001b86        0x1c1 build/default/production/_ext/1472/cameraCntrl.o
+                  0x001bb8        0x136 build/default/production/_ext/1472/behavior.o
  .debug_pubnames
-                  0x001d47        0x175 build/default/production/_ext/1472/navigate.o
+                  0x001cee        0x1c1 build/default/production/_ext/1472/cameraCntrl.o
  .debug_pubnames
-                  0x001ebc         0xdd build/default/production/_ext/1472/pitchCntrl.o
+                  0x001eaf        0x175 build/default/production/_ext/1472/navigate.o
  .debug_pubnames
-                  0x001f99         0x8a build/default/production/_ext/1472/rollCntrl.o
+                  0x002024         0xdd build/default/production/_ext/1472/pitchCntrl.o
  .debug_pubnames
-                  0x002023         0x65 build/default/production/_ext/1472/servoMix.o
+                  0x002101         0x8a build/default/production/_ext/1472/rollCntrl.o
  .debug_pubnames
-                  0x002088         0xaa build/default/production/_ext/1472/states.o
+                  0x00218b         0x65 build/default/production/_ext/1472/servoMix.o
  .debug_pubnames
-                  0x002132         0x8b build/default/production/_ext/1472/yawCntrl.o
+                  0x0021f0         0xaa build/default/production/_ext/1472/states.o
  .debug_pubnames
-                  0x0021bd         0xbb build/default/production/_ext/1472/servoPrepare.o
+                  0x00229a         0x8b build/default/production/_ext/1472/yawCntrl.o
  .debug_pubnames
-                  0x002278        0x192 build/default/production/_ext/1472/flightplan-waypoints.o
+                  0x002325         0xbb build/default/production/_ext/1472/servoPrepare.o
  .debug_pubnames
-                  0x00240a        0x1eb build/default/production/_ext/1472/altitudeCntrl.o
+                  0x0023e0        0x192 build/default/production/_ext/1472/flightplan-waypoints.o
  .debug_pubnames
-                  0x0025f5        0x7cf build/default/production/_ext/1472/MAVLink.o
+                  0x002572        0x1eb build/default/production/_ext/1472/altitudeCntrl.o
  .debug_pubnames
-                  0x002dc4         0xb4 build/default/production/_ext/1472/mode_switch.o
+                  0x00275d        0x7cf build/default/production/_ext/1472/MAVLink.o
  .debug_pubnames
-                  0x002e78         0x69 build/default/production/_ext/1472/parameter_table.o
+                  0x002f2c         0xb4 build/default/production/_ext/1472/mode_switch.o
  .debug_pubnames
-                  0x002ee1         0xf1 build/default/production/_ext/1472/airspeedCntrl.o
+                  0x002fe0         0x69 build/default/production/_ext/1472/parameter_table.o
  .debug_pubnames
-                  0x002fd2         0x2c build/default/production/_ext/1472/euler_angles.o
+                  0x003049         0xf1 build/default/production/_ext/1472/airspeedCntrl.o
  .debug_pubnames
-                  0x002ffe         0x1b build/default/production/_ext/1472/main.o
+                  0x00313a         0x2c build/default/production/_ext/1472/euler_angles.o
  .debug_pubnames
-                  0x003019        0x168 build/default/production/_ext/1658199856/commands.o
+                  0x003166         0x1b build/default/production/_ext/1472/main.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -2907,121 +2909,121 @@ __FUID0
  .debug_aranges
                   0x000040         0x18 build/default/production/_ext/1658199856/uart.o
  .debug_aranges
-                  0x000058         0x18 build/default/production/_ext/1077471063/estWind.o
+                  0x000058         0x18 build/default/production/_ext/1658199856/commands.o
  .debug_aranges
-                  0x000070         0x18 build/default/production/_ext/1077471063/estYawDrift.o
+                  0x000070         0x18 build/default/production/_ext/1077471063/estWind.o
  .debug_aranges
-                  0x000088         0x18 build/default/production/_ext/1077471063/gpsParseCommon.o
+                  0x000088         0x18 build/default/production/_ext/1077471063/estYawDrift.o
  .debug_aranges
-                  0x0000a0         0x18 build/default/production/_ext/1077471063/gpsParseUBX.o
+                  0x0000a0         0x18 build/default/production/_ext/1077471063/gpsParseCommon.o
  .debug_aranges
-                  0x0000b8         0x18 build/default/production/_ext/1077471063/mathlibNAV.o
+                  0x0000b8         0x18 build/default/production/_ext/1077471063/gpsParseUBX.o
  .debug_aranges
-                  0x0000d0         0x18 build/default/production/_ext/1077471063/rmat.o
+                  0x0000d0         0x18 build/default/production/_ext/1077471063/mathlibNAV.o
  .debug_aranges
-                  0x0000e8         0x18 build/default/production/_ext/1077471063/libDCM.o
+                  0x0000e8         0x18 build/default/production/_ext/1077471063/rmat.o
  .debug_aranges
-                  0x000100         0x18 build/default/production/_ext/1077471063/deadReckoning.o
+                  0x000100         0x18 build/default/production/_ext/1077471063/libDCM.o
  .debug_aranges
-                  0x000118         0x18 build/default/production/_ext/1077471063/estAltitude.o
+                  0x000118         0x18 build/default/production/_ext/1077471063/deadReckoning.o
  .debug_aranges
-                  0x000130         0x18 build/default/production/_ext/1077454706/background.o
+                  0x000130         0x18 build/default/production/_ext/1077471063/estAltitude.o
  .debug_aranges
-                  0x000148         0x18 build/default/production/_ext/1077454706/libUDB.o
+                  0x000148         0x18 build/default/production/_ext/1077454706/background.o
  .debug_aranges
-                  0x000160         0x18 build/default/production/_ext/1077454706/servoOut.o
+                  0x000160         0x18 build/default/production/_ext/1077454706/libUDB.o
  .debug_aranges
-                  0x000178         0x18 build/default/production/_ext/1077454706/events.o
+                  0x000178         0x18 build/default/production/_ext/1077454706/servoOut.o
  .debug_aranges
-                  0x000190         0x18 build/default/production/_ext/1077454706/mpu6000.o
+                  0x000190         0x18 build/default/production/_ext/1077454706/events.o
  .debug_aranges
-                  0x0001a8         0x18 build/default/production/_ext/1077454706/spiUtils.o
+                  0x0001a8         0x18 build/default/production/_ext/1077454706/mpu6000.o
  .debug_aranges
-                  0x0001c0         0x18 build/default/production/_ext/1077454706/analog2digital_auav3.o
+                  0x0001c0         0x18 build/default/production/_ext/1077454706/spiUtils.o
  .debug_aranges
-                  0x0001d8         0x18 build/default/production/_ext/1077454706/traps_asm.o
+                  0x0001d8         0x18 build/default/production/_ext/1077454706/analog2digital_auav3.o
  .debug_aranges
-                  0x0001f0         0x18 build/default/production/_ext/1077454706/mcu.o
+                  0x0001f0         0x18 build/default/production/_ext/1077454706/traps_asm.o
  .debug_aranges
-                  0x000208         0x18 build/default/production/_ext/1077454706/magnetometer.o
+                  0x000208         0x18 build/default/production/_ext/1077454706/mcu.o
  .debug_aranges
-                  0x000220         0x18 build/default/production/_ext/1077454706/radioIn.o
+                  0x000220         0x18 build/default/production/_ext/1077454706/magnetometer.o
  .debug_aranges
-                  0x000238         0x18 build/default/production/_ext/1077454706/serialIO.o
+                  0x000238         0x18 build/default/production/_ext/1077454706/radioIn.o
  .debug_aranges
-                  0x000250         0x18 build/default/production/_ext/1077454706/traps.o
+                  0x000250         0x18 build/default/production/_ext/1077454706/serialIO.o
  .debug_aranges
-                  0x000268         0x18 build/default/production/_ext/1077454706/I2C2.o
+                  0x000268         0x18 build/default/production/_ext/1077454706/traps.o
  .debug_aranges
-                  0x000280         0x18 build/default/production/_ext/1077454706/barometer.o
+                  0x000280         0x18 build/default/production/_ext/1077454706/I2C2.o
  .debug_aranges
-                  0x000298         0x18 build/default/production/_ext/679848855/madd.o
+                  0x000298         0x18 build/default/production/_ext/1077454706/barometer.o
  .debug_aranges
-                  0x0002b0         0x18 build/default/production/_ext/679848855/mmul.o
+                  0x0002b0         0x18 build/default/production/_ext/679848855/madd.o
  .debug_aranges
-                  0x0002c8         0x18 build/default/production/_ext/679848855/mscl.o
+                  0x0002c8         0x18 build/default/production/_ext/679848855/mmul.o
  .debug_aranges
-                  0x0002e0         0x18 build/default/production/_ext/679848855/msub.o
+                  0x0002e0         0x18 build/default/production/_ext/679848855/mscl.o
  .debug_aranges
-                  0x0002f8         0x18 build/default/production/_ext/679848855/mtrp.o
+                  0x0002f8         0x18 build/default/production/_ext/679848855/msub.o
  .debug_aranges
-                  0x000310         0x18 build/default/production/_ext/679848855/vadd.o
+                  0x000310         0x18 build/default/production/_ext/679848855/mtrp.o
  .debug_aranges
-                  0x000328         0x18 build/default/production/_ext/679848855/vcon.o
+                  0x000328         0x18 build/default/production/_ext/679848855/vadd.o
  .debug_aranges
-                  0x000340         0x18 build/default/production/_ext/679848855/vcopy.o
+                  0x000340         0x18 build/default/production/_ext/679848855/vcon.o
  .debug_aranges
-                  0x000358         0x18 build/default/production/_ext/679848855/vcor.o
+                  0x000358         0x18 build/default/production/_ext/679848855/vcopy.o
  .debug_aranges
-                  0x000370         0x18 build/default/production/_ext/679848855/vdot.o
+                  0x000370         0x18 build/default/production/_ext/679848855/vcor.o
  .debug_aranges
-                  0x000388         0x18 build/default/production/_ext/679848855/vmax.o
+                  0x000388         0x18 build/default/production/_ext/679848855/vdot.o
  .debug_aranges
-                  0x0003a0         0x18 build/default/production/_ext/679848855/vmin.o
+                  0x0003a0         0x18 build/default/production/_ext/679848855/vmax.o
  .debug_aranges
-                  0x0003b8         0x18 build/default/production/_ext/679848855/vmul.o
+                  0x0003b8         0x18 build/default/production/_ext/679848855/vmin.o
  .debug_aranges
-                  0x0003d0         0x18 build/default/production/_ext/679848855/vneg.o
+                  0x0003d0         0x18 build/default/production/_ext/679848855/vmul.o
  .debug_aranges
-                  0x0003e8         0x18 build/default/production/_ext/679848855/vpow.o
+                  0x0003e8         0x18 build/default/production/_ext/679848855/vneg.o
  .debug_aranges
-                  0x000400         0x18 build/default/production/_ext/679848855/vscl.o
+                  0x000400         0x18 build/default/production/_ext/679848855/vpow.o
  .debug_aranges
-                  0x000418         0x18 build/default/production/_ext/679848855/vsub.o
+                  0x000418         0x18 build/default/production/_ext/679848855/vscl.o
  .debug_aranges
-                  0x000430         0x18 build/default/production/_ext/679848855/vzpad.o
+                  0x000430         0x18 build/default/production/_ext/679848855/vsub.o
  .debug_aranges
-                  0x000448         0x18 build/default/production/_ext/1472/behavior.o
+                  0x000448         0x18 build/default/production/_ext/679848855/vzpad.o
  .debug_aranges
-                  0x000460         0x18 build/default/production/_ext/1472/cameraCntrl.o
+                  0x000460         0x18 build/default/production/_ext/1472/behavior.o
  .debug_aranges
-                  0x000478         0x18 build/default/production/_ext/1472/navigate.o
+                  0x000478         0x18 build/default/production/_ext/1472/cameraCntrl.o
  .debug_aranges
-                  0x000490         0x18 build/default/production/_ext/1472/pitchCntrl.o
+                  0x000490         0x18 build/default/production/_ext/1472/navigate.o
  .debug_aranges
-                  0x0004a8         0x18 build/default/production/_ext/1472/rollCntrl.o
+                  0x0004a8         0x18 build/default/production/_ext/1472/pitchCntrl.o
  .debug_aranges
-                  0x0004c0         0x18 build/default/production/_ext/1472/servoMix.o
+                  0x0004c0         0x18 build/default/production/_ext/1472/rollCntrl.o
  .debug_aranges
-                  0x0004d8         0x18 build/default/production/_ext/1472/states.o
+                  0x0004d8         0x18 build/default/production/_ext/1472/servoMix.o
  .debug_aranges
-                  0x0004f0         0x18 build/default/production/_ext/1472/yawCntrl.o
+                  0x0004f0         0x18 build/default/production/_ext/1472/states.o
  .debug_aranges
-                  0x000508         0x18 build/default/production/_ext/1472/servoPrepare.o
+                  0x000508         0x18 build/default/production/_ext/1472/yawCntrl.o
  .debug_aranges
-                  0x000520         0x18 build/default/production/_ext/1472/flightplan-waypoints.o
+                  0x000520         0x18 build/default/production/_ext/1472/servoPrepare.o
  .debug_aranges
-                  0x000538         0x18 build/default/production/_ext/1472/altitudeCntrl.o
+                  0x000538         0x18 build/default/production/_ext/1472/flightplan-waypoints.o
  .debug_aranges
-                  0x000550         0x18 build/default/production/_ext/1472/MAVLink.o
+                  0x000550         0x18 build/default/production/_ext/1472/altitudeCntrl.o
  .debug_aranges
-                  0x000568         0x18 build/default/production/_ext/1472/mode_switch.o
+                  0x000568         0x18 build/default/production/_ext/1472/MAVLink.o
  .debug_aranges
-                  0x000580         0x18 build/default/production/_ext/1472/euler_angles.o
+                  0x000580         0x18 build/default/production/_ext/1472/mode_switch.o
  .debug_aranges
-                  0x000598         0x18 build/default/production/_ext/1472/main.o
+                  0x000598         0x18 build/default/production/_ext/1472/euler_angles.o
  .debug_aranges
-                  0x0005b0         0x18 build/default/production/_ext/1658199856/commands.o
+                  0x0005b0         0x18 build/default/production/_ext/1472/main.o
 
 .ivt              0x000004        0x130
                   0x000004          0x4 LONG 0xce9e DEFINED (__OscillatorFail)?ABSOLUTE (__OscillatorFail):ABSOLUTE (__DefaultInterrupt)
@@ -5858,7 +5860,7 @@ LOAD /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-pic30-elf.a
 LOAD /opt/microchip/xc16/v1.10/bin/bin/../../lib/libm-elf.a
 LOAD /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a
 END GROUP
-OUTPUT(dist/default/production/MatrixPilot-auav3_mw.production.elf elf32-pic30)
+OUTPUT(dist/default/production/MatrixPilot-auav3_noFS_MDD_USB.production.elf elf32-pic30)
 LOAD jump_table
 LOAD default_isr
 LOAD data_init
@@ -5872,115 +5874,115 @@ LOAD data_init
  .debug_pubtypes
                   0x00066c         0x6f build/default/production/_ext/1658199856/uart.o
  .debug_pubtypes
-                  0x0006db         0xa5 build/default/production/_ext/1077471063/estWind.o
+                  0x0006db         0x75 build/default/production/_ext/1658199856/commands.o
  .debug_pubtypes
-                  0x000780         0x81 build/default/production/_ext/1077471063/estYawDrift.o
+                  0x000750         0xa5 build/default/production/_ext/1077471063/estWind.o
  .debug_pubtypes
-                  0x000801         0xd8 build/default/production/_ext/1077471063/gpsParseCommon.o
+                  0x0007f5         0x81 build/default/production/_ext/1077471063/estYawDrift.o
  .debug_pubtypes
-                  0x0008d9         0x12 build/default/production/_ext/1077471063/gpsParseSTD.o
+                  0x000876         0xd8 build/default/production/_ext/1077471063/gpsParseCommon.o
  .debug_pubtypes
-                  0x0008eb         0xa1 build/default/production/_ext/1077471063/gpsParseUBX.o
+                  0x00094e         0x12 build/default/production/_ext/1077471063/gpsParseSTD.o
  .debug_pubtypes
-                  0x00098c         0x70 build/default/production/_ext/1077471063/mathlibNAV.o
+                  0x000960         0xa1 build/default/production/_ext/1077471063/gpsParseUBX.o
  .debug_pubtypes
-                  0x0009fc         0xe4 build/default/production/_ext/1077471063/rmat.o
+                  0x000a01         0x70 build/default/production/_ext/1077471063/mathlibNAV.o
  .debug_pubtypes
-                  0x000ae0         0xa2 build/default/production/_ext/1077471063/libDCM.o
+                  0x000a71         0xe4 build/default/production/_ext/1077471063/rmat.o
  .debug_pubtypes
-                  0x000b82         0x97 build/default/production/_ext/1077471063/deadReckoning.o
+                  0x000b55         0xa2 build/default/production/_ext/1077471063/libDCM.o
  .debug_pubtypes
-                  0x000c19         0x12 build/default/production/_ext/1077471063/gpsParseMTEK.o
+                  0x000bf7         0x97 build/default/production/_ext/1077471063/deadReckoning.o
  .debug_pubtypes
-                  0x000c2b         0x12 build/default/production/_ext/1077471063/estAltitude.o
+                  0x000c8e         0x12 build/default/production/_ext/1077471063/gpsParseMTEK.o
  .debug_pubtypes
-                  0x000c3d        0x221 build/default/production/_ext/1077454706/background.o
+                  0x000ca0         0x12 build/default/production/_ext/1077471063/estAltitude.o
  .debug_pubtypes
-                  0x000e5e         0xac build/default/production/_ext/1077454706/libUDB.o
+                  0x000cb2        0x221 build/default/production/_ext/1077454706/background.o
  .debug_pubtypes
-                  0x000f0a         0x12 build/default/production/_ext/1077454706/analog2digital_udb4.o
+                  0x000ed3         0xac build/default/production/_ext/1077454706/libUDB.o
  .debug_pubtypes
-                  0x000f1c        0x1bb build/default/production/_ext/1077454706/servoOut.o
+                  0x000f7f         0x12 build/default/production/_ext/1077454706/analog2digital_udb4.o
  .debug_pubtypes
-                  0x0010d7         0x12 build/default/production/_ext/1077454706/osd.o
+                  0x000f91        0x1bb build/default/production/_ext/1077454706/servoOut.o
  .debug_pubtypes
-                  0x0010e9         0x12 build/default/production/_ext/1077454706/24LC256.o
+                  0x00114c         0x12 build/default/production/_ext/1077454706/osd.o
  .debug_pubtypes
-                  0x0010fb        0x146 build/default/production/_ext/1077454706/events.o
+                  0x00115e         0x12 build/default/production/_ext/1077454706/24LC256.o
  .debug_pubtypes
-                  0x001241        0x139 build/default/production/_ext/1077454706/mpu6000.o
+                  0x001170        0x146 build/default/production/_ext/1077454706/events.o
  .debug_pubtypes
-                  0x00137a        0x16b build/default/production/_ext/1077454706/spiUtils.o
+                  0x0012b6        0x139 build/default/production/_ext/1077454706/mpu6000.o
  .debug_pubtypes
-                  0x0014e5        0x21f build/default/production/_ext/1077454706/analog2digital_auav3.o
+                  0x0013ef        0x16b build/default/production/_ext/1077454706/spiUtils.o
  .debug_pubtypes
-                  0x001704        0x401 build/default/production/_ext/1077454706/mcu.o
+                  0x00155a        0x21f build/default/production/_ext/1077454706/analog2digital_auav3.o
  .debug_pubtypes
-                  0x001b05         0x64 build/default/production/_ext/1077454706/magnetometer.o
+                  0x001779        0x401 build/default/production/_ext/1077454706/mcu.o
  .debug_pubtypes
-                  0x001b69        0x31f build/default/production/_ext/1077454706/radioIn.o
+                  0x001b7a         0x64 build/default/production/_ext/1077454706/magnetometer.o
  .debug_pubtypes
-                  0x001e88        0x1ac build/default/production/_ext/1077454706/serialIO.o
+                  0x001bde        0x31f build/default/production/_ext/1077454706/radioIn.o
  .debug_pubtypes
-                  0x002034         0x5a build/default/production/_ext/1077454706/traps.o
+                  0x001efd        0x1ac build/default/production/_ext/1077454706/serialIO.o
  .debug_pubtypes
-                  0x00208e         0x12 build/default/production/_ext/1077454706/I2C1.o
+                  0x0020a9         0x5a build/default/production/_ext/1077454706/traps.o
  .debug_pubtypes
-                  0x0020a0        0x144 build/default/production/_ext/1077454706/I2C2.o
+                  0x002103         0x12 build/default/production/_ext/1077454706/I2C1.o
  .debug_pubtypes
-                  0x0021e4         0x5e build/default/production/_ext/1077454706/barometer.o
+                  0x002115        0x144 build/default/production/_ext/1077454706/I2C2.o
  .debug_pubtypes
-                  0x002242         0x12 build/default/production/_ext/1472/config_tests.o
+                  0x002259         0x5e build/default/production/_ext/1077454706/barometer.o
  .debug_pubtypes
-                  0x002254         0x9f build/default/production/_ext/1472/behavior.o
+                  0x0022b7         0x12 build/default/production/_ext/1472/config_tests.o
  .debug_pubtypes
-                  0x0022f3         0x4b build/default/production/_ext/1472/cameraCntrl.o
+                  0x0022c9         0x9f build/default/production/_ext/1472/behavior.o
  .debug_pubtypes
-                  0x00233e        0x10a build/default/production/_ext/1472/navigate.o
+                  0x002368         0x4b build/default/production/_ext/1472/cameraCntrl.o
  .debug_pubtypes
-                  0x002448         0xc8 build/default/production/_ext/1472/pitchCntrl.o
+                  0x0023b3        0x10a build/default/production/_ext/1472/navigate.o
  .debug_pubtypes
-                  0x002510         0x99 build/default/production/_ext/1472/rollCntrl.o
+                  0x0024bd         0xc8 build/default/production/_ext/1472/pitchCntrl.o
  .debug_pubtypes
-                  0x0025a9         0x81 build/default/production/_ext/1472/servoMix.o
+                  0x002585         0x99 build/default/production/_ext/1472/rollCntrl.o
  .debug_pubtypes
-                  0x00262a         0xec build/default/production/_ext/1472/states.o
+                  0x00261e         0x81 build/default/production/_ext/1472/servoMix.o
  .debug_pubtypes
-                  0x002716         0xc8 build/default/production/_ext/1472/yawCntrl.o
+                  0x00269f         0xec build/default/production/_ext/1472/states.o
  .debug_pubtypes
-                  0x0027de         0x12 build/default/production/_ext/1472/telemetry.o
+                  0x00278b         0xc8 build/default/production/_ext/1472/yawCntrl.o
  .debug_pubtypes
-                  0x0027f0         0x4f build/default/production/_ext/1472/servoPrepare.o
+                  0x002853         0x12 build/default/production/_ext/1472/telemetry.o
  .debug_pubtypes
-                  0x00283f        0x10b build/default/production/_ext/1472/flightplan-waypoints.o
+                  0x002865         0x4f build/default/production/_ext/1472/servoPrepare.o
  .debug_pubtypes
-                  0x00294a         0x12 build/default/production/_ext/1472/flightplan-logo.o
+                  0x0028b4        0x10b build/default/production/_ext/1472/flightplan-waypoints.o
  .debug_pubtypes
-                  0x00295c         0x12 build/default/production/_ext/1472/mp_osd.o
+                  0x0029bf         0x12 build/default/production/_ext/1472/flightplan-logo.o
  .debug_pubtypes
-                  0x00296e         0xf7 build/default/production/_ext/1472/altitudeCntrl.o
+                  0x0029d1         0x12 build/default/production/_ext/1472/mp_osd.o
  .debug_pubtypes
-                  0x002a65        0xa9f build/default/production/_ext/1472/MAVLink.o
+                  0x0029e3         0xf7 build/default/production/_ext/1472/altitudeCntrl.o
  .debug_pubtypes
-                  0x003504         0x75 build/default/production/_ext/1472/mode_switch.o
+                  0x002ada        0xa9f build/default/production/_ext/1472/MAVLink.o
  .debug_pubtypes
-                  0x003579         0x12 build/default/production/_ext/1472/data_services.o
+                  0x003579         0x75 build/default/production/_ext/1472/mode_switch.o
  .debug_pubtypes
-                  0x00358b         0x12 build/default/production/_ext/1472/data_storage.o
+                  0x0035ee         0x12 build/default/production/_ext/1472/data_services.o
  .debug_pubtypes
-                  0x00359d         0x12 build/default/production/_ext/1472/nv_memory_table.o
+                  0x003600         0x12 build/default/production/_ext/1472/data_storage.o
  .debug_pubtypes
-                  0x0035af        0x15b build/default/production/_ext/1472/parameter_table.o
+                  0x003612         0x12 build/default/production/_ext/1472/nv_memory_table.o
  .debug_pubtypes
-                  0x00370a         0x2d build/default/production/_ext/1472/airspeedCntrl.o
+                  0x003624        0x15b build/default/production/_ext/1472/parameter_table.o
  .debug_pubtypes
-                  0x003737         0x12 build/default/production/_ext/1472/altitudeCntrlVariable.o
+                  0x00377f         0x2d build/default/production/_ext/1472/airspeedCntrl.o
  .debug_pubtypes
-                  0x003749         0x49 build/default/production/_ext/1472/euler_angles.o
+                  0x0037ac         0x12 build/default/production/_ext/1472/altitudeCntrlVariable.o
  .debug_pubtypes
-                  0x003792         0x12 build/default/production/_ext/1472/main.o
+                  0x0037be         0x49 build/default/production/_ext/1472/euler_angles.o
  .debug_pubtypes
-                  0x0037a4         0x75 build/default/production/_ext/1658199856/commands.o
+                  0x003807         0x12 build/default/production/_ext/1472/main.o
 
 __c30_signature
                   0x00381a        0x390
@@ -5991,115 +5993,115 @@ __c30_signature
  __c30_signature
                   0x003826          0x6 build/default/production/_ext/1658199856/uart.o
  __c30_signature
-                  0x00382c          0x6 build/default/production/_ext/1077471063/estWind.o
+                  0x00382c          0x6 build/default/production/_ext/1658199856/commands.o
  __c30_signature
-                  0x003832          0x6 build/default/production/_ext/1077471063/estYawDrift.o
+                  0x003832          0x6 build/default/production/_ext/1077471063/estWind.o
  __c30_signature
-                  0x003838          0x6 build/default/production/_ext/1077471063/gpsParseCommon.o
+                  0x003838          0x6 build/default/production/_ext/1077471063/estYawDrift.o
  __c30_signature
-                  0x00383e          0x6 build/default/production/_ext/1077471063/gpsParseSTD.o
+                  0x00383e          0x6 build/default/production/_ext/1077471063/gpsParseCommon.o
  __c30_signature
-                  0x003844          0x6 build/default/production/_ext/1077471063/gpsParseUBX.o
+                  0x003844          0x6 build/default/production/_ext/1077471063/gpsParseSTD.o
  __c30_signature
-                  0x00384a          0x6 build/default/production/_ext/1077471063/mathlibNAV.o
+                  0x00384a          0x6 build/default/production/_ext/1077471063/gpsParseUBX.o
  __c30_signature
-                  0x003850          0x6 build/default/production/_ext/1077471063/rmat.o
+                  0x003850          0x6 build/default/production/_ext/1077471063/mathlibNAV.o
  __c30_signature
-                  0x003856          0x6 build/default/production/_ext/1077471063/libDCM.o
+                  0x003856          0x6 build/default/production/_ext/1077471063/rmat.o
  __c30_signature
-                  0x00385c          0x6 build/default/production/_ext/1077471063/deadReckoning.o
+                  0x00385c          0x6 build/default/production/_ext/1077471063/libDCM.o
  __c30_signature
-                  0x003862          0x6 build/default/production/_ext/1077471063/gpsParseMTEK.o
+                  0x003862          0x6 build/default/production/_ext/1077471063/deadReckoning.o
  __c30_signature
-                  0x003868          0x6 build/default/production/_ext/1077471063/estAltitude.o
+                  0x003868          0x6 build/default/production/_ext/1077471063/gpsParseMTEK.o
  __c30_signature
-                  0x00386e          0x6 build/default/production/_ext/1077454706/background.o
+                  0x00386e          0x6 build/default/production/_ext/1077471063/estAltitude.o
  __c30_signature
-                  0x003874          0x6 build/default/production/_ext/1077454706/libUDB.o
+                  0x003874          0x6 build/default/production/_ext/1077454706/background.o
  __c30_signature
-                  0x00387a          0x6 build/default/production/_ext/1077454706/analog2digital_udb4.o
+                  0x00387a          0x6 build/default/production/_ext/1077454706/libUDB.o
  __c30_signature
-                  0x003880          0x6 build/default/production/_ext/1077454706/servoOut.o
+                  0x003880          0x6 build/default/production/_ext/1077454706/analog2digital_udb4.o
  __c30_signature
-                  0x003886          0x6 build/default/production/_ext/1077454706/osd.o
+                  0x003886          0x6 build/default/production/_ext/1077454706/servoOut.o
  __c30_signature
-                  0x00388c          0x6 build/default/production/_ext/1077454706/24LC256.o
+                  0x00388c          0x6 build/default/production/_ext/1077454706/osd.o
  __c30_signature
-                  0x003892          0x6 build/default/production/_ext/1077454706/events.o
+                  0x003892          0x6 build/default/production/_ext/1077454706/24LC256.o
  __c30_signature
-                  0x003898          0x6 build/default/production/_ext/1077454706/mpu6000.o
+                  0x003898          0x6 build/default/production/_ext/1077454706/events.o
  __c30_signature
-                  0x00389e          0x6 build/default/production/_ext/1077454706/spiUtils.o
+                  0x00389e          0x6 build/default/production/_ext/1077454706/mpu6000.o
  __c30_signature
-                  0x0038a4          0x6 build/default/production/_ext/1077454706/analog2digital_auav3.o
+                  0x0038a4          0x6 build/default/production/_ext/1077454706/spiUtils.o
  __c30_signature
-                  0x0038aa          0x6 build/default/production/_ext/1077454706/mcu.o
+                  0x0038aa          0x6 build/default/production/_ext/1077454706/analog2digital_auav3.o
  __c30_signature
-                  0x0038b0          0x6 build/default/production/_ext/1077454706/magnetometer.o
+                  0x0038b0          0x6 build/default/production/_ext/1077454706/mcu.o
  __c30_signature
-                  0x0038b6          0x6 build/default/production/_ext/1077454706/radioIn.o
+                  0x0038b6          0x6 build/default/production/_ext/1077454706/magnetometer.o
  __c30_signature
-                  0x0038bc          0x6 build/default/production/_ext/1077454706/serialIO.o
+                  0x0038bc          0x6 build/default/production/_ext/1077454706/radioIn.o
  __c30_signature
-                  0x0038c2          0x6 build/default/production/_ext/1077454706/traps.o
+                  0x0038c2          0x6 build/default/production/_ext/1077454706/serialIO.o
  __c30_signature
-                  0x0038c8          0x6 build/default/production/_ext/1077454706/I2C1.o
+                  0x0038c8          0x6 build/default/production/_ext/1077454706/traps.o
  __c30_signature
-                  0x0038ce          0x6 build/default/production/_ext/1077454706/I2C2.o
+                  0x0038ce          0x6 build/default/production/_ext/1077454706/I2C1.o
  __c30_signature
-                  0x0038d4          0x6 build/default/production/_ext/1077454706/barometer.o
+                  0x0038d4          0x6 build/default/production/_ext/1077454706/I2C2.o
  __c30_signature
-                  0x0038da          0x6 build/default/production/_ext/1472/config_tests.o
+                  0x0038da          0x6 build/default/production/_ext/1077454706/barometer.o
  __c30_signature
-                  0x0038e0          0x6 build/default/production/_ext/1472/behavior.o
+                  0x0038e0          0x6 build/default/production/_ext/1472/config_tests.o
  __c30_signature
-                  0x0038e6          0x6 build/default/production/_ext/1472/cameraCntrl.o
+                  0x0038e6          0x6 build/default/production/_ext/1472/behavior.o
  __c30_signature
-                  0x0038ec          0x6 build/default/production/_ext/1472/navigate.o
+                  0x0038ec          0x6 build/default/production/_ext/1472/cameraCntrl.o
  __c30_signature
-                  0x0038f2          0x6 build/default/production/_ext/1472/pitchCntrl.o
+                  0x0038f2          0x6 build/default/production/_ext/1472/navigate.o
  __c30_signature
-                  0x0038f8          0x6 build/default/production/_ext/1472/rollCntrl.o
+                  0x0038f8          0x6 build/default/production/_ext/1472/pitchCntrl.o
  __c30_signature
-                  0x0038fe          0x6 build/default/production/_ext/1472/servoMix.o
+                  0x0038fe          0x6 build/default/production/_ext/1472/rollCntrl.o
  __c30_signature
-                  0x003904          0x6 build/default/production/_ext/1472/states.o
+                  0x003904          0x6 build/default/production/_ext/1472/servoMix.o
  __c30_signature
-                  0x00390a          0x6 build/default/production/_ext/1472/yawCntrl.o
+                  0x00390a          0x6 build/default/production/_ext/1472/states.o
  __c30_signature
-                  0x003910          0x6 build/default/production/_ext/1472/telemetry.o
+                  0x003910          0x6 build/default/production/_ext/1472/yawCntrl.o
  __c30_signature
-                  0x003916          0x6 build/default/production/_ext/1472/servoPrepare.o
+                  0x003916          0x6 build/default/production/_ext/1472/telemetry.o
  __c30_signature
-                  0x00391c          0x6 build/default/production/_ext/1472/flightplan-waypoints.o
+                  0x00391c          0x6 build/default/production/_ext/1472/servoPrepare.o
  __c30_signature
-                  0x003922          0x6 build/default/production/_ext/1472/flightplan-logo.o
+                  0x003922          0x6 build/default/production/_ext/1472/flightplan-waypoints.o
  __c30_signature
-                  0x003928          0x6 build/default/production/_ext/1472/mp_osd.o
+                  0x003928          0x6 build/default/production/_ext/1472/flightplan-logo.o
  __c30_signature
-                  0x00392e          0x6 build/default/production/_ext/1472/altitudeCntrl.o
+                  0x00392e          0x6 build/default/production/_ext/1472/mp_osd.o
  __c30_signature
-                  0x003934          0x6 build/default/production/_ext/1472/MAVLink.o
+                  0x003934          0x6 build/default/production/_ext/1472/altitudeCntrl.o
  __c30_signature
-                  0x00393a          0x6 build/default/production/_ext/1472/mode_switch.o
+                  0x00393a          0x6 build/default/production/_ext/1472/MAVLink.o
  __c30_signature
-                  0x003940          0x6 build/default/production/_ext/1472/data_services.o
+                  0x003940          0x6 build/default/production/_ext/1472/mode_switch.o
  __c30_signature
-                  0x003946          0x6 build/default/production/_ext/1472/data_storage.o
+                  0x003946          0x6 build/default/production/_ext/1472/data_services.o
  __c30_signature
-                  0x00394c          0x6 build/default/production/_ext/1472/nv_memory_table.o
+                  0x00394c          0x6 build/default/production/_ext/1472/data_storage.o
  __c30_signature
-                  0x003952          0x6 build/default/production/_ext/1472/parameter_table.o
+                  0x003952          0x6 build/default/production/_ext/1472/nv_memory_table.o
  __c30_signature
-                  0x003958          0x6 build/default/production/_ext/1472/airspeedCntrl.o
+                  0x003958          0x6 build/default/production/_ext/1472/parameter_table.o
  __c30_signature
-                  0x00395e          0x6 build/default/production/_ext/1472/altitudeCntrlVariable.o
+                  0x00395e          0x6 build/default/production/_ext/1472/airspeedCntrl.o
  __c30_signature
-                  0x003964          0x6 build/default/production/_ext/1472/euler_angles.o
+                  0x003964          0x6 build/default/production/_ext/1472/altitudeCntrlVariable.o
  __c30_signature
-                  0x00396a          0x6 build/default/production/_ext/1472/main.o
+                  0x00396a          0x6 build/default/production/_ext/1472/euler_angles.o
  __c30_signature
-                  0x003970          0x6 build/default/production/_ext/1658199856/commands.o
+                  0x003970          0x6 build/default/production/_ext/1472/main.o
  __c30_signature
                   0x003976          0x6 /opt/microchip/xc16/v1.10/bin/bin/../../lib/dsPIC33E/libp33EP512MU810-elf.a(CloseSPI1.o)
  __c30_signature
@@ -6292,33 +6294,33 @@ __c30_signature
 non_eds_stack       0x6000       0x1000
  non_eds_stack      0x6000       0x1000 build/default/production/stack.o
 
-_0x41c230b851a0bd1a
+_0x41c230b851a0c1d4
                     0xdfc0          0xe
- _0x41c230b851a0bd1a
+ _0x41c230b851a0c1d4
                     0xdfc0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfc0                  _BufferB
 
-_0x41c2305c51a0bd1a
+_0x41c2305c51a0c1d4
                     0xdfe0          0xe
- _0x41c2305c51a0bd1a
+ _0x41c2305c51a0c1d4
                     0xdfe0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfe0                  _BufferA
 
-_0x41b78c9451a0bd1b
+_0x41b78c9451a0c1d5
                     0x1000          0x4
- _0x41b78c9451a0bd1b
+ _0x41b78c9451a0c1d5
                     0x1000          0x4 build/default/production/_ext/1077454706/mcu.o
                     0x1000                  _trap_source
 
-_0x41b78c3851a0bd1b
+_0x41b78c3851a0c1d5
                     0x1004          0x2
- _0x41b78c3851a0bd1b
+ _0x41b78c3851a0c1d5
                     0x1004          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1004                  _trap_flags
 
-_0x41b78cf051a0bd1b
+_0x41b78cf051a0c1d5
                     0x1006          0x2
- _0x41b78cf051a0bd1b
+ _0x41b78cf051a0c1d5
                     0x1006          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1006                  _osc_fail_count
 
@@ -6392,37 +6394,39 @@ _0x41b78cf051a0bd1b
 .data.pows          0x1a4a         0x48
  .data.pows         0x1a4a         0x48 /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-c-elf.a(xldtob.EPeo)
 
-.data               0x1a92         0x3c
- .data              0x1a92         0x3c build/default/production/_ext/1472/MAVLink.o
-                    0x1a92                  _dcm_declination_angle
-                    0x1a94                  _mavlink_process_message_handle
-                    0x1a96                  _handling_of_message_completed
-                    0x1a98                  _voltage_milis
-                    0x1a9a                  _mavlink_counter_40hz
-                    0x1a9c                  _usec
-                    0x1aa4                  _msec
-                    0x1aa8                  _sb_index
-                    0x1aaa                  _end_index
-                    0x1aac                  _serial_interrupt_stopped
-                    0x1aae                  _previous_earth_pitch
-                    0x1ab2                  _previous_earth_roll
-                    0x1ab6                  _previous_earth_yaw
-                    0x1aba                  _mavlink_waypoint_timeout
-                    0x1abc                  _number_of_waypoint_retries
-                    0x1abd                  _mavlink_waypoint_frame
-                    0x1abe                  _mavlink_waypoint_current
-                    0x1ac0                  _mavlink_command_ack_command
-                    0x1ac2                  _mavlink_send_command_ack
-                    0x1ac4                  _mavlink_command_ack_result
-                    0x1ac6                  _mavlink_sue_telemetry_counter
-                    0x1ac8                  _mavlink_sue_telemetry_f2_a
-                    0x1ac9                  _mavlink_message_index
-                    0x1aca                  _send_variables_counter
-                    0x1acc                  _send_by_index
+.bss                0x1a92         0x3c
+ .bss               0x1a92         0x3c build/default/production/_ext/1658199856/commands.o
+                    0x1a92                  _cmdstr
 
-.bss                0x1ace         0xae
- .bss               0x1ace         0x3c build/default/production/_ext/1658199856/commands.o
-                    0x1ace                  _cmdstr
+.data               0x1ace         0x3c
+ .data              0x1ace         0x3c build/default/production/_ext/1472/MAVLink.o
+                    0x1ace                  _dcm_declination_angle
+                    0x1ad0                  _mavlink_process_message_handle
+                    0x1ad2                  _handling_of_message_completed
+                    0x1ad4                  _voltage_milis
+                    0x1ad6                  _mavlink_counter_40hz
+                    0x1ad8                  _usec
+                    0x1ae0                  _msec
+                    0x1ae4                  _sb_index
+                    0x1ae6                  _end_index
+                    0x1ae8                  _serial_interrupt_stopped
+                    0x1aea                  _previous_earth_pitch
+                    0x1aee                  _previous_earth_roll
+                    0x1af2                  _previous_earth_yaw
+                    0x1af6                  _mavlink_waypoint_timeout
+                    0x1af8                  _number_of_waypoint_retries
+                    0x1af9                  _mavlink_waypoint_frame
+                    0x1afa                  _mavlink_waypoint_current
+                    0x1afc                  _mavlink_command_ack_command
+                    0x1afe                  _mavlink_send_command_ack
+                    0x1b00                  _mavlink_command_ack_result
+                    0x1b02                  _mavlink_sue_telemetry_counter
+                    0x1b04                  _mavlink_sue_telemetry_f2_a
+                    0x1b05                  _mavlink_message_index
+                    0x1b06                  _send_variables_counter
+                    0x1b08                  _send_by_index
+
+.bss                0x1b0a         0x72
  .bss               0x1b0a         0x3a build/default/production/_ext/1077471063/gpsParseCommon.o
                     0x1b0a                  _lat_gps
                     0x1b0e                  _long_gps
@@ -6698,33 +6702,35 @@ _0x41b78cf051a0bd1b
  .data              0x1e40          0x4 build/default/production/_ext/1077454706/barometer.o
                     0x1e42                  _barometer_callback
 
-.bss                0x1e44          0x6
+.bss                0x1e44          0x4
  .bss               0x1e44          0x4 build/default/production/_ext/1472/behavior.o
                     0x1e44                  _current_orientation
                     0x1e46                  _desired_behavior
- .bss               0x1e48          0x2 build/default/production/_ext/1077454706/libUDB.o
-                    0x1e48                  _udb_flags
 
-.data               0x1e4a          0x6
- .data              0x1e4a          0x2 build/default/production/_ext/1077454706/events.o
-                    0x1e4a                  _event_init_done
- .data              0x1e4c          0x2 build/default/production/_ext/1077454706/analog2digital_auav3.o
-                    0x1e4c                  _DmaBuffer
- .data              0x1e4e          0x2 build/default/production/_ext/1077454706/mcu.o
-                    0x1e4e                  _defaultCorcon
+.data               0x1e48          0x2
+ .data              0x1e48          0x2 build/default/production/_ext/1658199856/commands.o
+                    0x1e48                  _cmdlen
 
-.bss                0x1e50          0x8
- .bss               0x1e50          0x2 build/default/production/_ext/1077454706/traps.o
-                    0x1e50                  _dmaRWErrLoc
- .bss               0x1e52          0x2 build/default/production/_ext/1472/states.o
-                    0x1e52                  _flags
- .bss               0x1e54          0x2 build/default/production/_ext/1472/altitudeCntrl.o
-                    0x1e54                  _desiredHeight
- .bss               0x1e56          0x2 build/default/production/_ext/1472/mode_switch.o
+.bss                0x1e4a          0x2
+ .bss               0x1e4a          0x2 build/default/production/_ext/1077454706/libUDB.o
+                    0x1e4a                  _udb_flags
 
-.data               0x1e58          0x2
- .data              0x1e58          0x2 build/default/production/_ext/1658199856/commands.o
-                    0x1e58                  _cmdlen
+.data               0x1e4c          0x6
+ .data              0x1e4c          0x2 build/default/production/_ext/1077454706/events.o
+                    0x1e4c                  _event_init_done
+ .data              0x1e4e          0x2 build/default/production/_ext/1077454706/analog2digital_auav3.o
+                    0x1e4e                  _DmaBuffer
+ .data              0x1e50          0x2 build/default/production/_ext/1077454706/mcu.o
+                    0x1e50                  _defaultCorcon
+
+.bss                0x1e52          0x8
+ .bss               0x1e52          0x2 build/default/production/_ext/1077454706/traps.o
+                    0x1e52                  _dmaRWErrLoc
+ .bss               0x1e54          0x2 build/default/production/_ext/1472/states.o
+                    0x1e54                  _flags
+ .bss               0x1e56          0x2 build/default/production/_ext/1472/altitudeCntrl.o
+                    0x1e56                  _desiredHeight
+ .bss               0x1e58          0x2 build/default/production/_ext/1472/mode_switch.o
 
 .data.__C30_UART
                     0x1e5a          0x2

@@ -16,18 +16,8 @@
         <itemPath>../../libDCM/estAltitude.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="libFlashFS" projectFiles="true">
-        <itemPath>../../libFlashFS/AT45D.h</itemPath>
-        <itemPath>../../libFlashFS/Compiler.h</itemPath>
-        <itemPath>../../libFlashFS/FSconfig.h</itemPath>
-        <itemPath>../../libFlashFS/GenericTypeDefs.h</itemPath>
-        <itemPath>../../libFlashFS/MDD_AT45D.h</itemPath>
-        <itemPath>../../libFlashFS/minGlue-mdd.h</itemPath>
-        <itemPath>../../libFlashFS/minGlue.h</itemPath>
-        <itemPath>../../libFlashFS/minIni.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="libMDD" projectFiles="true">
-        <itemPath>../../Microchip/Include/MDD File System/FSDefs.h</itemPath>
-        <itemPath>../../Microchip/Include/MDD File System/FSIO.h</itemPath>
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../libUDB/magnetometerOptions.h</itemPath>
@@ -48,11 +38,6 @@
         <itemPath>../../../MatrixPilot_AUAV3/libUDB/interrupt.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="libUSB" projectFiles="true">
-        <itemPath>../../Microchip/Include/USB/usb.h</itemPath>
-        <itemPath>../../Microchip/Include/USB/usb_ch9.h</itemPath>
-        <itemPath>../../Microchip/Include/USB/usb_common.h</itemPath>
-        <itemPath>../../Microchip/Include/USB/usb_device.h</itemPath>
-        <itemPath>../../Microchip/Include/USB/usb_hal.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="libVectorMatrix" projectFiles="true">
         <itemPath>../../libVectorMatrix/dspcommon.inc</itemPath>
@@ -368,7 +353,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../MatrixPilot-auav3_mw;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot;../../libFlashFS;../../Microchip/Include"/>
+                  value="../MatrixPilot-auav3_noFS_MDD_USB;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>
