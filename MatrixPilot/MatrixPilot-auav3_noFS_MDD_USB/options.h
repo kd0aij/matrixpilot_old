@@ -167,7 +167,7 @@
 #define BAROMETER_ALTITUDE 1
 
 // Set your takeoff/launch/initialisation altitude in meters.
-#define LAUNCH_ALTITUDE						300
+#define LAUNCH_ALTITUDE						1708
 
 
 // Racing Mode

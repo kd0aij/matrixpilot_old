@@ -193,8 +193,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
-        <itemPath>../../libCommon/read.c</itemPath>
-        <itemPath>../../libCommon/write.c</itemPath>
         <itemPath>../../libCommon/uart.c</itemPath>
         <itemPath>../../libCommon/commands.c</itemPath>
       </logicalFolder>
