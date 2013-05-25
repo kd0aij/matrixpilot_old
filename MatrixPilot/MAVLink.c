@@ -1589,30 +1589,6 @@ void mavlink_output_40hz(void)
 
     }
 
-    // raw barometer reading
-    spread_transmission_load = 8;   // TODO: determine optimum value
-	if (mavlink_frequency_send( streamRates[MAV_DATA_STREAM_RAW_SENSORS] , mavlink_counter_40hz + spread_transmission_load))
-	{
-        int16_t gps_fix_type;
-        if (gps_nav_valid())
-            gps_fix_type = 3;
-        else
-            gps_fix_type = 0;
-
-//	_mav_put_int16_t(buf, 8, press_abs);
-//	_mav_put_int16_t(buf, 10, press_diff1);
-//	_mav_put_int16_t(buf, 12, press_diff2);
-//	_mav_put_int16_t(buf, 14, temperature);
-
-        // use press_abs for the high word of barometer_pressure
-        // and press_diff1 for the low word
-
-        union longww bp; // ww._.W1 is the high word, ww._.W0 is the low word
-        bp.WW = get_barometer_pressure();
-        mavlink_msg_raw_pressure_send(MAVLINK_COMM_0, usec, bp._.W1, bp._.W0, 0, get_barometer_temperature());
-
-    }
-
     // GLOBAL POSITION INT - derived from fused sensors
     // Note: This code assumes that Dead Reckoning is running.
     spread_transmission_load = 6;
@@ -1698,7 +1674,8 @@ void mavlink_output_40hz(void)
         if (THROTTLE_CHANNEL_REVERSED == 1) pwOut_max = 2000;
         mavlink_msg_vfr_hud_send(MAVLINK_COMM_0, (float) (air_speed_3DIMU / 100.0), (float) (ground_velocity_magnitudeXY / 100.0), (int16_t) mavlink_heading,
                 (uint16_t) (((float) ((udb_pwOut[THROTTLE_OUTPUT_CHANNEL]) - udb_pwTrim[THROTTLE_INPUT_CHANNEL]) * 100.0) / (float) (pwOut_max - udb_pwTrim[THROTTLE_INPUT_CHANNEL])),
-                ((float) (IMUlocationz._.W1 + (alt_origin.WW / 100.0))), (float) -IMUvelocityz._.W1);
+                get_barometer_altitude(), (float) -IMUvelocityz._.W1);
+//                ((float) (IMUlocationz._.W1 + (alt_origin.WW / 100.0))), (float) -IMUvelocityz._.W1);
         //void mavlink_msg_vfr_hud_send(mavlink_channel_t chan, float airspeed, float groundspeed, int16_t heading, uint16_t throttle, float alt, float climb)
     }
 #endif

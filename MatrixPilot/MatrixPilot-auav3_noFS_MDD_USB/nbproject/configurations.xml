@@ -195,6 +195,8 @@
       <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
         <itemPath>../../libCommon/uart.c</itemPath>
         <itemPath>../../libCommon/commands.c</itemPath>
+        <itemPath>../../libCommon/read.c</itemPath>
+        <itemPath>../../libCommon/write.c</itemPath>
       </logicalFolder>
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
         <itemPath>../../libDCM/estWind.c</itemPath>
