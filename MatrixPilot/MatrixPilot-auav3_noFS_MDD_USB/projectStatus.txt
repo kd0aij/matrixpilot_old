@@ -75,3 +75,9 @@ notes and changes:
     copied from -auav3_mw with unused source files in libFlashFS, libMDD and libUSB
     removed. Hoping to reduce build time from 25 seconds back closer to what it
     was before. Need to make libXXX into actual libraries to avoid unnecessary rebuilds.
+    Deleted p30sim.h and hacked the console I/O routines to work correctly:
+    p30sim.h shouldn't be included, deleted from libCommon and replaced with correct
+    include. uart init macros masked an undefined symbol (BRGH)... very bad...
+    *** glitches on mode switching now gone!!! and console output restored
+    Implication is that libCommon/read,write were causing the glitches by either
+    trashing RAM or causing resets.
