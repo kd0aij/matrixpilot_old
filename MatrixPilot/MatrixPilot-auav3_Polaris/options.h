@@ -22,10 +22,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // options.h
 // Bill Premerlani's UAV Dev Board
-//
+// 
 // This file includes all of the user-configuration for this firmware,
 // with the exception of waypoints, which live in the waypoints.h file.
-//
+// 
 // Note that there is a small but growing library of preset options.h files for
 // specific planes located in the MatrixPilot/example-options-files directory.
 // You can use one of those files by replacing this file with that one.
@@ -62,7 +62,7 @@
 // ORIENTATION_FLIPPED:   Component-side down
 // ORIENTATION_YAWCW:     Component-side up
 // ORIENTATION_YAWCCW:    Component-side up
-//
+// 
 // The following 2 orientations are "knife edge" mountings
 // ORIENTATION_ROLLCW: board rolled 90 degrees clockwise,
 //		from point of view of the pilot
@@ -82,7 +82,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-#define GPS_TYPE GPS_MTEK
+#define GPS_TYPE GPS_UBX_4HZ
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,17 +194,17 @@
 // following pins, in this order: Out1, Out2, Out3, In3, In2, In1, RE0, RE2, RE4.
 // With it set to 1, the RC outputs will be in this alternate configuration:
 // Out1, Out2, Out3, RE0, RE2, RE4, In3, In2, In1.
-//
+// 
 // For UDB4 boards:
 // Use a single PPM input connection from the RC receiver to the UDB on RC input channel 1.
-// The 8 standard output channels remain unaffected.  2 additional output channels are available
+// The 8 standard output channels remain unaffected.  2 additional output channels are available 
 // on pins RA4 and RA1.
-//
+// 
 // For all boards:
 // If you're not sure, leave USE_PPM_INPUT set to 0.
 // PPM_NUMBER_OF_CHANNELS is the number of channels sent on the PWM signal.  This is
 // often different from the NUM_INPUTS value below, and should usually be left at 8.
-//
+// 
 #define USE_PPM_INPUT						0
 #define PPM_NUMBER_OF_CHANNELS				8
 #define PPM_SIGNAL_INVERTED					0
@@ -216,7 +216,7 @@
 #define NEUTRAL_TRIM    3040
 #define THROTTLE_IDLE   2250
 
-// NUM_INPUTS:
+// NUM_INPUTS: 
 // For classic boards: Set to 1-5 (or 1-8 when using PPM input)
 //   1-4 enables only the first 1-4 of the 4 standard input channels
 //   5 also enables E8 as the 5th input channel
@@ -259,11 +259,11 @@
 //   - If you don't want to use an output channel, set it to CHANNEL_UNUSED
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and runner channels so that rudder is CHANNEL_1, and aileron is 5.
-//
+// 
 // NOTE: If your board is powered from your ESC through the throttle cable, make sure to
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
-//
+// 
 #define THROTTLE_OUTPUT_CHANNEL             CHANNEL_1
 #define AILERON_OUTPUT_CHANNEL              CHANNEL_2
 #define ELEVATOR_OUTPUT_CHANNEL             CHANNEL_3
@@ -313,13 +313,13 @@
 // When in Autonomous, a move to "Down" puts the switch state  back to Manual. And a futher move to "Up", will put the
 // switch state back in stabilized. The important design concept is that Manual position is always Manual state immediately.
 // Stabilized position is Stabilized mode unless you try  hard to reach Autonomous mode.
-// Set MODE_SWITCH_TWO_POSITION	to 0 for a normal three position mode switch.
+// Set MODE_SWITCH_TWO_POSITION	to 0 for a normal three position mode switch.	
 #define MODE_SWITCH_TWO_POSITION    0
 
 ////////////////////////////////////////////////////////////////////////////////
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
 // Make sure this is set to a channel you actually have plugged into the UAV Dev Board!
-//
+// 
 // For a receiver that remembers a failsafe value for when it loses the transmitter signal,
 // like the Spektrum AR6100, you can program the receiver's failsafe value to a value below
 // the normal low value for that channel.  Then set the FAILSAFE_INPUT_MIN value to a value
@@ -335,12 +335,12 @@
 
 // FAILSAFE_TYPE controls the UDB's behavior when in failsafe mode due to loss of transmitter
 // signal.  (Set to FAILSAFE_RTL or FAILSAFE_MAIN_FLIGHTPLAN.)
-//
+// 
 // When using FAILSAFE_RTL (Return To Launch), the UDB will begin following the RTL flight plan
 // as defined near the bottom of the waypoints.h or flightplan-logo.h files.  By default, this
 // is set to return to a point above the location where the UDB was powered up, and to loiter there.
 // See the waypoints.h or flightplan-logo.h files for info on modifying this behavior.
-//
+// 
 // When set to FAILSAFE_MAIN_FLIGHTPLAN, the UDB will instead follow the main flight plan as
 // defined in either waypoints.h or flightplan-logo.h.  If the UDB was already in waypoint mode
 // when it lost signal, the plane will just continue following the main flight plan without
@@ -384,7 +384,7 @@
 // USE_OSD enables the OSD system.  Customize the OSD Layout in the osd_layout.h file.
 #define USE_OSD					0
 
-// NUM_ANALOG_INPUTS:
+// NUM_ANALOG_INPUTS: 
 // For classic boards: Set to 0, 1, or 2
 //   1 enables Radio In 1 as an analog Input
 //   2 also enables Radio In 2 as another analog Input
@@ -397,7 +397,7 @@
 //   - If you don't want to use an output channel, set it to CHANNEL_UNUSED
 //   - Only 2 analog inputs are available, so you can't use all the defined analog
 //     sensors at once
-//
+// 
 // ANALOG_CURRENT_INPUT_CHANNEL and ANALOG_VOLTAGE_INPUT_CHANNEL let you plug in and
 // use this Voltage/Current sensor board from SparkFun:
 //    http://www.sparkfun.com/products/9028
@@ -406,12 +406,12 @@
 // voltage input channel to the voltage output from the current sensor.  Values for
 // instantaneous current, voltage, and mAh used will become available for use with the
 // OSD layout.
-//
+// 
 // ANALOG_RSSI_INPUT_CHANNEL lets you connect your RC Receiver's RSSI output to your
 // UDB, in order to see the RC signal strength on your OSD.  Just plug RSSI and ground
 // from your Receiver to Input2's signal and ground on your UDB.  If you use this feature,
 // you'll also need to set up the RSSI_MIN_SIGNAL_VOLTAGE and RSSI_MAX_SIGNAL_VOLTAGE
-// to match your Receiver's RSSI format.  Note that some receivers use a higher voltage to
+// to match your Receiver's RSSI format.  Note that some receivers use a higher voltage to 
 // represent a lower signal strength, so you may need to set MIN higher than MAX.
 
 #define ANALOG_CURRENT_INPUT_CHANNEL CHANNEL_UNUSED
@@ -542,7 +542,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Camera Stabilization and Targeting
-//
+// 
 // There are three camera modes within MatrixPilot
 /// Canera Mode 1: No stabilisation for camera pitch or yaw
 //  Camera Mode 2: Stabilisation of camera pitch but not yaw.
@@ -568,7 +568,7 @@
 
 // Setup and configuration of camera targetting at installation of camera servos:-
 // To save cpu cycles, you will need to pre-compute the tangent of the desired pitch of the camera
-// when in stabilized mode. This should be expressed in 2:14 format.
+// when in stabilized mode. This should be expressed in 2:14 format. 
 // Example: You require the camera to be pitched down by 15 degrees from the horizon in stabilized mode.
 // Paste the following line into a google search box (without the //)
 // tan((( 15 /180 )* 3.1416 ))* 16384
