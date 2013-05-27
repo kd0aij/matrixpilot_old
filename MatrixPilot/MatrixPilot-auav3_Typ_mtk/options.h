@@ -52,7 +52,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Use board orientation to change the mounting direction of the board.
 // Note:
-//       For UDB4, X arrow points to the front, GPS connectors are on the front.
+//      For UDB4, X arrow points to the front, GPS connectors are on the front.
+//      For AUAV3, airplane symbol points to the front, GPS connector is at rear.
 //
 // The following 6 orientations have the board parallel with the ground.
 // ORIENTATION_FORWARDS:  Component-side up
