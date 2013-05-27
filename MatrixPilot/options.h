@@ -33,37 +33,41 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
-// GREEN_BOARD - Board is green and includes 2 vertical gyro daugter-boards.
-// RED_BOARD   - Board is red, and includes 2 vertical gyro daugter-boards.
-// UDB3_BOARD  - Board is red, and includes a single, flat, multi-gyro daugter-board.
-// UDB4_BOARD  - Board is red, has 8 inputs, 8 output and no gyro daughter-board.
-// AUAV1_BOARD - Nick Arsov's UDB3 clone, version one
-// See the MatrixPilot wiki for more details on different UDB boards.
-// If building for the UDB4, use the MatrixPilot-udb4.mcw project workspace. 
+// See the MatrixPilot wiki for more details on different board types.
+#ifdef UDB4
+#define BOARD_TYPE 							UDB4_BOARD
+#endif
+#ifdef UDB5
+#define BOARD_TYPE 							UDB5_BOARD
+#endif
+#ifdef AUAV3
 #define BOARD_TYPE 							AUAV3_BOARD
+#endif
 
-// Support for RobD custom PPM encoder - NOTE: you probably don't want this defined
-//#define USE_PPM_ROBD
+#ifndef BOARD_TYPE
+#define BOARD_TYPE							AUAV3_BOARD
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Use board orientation to change the mounting direction of the board.
-// Note: For UDB3 and older versions of UDB, Y arrow points to the front, GPS connector is on the front.
+// Note:
 //       For UDB4, X arrow points to the front, GPS connectors are on the front.
+//      For AUAV3, airplane symbol points to the front, GPS connector is at rear.
+//
 // The following 6 orientations have the board parallel with the ground.
-// ORIENTATION_FORWARDS:  Component-side up,   GPS connector front
-// ORIENTATION_BACKWARDS: Component-side up,   GPS connector back
-// ORIENTATION_INVERTED:  Component-side down, GPS connector front
-// ORIENTATION_FLIPPED:   Component-side down, GPS connector back
-// ORIENTATION_YAWCW:     Component-side up,   GPS connector to the right
-// ORIENTATION_YAWCCW:    Component-side up,   GPS connector to the left
+// ORIENTATION_FORWARDS:  Component-side up
+// ORIENTATION_BACKWARDS: Component-side up
+// ORIENTATION_INVERTED:  Component-side down
+// ORIENTATION_FLIPPED:   Component-side down
+// ORIENTATION_YAWCW:     Component-side up
+// ORIENTATION_YAWCCW:    Component-side up
 // 
 // The following 2 orientations are "knife edge" mountings
-// ORIENTATION_ROLLCW: Rick's picture #9, board rolled 90 degrees clockwise,
+// ORIENTATION_ROLLCW: board rolled 90 degrees clockwise,
 //		from point of view of the pilot
-// ORIENTATION_ROLLCW180: Rick's pitcure #11, board rolled 90 degrees clockwise,
+// ORIENTATION_ROLLCW180: board rolled 90 degrees clockwise,
 //		from point of view of the pilot, then rotate the board 180 around the Z axis of the plane,
-//		so that the GPS connector points toward the tail of the plane
 #define BOARD_ORIENTATION					ORIENTATION_FORWARDS
 
 
