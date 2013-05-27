@@ -212,7 +212,6 @@ void read_accel(void)
 #ifdef CATAPULT_LAUNCH_ENABLE
     if (gplane[1] < -(GRAVITY/2)) {
         dcm_flags._.launch_detected = 1;
-    	flags._.update_autopilot_state_asap = 1 ;
     }
 #endif
 	

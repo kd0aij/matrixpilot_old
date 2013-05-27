@@ -23,7 +23,7 @@
 #include "mode_switch.h"
 #include <stdio.h>
 
-//#define USE_DEBUG_IO
+#define USE_DEBUG_IO
 
 #ifdef USE_DEBUG_IO
 #define DPRINT printf
@@ -90,14 +90,17 @@ void udb_background_callback_periodic(void)
     // read flight mode switch (sets flags bits) at 40Hz
     flight_mode_switch_check_set();
 
-    // respond immediately to change in manual mode
-    if (flags._.man_req != manualMode) {
+    // respond immediately to change in manual mode or launch detection
+    if ((flags._.man_req != manualMode) ||
+        ((dcm_flags._.launch_detected == 1) && (stateS == &cat_armedS))
+       ) {
         manualMode = flags._.man_req;
         flags._.update_autopilot_state_asap = 1;
     }
 
     if (counter++ >= 20) // 2Hz FSM clock
     {
+        flags._.update_autopilot_state_asap = 0;
         counter = 0;
         // Update the nav capable flag. If the GPS has a lock, gps_data_age will be small.
         // For now, nav_capable will always be 0 when the Airframe type is AIRFRAME_HELI.
@@ -110,10 +113,14 @@ void udb_background_callback_periodic(void)
     }
     else if (flags._.update_autopilot_state_asap == 1)   // async FSM clock
     {
-    	DPRINT("async: ");
+    	DPRINT(":");
+        flags._.update_autopilot_state_asap = 0;
+        // reset 2Hz counter so that next synchronous clock pulse occurs in 0.5 seconds
+        counter = 0;
+
+        // Execute the activities for the current state.
         (*stateS)();
     }
-    flags._.update_autopilot_state_asap = 0;
 }
 
 //	Functions that are executed upon first entrance into a state.
@@ -367,7 +374,7 @@ static void cat_armedS(void)
 {
     // transition to manual if flight_mode_switch no longer in waypoint mode
     // or link lost or gps lost
-    if (flight_mode_switch_manual()) { // | !udb_flags._.radio_on | !dcm_flags._.nav_capable) {
+    if (flight_mode_switch_manual() | !udb_flags._.radio_on | !dcm_flags._.nav_capable) {
         LED_ORANGE = LED_OFF;
         ent_manualS();
     }
@@ -382,7 +389,14 @@ static void cat_armedS(void)
 // entered from cat_armedS when launch_detected
 static void cat_delayS(void)
 {
-    if (--launch_timer == 0)
+    // transition to manual if flight_mode_switch no longer in waypoint mode
+    // or link lost or gps lost
+    if (flight_mode_switch_manual() | !udb_flags._.radio_on | !dcm_flags._.nav_capable)
+    {
+        LED_ORANGE = LED_OFF;
+        ent_manualS();
+    }
+    else if (--launch_timer == 0)
     {
         ent_waypointS();
     }
