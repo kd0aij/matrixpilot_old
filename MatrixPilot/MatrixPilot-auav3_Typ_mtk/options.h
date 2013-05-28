@@ -30,6 +30,8 @@
 // specific planes located in the MatrixPilot/example-options-files directory.
 // You can use one of those files by replacing this file with that one.
 
+#pragma once
+#define OPTIONS_SET "Typhoon"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
