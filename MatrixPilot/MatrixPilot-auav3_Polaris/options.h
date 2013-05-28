@@ -478,11 +478,11 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP				0.08 //0.22
+#define ROLLKP				0.1 //0.22
 #define ROLLKD				0 //0.02
 #define YAWKP_AILERON		0.05 // 0.05
 #define YAWKD_AILERON		0 //0.11 //0.05
-#define AILERON_BOOST		0.25
+#define AILERON_BOOST		0.5
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
@@ -490,11 +490,11 @@
 // RUDDER_ELEV_MIX is the degree of elevator adjustment for rudder and banking
 // AILERON_ELEV_MIX is the degree of elevator adjustment for aileron
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
-#define PITCHGAIN			0.08 // 0.150
+#define PITCHGAIN			0.1 // 0.150
 #define PITCHKD				0 //0.015 // 0.075
 #define RUDDER_ELEV_MIX		0.04
 #define ROLL_ELEV_MIX		0.08
-#define ELEVATOR_BOOST		1.0
+#define ELEVATOR_BOOST		0.5
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
 // Use this to add extra "up" elevator while the plane is inverted, to avoid losing altitude.
@@ -508,7 +508,7 @@
 // MANUAL_AILERON_RUDDER_MIX is the fraction of manual aileron control to mix into the rudder when
 // in stabilized or waypoint mode.  This mainly helps aileron-initiated turning while in stabilized.
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER				0.03 // 0.1
+#define YAWKP_RUDDER				0.1 // 0.1
 #define YAWKD_RUDDER				0 //0.03 // 0.1
 #define ROLLKP_RUDDER				0.03
 #define ROLLKD_RUDDER				0 //0.05
@@ -624,8 +624,8 @@
 // when within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
-#define ALT_HOLD_THROTTLE_MIN 0.25
-#define ALT_HOLD_THROTTLE_MAX 0.45
+#define ALT_HOLD_THROTTLE_MIN 0.35
+#define ALT_HOLD_THROTTLE_MAX 1.0
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_PITCH_MAX and ALT_HOLD_PITCH_MIN when
@@ -702,7 +702,7 @@
 //#define ID_VEHICLE_REGISTRATION "TW2-PDH-UK"
 //#define ID_LEAD_PILOT "Pete Hollands"
 //#define ID_DIY_DRONES_URL "http://www.diydrones.com/profile/PeterHollands"
-#define ID_VEHICLE_MODEL_NAME   "Typhoon2"
+#define ID_VEHICLE_MODEL_NAME   "Polaris"
 #define ID_VEHICLE_REGISTRATION "KD0AIJ"
 #define ID_LEAD_PILOT           "Mark Whitehorn"
 #define ID_DIY_DRONES_URL       "http://www.diydrones.com/profile/markw"
@@ -765,4 +765,4 @@
 #define USE_USB							0
 
 // define this to enable catapult launch arming
-#define CATAPULT_LAUNCH_ENABLE
+//#define CATAPULT_LAUNCH_ENABLE

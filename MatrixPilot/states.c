@@ -91,8 +91,10 @@ void udb_background_callback_periodic(void)
     flight_mode_switch_check_set();
 
     // respond immediately to change in manual mode or launch detection
-    if ((flags._.man_req != manualMode) ||
-        ((dcm_flags._.launch_detected == 1) && (stateS == &cat_armedS))
+    if ((flags._.man_req != manualMode)
+#ifdef CATAPULT_LAUNCH_ENABLE
+        || ((dcm_flags._.launch_detected == 1) && (stateS == &cat_armedS))
+#endif
        ) {
         manualMode = flags._.man_req;
         flags._.update_autopilot_state_asap = 1;
