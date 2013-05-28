@@ -34,7 +34,6 @@
         <itemPath>../../libUDB/ConfigAUAV3.h</itemPath>
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/barometer.h</itemPath>
-        <itemPath>../../../MatrixPilot_AUAV3/libUDB/interrupt.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="libUSB" projectFiles="true">
       </logicalFolder>
@@ -289,6 +288,7 @@
         <itemPath>nv_memory_options.h</itemPath>
         <itemPath>options.h</itemPath>
         <itemPath>stack.S</itemPath>
+        <itemPath>waypoints.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"

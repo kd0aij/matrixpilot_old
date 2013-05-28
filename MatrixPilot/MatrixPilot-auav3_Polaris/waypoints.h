@@ -18,6 +18,7 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
+#warning "Polaris waypoints"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Waypoint handling
@@ -143,12 +144,8 @@
 //};
 
 const struct waypointDef waypoints[] = {
-    {
-        { 100, 0, 50}, F_NORMAL, CAM_VIEW_LAUNCH
-    }, //Waypoint 0
-    {
-        { 0, 0, 50}, F_NORMAL, CAM_VIEW_LAUNCH
-    }, //Waypoint 1
+    {{ 100, 0, 50}, F_NORMAL, CAM_VIEW_LAUNCH}, //Waypoint 0
+    {{ 0, 0, 50}, F_NORMAL, CAM_VIEW_LAUNCH}, //Waypoint 1
 };
 
 

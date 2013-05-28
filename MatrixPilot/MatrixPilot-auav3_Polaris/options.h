@@ -20,7 +20,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// options.h
+// options.h for Polaris
 // Bill Premerlani's UAV Dev Board
 // 
 // This file includes all of the user-configuration for this firmware,

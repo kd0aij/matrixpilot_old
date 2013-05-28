@@ -87,3 +87,4 @@ notes and changes:
 
 27 May:
     copied from _Typ_mtk, changed to LEA6 gps module
+    set initial gains for Polaris Ultra similar to Polaris XL, with lowered nav gains
