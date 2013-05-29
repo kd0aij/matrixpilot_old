@@ -84,3 +84,13 @@ notes and changes:
 
 26 May:
     copied to _Typ_mtk from _noFS_MDD_USB for Typhoon with AGPS module
+
+28 May:
+    first full autonomous flight, light gusty ~10mph crosswind, log 2229
+    Good result for 1st try. ALT_HOLD_THROTTLE_MAX = .45 was way too low.
+    Need to replace landing gear mount.
+
+29 May:
+    clean up option to report pressure alt. in VFR_HUD record
+    add option to replace gps alt. with pressure alt. in IMU position est.
+    add pragma to report use of new option at compile time

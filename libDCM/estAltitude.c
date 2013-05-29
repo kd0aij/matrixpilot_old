@@ -30,7 +30,9 @@
 long barometer_pressure_gnd = 0;
 int barometer_temperature_gnd = 0;
 
-float barometer_altitude;	  // above sea level altitude
+// represent baro. alt. as integer millimeters ASL
+long barometer_altitude;
+
 long barometer_agl_altitude;  // above ground level altitude 
 long barometer_pressure;
 int barometer_temperature;
@@ -41,7 +43,7 @@ const int ground_altitude = LAUNCH_ALTITUDE;
 
 inline int get_barometer_temperature(void) { return barometer_temperature; }
 inline long get_barometer_pressure(void) { return barometer_pressure; }
-inline float get_barometer_altitude(void) { return barometer_altitude; }
+inline long get_barometer_altitude(void) { return barometer_altitude; }
 inline long get_barometer_agl_altitude(void) { return barometer_agl_altitude; }
 
 void altimeter_calibrate(void)
@@ -69,14 +71,13 @@ void estAltitude(void)
 #if (BAROMETER_ALTITUDE == 1)
 	float pressure_ambient = barometer_pressure;
 //	float pressure_sea_level = barometer_pressure_gnd;
-//	float barometer_alt;
+	float barometer_alt;
 
 	if (barometer_pressure_gnd != 0)
 	{
 //		barometer_alt = 44330.0f * ((1-pow((pressure_ambient/pressure_sea_level),(1/5.255f)))); // Meters
-//		barometer_alt = 44330.0f * ((1-pow((pressure_ambient/sea_level_pressure),(1/5.255f)))); // Meters
-		barometer_altitude = 44330.0f * ((1-pow((pressure_ambient/sea_level_pressure),(1/5.255f)))); // Meters
-//		barometer_altitude = (long)(barometer_alt * 1000); // millimeters
+		barometer_alt = 44330.0f * ((1-pow((pressure_ambient/sea_level_pressure),(1/5.255f)))); // Meters
+		barometer_altitude = (long)(barometer_alt * 1000); // millimeters
 //		barometer_altitude = (long)(44330.0f*((1-pow((((float)barometer_pressure)/((float)barometer_pressure_gnd)),(1/5.255f)))))*1000; // millimeters
 #ifdef USE_DEBUG_IO
 		printf("estAltitude %li\r\n", barometer_altitude);

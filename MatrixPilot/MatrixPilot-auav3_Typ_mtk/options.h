@@ -30,8 +30,9 @@
 // specific planes located in the MatrixPilot/example-options-files directory.
 // You can use one of those files by replacing this file with that one.
 
-#pragma once
-#define OPTIONS_SET "Typhoon"
+#ifndef OPTIONS_H
+#define OPTIONS_H
+//#pragma message "Typhoon options selected"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
@@ -627,7 +628,7 @@
 // Use ALT_HOLD_THROTTLE_MIN when above HEIGHT_MARGIN of the target height.
 // Throttle values are from 0.0 - 1.0.
 #define ALT_HOLD_THROTTLE_MIN 0.25
-#define ALT_HOLD_THROTTLE_MAX 0.45
+#define ALT_HOLD_THROTTLE_MAX 1.0
 
 // Use ALT_HOLD_PITCH_MAX when below HEIGHT_MARGIN of the target height.
 // Interpolate between ALT_HOLD_PITCH_MAX and ALT_HOLD_PITCH_MIN when
@@ -635,7 +636,7 @@
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
 #define ALT_HOLD_PITCH_MIN  -15.0
-#define ALT_HOLD_PITCH_MAX   20.0
+#define ALT_HOLD_PITCH_MAX   45.0
 #define ALT_HOLD_PITCH_HIGH -15.0
 
 
@@ -768,3 +769,12 @@
 
 // define this to enable catapult launch arming
 #define CATAPULT_LAUNCH_ENABLE
+
+// replace gps altitude with pressure altitude in IMU location estimation
+#define USE_PRESSURE_ALT
+
+// replace IMU altitude with pressure altitude in mavlink VFR_HUD record
+//#define TEST_BAROMETER_ALTITUDE
+#undef TEST_BAROMETER_ALTITUDE
+
+#endif

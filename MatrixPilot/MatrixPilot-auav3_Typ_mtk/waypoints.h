@@ -142,7 +142,7 @@
 //		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
 //};
 
-#warning "Typhoon waypoints"
+#pragma message "Typhoon waypoints"
 
 const struct waypointDef waypoints[] = {
     {{ 100, 0, 50}, F_TAKEOFF, CAM_VIEW_LAUNCH}, //Waypoint 0

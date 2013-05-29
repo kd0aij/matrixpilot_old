@@ -1674,8 +1674,12 @@ void mavlink_output_40hz(void)
         if (THROTTLE_CHANNEL_REVERSED == 1) pwOut_max = 2000;
         mavlink_msg_vfr_hud_send(MAVLINK_COMM_0, (float) (air_speed_3DIMU / 100.0), (float) (ground_velocity_magnitudeXY / 100.0), (int16_t) mavlink_heading,
                 (uint16_t) (((float) ((udb_pwOut[THROTTLE_OUTPUT_CHANNEL]) - udb_pwTrim[THROTTLE_INPUT_CHANNEL]) * 100.0) / (float) (pwOut_max - udb_pwTrim[THROTTLE_INPUT_CHANNEL])),
-                get_barometer_altitude(), (float) -IMUvelocityz._.W1);
-//                ((float) (IMUlocationz._.W1 + (alt_origin.WW / 100.0))), (float) -IMUvelocityz._.W1);
+#ifdef TEST_BAROMETER_ALTITUDE
+                (((float) get_barometer_altitude()) / 1000.0),
+#else
+                ((float) (IMUlocationz._.W1 + (alt_origin.WW / 100.0))), 
+#endif
+        (float) -IMUvelocityz._.W1);
         //void mavlink_msg_vfr_hud_send(mavlink_channel_t chan, float airspeed, float groundspeed, int16_t heading, uint16_t throttle, float alt, float climb)
     }
 #endif

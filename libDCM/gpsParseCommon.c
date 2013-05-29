@@ -142,8 +142,14 @@ void udb_background_callback_triggered(void)
 
 		accum_nav.WW = long_scale((long_gps.WW - long_origin.WW)/90 , cos_lat ) ;
 		location[0] = accum_nav._.W0 ;	
-		
+
+#ifdef USE_PRESSURE_ALT
+#pragma message "using pressure altitude instead of GPS altitude"
+        // division by 100 implies alt_origin is in centimeters; not documented elsewhere
+		accum_nav.WW = ( (get_barometer_altitude()/10) - alt_origin.WW)/100 ; // height in meters
+#else
 		accum_nav.WW = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
+#endif
 		location[2] = accum_nav._.W0 ;
 
 	    // convert GPS course of 360 degrees to a binary model with 256	
