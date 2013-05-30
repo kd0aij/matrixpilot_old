@@ -39,7 +39,7 @@ int barometer_temperature;
 
 float sea_level_pressure;
 
-const int ground_altitude = LAUNCH_ALTITUDE;
+//int ground_altitude = alt_origin.WW / 100;    // meters
 
 inline int get_barometer_temperature(void) { return barometer_temperature; }
 inline long get_barometer_pressure(void) { return barometer_pressure; }
@@ -48,6 +48,7 @@ inline long get_barometer_agl_altitude(void) { return barometer_agl_altitude; }
 
 void altimeter_calibrate(void)
 {
+    int ground_altitude = alt_origin.WW / 100;    // meters
 	barometer_temperature_gnd = barometer_temperature;
 	barometer_pressure_gnd = barometer_pressure;
 

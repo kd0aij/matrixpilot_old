@@ -45,11 +45,11 @@
 // examine the telemetry after a flight, take a look in the .csv file, it will be easy to spot the
 // altitude, expressed in meters.
 
-#define USE_FIXED_ORIGIN		1
+#define USE_FIXED_ORIGIN		0
 //#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
 
 // AAM East Field runway center 39°50'31.83"N  105°12'44.81"W
-//#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1808.0 }
+#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1808.0 }
 
 // AAM West Field runway center  39°50'31.97"N  105°13'10.17"W (105.2194917, 39.842213889)
 #define FIXED_ORIGIN_LOCATION	{ -1052194917, 398422138, 1817.0 }
@@ -147,13 +147,13 @@
 #pragma message "Typhoon AVC righthand pattern waypoints"
 
 const struct waypointDef waypoints[] = {
-	{ { -116, -35, 25 } , F_TAKEOFF , CAM_VIEW_LAUNCH } , //Waypoint 1
-	{ { -177, -8, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 2
-	{ { -113, 213, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 3
-	{ { 74, 41, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 4
-	{ { 73, 15, 25 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 5
-	{ { 40, 11, 15 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 6
-	{ { -98, -28, 0 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 7
+	{ { -116, -35, 75 } , F_TAKEOFF , CAM_VIEW_LAUNCH } , //Waypoint 1
+	{ { -177, -8, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 2
+	{ { -185, 344, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { 74, 41, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 4
+	{ { 73, 15, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 5
+	{ { 40, 11, 50 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 6
+	{ { -98, -28, 50 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 7
 };
 
 ////////////////////////////////////////////////////////////////////////////////

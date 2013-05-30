@@ -170,7 +170,9 @@
 #define BAROMETER_ALTITUDE 1
 
 // Set your takeoff/launch/initialisation altitude in meters.
-#define LAUNCH_ALTITUDE						1708
+
+// AAM east runway
+#define LAUNCH_ALTITUDE	1817
 
 
 // Racing Mode
