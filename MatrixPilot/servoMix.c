@@ -71,10 +71,15 @@ void servoMix( void )
 		temp = pwManual[RUDDER_INPUT_CHANNEL] + REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, yaw_control - waggle) ;
 		udb_pwOut[RUDDER_OUTPUT_CHANNEL] =  udb_servo_pulsesat( temp ) ;
 		
-		if ( pwManual[THROTTLE_INPUT_CHANNEL] == 0 )
+		if ( pwManual[THROTTLE_INPUT_CHANNEL] == 0 )    // throttle pwm input value of zero should never occur
+                                                        // and pwm output of zero will result in no output
 		{
 			udb_pwOut[THROTTLE_OUTPUT_CHANNEL] = 0 ;
 		}
+        else if ( flags._.disable_throttle )    // disable throttle, but keep generating valid PWM signal
+        {
+            udb_pwOut[THROTTLE_OUTPUT_CHANNEL] = udb_pwTrim[THROTTLE_INPUT_CHANNEL];
+        }
 		else
 		{	
 			temp = pwManual[THROTTLE_INPUT_CHANNEL] + REVERSE_IF_NEEDED(THROTTLE_CHANNEL_REVERSED, throttle_control) ;

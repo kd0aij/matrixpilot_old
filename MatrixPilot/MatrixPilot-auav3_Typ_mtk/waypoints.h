@@ -144,16 +144,28 @@
 //		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
 //};
 
-#pragma message "Typhoon AVC righthand pattern waypoints"
+#pragma message "Typhoon AVC righthand pattern"
 
+// wp3 pulled in to 241 meters from origin
+//const struct waypointDef waypoints[] = {
+//	{ { -116, -35, 25 } , F_TAKEOFF , CAM_VIEW_LAUNCH } , //Waypoint 1
+//	{ { -177, -8, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 2
+//	{ { -113, 213, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 3
+//	{ { 74, 41, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 4
+//	{ { 73, 15, 25 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 5
+//	{ { 40, 11, 15 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 6
+//	{ { -98, -28, 0 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 7
+//};
+
+// wp3 is 365 meters from origin
 const struct waypointDef waypoints[] = {
-	{ { -116, -35, 25 } , F_TAKEOFF , CAM_VIEW_LAUNCH } , //Waypoint 1
-	{ { -177, -8, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 2
-	{ { -113, 213, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 3
-	{ { 74, 41, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 4
-	{ { 73, 15, 25 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 5
-	{ { 40, 11, 15 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 6
-	{ { -98, -28, 0 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 7
+	{ { -116, -35, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 1
+	{ { -177, -8, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 2
+	{ { -149, 333, 75 } , F_INVERTED , CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { 53, 53, 75 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 4
+	{ { 62, 27, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 5
+	{ { 42, 11, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 6
+	{ { -84, -30, 50 } , F_NORMAL , CAM_VIEW_LAUNCH } , //Waypoint 7
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -185,6 +185,7 @@ static void ent_manualS(void)
 	flags._.pitch_feedback = 0 ;
 	flags._.altitude_hold_throttle = 0 ;
 	flags._.altitude_hold_pitch = 0 ;
+    flags._.disable_throttle = 0 ;
 	waggle = 0 ;
 #if ( LED_RED_MAG_CHECK == 0 )
 	LED_RED = LED_OFF ;
@@ -225,6 +226,9 @@ static void ent_cat_armedS(void)
     // and is cleared here and in dcm_init
     dcm_flags._.launch_detected = 0;
 
+    // must suppress throttle in cat_armed state
+    flags._.disable_throttle = 1;
+
     LED_ORANGE = LED_ON;
 
 	stateS = &cat_armedS;
@@ -251,6 +255,7 @@ static void ent_waypointS(void)
 	flags._.pitch_feedback = 1 ;
 	flags._.altitude_hold_throttle = (ALTITUDEHOLD_WAYPOINT == AH_FULL) ;
 	flags._.altitude_hold_pitch = (ALTITUDEHOLD_WAYPOINT == AH_FULL || ALTITUDEHOLD_WAYPOINT == AH_PITCH_ONLY) ;
+    flags._.disable_throttle = 0 ;
 
 	if ( !(FAILSAFE_TYPE == FAILSAFE_MAIN_FLIGHTPLAN && stateS == &returnS) )
 	{

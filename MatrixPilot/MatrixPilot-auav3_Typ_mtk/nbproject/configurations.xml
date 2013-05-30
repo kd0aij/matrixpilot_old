@@ -288,6 +288,7 @@
         <itemPath>options.h</itemPath>
         <itemPath>stack.S</itemPath>
         <itemPath>waypoints.h</itemPath>
+        <itemPath>waypoints_AVCrightHand.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"

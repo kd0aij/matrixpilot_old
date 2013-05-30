@@ -169,12 +169,6 @@
 // to your takeoff location altitude at the time of initialisation.
 #define BAROMETER_ALTITUDE 1
 
-// Set your takeoff/launch/initialisation altitude in meters.
-
-// AAM east runway
-#define LAUNCH_ALTITUDE	1817
-
-
 // Racing Mode
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
 // RACING_MODE_WP_THROTTLE is the throttle value to use, and should be set between 0.0 and 1.0.
