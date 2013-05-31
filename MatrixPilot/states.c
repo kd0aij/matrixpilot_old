@@ -53,7 +53,7 @@ static void waypointS(void) ;
 static void returnS(void) ;
 
 #ifdef CATAPULT_LAUNCH_ENABLE
-#define LAUNCH_DELAY (0.5 * FSM_CLK)      // wait 0.5 seconds
+#define LAUNCH_DELAY (40)      // wait (x) * .25ms
 static int16_t launch_timer = LAUNCH_DELAY;
 static void cat_armedS(void) ;
 static void cat_delayS(void) ;
@@ -123,7 +123,7 @@ void udb_background_callback_periodic(void)
     }
     else if (flags._.update_autopilot_state_asap == 1)   // async FSM clock
     {
-    	DPRINT(":");
+//    	DPRINT(":");
         flags._.update_autopilot_state_asap = 0;
         // reset 2Hz counter so that next synchronous clock pulse occurs in 0.5 seconds
         counter = 0;

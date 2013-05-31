@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
-        <itemPath>../../libCommon/p30sim.h</itemPath>
         <itemPath>../../libCommon/commands.h</itemPath>
         <itemPath>../../libCommon/uart.h</itemPath>
       </logicalFolder>
@@ -357,7 +356,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>1.10</languageToolchainVersion>
+        <languageToolchainVersion>1.11</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>

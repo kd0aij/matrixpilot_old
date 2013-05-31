@@ -77,12 +77,13 @@
 //    AIRFRAME_VTAIL			Ailerons(optional), and Elevator and Rudder as V-tail controls
 //    AIRFRAME_DELTA			Aileron and Elevator as Elevons, and Rudder(optional)
 // (Note that although AIRFRAME_HELI is also recognized, the code for this airframe type is not ready.)
-#define AIRFRAME_TYPE						AIRFRAME_STANDARD
+#define AIRFRAME_TYPE						AIRFRAME_DELTA
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-#define GPS_TYPE							GPS_MTEK
+#define GPS_TYPE							GPS_UBX_4HZ
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,12 +95,12 @@
 #define ROLL_STABILIZATION_RUDDER			0
 #define PITCH_STABILIZATION					1
 #define YAW_STABILIZATION_RUDDER			1
-#define YAW_STABILIZATION_AILERON			1
+#define YAW_STABILIZATION_AILERON			0
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
 #define AILERON_NAVIGATION					1
-#define RUDDER_NAVIGATION					1
+#define RUDDER_NAVIGATION					0
 
 // Cross track margin, in meters
 // This is used when the cross track option is attached to a waypoint
@@ -128,8 +129,8 @@
 // altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED				AH_NONE
-#define ALTITUDEHOLD_WAYPOINT				AH_FULL
+#define ALTITUDEHOLD_STABILIZED				AH_PITCH_ONLY
+#define ALTITUDEHOLD_WAYPOINT				AH_PITCH_ONLY
 
 // Speed Control
 // If you define SPEED_CONTROL to be 1, MatrixPilot will take air speed into account
@@ -164,7 +165,7 @@
 // Otherwise, if set to 0 only the GPS will be used.
 // If you select this option, you also need to correctly set the LAUNCH_ALTITUDE
 // to your takeoff location altitude at the time of initialisation.
-#define BAROMETER_ALTITUDE 					0
+#define BAROMETER_ALTITUDE 					1
 
 // Set your takeoff/launch/initialisation altitude in meters.
 #define LAUNCH_ALTITUDE						300
@@ -206,7 +207,7 @@
 // often different from the NUM_INPUTS value below, and should usually be left at 8.
 // 
 #define USE_PPM_INPUT						2
-#define PPM_NUMBER_OF_CHANNELS				8
+#define PPM_NUMBER_OF_CHANNELS				6
 #define PPM_SIGNAL_INVERTED					0
 #define PPM_ALT_OUTPUT_PINS					0
 
@@ -227,13 +228,13 @@
 // Use as is, or edit to match your setup.
 //   - If you're set up to use Rudder Navigation (like MatrixNav), then you may want to swap
 //     the aileron and rudder channels so that rudder is CHANNEL_1, and aileron is 5.
-#define THROTTLE_INPUT_CHANNEL				CHANNEL_3
+#define THROTTLE_INPUT_CHANNEL				CHANNEL_5
 #define AILERON_INPUT_CHANNEL				CHANNEL_1
-#define ELEVATOR_INPUT_CHANNEL				CHANNEL_2
-#define RUDDER_INPUT_CHANNEL				CHANNEL_4
+#define ELEVATOR_INPUT_CHANNEL				CHANNEL_4
+#define RUDDER_INPUT_CHANNEL				CHANNEL_6
 
-#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_5
-#define LAUNCH_ARM_INPUT_CHANNEL			CHANNEL_6
+#define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_2
+#define LAUNCH_ARM_INPUT_CHANNEL			CHANNEL_3
 #define CAMERA_PITCH_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL			CHANNEL_UNUSED
 #define CAMERA_MODE_INPUT_CHANNEL			CHANNEL_UNUSED
@@ -251,7 +252,7 @@
 //   6 also enables E4 as the 6th output channel
 //   NOTE: If USE_PPM_INPUT is enabled above, up to 9 outputs are available.)
 // For UDB4 boards: Set to 3-8 (or up to 10 using pins RA4 and RA1.)
-#define NUM_OUTPUTS							5
+#define NUM_OUTPUTS							4
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.
@@ -264,11 +265,11 @@
 // connect THROTTLE_OUTPUT_CHANNEL to one of the built-in Outputs (1, 2, or 3) to make
 // sure your board gets power.
 // 
-#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_3
-#define AILERON_OUTPUT_CHANNEL				CHANNEL_1
-#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_2
+#define THROTTLE_OUTPUT_CHANNEL				CHANNEL_1
+#define AILERON_OUTPUT_CHANNEL				CHANNEL_2
+#define ELEVATOR_OUTPUT_CHANNEL				CHANNEL_3
 #define RUDDER_OUTPUT_CHANNEL               CHANNEL_4
-#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_5
+#define AILERON_SECONDARY_OUTPUT_CHANNEL	CHANNEL_UNUSED
 #define CAMERA_PITCH_OUTPUT_CHANNEL         CHANNEL_UNUSED
 #define CAMERA_YAW_OUTPUT_CHANNEL           CHANNEL_UNUSED
 #define TRIGGER_OUTPUT_CHANNEL              CHANNEL_UNUSED
@@ -285,10 +286,10 @@
 // Note that your servo reversing settings here should match what you set on your transmitter.
 // For any of these that evaluate to 1 (either hardcoded or by flipping a switch on the board,
 // as you define below), that servo will be sent reversed controls.
-#define AILERON_CHANNEL_REVERSED			1
+#define AILERON_CHANNEL_REVERSED			0
 #define ELEVATOR_CHANNEL_REVERSED			1
-#define RUDDER_CHANNEL_REVERSED				1
-#define AILERON_SECONDARY_CHANNEL_REVERSED	1
+#define RUDDER_CHANNEL_REVERSED				0
+#define AILERON_SECONDARY_CHANNEL_REVERSED	0
 #define THROTTLE_CHANNEL_REVERSED			0
 #define CAMERA_PITCH_CHANNEL_REVERSED		0
 #define CAMERA_YAW_CHANNEL_REVERSED         0
@@ -314,7 +315,7 @@
 // switch state back in stabilized. The important design concept is that Manual position is always Manual state immediately.
 // Stabilized position is Stabilized mode unless you try  hard to reach Autonomous mode.
 // Set MODE_SWITCH_TWO_POSITION	to 0 for a normal three position mode switch.	
-#define MODE_SWITCH_TWO_POSITION	1
+#define MODE_SWITCH_TWO_POSITION	0
 
 ////////////////////////////////////////////////////////////////////////////////
 // The Failsafe Channel is the RX channel that is monitored for loss of signal
@@ -633,7 +634,7 @@
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
 #define ALT_HOLD_PITCH_MIN  -15.0
-#define ALT_HOLD_PITCH_MAX   20.0
+#define ALT_HOLD_PITCH_MAX   35.0
 #define ALT_HOLD_PITCH_HIGH -15.0
 
 
@@ -750,7 +751,7 @@
 #define USE_CONSOLE						3
 
 // Optionally enable the new power saving idle mode of the MCU during mainloop
-#define USE_MCU_IDLE					0
+#define USE_MCU_IDLE					1
 
 ////////////////////////////////////////////////////////////////////////////////
 // AUAV3 only options
@@ -764,3 +765,8 @@
 // Set this to 1 to enable the USB stack
 #define USE_USB							0
 
+////////////////////////////////////////////////////////////////////////////////
+// User/Application specific options
+
+#define CATAPULT_LAUNCH_ENABLE
+#define USE_DEBUG_IO
