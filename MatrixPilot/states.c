@@ -82,11 +82,15 @@ void udb_callback_radio_did_turn_off( void )
 	flags._.update_autopilot_state_asap = 1 ;
 }
 
+static uint16_t delayCheck = 0;
+
 // Called at 40Hz
 void udb_background_callback_periodic(void)
 {
     static uint16_t manualMode = 0;
-    
+
+    delayCheck++;
+
     // read flight mode switch (sets flags bits) at 40Hz
     flight_mode_switch_check_set();
 
@@ -94,6 +98,7 @@ void udb_background_callback_periodic(void)
     if ((flags._.man_req != manualMode)
 #ifdef CATAPULT_LAUNCH_ENABLE
         || ((dcm_flags._.launch_detected == 1) && (stateS == &cat_armedS))
+        || (stateS == &cat_delayS)
 #endif
        ) {
         manualMode = flags._.man_req;
@@ -107,8 +112,11 @@ void udb_background_callback_periodic(void)
         // Update the nav capable flag. If the GPS has a lock, gps_data_age will be small.
         // For now, nav_capable will always be 0 when the Airframe type is AIRFRAME_HELI.
 #if (AIRFRAME_TYPE != AIRFRAME_HELI)
-        if (gps_data_age < GPS_DATA_MAX_AGE) gps_data_age++ ;
-        dcm_flags._.nav_capable = (gps_data_age < GPS_DATA_MAX_AGE) ;
+        if (stateS != &cat_delayS)
+        {
+            if (gps_data_age < GPS_DATA_MAX_AGE) gps_data_age++ ;
+            dcm_flags._.nav_capable = (gps_data_age < GPS_DATA_MAX_AGE) ;
+        }
 #endif
         // Execute the activities for the current state.
         (*stateS)();
@@ -233,6 +241,7 @@ static void ent_cat_armedS(void)
 
 	stateS = &cat_armedS;
 }
+
 // State: catapult launch delay
 // entered from cat_armed if launch_detected()
 static void ent_cat_delayS(void)
@@ -241,7 +250,7 @@ static void ent_cat_delayS(void)
 
     launch_timer = LAUNCH_DELAY;
     stateS = &cat_delayS;
-
+    delayCheck = 0;
 }
 #endif
 
@@ -405,6 +414,7 @@ static void cat_delayS(void)
     }
     else if (--launch_timer == 0)
     {
+        DPRINT("delayCheck = %u\r\n", delayCheck);
         ent_waypointS();
     }
 }
