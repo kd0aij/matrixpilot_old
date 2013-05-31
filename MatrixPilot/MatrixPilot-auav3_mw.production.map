@@ -344,9 +344,9 @@ Data Memory  [Origin = 0x1000, Length = 0xd000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-_0x41b78c9451a7dbfa         0x1000                   0             0x4  (4)
-_0x41b78c3851a7dbfa         0x1004                   0             0x2  (2)
-_0x41b78cf051a7dbfa         0x1006                   0             0x2  (2)
+_0x41b78c9451a8ce4c         0x1000                   0             0x4  (4)
+_0x41b78c3851a8ce4c         0x1004                   0             0x2  (2)
+_0x41b78cf051a8ce4c         0x1006                   0             0x2  (2)
 .nbss                       0x1008                   0             0x2  (2)
 .bss                        0x100a                   0           0x7f2  (2034)
 .data._Stdin                0x17fc                   0            0x88  (136)
@@ -384,8 +384,8 @@ _0x41b78cf051a7dbfa         0x1006                   0             0x2  (2)
 .bss                        0x1e4e                   0             0x2  (2)
 .heap                       0x1e50                   0           0x400  (1024)
 non_eds_stack               0x6000                   0          0x1000  (4096)
-_0x41c230b851a7dbfa         0xdfc0                   0             0xe  (14)
-_0x41c2305c51a7dbfa         0xdfe0                   0             0xe  (14)
+_0x41c230b851a8ce4b         0xdfc0                   0             0xe  (14)
+_0x41c2305c51a8ce4b         0xdfe0                   0             0xe  (14)
 
                         Total data memory used (bytes):         0x226c  (8812) 16%
 
@@ -6202,33 +6202,33 @@ __c30_signature
 non_eds_stack       0x6000       0x1000
  non_eds_stack      0x6000       0x1000 build/default/production/stack.o
 
-_0x41c230b851a7dbfa
+_0x41c230b851a8ce4b
                     0xdfc0          0xe
- _0x41c230b851a7dbfa
+ _0x41c230b851a8ce4b
                     0xdfc0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfc0                  _BufferB
 
-_0x41c2305c51a7dbfa
+_0x41c2305c51a8ce4b
                     0xdfe0          0xe
- _0x41c2305c51a7dbfa
+ _0x41c2305c51a8ce4b
                     0xdfe0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfe0                  _BufferA
 
-_0x41b78c9451a7dbfa
+_0x41b78c9451a8ce4c
                     0x1000          0x4
- _0x41b78c9451a7dbfa
+ _0x41b78c9451a8ce4c
                     0x1000          0x4 build/default/production/_ext/1077454706/mcu.o
                     0x1000                  _trap_source
 
-_0x41b78c3851a7dbfa
+_0x41b78c3851a8ce4c
                     0x1004          0x2
- _0x41b78c3851a7dbfa
+ _0x41b78c3851a8ce4c
                     0x1004          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1004                  _trap_flags
 
-_0x41b78cf051a7dbfa
+_0x41b78cf051a8ce4c
                     0x1006          0x2
- _0x41b78cf051a7dbfa
+ _0x41b78cf051a8ce4c
                     0x1006          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1006                  _osc_fail_count
 
