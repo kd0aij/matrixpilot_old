@@ -113,7 +113,7 @@ Command:
   --stackguard=16 \
   --no-force-link \
   --smart-io \
-  -Map=../MatrixPilot-auav3_mw.production.map \
+  -Map=/home/markw/MPLABXProjects/MatrixPilot_UDB5_WJP_new/MatrixPilot/MatrixPilot-auav3_Addiction/addiction.map \
   -start-group \
   --library=lega-pic30-elf \
   --library=m-elf \
@@ -342,9 +342,9 @@ Data Memory  [Origin = 0x1000, Length = 0xd000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-_0x41b78c9451a96dd5         0x1000                   0             0x4  (4)
-_0x41b78c3851a96dd5         0x1004                   0             0x2  (2)
-_0x41b78cf051a96dd5         0x1006                   0             0x2  (2)
+_0x41b78c9451a96f45         0x1000                   0             0x4  (4)
+_0x41b78c3851a96f45         0x1004                   0             0x2  (2)
+_0x41b78cf051a96f45         0x1006                   0             0x2  (2)
 .nbss                       0x1008                   0             0x2  (2)
 .bss                        0x100a                   0           0x7f2  (2034)
 .data._Stdin                0x17fc                   0            0x88  (136)
@@ -382,8 +382,8 @@ _0x41b78cf051a96dd5         0x1006                   0             0x2  (2)
 .bss                        0x1e64                   0             0x2  (2)
 .heap                       0x1e66                   0           0x400  (1024)
 non_eds_stack               0x6000                   0          0x1000  (4096)
-_0x41c230b851a96dd4         0xdfc0                   0             0xe  (14)
-_0x41c2305c51a96dd4         0xdfe0                   0             0xe  (14)
+_0x41c230b851a96f45         0xdfc0                   0             0xe  (14)
+_0x41c2305c51a96f45         0xdfe0                   0             0xe  (14)
 
                         Total data memory used (bytes):         0x2282  (8834) 16%
 
@@ -6268,33 +6268,33 @@ __c30_signature
 non_eds_stack       0x6000       0x1000
  non_eds_stack      0x6000       0x1000 build/default/production/stack.o
 
-_0x41c230b851a96dd4
+_0x41c230b851a96f45
                     0xdfc0          0xe
- _0x41c230b851a96dd4
+ _0x41c230b851a96f45
                     0xdfc0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfc0                  _BufferB
 
-_0x41c2305c51a96dd4
+_0x41c2305c51a96f45
                     0xdfe0          0xe
- _0x41c2305c51a96dd4
+ _0x41c2305c51a96f45
                     0xdfe0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfe0                  _BufferA
 
-_0x41b78c9451a96dd5
+_0x41b78c9451a96f45
                     0x1000          0x4
- _0x41b78c9451a96dd5
+ _0x41b78c9451a96f45
                     0x1000          0x4 build/default/production/_ext/1077454706/mcu.o
                     0x1000                  _trap_source
 
-_0x41b78c3851a96dd5
+_0x41b78c3851a96f45
                     0x1004          0x2
- _0x41b78c3851a96dd5
+ _0x41b78c3851a96f45
                     0x1004          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1004                  _trap_flags
 
-_0x41b78cf051a96dd5
+_0x41b78cf051a96f45
                     0x1006          0x2
- _0x41b78cf051a96dd5
+ _0x41b78cf051a96f45
                     0x1006          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1006                  _osc_fail_count
 
