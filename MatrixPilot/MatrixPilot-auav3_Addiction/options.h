@@ -113,7 +113,7 @@
 // holds the cross track error to smaller values.
 // 64 meters is probably the largest value you might use on a fast model jet (more than 50 meters/sec)
 // Use 32 meters for 20 to 50 meters/sec, and 16 meters for less than that.
-#define CROSS_TRACK_MARGIN					32
+#define CROSS_TRACK_MARGIN					16
 
 // Wind Gain Adjustment
 // This is an option for modulating the navigation gains in flight
@@ -492,7 +492,7 @@
 #define PITCHGAIN			0.08 // 0.150
 #define PITCHKD				0 //0.015 // 0.075
 #define RUDDER_ELEV_MIX		0.04
-#define ROLL_ELEV_MIX		0.08
+#define ROLL_ELEV_MIX		0.1
 #define ELEVATOR_BOOST		1.0
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
@@ -507,7 +507,7 @@
 // MANUAL_AILERON_RUDDER_MIX is the fraction of manual aileron control to mix into the rudder when
 // in stabilized or waypoint mode.  This mainly helps aileron-initiated turning while in stabilized.
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER				0.03 // 0.1
+#define YAWKP_RUDDER				0.06 // 0.1
 #define YAWKD_RUDDER				0 //0.03 // 0.1
 #define ROLLKP_RUDDER				0.03
 #define ROLLKD_RUDDER				0 //0.05

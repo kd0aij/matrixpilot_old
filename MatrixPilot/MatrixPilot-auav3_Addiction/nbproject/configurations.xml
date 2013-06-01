@@ -289,6 +289,7 @@
         <itemPath>waypoints.h</itemPath>
         <itemPath>waypoints_AVCrightHand.h</itemPath>
         <itemPath>servoMix.c</itemPath>
+        <itemPath>waypoints_simple.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -352,7 +353,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../MatrixPilot-auav3_Addiction;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot"/>
+                  value="../../MatrixPilot/MatrixPilot-auav3_Addiction;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>
