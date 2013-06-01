@@ -52,7 +52,7 @@ void udb_init_GPS(void)
 	U1MODEbits.BRGH = 1;	// Bit3 4 clocks per bit period
 	U1MODEbits.PDSEL = 0;	// Bits1,2 8bit, No Parity
 	U1MODEbits.STSEL = 0;	// Bit0 One Stop Bit
-	
+
 	// Load all values in for U1STA SFR
 	U1STAbits.UTXISEL1 = 0;	//Bit15 Int when Char is transferred (1/2 config!)
 	U1STAbits.UTXINV = 0;	//Bit14 N/A, IRDA config
@@ -70,8 +70,8 @@ void udb_init_GPS(void)
 	U1STAbits.OERR = 0;		//Bit1 *Read Only Bit*
 	//U1STAbits.URXDA = 0;	//Bit0 *Read Only Bit*
 
-	_U1TXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
-	_U1RXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
+	_U1TXIP = INT_PRI_U1TX;	// Mid Range Interrupt Priority level, no urgent reason
+	_U1RXIP = INT_PRI_U1RX;	// Mid Range Interrupt Priority level, no urgent reason
 
 	_U1TXIF = 0;	// Clear the Transmit Interrupt Flag
 	_U1TXIE = 1;	// Disable Transmit Interrupts
@@ -89,7 +89,7 @@ void udb_gps_set_rate(int32_t rate)
 
 boolean udb_gps_check_rate(int32_t rate)
 {
-	return ( U1BRG == UDB_BAUD(rate) );
+	return (U1BRG == UDB_BAUD(rate));
 }
 
 void udb_gps_start_sending_data(void)
@@ -104,7 +104,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 	interrupt_save_set_corcon;
 	
 	int16_t txchar = udb_gps_callback_get_byte_to_send();
-	if ( txchar != -1 )
+	if (txchar != -1)
 	{
 		U1TXREG = (uint8_t)txchar;
 	}
@@ -117,7 +117,7 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U1RXInterrupt(void)
 	indicate_loading_inter;
 	interrupt_save_set_corcon;
 	
-	while ( U1STAbits.URXDA )
+	while (U1STAbits.URXDA)
 	{
 		uint8_t rxchar = U1RXREG;
 		udb_gps_callback_received_byte(rxchar);
@@ -147,7 +147,7 @@ void udb_init_USART(void)
 	U2MODEbits.BRGH = 1;	// Bit3 4 clocks per bit period
 	U2MODEbits.PDSEL = 0;	// Bits1,2 8bit, No Parity
 	U2MODEbits.STSEL = 0;	// Bit0 One Stop Bit
-	
+
 	// Load all values in for U1STA SFR
 	U2STAbits.UTXISEL1 = 0;	//Bit15 Int when Char is transferred (1/2 config!)
 	U2STAbits.UTXINV = 0;	//Bit14 N/A, IRDA config
@@ -165,8 +165,8 @@ void udb_init_USART(void)
 	U2STAbits.OERR = 0;		//Bit1 *Read Only Bit*
 	//U2STAbits.URXDA = 0;	//Bit0 *Read Only Bit*
 
-	_U2TXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
-	_U2RXIP = 4;	// Mid Range Interrupt Priority level, no urgent reason
+	_U2TXIP = INT_PRI_U2TX;	// Mid Range Interrupt Priority level, no urgent reason
+	_U2RXIP = INT_PRI_U2RX;	// Mid Range Interrupt Priority level, no urgent reason
 
 	_U2TXIF = 0;	// Clear the Transmit Interrupt Flag
 	_U2TXIE = 1;	// Enable Transmit Interrupts
@@ -184,7 +184,7 @@ void udb_serial_set_rate(int32_t rate)
 
 boolean udb_serial_check_rate(int32_t rate)
 {
-	return ( U2BRG == UDB_BAUD(rate) );
+	return (U2BRG == UDB_BAUD(rate));
 }
 
 void udb_serial_start_sending_data(void)
@@ -199,7 +199,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _U2TXInterrupt(void)
 	interrupt_save_set_corcon;	
 
 	int16_t txchar = udb_serial_callback_get_byte_to_send();
-	if ( txchar != -1 )
+	if (txchar != -1)
 	{
 		U2TXREG = (uint8_t)txchar;
 	}
@@ -212,7 +212,7 @@ void __attribute__((__interrupt__, __no_auto_psv__)) _U2RXInterrupt(void)
 	indicate_loading_inter;
 	interrupt_save_set_corcon;
 	
-	while ( U2STAbits.URXDA )
+	while (U2STAbits.URXDA)
 	{
 		uint8_t rxchar = U2RXREG;
 		udb_serial_callback_received_byte(rxchar);

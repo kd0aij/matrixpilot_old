@@ -32,6 +32,9 @@
 #define HOVERPTOWP ((int32_t)(HOVER_PITCH_TOWARDS_WP*(RMAX/57.3)))
 
 #if (USE_CONFIGFILE == 1)
+#include "config.h"
+#include "redef.h"
+
 	uint16_t pitchgain;
 	uint16_t pitchkd;
 	uint16_t hoverpitchgain;

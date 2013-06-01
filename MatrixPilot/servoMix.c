@@ -69,7 +69,7 @@ void servoMix( void )
         udb_pwOut[THROTTLE_OUTPUT_CHANNEL] = udb_servo_pulsesat( temp ) ;
     }
 
-    // Standard airplane airframe
+	// Standard airplane airframe
 	// Mix roll_control into ailerons
 	// Mix pitch_control into elevators
 	// Mix yaw control and waggle into rudder

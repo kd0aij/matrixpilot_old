@@ -90,13 +90,13 @@ void udb_init_pwm( void )	// initialize the PWM
 #else
 		T4CONbits.TCKPS = 1 ;				// prescaler 8:1
 #endif
-		_T4IP = 7 ;							// priority 7
+		_T4IP = INT_PRI_T4;					// set interrupt priority
 		_T4IE = 0 ;							// disable timer 4 interrupt for now (enable for each set of pulses)
 	}
 	
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
 	_TRISD0 =  0 ; _TRISD1 =  0 ; _TRISD2 =  0 ; _TRISD3 =  0 ; _TRISD4 =  0 ; _TRISD5 =  0 ; _TRISD6 = _TRISD7 = 0 ;
-	if (NUM_OUTPUTS >= 9)  _TRISA4 = 0 ;	
+	if (NUM_OUTPUTS >= 9)  _TRISA4 = 0 ;
 	if (NUM_OUTPUTS >= 10) _TRISA1 = 0 ;
 #elif (BOARD_TYPE == AUAV3_BOARD)
         // port D
@@ -172,7 +172,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 {
 	indicate_loading_inter ;
 	// interrupt_save_set_corcon ;
-	
+
 	switch ( outputNum ) {
 		case 0:
 			HANDLE_SERVO_OUT(1, SERVO_OUT_PIN_1) ;

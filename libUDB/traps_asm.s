@@ -152,5 +152,3 @@ trap_causing_mov_instruction:
 done:   bra     done            ;Code execution never reaches here.
 
 
-
-

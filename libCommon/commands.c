@@ -21,16 +21,19 @@
 
 #include "../libUDB/libUDB.h"
 #include "../libUDB/interrupt.h"
-#include "config.h"
-#include "redef.h"
 #include "../libDCM/estAltitude.h"
 #include "../libCommon/uart.h"
 #include <string.h>
 #include <stdio.h>
 
-#if (USE_CONSOLE != 0)
+#if (USE_CONFIGFILE == 1)
+#include "config.h"
+#include "redef.h"
+#endif // USE_CONFIGFILE
 
-int __C30_UART = USE_CONSOLE;
+#if (CONSOLE_UART != 0)
+
+int __C30_UART = CONSOLE_UART;
 
 #define LOWORD(a) ((WORD)(a))
 #define HIWORD(a) ((WORD)(((DWORD)(a) >> 16) & 0xFFFF))
@@ -121,6 +124,21 @@ void cmd_magno(void)
 {
 }
 
+void cmd_options(void)
+{
+#if (USE_CONFIGFILE == 1)
+	printf("ROLL_STABILIZATION_AILERONS: %u\r\n", ROLL_STABILIZATION_AILERONS);
+	printf("ROLL_STABILIZATION_RUDDER: %u\r\n", ROLL_STABILIZATION_RUDDER);
+	printf("PITCH_STABILIZATION: %u\r\n", PITCH_STABILIZATION);
+	printf("YAW_STABILIZATION_RUDDER: %u\r\n", YAW_STABILIZATION_RUDDER);
+	printf("YAW_STABILIZATION_AILERON: %u\r\n", YAW_STABILIZATION_AILERON);
+	printf("AILERON_NAVIGATION: %u\r\n", AILERON_NAVIGATION);
+	printf("RUDDER_NAVIGATION: %u\r\n", RUDDER_NAVIGATION);
+	printf("ALTITUDEHOLD_STABILIZED: %u\r\n", ALTITUDEHOLD_STABILIZED);
+	printf("ALTITUDEHOLD_WAYPOINT: %u\r\n", ALTITUDEHOLD_WAYPOINT);
+	printf("RACING_MODE: %u\r\n", RACING_MODE);
+#endif
+}
 
 void cmd_gains(void)
 {
@@ -270,6 +288,7 @@ const cmds_t cmdslist[] = {
 	{ 0, cmd_magno,  "mag" },
 	{ 0, cmd_crash,  "crash" },
 	{ 0, cmd_gains,  "gains" },
+	{ 0, cmd_options,"options" },
 	{ 0, cmd_reset,  "reset" },
 	{ 0, cmd_close,  "close" },
 };
@@ -297,12 +316,13 @@ void command(char* cmdstr)
 
 void init_console(void)
 {
+	__C30_UART = CONSOLE_UART;
 	Init();
 }
 
 void console(void)
 {
-    if (kbhit()) {
+	if (kbhit()) {
 		char ch = getch();
 		if (cmdlen < sizeof(cmdstr)) {
 			cmdstr[cmdlen] = ch;
@@ -323,4 +343,4 @@ void console(void)
 	}
 }
 
-#endif // USE_CONSOLE
+#endif // CONSOLE_UART

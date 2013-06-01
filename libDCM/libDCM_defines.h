@@ -36,7 +36,7 @@ struct dcm_flag_bits {
 			uint16_t unused					: 3 ;
 			uint16_t launch_detected		: 1 ;
 #else
-            uint16_t unused					: 4 ;
+			uint16_t unused					: 4 ;
 #endif
 			uint16_t rollpitch_req			: 1 ;
 			uint16_t gps_history_valid		: 1 ;

@@ -385,7 +385,7 @@ int16_t send_by_index = 0;
 // http://www.qgroundcontrol.org/parameter_interface
 
 #include "parameter_table.h"
-#include "estAltitude.h"
+#include "../libDCM/estAltitude.h"
 
 #if ( RECORD_FREE_STACK_SPACE ==  1)
 void mavlink_send_param_maxstack(int16_t);

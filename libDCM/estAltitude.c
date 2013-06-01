@@ -30,16 +30,11 @@
 long barometer_pressure_gnd = 0;
 int barometer_temperature_gnd = 0;
 
-// represent baro. alt. as integer millimeters ASL
-long barometer_altitude;
-
-long barometer_agl_altitude;  // above ground level altitude 
+long barometer_altitude;		// above sea level altitude - ASL (millimeters) 
+long barometer_agl_altitude;	// above ground level altitude - AGL
 long barometer_pressure;
 int barometer_temperature;
-
 float sea_level_pressure;
-
-//int ground_altitude = alt_origin.WW / 100;    // meters
 
 inline int get_barometer_temperature(void) { return barometer_temperature; }
 inline long get_barometer_pressure(void) { return barometer_pressure; }
@@ -48,7 +43,8 @@ inline long get_barometer_agl_altitude(void) { return barometer_agl_altitude; }
 
 void altimeter_calibrate(void)
 {
-    int ground_altitude = alt_origin.WW / 100;    // meters
+	int ground_altitude = alt_origin.WW / 100;    // meters
+
 	barometer_temperature_gnd = barometer_temperature;
 	barometer_pressure_gnd = barometer_pressure;
 
@@ -64,7 +60,7 @@ void udb_barometer_callback(long pressure, int temperature, char status)
 {
 	barometer_temperature = temperature;
 	barometer_pressure = pressure;
-	}
+}
 #endif
 
 void estAltitude(void)

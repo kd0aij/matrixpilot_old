@@ -21,18 +21,18 @@
 
 #include "defines.h"
 #include "mode_switch.h"
-#include <stdio.h>
 
 //#define USE_DEBUG_IO
 
 #ifdef USE_DEBUG_IO
+#include <stdio.h>
 #define DPRINT printf
 #else
 #define DPRINT(args...)
 #endif
 
-union fbts_int flags ;
-int16_t waggle = 0 ;
+union fbts_int flags;
+int16_t waggle = 0;
 uint8_t counter = 0;
 
 #define FSM_CLK 2  // clock frequency for state machine
@@ -41,45 +41,45 @@ uint8_t counter = 0;
 #define NUM_WAGGLES 4  // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
 #define WAGGLE_SIZE 300
 
-static int16_t calib_timer = CALIB_PAUSE ;
-static int16_t standby_timer = STANDBY_PAUSE ;
+static int16_t calib_timer = CALIB_PAUSE;
+static int16_t standby_timer = STANDBY_PAUSE;
 
-static void startS(void) ;
-static void calibrateS(void) ;
-static void acquiringS(void) ;
-static void manualS(void) ;
-static void stabilizedS(void) ;
-static void waypointS(void) ;
-static void returnS(void) ;
+static void startS(void);
+static void calibrateS(void);
+static void acquiringS(void);
+static void manualS(void);
+static void stabilizedS(void);
+static void waypointS(void);
+static void returnS(void);
 
 #ifdef CATAPULT_LAUNCH_ENABLE
 #define LAUNCH_DELAY (40)      // wait (x) * .25ms
 static int16_t launch_timer = LAUNCH_DELAY;
-static void cat_armedS(void) ;
-static void cat_delayS(void) ;
+static void cat_armedS(void);
+static void cat_delayS(void);
 #endif
 
-static void ent_returnS(void) ;
+static void ent_returnS(void);
 
 //	Implementation of state machine.
 //	Examine the state of the radio and GPS and supervisory channel to decide how to control the plane.
 
-void (* stateS ) ( void ) = &startS ;
+void (*stateS)(void) = &startS;
 
 void init_states(void)
 {
 	DPRINT("init_states()\r\n");
-	flags.WW = 0 ;
-	waggle = 0 ;
-	gps_data_age = GPS_DATA_MAX_AGE+1 ;
-	dcm_flags._.dead_reckon_enable = 0 ;
-	flags._.update_autopilot_state_asap = 0 ;
-	stateS = &startS ;
+	flags.WW = 0;
+	waggle = 0;
+	gps_data_age = GPS_DATA_MAX_AGE+1;
+	dcm_flags._.dead_reckon_enable = 0;
+	flags._.update_autopilot_state_asap = 0;
+	stateS = &startS;
 }
 
-void udb_callback_radio_did_turn_off( void )
+void udb_callback_radio_did_turn_off(void)
 {
-	flags._.update_autopilot_state_asap = 1 ;
+	flags._.update_autopilot_state_asap = 1;
 }
 
 static uint16_t delayCheck = 0;
@@ -140,15 +140,15 @@ static void ent_calibrateS(void)
 {
 	DPRINT("ent_calibrateS\r");
 
-	flags._.GPS_steering = 0 ;
-	flags._.pitch_feedback = 0 ;
-	flags._.altitude_hold_throttle = 0 ;
-	flags._.altitude_hold_pitch = 0 ;
-	waggle = 0 ;
-	stateS = &calibrateS ;
-	calib_timer = CALIB_PAUSE ;
-#if ( LED_RED_MAG_CHECK == 0 )
-	LED_RED = LED_ON ; // turn on mode led
+	flags._.GPS_steering = 0;
+	flags._.pitch_feedback = 0;
+	flags._.altitude_hold_throttle = 0;
+	flags._.altitude_hold_pitch = 0;
+	waggle = 0;
+	stateS = &calibrateS;
+	calib_timer = CALIB_PAUSE;
+#if (LED_RED_MAG_CHECK == 0)
+	LED_RED = LED_ON; // turn on mode led
 #endif
 }
 
@@ -157,30 +157,30 @@ static void ent_acquiringS(void)
 {
 	DPRINT("\r\nent_acquiringS\r\n");
 
-	flags._.GPS_steering = 0 ;
-	flags._.pitch_feedback = 0 ;
-	flags._.altitude_hold_throttle = 0 ;
-	flags._.altitude_hold_pitch = 0 ;
+	flags._.GPS_steering = 0;
+	flags._.pitch_feedback = 0;
+	flags._.altitude_hold_throttle = 0;
+	flags._.altitude_hold_pitch = 0;
 
 	// almost ready to turn the control on, save the trims and sensor offsets
 #if (FIXED_TRIMPOINT != 1)	// Do not alter trims from preset when they are fixed
  #if(USE_NV_MEMORY == 1)
 	if(udb_skip_flags.skip_radio_trim == 0)
 	{
-		udb_servo_record_trims() ;
+		udb_servo_record_trims();
 	}
  #else
-		udb_servo_record_trims() ;
+		udb_servo_record_trims();
  #endif
 #endif
-	dcm_calibrate() ;
+	dcm_calibrate();
 
-	waggle = WAGGLE_SIZE ;
-	throttleFiltered._.W1 = 0 ;
-	stateS = &acquiringS ;
-	standby_timer = STANDBY_PAUSE ;
-#if ( LED_RED_MAG_CHECK == 0 )
-	LED_RED = LED_OFF ;
+	waggle = WAGGLE_SIZE;
+	throttleFiltered._.W1 = 0;
+	stateS = &acquiringS;
+	standby_timer = STANDBY_PAUSE;
+#if (LED_RED_MAG_CHECK == 0)
+	LED_RED = LED_OFF;
 #endif
 }
 
@@ -189,16 +189,16 @@ static void ent_manualS(void)
 {
 	DPRINT("ent_manualS\r\n");
 
-	flags._.GPS_steering = 0 ;
-	flags._.pitch_feedback = 0 ;
-	flags._.altitude_hold_throttle = 0 ;
-	flags._.altitude_hold_pitch = 0 ;
-    flags._.disable_throttle = 0 ;
-	waggle = 0 ;
-#if ( LED_RED_MAG_CHECK == 0 )
-	LED_RED = LED_OFF ;
+	flags._.GPS_steering = 0;
+	flags._.pitch_feedback = 0;
+	flags._.altitude_hold_throttle = 0;
+	flags._.altitude_hold_pitch = 0;
+	flags._.disable_throttle = 0 ;
+	waggle = 0;
+#if (LED_RED_MAG_CHECK == 0)
+	LED_RED = LED_OFF;
 #endif
-	stateS = &manualS ;
+	stateS = &manualS;
 }
 
 //	Auto state provides augmented control.
@@ -209,18 +209,18 @@ static void ent_stabilizedS(void)
 #if (ALTITUDEHOLD_STABILIZED == AH_PITCH_ONLY)
 	// When using pitch_only in stabilized mode, maintain the altitude
 	// that the plane was at when entering stabilized mode.
-	setTargetAltitude(IMUlocationz._.W1) ;
+	setTargetAltitude(IMUlocationz._.W1);
 #endif
 
-	flags._.GPS_steering = 0 ;
-	flags._.pitch_feedback = 1 ;
-	flags._.altitude_hold_throttle = (ALTITUDEHOLD_STABILIZED == AH_FULL) ;
-	flags._.altitude_hold_pitch = (ALTITUDEHOLD_STABILIZED == AH_FULL || ALTITUDEHOLD_STABILIZED == AH_PITCH_ONLY) ;
-	waggle = 0 ;
-#if ( LED_RED_MAG_CHECK == 0 )
-	LED_RED = LED_ON ;
+	flags._.GPS_steering = 0;
+	flags._.pitch_feedback = 1;
+	flags._.altitude_hold_throttle = (ALTITUDEHOLD_STABILIZED == AH_FULL);
+	flags._.altitude_hold_pitch = (ALTITUDEHOLD_STABILIZED == AH_FULL || ALTITUDEHOLD_STABILIZED == AH_PITCH_ONLY);
+	waggle = 0;
+#if (LED_RED_MAG_CHECK == 0)
+	LED_RED = LED_ON;
 #endif
-	stateS = &stabilizedS ;
+	stateS = &stabilizedS;
 }
 
 #ifdef CATAPULT_LAUNCH_ENABLE
@@ -260,22 +260,22 @@ static void ent_waypointS(void)
 {
 	DPRINT("ent_waypointS\r\n");
 
-	flags._.GPS_steering = 1 ;
-	flags._.pitch_feedback = 1 ;
-	flags._.altitude_hold_throttle = (ALTITUDEHOLD_WAYPOINT == AH_FULL) ;
-	flags._.altitude_hold_pitch = (ALTITUDEHOLD_WAYPOINT == AH_FULL || ALTITUDEHOLD_WAYPOINT == AH_PITCH_ONLY) ;
-    flags._.disable_throttle = 0 ;
+	flags._.GPS_steering = 1;
+	flags._.pitch_feedback = 1;
+	flags._.altitude_hold_throttle = (ALTITUDEHOLD_WAYPOINT == AH_FULL);
+	flags._.altitude_hold_pitch = (ALTITUDEHOLD_WAYPOINT == AH_FULL || ALTITUDEHOLD_WAYPOINT == AH_PITCH_ONLY);
+	flags._.disable_throttle = 0;
 
-	if ( !(FAILSAFE_TYPE == FAILSAFE_MAIN_FLIGHTPLAN && stateS == &returnS) )
+	if (!(FAILSAFE_TYPE == FAILSAFE_MAIN_FLIGHTPLAN && stateS == &returnS))
 	{
-		init_flightplan( 0 ) ; // Only reset non-rtl waypoints if not already following waypoints
+		init_flightplan(0); // Only reset non-rtl waypoints if not already following waypoints
 	}
 
-	waggle = 0 ;
-#if ( LED_RED_MAG_CHECK == 0 )
-	LED_RED = LED_ON ;
+	waggle = 0;
+#if (LED_RED_MAG_CHECK == 0)
+	LED_RED = LED_ON;
 #endif
-	stateS = &waypointS ;
+	stateS = &waypointS;
 }
 
 //	Come home state, entered when the radio signal is lost, and gps is locked.
@@ -283,99 +283,100 @@ static void ent_returnS(void)
 {
 	DPRINT("ent_returnS\r\n");
 
-	flags._.GPS_steering = 1 ;
-	flags._.pitch_feedback = 1 ;
-	flags._.altitude_hold_throttle = (ALTITUDEHOLD_WAYPOINT == AH_FULL) ;
-	flags._.altitude_hold_pitch = (ALTITUDEHOLD_WAYPOINT == AH_FULL || ALTITUDEHOLD_WAYPOINT == AH_PITCH_ONLY) ;
+	flags._.GPS_steering = 1;
+	flags._.pitch_feedback = 1;
+	flags._.altitude_hold_throttle = (ALTITUDEHOLD_WAYPOINT == AH_FULL);
+	flags._.altitude_hold_pitch = (ALTITUDEHOLD_WAYPOINT == AH_FULL || ALTITUDEHOLD_WAYPOINT == AH_PITCH_ONLY);
 #if (FAILSAFE_HOLD == 1)
-	flags._.rtl_hold = 1 ;
-#endif
-	#if ( FAILSAFE_TYPE == FAILSAFE_RTL )
-	init_flightplan( 1 ) ;
-#elif ( FAILSAFE_TYPE == FAILSAFE_MAIN_FLIGHTPLAN )
-	if ( stateS != &waypointS )
+	flags._.rtl_hold = 1;
+#endif	
+#if (FAILSAFE_TYPE == FAILSAFE_RTL)
+	init_flightplan(1);
+#elif (FAILSAFE_TYPE == FAILSAFE_MAIN_FLIGHTPLAN)
+	if (stateS != &waypointS)
 	{
-		init_flightplan( 0 ) ; // Only reset non-rtl waypoints if not already following waypoints
+		init_flightplan(0); // Only reset non-rtl waypoints if not already following waypoints
 	}
 #endif
 
-	waggle = 0 ;
-#if ( LED_RED_MAG_CHECK == 0 )
-	LED_RED = LED_ON ;
+	waggle = 0;
+#if (LED_RED_MAG_CHECK == 0)
+	LED_RED = LED_ON;
 #endif
-	stateS = &returnS ;
+	stateS = &returnS;
 }
 
 static void startS(void)
 {
 	DPRINT("startS()\r\n");
-	ent_calibrateS() ;
+	ent_calibrateS();
 }
 
 static void calibrateS(void)
 {
 #if (NORADIO == 1)
-	if ( 1 )
+	if (1)
 #else
-	if ( udb_flags._.radio_on )
+	if (udb_flags._.radio_on)
 #endif
 	{
-#if ( LED_RED_MAG_CHECK == 0 )
-		udb_led_toggle(LED_RED) ;
+#if (LED_RED_MAG_CHECK == 0)
+		udb_led_toggle(LED_RED);
 #endif
 		calib_timer--;
 		if (calib_timer <= 0)
-			ent_acquiringS() ;
+			ent_acquiringS();
 	}
 	else
 	{
-		ent_calibrateS() ;
+//		DPRINT("calibrateS()\r\n");
+		ent_calibrateS();
 	}
 }
 
 static void acquiringS(void)
 {
-#if ( AIRFRAME_TYPE == AIRFRAME_HELI )
+#if (AIRFRAME_TYPE == AIRFRAME_HELI)
 	ent_manualS();
 	return;
 #endif
 
-	if ( dcm_flags._.nav_capable && ( ( MAG_YAW_DRIFT == 0 ) || ( magMessage == 7 ) ) )
+	if (dcm_flags._.nav_capable && ((MAG_YAW_DRIFT == 0) || (magMessage == 7)))
 	{
 #if (NORADIO == 1)
-		if ( 1 )
+		if (1)
 #else
-		if ( udb_flags._.radio_on )
+		if (udb_flags._.radio_on)
 #endif
 		{
 			if (standby_timer == NUM_WAGGLES+1)
-				waggle = WAGGLE_SIZE ;
+				waggle = WAGGLE_SIZE;
 			else if (standby_timer <= NUM_WAGGLES)
-				waggle = - waggle ;
+				waggle = - waggle;
 			else
-				waggle = 0 ;
+				waggle = 0;
 
-			standby_timer-- ;
-			if ( standby_timer == 6 )
+			standby_timer--;
+			if (standby_timer == 6)
 			{
-				flags._.save_origin = 1 ;
+				flags._.save_origin = 1;
 			}
-			else if ( standby_timer == 2 )
+			else if (standby_timer == 2)
 			{
-				dcm_flags._.dead_reckon_enable = 1 ;
+				dcm_flags._.dead_reckon_enable = 1;
 			}
-			else if ( standby_timer <= 0)
+			else if (standby_timer <= 0)
 			{
-				ent_manualS() ;
+				ent_manualS();
 			}
 		}
 		else {
-			waggle = 0 ;
+			waggle = 0;
 		}
 	}
 	else
 	{
-		waggle = 0 ;
+		waggle = 0;
 	}
 }
 
@@ -422,81 +423,81 @@ static void cat_delayS(void)
 
 static void manualS(void)
 {
-	if ( udb_flags._.radio_on )
+	if (udb_flags._.radio_on)
 	{
 #ifdef CATAPULT_LAUNCH_ENABLE
 		if ( launch_enabled() & flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
 			ent_cat_armedS() ;
-        else
+		else
 #endif
-		if ( flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
-			ent_waypointS() ;
-		else if ( flight_mode_switch_stabilize() )
-			ent_stabilizedS() ;
+		if (flight_mode_switch_waypoints() & dcm_flags._.nav_capable)
+			ent_waypointS();
+		else if (flight_mode_switch_stabilize())
+			ent_stabilizedS();
 	}
 	else
 	{
-		if ( dcm_flags._.nav_capable )
-			ent_returnS() ;
+		if (dcm_flags._.nav_capable)
+			ent_returnS();
 		else
-			ent_stabilizedS() ;
+			ent_stabilizedS();
 	}
 }
 
-static void stabilizedS(void)
+static void stabilizedS(void) 
 {
-	if ( udb_flags._.radio_on )
+	if (udb_flags._.radio_on)
 	{
 #ifdef CATAPULT_LAUNCH_ENABLE
 		if ( launch_enabled() & flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
 			ent_cat_armedS() ;
-        else
+		else
 #endif
-		if ( flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
-			ent_waypointS() ;
-		else if ( flight_mode_switch_manual() )
-			ent_manualS() ;
+		if (flight_mode_switch_waypoints() & dcm_flags._.nav_capable)
+			ent_waypointS();
+		else if (flight_mode_switch_manual())
+			ent_manualS();
 	}
 	else
 	{
-		if ( dcm_flags._.nav_capable )
-			ent_returnS() ;
+		if (dcm_flags._.nav_capable)
+			ent_returnS();
 	}
 }
 
 static void waypointS(void)
 {
-#if ( LED_RED_MAG_CHECK == 0 )
-	udb_led_toggle(LED_RED) ;
+#if (LED_RED_MAG_CHECK == 0)
+	udb_led_toggle(LED_RED);
 #endif
-	if ( udb_flags._.radio_on )
+	if (udb_flags._.radio_on)
 	{
-		if ( flight_mode_switch_manual() )
-			ent_manualS() ;
-		else if ( flight_mode_switch_stabilize() )
-			ent_stabilizedS() ;
+		if (flight_mode_switch_manual())
+			ent_manualS();
+		else if (flight_mode_switch_stabilize())
+			ent_stabilizedS();
 	}
 	else
 	{
-		ent_returnS() ;
+		ent_returnS();
 	}
 }
 
 static void returnS(void)
 {
-	if ( udb_flags._.radio_on )
+	if (udb_flags._.radio_on)
 	{
-		if ( flight_mode_switch_manual() )
-			ent_manualS() ;
-		else if ( flight_mode_switch_stabilize() )
-			ent_stabilizedS() ;
-		else if ( flight_mode_switch_waypoints() & dcm_flags._.nav_capable )
-			ent_waypointS() ;
+		if (flight_mode_switch_manual())
+			ent_manualS();
+		else if (flight_mode_switch_stabilize())
+			ent_stabilizedS();
+		else if (flight_mode_switch_waypoints() & dcm_flags._.nav_capable)
+			ent_waypointS();
 	}
 	else
 	{
 #if (FAILSAFE_HOLD == 1)
-		flags._.rtl_hold = 1 ;
+		flags._.rtl_hold = 1;
 #endif
 	}
 }
