@@ -70,7 +70,7 @@ void (* I2C1_state ) ( void ) = &I2C1_idle ;
 
 uint16_t I2C1_Index = 0;  		// index into the write buffer
 
-uint8_t I2C1_CommandByte = 0;
+uint8_t I2C1_CommandByte 	= 0;
 uint16_t I2C1_tx_data_size = 0;		// tx data size
 uint16_t I2C1_rx_data_size = 0;		// rx data size
 uint16_t I2C1_command_data_size = 0;	// command data size

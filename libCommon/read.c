@@ -30,20 +30,18 @@ read(int handle, void *buffer, unsigned int len)
         rxreg = &U2RXREG;
         brg = &U2BRG;
       }
-#if defined(__dsPIC33E__)
-      if (__C30_UART == 3) {
+      if ((__C30_UART == 3)) {
         umode = (UxMODEBITS*)&U3MODEbits;
         ustatus = (UxSTABITS*)&U3STAbits;
         rxreg = &U3RXREG;
         brg = &U3BRG;
       }
-      if (__C30_UART == 4) {
+      if ((__C30_UART == 4)) {
         umode = (UxMODEBITS*)&U4MODEbits;
         ustatus = (UxSTABITS*)&U4STAbits;
         rxreg = &U4RXREG;
         brg = &U4BRG;
       }
-#endif // __dsPIC33E__
         if ((umode->UARTEN) == 0)
         {
           *brg = 0;

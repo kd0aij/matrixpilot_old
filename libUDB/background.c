@@ -51,15 +51,15 @@
 //      (16 * 256 ) Number of cycles for ( see PR5 below ) before timer interrupts
 #define CPU_LOAD_PERCENT (6553600 / ( (FCY) / 4096))
 
-uint16_t cpu_timer = 0;
-uint16_t _cpu_timer = 0;
+uint16_t cpu_timer = 0 ;
+uint16_t _cpu_timer = 0 ;
 
-uint16_t udb_heartbeat_counter = 0;
+uint16_t udb_heartbeat_counter = 0 ;
 #define HEARTBEAT_MAX	57600		// Evenly divisible by many common values: 2^8 * 3^2 * 5^2
 
 #define MAX_NOISE_RATE 5 // up to 5 PWM "glitches" per second are allowed
 
-void udb_run_init_step(void);
+void udb_run_init_step( void ) ;
 
 
 void udb_init_clock(void)	// initialize timers
@@ -67,12 +67,11 @@ void udb_init_clock(void)	// initialize timers
 	TRISF = 0b1111111111101100;	// TODO: check validity of this for other boards
 
 	init_events();
-
-#if (USE_I2C1_DRIVER == 1)
-	I2C1_Init();
+#if(USE_I2C1_DRIVER == 1)
+	I2C1_init();
 #endif
 
-#if (USE_NV_MEMORY == 1)
+#if(USE_NV_MEMORY == 1)
 	nv_memory_init();
 	data_storage_init();
 	data_services_init();
@@ -81,15 +80,15 @@ void udb_init_clock(void)	// initialize timers
 #if (USE_FLEXIFUNCTION_MIXING == 1)
 	flexiFunctionServiceInit();
 #endif
-
+	
 #if (HEARTBEAT_HZ < 150)
 #define TMR1_PRESCALE 64
 #else
 #define TMR1_PRESCALE 8
 #endif
 
-	// Initialize timer1, used as the HEARTBEAT_HZ heartbeat of libUDB.
-	TMR1 = 0;
+    // Initialize timer1, used as the HEARTBEAT_HZ heartbeat of libUDB.
+	TMR1 = 0 ;
 #if (TMR1_PRESCALE == 8)
 	T1CONbits.TCKPS = 1;	// prescaler = 8
 #elif (TMR1_PRESCALE == 64)
@@ -99,23 +98,23 @@ void udb_init_clock(void)	// initialize timers
 #endif
 //	PR1 = 50000;			// 25 millisecond period at 16 Mz clock, tmr prescale = 8
     PR1 = (FREQOSC / (TMR1_PRESCALE * CLK_PHASES)) / HEARTBEAT_HZ; // period 1/HEARTBEAT_HZ
-	T1CONbits.TCS = 0;		// use the crystal to drive the clock
-	_T1IP = INT_PRI_T1;		// set interrupt priority
-	_T1IF = 0;				// clear the interrupt
-	_T1IE = 1;				// enable the interrupt
-	T1CONbits.TON = 1;		// turn on timer 1
+	T1CONbits.TCS = 0 ;		// use the crystal to drive the clock
+	_T1IP = 6 ;				// High priority
+	_T1IF = 0 ;				// clear the interrupt
+	_T1IE = 1 ;				// enable the interrupt
+	T1CONbits.TON = 1 ;		// turn on timer 1
 
 	// Timer 5 is used to measure time spent per second in interrupt routines
 	// which enables the calculation of the CPU loading.
 	// Timer 5 will be turned on in interrupt routines and turned off in main()
-	TMR5 = 0; 				// initialize timer
-	PR5 = 16*256;			// measure instructions in groups of 16*256 
-	_cpu_timer = 0;			// initialize the load counter
-	T5CONbits.TCKPS = 0;	// no prescaler
-	T5CONbits.TCS = 0;	    // use the crystal to drive the clock
-	_T5IP = INT_PRI_T5;		// set interrupt priority
-	_T5IF = 0;				// clear the interrupt
-	_T5IE = 1;				// enable the interrupt
+	TMR5 = 0 ; 				// initialize timer
+	PR5 = 16*256 ;			// measure instructions in groups of 16*256 
+	_cpu_timer = 0 ;		// initialize the load counter
+	T5CONbits.TCKPS = 0 ;	// no prescaler
+	T5CONbits.TCS = 0 ;	    // use the crystal to drive the clock
+	_T5IP = 6 ;				// high priority, but ISR is very short
+	_T5IF = 0 ;				// clear the interrupt
+	_T5IE = 1 ;				// enable the interrupt
 #if (USE_MCU_IDLE == 1)
 	T5CONbits.TSIDL = 1;	// stop the timer during CPU IDLE
 	T5CONbits.TON = 1;		// turn the timer 5 on until we idle
@@ -125,87 +124,91 @@ void udb_init_clock(void)	// initialize timers
 
 	// The Timer7 interrupt is used to trigger background tasks such as 
 	// navigation processing after binary data is received from the GPS.
-	_T7IP = INT_PRI_T7;		// set interrupt priority
+	_T7IP = 2;				// priority 2
 	_T7IF = 0;				// clear the interrupt
 	_T7IE = 1;				// enable the interrupt
 
 	// Enable the interrupt, but not the timer. This is used as a trigger from 
 	// the high priority heartbeat ISR to start all the HEARTBEAT_HZ processing 
 	// at a lower priority.
-	_T6IP = INT_PRI_T6;		// set interrupt priority
+	_T6IP = 3;				// priority 3
 	_T6IF = 0;				// clear the PWM interrupt
 	_T6IE = 1;				// enable the PWM interrupt
 }
 
+
 // This interrupt is the Heartbeat of libUDB.
 void __attribute__((__interrupt__,__no_auto_psv__)) _T1Interrupt(void) 
 {
-	indicate_loading_inter;
-	interrupt_save_set_corcon;
-
-	_T1IF = 0;			// clear the interrupt
-
+	indicate_loading_inter ;
+	interrupt_save_set_corcon ;
+	
+	_T1IF = 0 ;			// clear the interrupt
+	
 	// Start the sequential servo pulses
-	start_pwm_outputs();
-
+	start_pwm_outputs() ;
+	
 	// Capture cpu_timer once per second.
 	if (udb_heartbeat_counter % HEARTBEAT_HZ == 0)
 	{
-		T5CONbits.TON = 0;		// turn off timer 5
-		cpu_timer = _cpu_timer;	// snapshot the load counter
-		_cpu_timer = 0; 		// reset the load counter
-		T5CONbits.TON = 1;		// turn on timer 5
+		T5CONbits.TON = 0 ;		// turn off timer 5
+		cpu_timer = _cpu_timer ;// snapshot the load counter
+		_cpu_timer = 0 ; 		// reset the load counter
+		T5CONbits.TON = 1 ;		// turn on timer 5
 	}
-
+	
 	// Call the periodic callback at 40Hz
-	udb_background_callback_periodic() ;
-
-	// Trigger the HEARTBEAT_HZ calculations, but at a lower priority
+	udb_background_callback_periodic() ;	
+	
+    // Trigger the HEARTBEAT_HZ calculations, but at a lower priority
 	_T6IF = 1;
-
+	
+	
 	udb_heartbeat_counter = (udb_heartbeat_counter+1) % HEARTBEAT_MAX;
-
-	interrupt_restore_corcon;
+	
+	interrupt_restore_corcon ;
 }
+
 
 // Trigger the low priority background processing interrupt.
 void udb_background_trigger(void)
 {
-	_T7IF = 1;				// trigger the interrupt
+	 _T7IF = 1;				// trigger the interrupt
 }
+
 
 // Process the TRIGGER interrupt.
 // This is used by libDCM to kick off gps-based calculations at a lower
 // priority after receiving each new set of GPS data.
 void __attribute__((__interrupt__,__no_auto_psv__)) _T7Interrupt(void) 
 {
-	indicate_loading_inter;
-	interrupt_save_set_corcon;
-
+	indicate_loading_inter ;
+	interrupt_save_set_corcon ;
+	
 	 _T7IF = 0;				// clear the interrupt
-
-	udb_background_callback_triggered();
-
-	interrupt_restore_corcon;
+	
+	udb_background_callback_triggered() ;
+	
+	interrupt_restore_corcon ;
 }
 
 
 uint8_t udb_cpu_load(void)
 {
-	// scale cpu_timer to seconds*100 for percent loading
-	return (uint8_t)(__builtin_muluu(cpu_timer, CPU_LOAD_PERCENT) >> 16);
+    // scale cpu_timer to seconds*100 for percent loading
+	return (uint8_t)(__builtin_muluu(cpu_timer, CPU_LOAD_PERCENT) >> 16) ;
 }
 
 
 void __attribute__((__interrupt__,__no_auto_psv__)) _T5Interrupt(void) 
 {
-	interrupt_save_set_corcon;
-
-	TMR5 = 0;		// reset the timer
-	_cpu_timer ++;	// increment the load counter
-	_T5IF = 0;		// clear the interrupt
-
-	interrupt_restore_corcon;
+	interrupt_save_set_corcon ;
+	
+	TMR5 = 0 ;		// reset the timer
+	_cpu_timer ++ ;	// increment the load counter
+	_T5IF = 0 ;		// clear the interrupt
+	
+	interrupt_restore_corcon ;
 }
 
 extern struct ADchannel udb_analogInputs[NUM_ANALOG_INPUTS] ; // 0-indexed, unlike servo pwIn/Out/Trim arrays
@@ -217,9 +220,9 @@ extern struct ADchannel udb_rssi ;
 //	This is a good place to eventually compute pulse widths for servos.
 void __attribute__((__interrupt__,__no_auto_psv__)) _T6Interrupt(void)
 {
-	indicate_loading_inter;
-	interrupt_save_set_corcon;
-
+	indicate_loading_inter ;
+	interrupt_save_set_corcon ;
+	
 	_T6IF = 0; // clear the interrupt
 
 //    static int diagCounter = 0;
@@ -236,7 +239,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T6Interrupt(void)
 //        diagCounter = 0;
 //    }
 
-#if (NORADIO != 1)
+#if ( NORADIO != 1 )
 	// 20Hz testing of radio link
 //	if ( udb_heartbeat_counter % 2 == 1)
 	if ( (udb_heartbeat_counter % (HEARTBEAT_HZ/20)) == 1)
@@ -246,44 +249,44 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T6Interrupt(void)
 		if ( ( failSafePulses == 0 ) || ( noisePulses > MAX_NOISE_RATE ) )
 		{
 			if (udb_flags._.radio_on == 1) {
-				udb_flags._.radio_on = 0;
-				udb_callback_radio_did_turn_off();
+				udb_flags._.radio_on = 0 ;
+				udb_callback_radio_did_turn_off() ;
 			}
-			LED_GREEN = LED_OFF;
-			noisePulses = 0; // reset count of noise pulses
+			LED_GREEN = LED_OFF ;
+			noisePulses = 0 ; // reset count of noise pulses
 		}
 		else
 		{
-			udb_flags._.radio_on = 1;
-			LED_GREEN = LED_ON;
+			udb_flags._.radio_on = 1 ;
+			LED_GREEN = LED_ON ;
 		}
-		failSafePulses = 0;
+		failSafePulses = 0 ;
 	}
 	// Computation of noise rate
 	// Noise pulses are counted when they are detected, and reset once a second
 //	if ( udb_heartbeat_counter % 40 == 1)
 	if ( (udb_heartbeat_counter % HEARTBEAT_HZ) == 1)
 	{
-		noisePulses = 0;
+		noisePulses = 0 ;
 	}
 #endif // NORADIO
-
+	
 #ifdef VREF
-	vref_adj = (udb_vref.offset>>1) - (udb_vref.value>>1);
+	vref_adj = (udb_vref.offset>>1) - (udb_vref.value>>1) ;
 #else
-	vref_adj = 0;
+	vref_adj = 0 ;
 #endif // VREF
+	
+	calculate_analog_sensor_values() ;
+	udb_callback_read_sensors() ;
+	udb_flags._.a2d_read = 1 ; // signal the A/D to start the next summation
+	
+	udb_servo_callback_prepare_outputs() ;
 
-	calculate_analog_sensor_values();
-	udb_callback_read_sensors();
-	udb_flags._.a2d_read = 1; // signal the A/D to start the next summation
-
-	udb_servo_callback_prepare_outputs();
-
-#if (USE_I2C1_DRIVER == 1)
+#if(USE_I2C1_DRIVER == 1)
 	I2C1_trigger_service();
 #endif
-
+	
 #if (USE_NV_MEMORY == 1)
 	nv_memory_service_trigger();
 	storage_service_trigger();
@@ -294,5 +297,5 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T6Interrupt(void)
 	flexiFunctionServiceTrigger();
 #endif
 
-	interrupt_restore_corcon;
+	interrupt_restore_corcon ;
 }

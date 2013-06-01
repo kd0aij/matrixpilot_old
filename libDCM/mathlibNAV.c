@@ -68,6 +68,7 @@ int16_t sine ( int8_t angle )
 	}
 }
 
+
 int8_t arcsine ( int16_t y )
 // returns the inverse sine of y
 // y is in Q2.14 format, 16384 is maximum value
@@ -115,6 +116,7 @@ int16_t cosine ( int8_t angle )
 {
 	return ( sine ( angle+64 ) ) ;
 }
+
 
 void rotate_2D_vector_by_vector( int16_t vector[2] , int16_t rotate[2])
 {
@@ -175,6 +177,7 @@ void rotate( struct relative2D *xy , int8_t angle )
 	return ;	
 }
 
+
 int8_t rect_to_polar ( struct relative2D *xy )
 {
 	//	Convert from rectangular to polar coordinates using "CORDIC" arithmetic, which is basically
@@ -218,6 +221,7 @@ int8_t rect_to_polar ( struct relative2D *xy )
 
 	return (-theta ) ;
 }
+
 
 int16_t rect_to_polar16 ( struct relative2D *xy )
 {
@@ -403,4 +407,8 @@ int32_t long_scale ( int32_t arg1 , int16_t arg2 )
 	{
 		return -product ;
 	}
+
 }
+
+
+ 

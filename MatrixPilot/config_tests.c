@@ -27,11 +27,11 @@
 
 
 // Check RC Inputs
-// UDB4
+	// UDB4
 #if (USE_PPM_INPUT == 0 && NUM_INPUTS > 8)
-	#error("NUM_INPUTS can't be more than 8 without using PPM Input.")
+		#error("NUM_INPUTS can't be more than 8 without using PPM Input.")
 #elif (USE_PPM_INPUT != 0 && NUM_INPUTS > 9)
-	#error("NUM_INPUTS can't be more than 9 when using PPM Input.")
+		#error("NUM_INPUTS can't be more than 9 when using PPM Input.")
 #endif
 
 #if (THROTTLE_INPUT_CHANNEL > NUM_INPUTS)
@@ -85,7 +85,7 @@
 
 
 // Check RC Outputs
-// UDB4
+	// UDB4
 #if (NUM_OUTPUTS > 10)
 	#error("NUM_OUTPUTS can't be more than 10.")
 #endif
@@ -205,7 +205,7 @@
 	#error "max of 8 servo outputs currently supported for AUAV3"
 #endif
 
-#if ((CONSOLE_UART > 2) && (BOARD_TYPE != AUAV3_BOARD))
+#if ((USE_CONSOLE > 2) && (BOARD_TYPE != AUAV3_BOARD))
 	#error("Console ports greater than 2 only supported on AUAV3 board"
 #endif
 

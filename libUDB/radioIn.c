@@ -40,6 +40,7 @@
 #endif // MIPS
 
 #define MIN_SYNC_PULSE_WIDTH (14000/TMR_FACTOR)	// 3.5ms
+#define IC_INT_PRI 6
 //#define DEBUG_FAILSAFE_MIN_MAX
 
 
@@ -56,7 +57,6 @@ int16_t udb_pwTrim[NUM_INPUTS+1];	// initial pulse widths for trimming
 
 int16_t failSafePulses = 0;
 int16_t noisePulses = 0;
-
 
 void udb_init_capture(void)
 {
@@ -77,7 +77,7 @@ void udb_init_capture(void)
 	#endif
 	}
 	
-	TMR2 = 0;				// initialize timer
+	TMR2 = 0; 				// initialize timer
 #if (MIPS == 64)
 	T2CONbits.TCKPS = 2;	// prescaler = 64 option
 #else
@@ -95,7 +95,7 @@ void udb_init_capture(void)
 { \
 	IC##x##CON1 = IC1VAL; \
 	IC##x##CON2 = IC2VAL; \
-	_IC##x##IP = INT_PRI_IC; \
+	_IC##x##IP = IC_INT_PRI; \
 	_IC##x##IF = 0; \
 	_IC##x##IE = 1; \
 }
@@ -104,21 +104,21 @@ void udb_init_capture(void)
 #define IC_INIT(x) \
 { \
 	IC##x##CON = IC1VAL; \
-	_IC##x##IP = INT_PRI_IC; \
+	_IC##x##IP = IC_INT_PRI; \
 	_IC##x##IF = 0; \
 	_IC##x##IE = 1; \
 }
 #endif
 
-	if (NUM_INPUTS > 0) IC_INIT(1);
+    if (NUM_INPUTS > 0) IC_INIT(1);
 #if (USE_PPM_INPUT == 0)
-	if (NUM_INPUTS > 1) IC_INIT(2);
-	if (NUM_INPUTS > 2) IC_INIT(3);
-	if (NUM_INPUTS > 3) IC_INIT(4);
-	if (NUM_INPUTS > 4) IC_INIT(5);
-	if (NUM_INPUTS > 5) IC_INIT(6);
-	if (NUM_INPUTS > 6) IC_INIT(7);
-	if (NUM_INPUTS > 7) IC_INIT(8);
+    if (NUM_INPUTS > 1) IC_INIT(2);
+    if (NUM_INPUTS > 2) IC_INIT(3);
+    if (NUM_INPUTS > 3) IC_INIT(4);
+    if (NUM_INPUTS > 4) IC_INIT(5);
+    if (NUM_INPUTS > 5) IC_INIT(6);
+    if (NUM_INPUTS > 6) IC_INIT(7);
+    if (NUM_INPUTS > 7) IC_INIT(8);
 #endif // USE_PPM_INPUT
 #endif // NORADIO
 }
@@ -138,7 +138,7 @@ void set_udb_pwIn(int pwm, int index)
 			noisePulses++;
 		}
 	}
-
+  
 #if (FLYBYWIRE_ENABLED == 1)
 	// It's kind of a bad idea to override the radio mode input
 	if (MODE_SWITCH_INPUT_CHANNEL == index)

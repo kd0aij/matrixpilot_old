@@ -39,7 +39,6 @@ const char* strPitch = "PITCH";
 const char* strYaw = "YAW";
 const char* strAltitude = "ALTITUDE";
 const char* strRTL = "RTL";
-const char* strHover = "HOVER";
 
 char address[16];
 char gateway[16];
@@ -218,19 +217,6 @@ void load_gains(void)
 
 // Return To Launch Pitch Down
 	gains.RtlPitchDown = ini_getf(strRTL, "pitch", RTL_PITCH_DOWN, strConfigFile);
-
-// Hover
-    gains.HoverRollKP = ini_getf(strHover, "rollkp", HOVER_ROLLKP, strConfigFile);
-    gains.HoverRollKD = ini_getf(strHover, "rollkd", HOVER_ROLLKD, strConfigFile);
-    gains.HoverPitchGain = ini_getf(strHover, "gain", HOVER_PITCHGAIN, strConfigFile);
-    gains.HoverPitchKD = ini_getf(strHover, "pitchkd", HOVER_PITCHKD, strConfigFile);
-    gains.HoverPitchOffset = ini_getf(strHover, "pitch", HOVER_PITCH_OFFSET, strConfigFile);
-    gains.HoverYawKP = ini_getf(strHover, "yawkp", HOVER_YAWKP, strConfigFile);
-    gains.HoverYawKD = ini_getf(strHover, "yawkd", HOVER_YAWKD, strConfigFile);
-    gains.HoverYawOffset = ini_getf(strHover, "yaw", HOVER_YAW_OFFSET, strConfigFile);
-    gains.HoverPitchTowardsWP = ini_getf(strHover, "wp", HOVER_PITCH_TOWARDS_WP, strConfigFile);
-    gains.HoverNavMaxPitchRadius = ini_getf(strHover, "radius", HOVER_NAV_MAX_PITCH_RADIUS, strConfigFile);
-
 }
 
 void init_config(void)
@@ -239,7 +225,7 @@ void init_config(void)
 	load_config();
 	load_gains();
 
-	init_yawCntrl();
+    init_yawCntrl();
 	init_rollCntrl();
 	init_pitchCntrl();
 }

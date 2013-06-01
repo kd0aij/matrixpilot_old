@@ -20,7 +20,7 @@
 
 // To do: select magnetometer type, set MAGNETICDECLINATION,
 // and select orientation of the magnetometer, and remove the next 3 lines.
-#if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
+#if ( MAG_YAW_DRIFT == 1 && HILSIM != 1)
 //#warning "Check magnetometer options."
 #endif
 
@@ -244,7 +244,7 @@
 #define MAG_GAIN 1000.0
 #endif
 
-#if (HILSIM == 1)
+#if ( HILSIM == 1 )
 #undef MAG_X_AXIS
 #undef MAG_Y_AXIS
 #undef MAG_Z_AXIS
@@ -258,9 +258,9 @@
 #define MAG_X_SIGN +
 #define MAG_Y_SIGN +
 #define MAG_Z_SIGN +
-
 #define MAG_GAIN 1000.0
 #endif
+
 
 // Minimum and maximum values expected for the absolute value of the magnetic field.
 // These are used to help detect when the magnetometer has stopped working properly due to
