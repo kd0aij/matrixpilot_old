@@ -45,14 +45,14 @@
 // examine the telemetry after a flight, take a look in the .csv file, it will be easy to spot the
 // altitude, expressed in meters.
 
-#define USE_FIXED_ORIGIN		1
+#define USE_FIXED_ORIGIN		0
 //#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
 
 // AAM East Field runway center 39°50'31.83"N  105°12'44.81"W
 #define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1808.0 }
 
 // AAM West Field runway center  39°50'31.97"N  105°13'10.17"W (105.2194917, 39.842213889)
-//#define FIXED_ORIGIN_LOCATION	{ -1052194917, 398422138, 1817.0 }
+#define FIXED_ORIGIN_LOCATION	{ -1052194917, 398422138, 1817.0 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Waypoint definitions

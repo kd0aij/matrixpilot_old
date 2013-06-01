@@ -23,7 +23,7 @@
 // Waypoint handling
 
 // Move on to the next waypoint when getting within this distance of the current goal (in meters)
-#define WAYPOINT_RADIUS 		25
+#define WAYPOINT_RADIUS 		10
 
 // Origin Location
 // When using relative waypoints, the default is to interpret those waypoints as relative to the
@@ -49,8 +49,10 @@
 //#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
 
 // AAM East Field runway center 39°50'31.83"N  105°12'44.81"W
-#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1808.0 }	// AAM East Field runway center
+#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1808.0 }
 
+// AAM West Field runway center  39°50'31.97"N  105°13'10.17"W (105.2194917, 39.842213889)
+#define FIXED_ORIGIN_LOCATION	{ -1052194917, 398422138, 1817.0 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Waypoint definitions
@@ -142,15 +144,17 @@
 //		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
 //};
 
-const struct waypointDef waypoints[] = {
-    {
-        { 100, 0, 50}, F_NORMAL, CAM_VIEW_LAUNCH
-    }, //Waypoint 0
-    {
-        { 0, 0, 50}, F_NORMAL, CAM_VIEW_LAUNCH
-    }, //Waypoint 1
-};
+#pragma message "low righthand pattern waypoints"
 
+const struct waypointDef waypoints[] = {
+	{ { -46, 15, 3 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 1
+	{ { -117, 37, 3 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
+	{ { -86, 109, 20 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { 131, 45, 20 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
+	{ { 108, -31, 10 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
+	{ { 69, -20, 3 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 6
+	{ { 24, -4, 3 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 7
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // rtlWaypoints[]
