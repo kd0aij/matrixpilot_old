@@ -20,7 +20,7 @@
 
 
 #include "libDCM_internal.h"
-
+#include <stdint.h>
 
 #if (GPS_TYPE == GPS_UBX_2HZ || GPS_TYPE == GPS_UBX_4HZ)
 
@@ -775,13 +775,14 @@ void msg_CS1(uint8_t gpschar)
 		{
 			//correct checksum for VELNED message
 			udb_background_trigger();  // parsing is complete, schedule navigation
+        }
 #if (HILSIM == 1)
 		else if (msg_id == 0xAB)
 		{
 			//If we got the correct checksum for bodyrates, commit that data immediately
 			commit_bodyrate_data();
 		}
-#endif
+#endif // HILSIM
 	}	
 	else
 	{

@@ -653,6 +653,7 @@
 // HILSIM_BAUD is the serial speed for communications with the X-Plane plugin.  Default is
 // now 38400.  Make sure the X-Plane plugin's Setup file has its speed set to match.
 #define HILSIM 								0
+#define HILSIM_USB							0			// AUAV3 only
 #define HILSIM_BAUD							19200
 
 
@@ -731,7 +732,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Fly-By-Wire Configure
 // This allows the FlyByWire module to use either IP or the UART Rx pins for flight control.
-#define FLYBYWIRE_ENABLED               0
+#define FLYBYWIRE_ENABLED					0
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Optionally enable the new power saving idle mode of the MCU during mainloop
+#define USE_MCU_IDLE						0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -743,17 +749,61 @@
 // #define TestGains					// uncomment this line if you want to test your gains without using GPS
 
 // Set this to 1 to calculate and print out free stack space
-#define RECORD_FREE_STACK_SPACE 			0
+#define RECORD_FREE_STACK_SPACE				0
 
-// Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
-// UART 3 and 4 option only available with the AUAV3 board.
-#define USE_CONSOLE						3
 
-// Optionally enable the new power saving idle mode of the MCU during mainloop
-#define USE_MCU_IDLE					0
+////////////////////////////////////////////////////////////////////////////////
+// The UDB4/5 has two UART's, while the AUAV3 has four UART's.
+// Three MatrixPilot features are currently defined for using a UART. 
+// These being the GPS, Telemetry and a 'debug' console.
+// Therefore UDB4/5 is one UART short, the AUAV3 has one UART extra.
+//
+// CONSOLE_UART specfies which UART is used for stdio support, aka the console.
+// Set CONSOLE_UART to 1, 2, 3 or 4 to enable the console on UART of that number.
+// Setting CONSOLE_UART to 0 disables console support.
+// On the UDB4/5, optionally specifying console support on UART 1 or 2 overrides 
+// the default usage of that UART, being the GPS and Telemetry respectively.
+// CONSOLE_UART 3 and 4 options are only available with the AUAV3 board.
+// Thus UDB4/5 options are 0, 1, or 2  AUAV3 options are 0, 3, or 4
+#define CONSOLE_UART						3
+
+// Define USE_DEBUG_IO to enable DPRINT macro to call printf(..)
+//#define USE_DEBUG_IO
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // AUAV3 only options
+
+////////////////////////////////////////////////////////////////////////////////
+// At present, the AUAV3 schematic and 'installation & basic connections' document
+// are drafts and hence there is some inconsistency in labelling conventions.
+//
+// The following standard labelling convention is proposed.
+//
+// AUAV3 schematic:
+//		TLM		-	PORT1
+//		OSD		-	PORT2
+//		UART3	-	PORT3
+//		GPS		-	PORT4
+//
+// 'AUAV3 Installation and Basic Connections' document:
+//		OUART1	-	PORT1
+//		OUART2	-	PORT2
+//		UART3	-	PORT3
+//		GPS		-	PORT4
+//
+////////////////////////////////////////////////////////////////////////////////
+// On the AUAV3, the external UART connections are known as ports 1 through 4.
+// The definitions below specifies which feature maps to an external port.
+//
+// NOTE: on the AUAV3, do not confuse the CONSOLE_UART definition with the 
+// external port assignment.
+// Assign the console to an internal UART with CONSOLE_UART, map this console to
+// external port connection with DBG_PORT.
+#define GPS_PORT							4
+#define TLM_PORT							3
+#define DBG_PORT							1
+
 
 // Set this to 1 to enable logging telemetry to dataflash on AUAV3
 #define USE_TELELOG						0
@@ -763,6 +813,11 @@
 
 // Set this to 1 to enable the USB stack
 #define USE_USB							0
+
+
+// Set this to 1 to enable the Mass Storage Driver support over USB on AUAV3
+#define USE_MSD								0
+
 
 // define this to enable catapult launch arming
 #define CATAPULT_LAUNCH_ENABLE
