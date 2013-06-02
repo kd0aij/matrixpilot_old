@@ -32,7 +32,7 @@
 
 #ifndef OPTIONS_H
 #define OPTIONS_H
-//#pragma message "Typhoon options selected"
+//#pragma message "Addiction options selected"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
@@ -113,7 +113,7 @@
 // holds the cross track error to smaller values.
 // 64 meters is probably the largest value you might use on a fast model jet (more than 50 meters/sec)
 // Use 32 meters for 20 to 50 meters/sec, and 16 meters for less than that.
-#define CROSS_TRACK_MARGIN					16
+#define CROSS_TRACK_MARGIN					32
 
 // Wind Gain Adjustment
 // This is an option for modulating the navigation gains in flight
@@ -701,7 +701,7 @@
 //#define ID_VEHICLE_REGISTRATION "TW2-PDH-UK"
 //#define ID_LEAD_PILOT "Pete Hollands"
 //#define ID_DIY_DRONES_URL "http://www.diydrones.com/profile/PeterHollands"
-#define ID_VEHICLE_MODEL_NAME   "Typhoon2"
+#define ID_VEHICLE_MODEL_NAME   "Addiction"
 #define ID_VEHICLE_REGISTRATION "KD0AIJ"
 #define ID_LEAD_PILOT           "Mark Whitehorn"
 #define ID_DIY_DRONES_URL       "http://www.diydrones.com/profile/markw"

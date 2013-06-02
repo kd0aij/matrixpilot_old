@@ -144,16 +144,49 @@
 //		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
 //};
 
-#pragma message "east field 30m lefthand pattern waypoints"
+#pragma message "lefthand T/O waypoints"
 
 const struct waypointDef waypoints[] = {
-	{ { 30, -7, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 1
-	{ { 100, -28, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
-	{ { 101, 26, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
-	{ { -100, 88, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
-	{ { -102, 32, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
-	{ { -71, 22, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 6
-	{ { -27, 9, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 7
+	{ { 30, -7, 75 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 1
+	{ { 100, -28, 75 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
+	{ { 101, 26, 75 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { -100, 88, 75 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
+	{ { -109, 87, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
+	{ { -116, 80, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 6
+	{ { -120, 70, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 7
+	{ { -122, 57, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 8
+	{ { -120, 47, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 9
+	{ { -114, 39, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 10
+	{ { -105, 34, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 11
+	{ { -97, 31, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 12
+	{ { -88, 28, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 13
+	{ { -78, 25, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 14
+	{ { -70, 23, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 15
+	{ { -62, 20, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 16
+	{ { -54, 18, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 17
+	{ { -44, 15, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 18
+	{ { -37, 13, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 19
+	{ { -29, 10, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 20
+	{ { -20, 8, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 21
+	{ { -9, 5, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 22
+	{ { 103, -29, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 23
+	{ { 120, 21, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 24
+	{ { 136, 26, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 25
+	{ { 154, 13, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 26
+	{ { 162, -9, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 27
+	{ { 158, -29, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 28
+	{ { 145, -34, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 29
+	{ { 125, -33, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 30
+	{ { 110, -32, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 31
+	{ { 60, -15, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 32
+	{ { 13, -2, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 33
+	{ { -49, 17, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 34
+	{ { -100, 33, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 35
+	{ { -119, 71, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 36
+	{ { -101, 89, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 37
+	{ { -91, 72, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 38
+	{ { -92, 59, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 39
+	{ { -83, 28, 50 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 40
 };
 
 ////////////////////////////////////////////////////////////////////////////////
