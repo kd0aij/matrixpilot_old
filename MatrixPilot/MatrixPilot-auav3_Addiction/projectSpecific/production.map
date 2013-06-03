@@ -97,8 +97,8 @@ Command:
   build/default/production/_ext/1472/altitudeCntrlVariable.o \
   build/default/production/_ext/1472/euler_angles.o \
   build/default/production/_ext/1472/main.o \
-  build/default/production/stack.o \
   build/default/production/servoMix.o \
+  build/default/production/stack.o \
   --defsym=__MPLAB_BUILD=1 \
   -Tp33EP512MU810.gld.00 \
   --heap=1024 \
@@ -114,7 +114,6 @@ Command:
   --no-force-link \
   --smart-io \
   -Map=../MatrixPilot-auav3_Addiction/production.map \
-  --report-mem \
   -start-group \
   --library=lega-pic30-elf \
   --library=m-elf \
@@ -343,9 +342,9 @@ Data Memory  [Origin = 0x1000, Length = 0xd000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-_0x41b78c9451ab4a10         0x1000                   0             0x4  (4)
-_0x41b78c3851ab4a10         0x1004                   0             0x2  (2)
-_0x41b78cf051ab4a10         0x1006                   0             0x2  (2)
+_0x41b78c9451acb9dc         0x1000                   0             0x4  (4)
+_0x41b78c3851acb9dc         0x1004                   0             0x2  (2)
+_0x41b78cf051acb9dc         0x1006                   0             0x2  (2)
 .nbss                       0x1008                   0             0x2  (2)
 .bss                        0x100a                   0           0x7f2  (2034)
 .data._Stdin                0x17fc                   0            0x88  (136)
@@ -383,8 +382,8 @@ _0x41b78cf051ab4a10         0x1006                   0             0x2  (2)
 .bss                        0x1e64                   0             0x2  (2)
 .heap                       0x1e66                   0           0x400  (1024)
 non_eds_stack               0x6000                   0          0x1000  (4096)
-_0x41c230b851ab4a0f         0xdfc0                   0             0xe  (14)
-_0x41c2305c51ab4a0f         0xdfe0                   0             0xe  (14)
+_0x41c230b851acb9db         0xdfc0                   0             0xe  (14)
+_0x41c2305c51acb9db         0xdfe0                   0             0xe  (14)
 
                         Total data memory used (bytes):         0x2282  (8834) 16%
 
@@ -2051,8 +2050,8 @@ LOAD build/default/production/_ext/1472/airspeedCntrl.o
 LOAD build/default/production/_ext/1472/altitudeCntrlVariable.o
 LOAD build/default/production/_ext/1472/euler_angles.o
 LOAD build/default/production/_ext/1472/main.o
-LOAD build/default/production/stack.o
 LOAD build/default/production/servoMix.o
+LOAD build/default/production/stack.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD /opt/microchip/xc16/v1.10/bin/bin/../../lib/dsPIC33E/libp33EP512MU810-elf.a
                     0xf80004                  __FGS = 0xf80004
@@ -2683,8 +2682,8 @@ __FUID0
  .debug_line      0x00cae0         0x24 build/default/production/_ext/1472/altitudeCntrlVariable.o
  .debug_line      0x00cb04        0x156 build/default/production/_ext/1472/euler_angles.o
  .debug_line      0x00cc5a         0x93 build/default/production/_ext/1472/main.o
- .debug_line      0x00cced         0x1a build/default/production/stack.o
- .debug_line      0x00cd07        0x23e build/default/production/servoMix.o
+ .debug_line      0x00cced        0x23e build/default/production/servoMix.o
+ .debug_line      0x00cf2b         0x1a build/default/production/stack.o
 
 .debug_frame      0x000000       0x2320
  *(.debug_frame)
@@ -6269,33 +6268,33 @@ __c30_signature
 non_eds_stack       0x6000       0x1000
  non_eds_stack      0x6000       0x1000 build/default/production/stack.o
 
-_0x41c230b851ab4a0f
+_0x41c230b851acb9db
                     0xdfc0          0xe
- _0x41c230b851ab4a0f
+ _0x41c230b851acb9db
                     0xdfc0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfc0                  _BufferB
 
-_0x41c2305c51ab4a0f
+_0x41c2305c51acb9db
                     0xdfe0          0xe
- _0x41c2305c51ab4a0f
+ _0x41c2305c51acb9db
                     0xdfe0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfe0                  _BufferA
 
-_0x41b78c9451ab4a10
+_0x41b78c9451acb9dc
                     0x1000          0x4
- _0x41b78c9451ab4a10
+ _0x41b78c9451acb9dc
                     0x1000          0x4 build/default/production/_ext/1077454706/mcu.o
                     0x1000                  _trap_source
 
-_0x41b78c3851ab4a10
+_0x41b78c3851acb9dc
                     0x1004          0x2
- _0x41b78c3851ab4a10
+ _0x41b78c3851acb9dc
                     0x1004          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1004                  _trap_flags
 
-_0x41b78cf051ab4a10
+_0x41b78cf051acb9dc
                     0x1006          0x2
- _0x41b78cf051ab4a10
+ _0x41b78cf051acb9dc
                     0x1006          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1006                  _osc_fail_count
 

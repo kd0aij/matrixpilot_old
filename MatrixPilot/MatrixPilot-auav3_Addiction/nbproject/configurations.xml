@@ -187,6 +187,14 @@
                    displayName="Linker Files"
                    projectFiles="true">
     </logicalFolder>
+    <logicalFolder name="f1" displayName="Project Specific" projectFiles="true">
+      <itemPath>projectSpecific/nv_memory_options.h</itemPath>
+      <itemPath>projectSpecific/options.h</itemPath>
+      <itemPath>projectSpecific/servoMix.c</itemPath>
+      <itemPath>projectSpecific/stack.S</itemPath>
+      <itemPath>projectSpecific/waypoints.h</itemPath>
+      <itemPath>projectSpecific/projectStatus.txt</itemPath>
+    </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
@@ -282,22 +290,12 @@
         <itemPath>../euler_angles.c</itemPath>
         <itemPath>../main.c</itemPath>
       </logicalFolder>
-      <logicalFolder name="f3" displayName="projectSpecific" projectFiles="true">
-        <itemPath>nv_memory_options.h</itemPath>
-        <itemPath>options.h</itemPath>
-        <itemPath>stack.S</itemPath>
-        <itemPath>waypoints.h</itemPath>
-        <itemPath>waypoints_AVCrightHand.h</itemPath>
-        <itemPath>servoMix.c</itemPath>
-        <itemPath>waypoints_simple.h</itemPath>
-      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>projectStatus.txt</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>..</Elem>
@@ -353,7 +351,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../../MatrixPilot/MatrixPilot-auav3_Addiction;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot"/>
+                  value="./projectSpecific;../../MAVLink/include;../../libUDB;../../libDCM;../../MAVLink/include/common;../../MAVLink/include/matrixpilot;../../MatrixPilot"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>
