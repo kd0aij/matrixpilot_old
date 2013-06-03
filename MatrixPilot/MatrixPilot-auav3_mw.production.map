@@ -98,7 +98,7 @@ Command:
   build/default/production/_ext/1472/altitudeCntrlVariable.o \
   build/default/production/_ext/1472/euler_angles.o \
   build/default/production/_ext/1472/main.o \
-  build/default/production/stack.o \
+  build/default/production/projectSpecific/stack.o \
   --defsym=__MPLAB_BUILD=1 \
   -Tp33EP512MU810.gld.00 \
   --heap=1024 \
@@ -344,9 +344,9 @@ Data Memory  [Origin = 0x1000, Length = 0xd000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-_0x41b78c9451aa2c80         0x1000                   0             0x4  (4)
-_0x41b78c3851aa2c80         0x1004                   0             0x2  (2)
-_0x41b78cf051aa2c80         0x1006                   0             0x2  (2)
+_0x41b78c9451acbdd6         0x1000                   0             0x4  (4)
+_0x41b78c3851acbdd6         0x1004                   0             0x2  (2)
+_0x41b78cf051acbdd6         0x1006                   0             0x2  (2)
 .nbss                       0x1008                   0             0x2  (2)
 .bss                        0x100a                   0           0x7f2  (2034)
 .data._Stdin                0x17fc                   0            0x88  (136)
@@ -384,8 +384,8 @@ _0x41b78cf051aa2c80         0x1006                   0             0x2  (2)
 .bss                        0x1e50                   0             0x2  (2)
 .heap                       0x1e52                   0           0x400  (1024)
 non_eds_stack               0x6000                   0          0x1000  (4096)
-_0x41c230b851aa2c7f         0xdfc0                   0             0xe  (14)
-_0x41c2305c51aa2c7f         0xdfe0                   0             0xe  (14)
+_0x41c230b851acbdd6         0xdfc0                   0             0xe  (14)
+_0x41c2305c51acbdd6         0xdfe0                   0             0xe  (14)
 
                         Total data memory used (bytes):         0x226e  (8814) 16%
 
@@ -1981,7 +1981,7 @@ LOAD build/default/production/_ext/1472/airspeedCntrl.o
 LOAD build/default/production/_ext/1472/altitudeCntrlVariable.o
 LOAD build/default/production/_ext/1472/euler_angles.o
 LOAD build/default/production/_ext/1472/main.o
-LOAD build/default/production/stack.o
+LOAD build/default/production/projectSpecific/stack.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD /opt/microchip/xc16/v1.10/bin/bin/../../lib/dsPIC33E/libp33EP512MU810-elf.a
                     0xf80004                  __FGS = 0xf80004
@@ -2536,7 +2536,7 @@ __FUID0
  .debug_abbrev    0x003a7f         0x8f build/default/production/_ext/1472/euler_angles.o
  .debug_abbrev    0x003b0e         0x36 build/default/production/_ext/1472/main.o
 
-.debug_line       0x000000       0xcbba
+.debug_line       0x000000       0xcb75
  *(.debug_line)
  .debug_line      0x000000        0x3dd build/default/production/_ext/1658199856/uart.o
  .debug_line      0x0003dd        0x5a7 build/default/production/_ext/1658199856/commands.o
@@ -2601,21 +2601,21 @@ __FUID0
  .debug_line      0x008d4a        0x27e build/default/production/_ext/1472/yawCntrl.o
  .debug_line      0x008fc8         0x24 build/default/production/_ext/1472/telemetry.o
  .debug_line      0x008fec        0x1e9 build/default/production/_ext/1472/servoPrepare.o
- .debug_line      0x0091d5        0x484 build/default/production/_ext/1472/flightplan-waypoints.o
- .debug_line      0x009659         0x24 build/default/production/_ext/1472/flightplan-logo.o
- .debug_line      0x00967d         0x24 build/default/production/_ext/1472/mp_osd.o
- .debug_line      0x0096a1        0x467 build/default/production/_ext/1472/altitudeCntrl.o
- .debug_line      0x009b08       0x298a build/default/production/_ext/1472/MAVLink.o
- .debug_line      0x00c492        0x231 build/default/production/_ext/1472/mode_switch.o
- .debug_line      0x00c6c3         0x24 build/default/production/_ext/1472/data_services.o
- .debug_line      0x00c6e7         0x24 build/default/production/_ext/1472/data_storage.o
- .debug_line      0x00c70b         0x24 build/default/production/_ext/1472/nv_memory_table.o
- .debug_line      0x00c72f        0x1a4 build/default/production/_ext/1472/parameter_table.o
- .debug_line      0x00c8d3         0xc0 build/default/production/_ext/1472/airspeedCntrl.o
- .debug_line      0x00c993         0x24 build/default/production/_ext/1472/altitudeCntrlVariable.o
- .debug_line      0x00c9b7        0x156 build/default/production/_ext/1472/euler_angles.o
- .debug_line      0x00cb0d         0x93 build/default/production/_ext/1472/main.o
- .debug_line      0x00cba0         0x1a build/default/production/stack.o
+ .debug_line      0x0091d5        0x43f build/default/production/_ext/1472/flightplan-waypoints.o
+ .debug_line      0x009614         0x24 build/default/production/_ext/1472/flightplan-logo.o
+ .debug_line      0x009638         0x24 build/default/production/_ext/1472/mp_osd.o
+ .debug_line      0x00965c        0x467 build/default/production/_ext/1472/altitudeCntrl.o
+ .debug_line      0x009ac3       0x298a build/default/production/_ext/1472/MAVLink.o
+ .debug_line      0x00c44d        0x231 build/default/production/_ext/1472/mode_switch.o
+ .debug_line      0x00c67e         0x24 build/default/production/_ext/1472/data_services.o
+ .debug_line      0x00c6a2         0x24 build/default/production/_ext/1472/data_storage.o
+ .debug_line      0x00c6c6         0x24 build/default/production/_ext/1472/nv_memory_table.o
+ .debug_line      0x00c6ea        0x1a4 build/default/production/_ext/1472/parameter_table.o
+ .debug_line      0x00c88e         0xc0 build/default/production/_ext/1472/airspeedCntrl.o
+ .debug_line      0x00c94e         0x24 build/default/production/_ext/1472/altitudeCntrlVariable.o
+ .debug_line      0x00c972        0x156 build/default/production/_ext/1472/euler_angles.o
+ .debug_line      0x00cac8         0x93 build/default/production/_ext/1472/main.o
+ .debug_line      0x00cb5b         0x1a build/default/production/projectSpecific/stack.o
 
 .debug_frame      0x000000       0x22a0
  *(.debug_frame)
@@ -6200,35 +6200,35 @@ __c30_signature
                   0x003cee          0x6 /opt/microchip/xc16/v1.10/bin/bin/../../lib/libm-elf.a(floatdidf.epeo)
 
 non_eds_stack       0x6000       0x1000
- non_eds_stack      0x6000       0x1000 build/default/production/stack.o
+ non_eds_stack      0x6000       0x1000 build/default/production/projectSpecific/stack.o
 
-_0x41c230b851aa2c7f
+_0x41c230b851acbdd6
                     0xdfc0          0xe
- _0x41c230b851aa2c7f
+ _0x41c230b851acbdd6
                     0xdfc0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfc0                  _BufferB
 
-_0x41c2305c51aa2c7f
+_0x41c2305c51acbdd6
                     0xdfe0          0xe
- _0x41c2305c51aa2c7f
+ _0x41c2305c51acbdd6
                     0xdfe0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfe0                  _BufferA
 
-_0x41b78c9451aa2c80
+_0x41b78c9451acbdd6
                     0x1000          0x4
- _0x41b78c9451aa2c80
+ _0x41b78c9451acbdd6
                     0x1000          0x4 build/default/production/_ext/1077454706/mcu.o
                     0x1000                  _trap_source
 
-_0x41b78c3851aa2c80
+_0x41b78c3851acbdd6
                     0x1004          0x2
- _0x41b78c3851aa2c80
+ _0x41b78c3851acbdd6
                     0x1004          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1004                  _trap_flags
 
-_0x41b78cf051aa2c80
+_0x41b78cf051acbdd6
                     0x1006          0x2
- _0x41b78cf051aa2c80
+ _0x41b78cf051acbdd6
                     0x1006          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1006                  _osc_fail_count
 

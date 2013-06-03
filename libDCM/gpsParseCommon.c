@@ -30,17 +30,17 @@ struct relative3D GPSvelocity 		  = { 0 , 0 , 0 } ;
 union longbbbb lat_gps , long_gps , alt_sl_gps, tow ;  	// latitude, longitude, altitude
 union intbb    sog_gps , cog_gps , climb_gps, week_no ;	// speed over ground, course over ground, climb
 union intbb	   as_sim ;
-uint8_t  hdop ;									// horizontal dilution of precision
+uint8_t hdop ;									// horizontal dilution of precision
 
 union longbbbb lat_origin , long_origin , alt_origin ;
 
 //union longbbbb xpg , ypg , zpg ;						// gps x, y, z position
 //union intbb    xvg , yvg , zvg ;						// gps x, y, z velocity
 //uint8_t  mode1 , mode2 ;						// gps mode1, mode2
-uint8_t  svs ;									// number of satellites
+uint8_t svs ;									// number of satellites
 
-uint8_t  	lat_cir ;
-int16_t				cos_lat = 0 ;
+uint8_t lat_cir ;
+int16_t cos_lat = 0 ;
 
 int16_t gps_data_age ;
 
@@ -144,8 +144,9 @@ void udb_background_callback_triggered(void)
 		location[0] = accum_nav._.W0 ;	
 
 #ifdef USE_PRESSURE_ALT
-#pragma message "using pressure altitude instead of GPS altitude"
+#warning "using pressure altitude instead of GPS altitude"
         // division by 100 implies alt_origin is in centimeters; not documented elsewhere
+        // longword result = (longword/10 - longword)/100 : range
 		accum_nav.WW = ( (get_barometer_altitude()/10) - alt_origin.WW)/100 ; // height in meters
 #else
 		accum_nav.WW = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
@@ -161,6 +162,9 @@ void udb_background_callback_triggered(void)
 		// The dynamic model of the EM406 and uBlox is not well known.
 		// However, it seems likely much of it is simply reporting latency.
 		// This section of the code compensates for reporting latency.
+        // markw: what is the latency? It doesn't appear numerically or as a comment
+        // in the following code. Since this method is called at the GPS reporting rate
+        // it must be assumed to be one reporting interval?
 
 		if ( dcm_flags._.gps_history_valid )
 		{
