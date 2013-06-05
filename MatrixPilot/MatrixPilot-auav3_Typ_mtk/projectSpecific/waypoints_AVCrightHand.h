@@ -48,7 +48,10 @@
 #define USE_FIXED_ORIGIN		1
 
 // center of launch zone 40 4' 22.35"N 105 13' 48.88"W
-#define FIXED_ORIGIN_LOCATION	{ -1052302444, 400728750, 1812.0 }
+#define FIXED_ORIGIN_LOCATION	{ -1052302444, 400728750, 1587.7 }
+
+// dropzone turn { -105.2322806, 40.0758778 } (175 meters west and 334 meters north of launch zone)
+#define DROP_ZONE_TURN { -1052322806, 400758778, 1579.0 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Waypoint definitions
