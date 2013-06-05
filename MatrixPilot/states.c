@@ -111,14 +111,14 @@ void udb_background_callback_periodic(void)
         counter = 0;
         // Update the nav capable flag. If the GPS has a lock, gps_data_age will be small.
         // For now, nav_capable will always be 0 when the Airframe type is AIRFRAME_HELI.
-#ifdef CATAPULT_LAUNCH_ENABLE
 #if (AIRFRAME_TYPE != AIRFRAME_HELI)
+#ifdef CATAPULT_LAUNCH_ENABLE
         if (stateS != &cat_delayS)
+#endif
         {
             if (gps_data_age < GPS_DATA_MAX_AGE) gps_data_age++ ;
             dcm_flags._.nav_capable = (gps_data_age < GPS_DATA_MAX_AGE) ;
         }
-#endif
 #endif
         // Execute the activities for the current state.
         (*stateS)();

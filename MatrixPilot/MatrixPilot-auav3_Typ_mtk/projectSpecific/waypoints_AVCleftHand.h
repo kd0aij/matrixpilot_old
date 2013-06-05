@@ -34,7 +34,7 @@
 // Set it to 1 to use a fixed location as the origin, no matter where you power up.
 // FIXED_ORIGIN_LOCATION is the location to use as the origin for relative waypoints.  It uses the
 // format { X, Y, Z } where:
-// X is Longitude in degrees * 10^7
+// X is Logitude in degrees * 10^7
 // Y is Latitude in degrees * 10^7
 // Z is altitude above sea level, in meters, as a floating point value.
 // 
@@ -46,13 +46,11 @@
 // altitude, expressed in meters.
 
 #define USE_FIXED_ORIGIN		1
-//#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
 
-// AAM East Field runway center 39°50'31.83"N  105°12'44.81"W
-#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1808.0 }
+// center of launch zone 40 4' 22.35"N 105 13' 48.88"W
+#define FIXED_ORIGIN_LOCATION	{ -1052302444, 400728750, 1812.0 }
 
-// AAM West Field runway center  39°50'31.97"N  105°13'10.17"W (105.2194917, 39.842213889)
-//#define FIXED_ORIGIN_LOCATION	{ -1052194917, 398422138, 1817.0 }
+// dropzone turn { -105.2322806, 40.0758778 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Waypoint definitions
@@ -141,52 +139,19 @@
 // By default the only waypoint is defined to be 75 meters above the starting point.
 
 //const struct waypointDef waypoints[] = {
-//		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
+//		{ {   0,   0, 75 } , F_CROSS_TRACK, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
 //};
 
-#pragma message "lefthand T/O waypoints, 2 way"
+#pragma message "Typhoon AVC lefthand pattern waypoints"
 
 const struct waypointDef waypoints[] = {
-	{ { 80, -23, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 1
-	{ { 100, -28, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
-	{ { 101, 26, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
-	{ { -100, 88, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
-	{ { -109, 87, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
-	{ { -116, 80, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 6
-	{ { -121, 72, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 7
-	{ { -122, 57, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 8
-	{ { -120, 47, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 9
-	{ { -114, 39, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 10
-	{ { -105, 34, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 11
-	{ { -97, 31, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 12
-	{ { -88, 28, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 13
-	{ { -78, 25, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 14
-	{ { -70, 23, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 15
-	{ { -62, 20, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 16
-	{ { -54, 18, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 17
-	{ { -44, 15, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 18
-	{ { -37, 13, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 19
-	{ { -29, 10, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 20
-	{ { -20, 8, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 21
-	{ { -9, 5, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 22
-	{ { 103, -29, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 23
-	{ { 120, 21, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 24
-	{ { 136, 26, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 25
-	{ { 154, 13, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 26
-	{ { 162, -9, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 27
-	{ { 158, -29, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 28
-	{ { 145, -34, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 29
-	{ { 125, -33, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 30
-	{ { 110, -32, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 31
-	{ { 60, -15, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 32
-	{ { 13, -2, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 33
-	{ { -92, 30, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 34
-	{ { -118, 29, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 35
-	{ { -138, 35, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 36
-	{ { -143, 52, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 37
-	{ { -131, 58, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 38
-	{ { -111, 49, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 39
-	{ { -92, 29, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 40
+	{ { 44, 10, 20 } , F_TAKEOFF , CAM_VIEW_LAUNCH } , //Waypoint 1
+	{ { 58, 50, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
+	{ { -172, 330, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { -101, 24, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
+	{ { -81, -14, 20 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
+	{ { -44, -15, 10 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 6
+	{ { 51, 19, 0 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 7
 };
 
 ////////////////////////////////////////////////////////////////////////////////

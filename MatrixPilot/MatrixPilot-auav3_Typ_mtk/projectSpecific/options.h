@@ -32,7 +32,7 @@
 
 #ifndef OPTIONS_H
 #define OPTIONS_H
-//#pragma message "Typhoon options selected"
+#pragma message "Typhoon options selected"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
@@ -85,7 +85,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, or GPS_MTEK)
-#define GPS_TYPE GPS_MTEK
+#define GPS_TYPE GPS_STD
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,13 +96,13 @@
 #define ROLL_STABILIZATION_AILERONS			1
 #define ROLL_STABILIZATION_RUDDER			0
 #define PITCH_STABILIZATION					1
-#define YAW_STABILIZATION_RUDDER			1
+#define YAW_STABILIZATION_RUDDER			0
 #define YAW_STABILIZATION_AILERON			1
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
 #define AILERON_NAVIGATION					1
-#define RUDDER_NAVIGATION					1
+#define RUDDER_NAVIGATION					0
 
 // Cross track margin, in meters
 // This is used when the cross track option is attached to a waypoint
@@ -113,7 +113,7 @@
 // holds the cross track error to smaller values.
 // 64 meters is probably the largest value you might use on a fast model jet (more than 50 meters/sec)
 // Use 32 meters for 20 to 50 meters/sec, and 16 meters for less than that.
-#define CROSS_TRACK_MARGIN					16
+#define CROSS_TRACK_MARGIN					32
 
 // Wind Gain Adjustment
 // This is an option for modulating the navigation gains in flight
@@ -477,11 +477,11 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP				0.08 //0.22
-#define ROLLKD				0 //0.02
-#define YAWKP_AILERON		0.05 // 0.05
+#define ROLLKP				0.05 //0.22
+#define ROLLKD				0.01 //0.02
+#define YAWKP_AILERON		0.03 // 0.05
 #define YAWKD_AILERON		0 //0.11 //0.05
-#define AILERON_BOOST		0.25
+#define AILERON_BOOST		0.5
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
@@ -491,8 +491,8 @@
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
 #define PITCHGAIN			0.08 // 0.150
 #define PITCHKD				0 //0.015 // 0.075
-#define RUDDER_ELEV_MIX		0.04
-#define ROLL_ELEV_MIX		0.1
+#define RUDDER_ELEV_MIX		0.0
+#define ROLL_ELEV_MIX		0.5
 #define ELEVATOR_BOOST		1.0
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
@@ -631,9 +631,9 @@
 // within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
-#define ALT_HOLD_PITCH_MIN  -15.0
-#define ALT_HOLD_PITCH_MAX   45.0
-#define ALT_HOLD_PITCH_HIGH -15.0
+#define ALT_HOLD_PITCH_MIN  -25.0
+#define ALT_HOLD_PITCH_MAX   25.0
+#define ALT_HOLD_PITCH_HIGH -25.0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -746,10 +746,10 @@
 
 // Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
 // UART 3 and 4 option only available with the AUAV3 board.
-#define USE_CONSOLE						3
+#define USE_CONSOLE						0
 
 // Optionally enable the new power saving idle mode of the MCU during mainloop
-#define USE_MCU_IDLE					0
+#define USE_MCU_IDLE					1
 
 ////////////////////////////////////////////////////////////////////////////////
 // AUAV3 only options
@@ -764,7 +764,7 @@
 #define USE_USB							0
 
 // define this to enable catapult launch arming
-#define CATAPULT_LAUNCH_ENABLE
+//#define CATAPULT_LAUNCH_ENABLE
 
 // replace gps altitude with pressure altitude in IMU location estimation
 #define USE_PRESSURE_ALT
