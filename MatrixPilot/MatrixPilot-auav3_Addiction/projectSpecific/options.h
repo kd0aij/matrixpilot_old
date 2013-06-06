@@ -96,13 +96,13 @@
 #define ROLL_STABILIZATION_AILERONS			1
 #define ROLL_STABILIZATION_RUDDER			0
 #define PITCH_STABILIZATION					1
-#define YAW_STABILIZATION_RUDDER			1
+#define YAW_STABILIZATION_RUDDER			0
 #define YAW_STABILIZATION_AILERON			1
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
 #define AILERON_NAVIGATION					1
-#define RUDDER_NAVIGATION					1
+#define RUDDER_NAVIGATION					0
 
 // Cross track margin, in meters
 // This is used when the cross track option is attached to a waypoint
@@ -173,8 +173,8 @@
 // Setting RACING_MODE to 1 will keep the plane at a set throttle value while in waypoint mode.
 // RACING_MODE_WP_THROTTLE is the throttle value to use, and should be set between 0.0 and 1.0.
 // Racing performance can be improved by disabling cross tracking for your waypoints.
-#define RACING_MODE							0
-#define RACING_MODE_WP_THROTTLE				0.65
+#define RACING_MODE							1
+#define RACING_MODE_WP_THROTTLE				1
 
 // Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
 // receiver. (Totally autonomous.)  This is just meant for simulation and debugging.  It is not
@@ -477,11 +477,11 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP				0.08 //0.22
-#define ROLLKD				0 //0.02
-#define YAWKP_AILERON		0.05 // 0.05
+#define ROLLKP				0.05 //0.22
+#define ROLLKD				0.01 //0.02
+#define YAWKP_AILERON		0.03 // 0.05
 #define YAWKD_AILERON		0 //0.11 //0.05
-#define AILERON_BOOST		0.25
+#define AILERON_BOOST		0.5
 
 // Elevator/Pitch Control Gains
 // PITCHGAIN is the pitch stabilization gain, typically around 0.125
@@ -491,8 +491,8 @@
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
 #define PITCHGAIN			0.08 // 0.150
 #define PITCHKD				0 //0.015 // 0.075
-#define RUDDER_ELEV_MIX		0.04
-#define ROLL_ELEV_MIX		0.1
+#define RUDDER_ELEV_MIX		0.0
+#define ROLL_ELEV_MIX		0.5
 #define ELEVATOR_BOOST		1.0
 
 // Neutral pitch angle of the plane (in degrees) when flying inverted
@@ -631,9 +631,9 @@
 // within HEIGHT_MARGIN of the target height.
 // Use ALT_HOLD_PITCH_HIGH when above HEIGHT_MARGIN of the target height.
 // Pitch values are in degrees.  Negative values pitch the plane down.
-#define ALT_HOLD_PITCH_MIN  -15.0
-#define ALT_HOLD_PITCH_MAX   45.0
-#define ALT_HOLD_PITCH_HIGH -15.0
+#define ALT_HOLD_PITCH_MIN  -25.0
+#define ALT_HOLD_PITCH_MAX   25.0
+#define ALT_HOLD_PITCH_HIGH -25.0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -746,10 +746,10 @@
 
 // Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
 // UART 3 and 4 option only available with the AUAV3 board.
-#define USE_CONSOLE						3
+#define USE_CONSOLE						0
 
 // Optionally enable the new power saving idle mode of the MCU during mainloop
-#define USE_MCU_IDLE					0
+#define USE_MCU_IDLE					1
 
 ////////////////////////////////////////////////////////////////////////////////
 // AUAV3 only options
@@ -764,13 +764,13 @@
 #define USE_USB							0
 
 // define this to enable catapult launch arming
-#define CATAPULT_LAUNCH_ENABLE
+//#define CATAPULT_LAUNCH_ENABLE
 
 // replace gps altitude with pressure altitude in IMU location estimation
-#define USE_PRESSURE_ALT
+//#define USE_PRESSURE_ALT
 
 // replace IMU altitude with pressure altitude in mavlink VFR_HUD record
-//#define TEST_BAROMETER_ALTITUDE
-#undef TEST_BAROMETER_ALTITUDE
+#define TEST_BAROMETER_ALTITUDE
+//#undef TEST_BAROMETER_ALTITUDE
 
 #endif

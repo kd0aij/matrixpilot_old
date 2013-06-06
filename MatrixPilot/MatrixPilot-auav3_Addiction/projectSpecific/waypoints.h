@@ -23,7 +23,7 @@
 // Waypoint handling
 
 // Move on to the next waypoint when getting within this distance of the current goal (in meters)
-#define WAYPOINT_RADIUS 		10
+#define WAYPOINT_RADIUS 		5
 
 // Origin Location
 // When using relative waypoints, the default is to interpret those waypoints as relative to the
@@ -45,149 +45,38 @@
 // examine the telemetry after a flight, take a look in the .csv file, it will be easy to spot the
 // altitude, expressed in meters.
 
+////////////////////////////////////////////////////////////////////////////////
+// This is an AVC lefthand course for takeoff to the west
+
+#pragma message "avc lefthand course shifted to AAM east field, west X"
+
 #define USE_FIXED_ORIGIN		1
-//#define FIXED_ORIGIN_LOCATION	{ -1219950467, 374124664, 30.0 }	// A point in Baylands Park in Sunnyvale, CA
+
+// center of launch zone 40 4' 22.35"N 105 13' 48.88"W
+//#define FIXED_ORIGIN_LOCATION	{ -1052302444, 400728750, 1587.7 }
 
 // AAM East Field runway center 39°50'31.83"N  105°12'44.81"W
-#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1808.0 }
+//#define FIXED_ORIGIN_LOCATION	{ -1052124472, 398421750, 1812.0 }
+
+// AAM East Field runway west X
+#define FIXED_ORIGIN_LOCATION	{ -1052136160, 398424410, 1812.0 }
+
+// AAM East Field runway east X
+//#define FIXED_ORIGIN_LOCATION	{ -1052112480,  39841910, 1812.0 }
 
 // AAM West Field runway center  39°50'31.97"N  105°13'10.17"W (105.2194917, 39.842213889)
 //#define FIXED_ORIGIN_LOCATION	{ -1052194917, 398422138, 1817.0 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Waypoint definitions
-// 
-// Define the main course as:
-// 
-// const struct waypointDef waypoints[] = {
-//						waypoint1 ,
-//						waypoint2 ,
-//						etc.
-//						} ;
-// 
-// and the Failsafe RTL course as:
-// 
-// const struct waypointDef rtlWaypoints[] = {
-//						waypoint1 ,
-//						waypoint2 ,
-//						etc.
-//						} ;
-// 
-// A waypoint is defined as { { X , Y , Z } , F , CAM_VIEW }
-// where X, Y, and Z are the three coordinates of the waypoint,
-// F stores the flags/options for this waypoint,
-// and CAM_VIEW is a 3D location to aim the camera as {CAM_X, CAM_Y, CAM_Z}, or just
-// CAM_VIEW_LAUNCH to aim the camera at the launch point.
-// (This must be provided even if no camera is used.)
-// 
-// Each waypoint can be defined as either a Relative waypoint or an Absolute waypoint.
-//
-// For a Relative waypoint,
-// X, Y, and Z are distances in meters, relative to the initialization location of the board.
-// X is positive as you move east
-// Y is positive as you move north
-// Z is the height
-// 
-// For an Absolute waypoint,
-// X is Longitude in degrees * 10^+7
-// Y is Latitude in degrees * 10^+7
-// Z is altitude in meters relative to the initialization location of the board.
-// As an example, the absolute waypoint { { -1219950467, 374124664, 100 }, F_ABSOLUTE } represents a point
-// 100 meters above Baylands Park in Sunnyvale, CA, and will fly there normally (not inverted, etc.)
-// ( Longitude = -121.9950467 degrees, Latitude = 37.4124664 degrees. )
-// 
-// Currently F can be set to: F_NORMAL, or any combination of:
-// F_ABSOLUTE		- Waypoints are Relative by default, unless F_ABSOLUTE is specified.
-// 
-// F_TAKEOFF		- More quickly gain altitude at takeoff.
-// F_INVERTED		- Navigate to this waypoint with the plane upside down. (only if STABILIZE_INVERTED_FLIGHT is set to 1 in options.h)
-// F_HOVER			- Hover the plane until reaching this waypoint. (only if STABILIZE_HOVER is set to 1 in options.h)
-//					  NOTE: while hovering, no navigation is performed, and throttle is under manual control.
-// F_LOITER			- After reaching this waypoint, continue navigating towards this same waypoint.  Repeat until leaving waypoint mode.
-// F_TRIGGER		- Trigger an action to happen when this waypoint leg starts.  (See the Trigger Action section of the options.h file.) 
-// F_ALTITUDE_GOAL	- Climb or descend to the given altitude, then continue to the next waypoint.
-// F_CROSS_TRACK	- Navigate using cross-tracking.  Best used for longer waypoint legs.
-// F_LAND			- Navigate towards this waypoint with the throttle off.
-// 
-// 
-// NOTE: Please be very careful when including inverted or hovering legs in a waypoints list.  Even if your plane does not fly well
-//       in these orientations, or if you fly these legs without power, the UDB will keep on trying to maintain these orientations
-//       which could lead to a crash.  If you try to manually recover from this behavior, remember to switch out of waypoiont mode
-//       first, to avoid fighting the stabilization code.
-// 
-// 
-// Camera View Points are now part of a waypoint definition file. The waypoint definition structure requires
-// a camera viewpoint even if you do not have a camera on your plane. (until we move to having a flight
-// planning language).  As a default, you can use the predefined CAM_VIEW_LAUNCH which points at { 0, 0, 0 }.
-// 
-// Camera Viewpoints are exactly like waypoint definitions. They define a point at which
-// the camera will look in 3 dimensions. If you are using a waypoint relative to the initialisation of your 
-// plane, then the camera viewpoint should also be relative e.g. "{ 32 , -22, 0 )".
-// Camera waypoints can be absolute LAT and LONG, and camera target height is height above initalisation.
-// This is the same as a fixed or absolute waypoint.
-// Finally, do not mix relative waypoints and absolute camera viewpoint in the same line. A line should
-// either use both a fixed waypoint and fixed camera viewpoint, or both relative.
-// 
-// 
-// You do not need to specify how many points you have, the compiler will count them for you.
-// You can use the facilities of the compiler to do some simple calculations in defining the course.
-//
-// To use waypoints, make sure FLIGHT_PLAN_TYPE is set to FP_WAYPOINTS in options.h.
-
-
-////////////////////////////////////////////////////////////////////////////////
-// waypoints[]
-// 
-// By default the only waypoint is defined to be 75 meters above the starting point.
-
-//const struct waypointDef waypoints[] = {
-//		{ {   0,   0, 75 } , F_NORMAL, CAM_VIEW_LAUNCH } ,  // return to, and loiter 75 meters above the startup position
-//};
-
-#pragma message "lefthand T/O waypoints, 2 way"
-
 const struct waypointDef waypoints[] = {
-	{ { 30, -7, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 1
-	{ { 100, -28, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
-	{ { 101, 26, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
-	{ { -100, 88, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
-	{ { -109, 87, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
-	{ { -116, 80, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 6
-	{ { -121, 72, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 7
-	{ { -122, 57, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 8
-	{ { -120, 47, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 9
-	{ { -114, 39, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 10
-	{ { -105, 34, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 11
-	{ { -97, 31, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 12
-	{ { -88, 28, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 13
-	{ { -78, 25, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 14
-	{ { -70, 23, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 15
-	{ { -62, 20, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 16
-	{ { -54, 18, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 17
-	{ { -44, 15, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 18
-	{ { -37, 13, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 19
-	{ { -29, 10, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 20
-	{ { -20, 8, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 21
-	{ { -9, 5, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 22
-	{ { 103, -29, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 23
-	{ { 120, 21, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 24
-	{ { 136, 26, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 25
-	{ { 154, 13, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 26
-	{ { 162, -9, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 27
-	{ { 158, -29, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 28
-	{ { 145, -34, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 29
-	{ { 125, -33, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 30
-	{ { 110, -32, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 31
-	{ { 60, -15, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 32
-	{ { 13, -2, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 33
-	{ { -92, 30, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 34
-	{ { -118, 29, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 35
-	{ { -138, 35, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 36
-	{ { -143, 52, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 37
-	{ { -131, 58, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 38
-	{ { -111, 49, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 39
-	{ { -92, 29, 30 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 40
+	{ { 44, 10, 20 } , F_TAKEOFF , CAM_VIEW_LAUNCH } , //Waypoint 1
+	{ { 58, 50, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
+	{ { -172, 330, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { -101, 24, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
+	{ { -81, -14, 20 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
+	{ { -44, -15, 10 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 6
+	{ { 51, 19, -10 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 7
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // rtlWaypoints[]
