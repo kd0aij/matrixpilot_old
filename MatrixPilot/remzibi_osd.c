@@ -22,7 +22,6 @@
 #include "defines.h"
 #include "../libDCM/libDCM_internal.h"
 
-
 #if (USE_OSD == OSD_REMZIBI)
 
 #include <string.h>
@@ -362,6 +361,14 @@ static void update_flight_time()
 #endif
 }
 
+void show_rssi()
+{
+#if (OSD_LOC_RSSI != OSD_LOC_DISABLED && ANALOG_RSSI_INPUT_CHANNEL != CHANNEL_UNUSED)
+	serial_send_location(OSD_LOC_FLIGHT_TIME);
+	serial_output("179,,%i,\r\n", rc_signal_strength);
+#endif
+}
+
 void serial_show_AH()
 {
 #if OSD_SHOW_HORIZON
@@ -510,7 +517,7 @@ void serial_output_8hz( void )
 {
 	if (home_saved)
 	{
-		if (flight_mode == PLANE_IN_FLIGHT)
+		if (flight_mode == PLANE_ON_GROUND || flight_mode == PLANE_IN_FLIGHT)
 		{
 			serial_show_AH();
 		}
@@ -525,6 +532,8 @@ void serial_output_8hz( void )
 			get_mp_mode();
 
 			update_in_flight();		
+
+			show_rssi();
 		}
 
 		if (telemetry_counter % 8 == 0)
@@ -540,7 +549,7 @@ void serial_output_8hz( void )
 		}
 
 		serial_output("$M,11,8,,,MATRIXPILOT,\r\n");		
-		serial_output("$M,136,9,,,WAITING FOR GPS,\r\n");	
+		serial_output("$M,136,7,,,WAITING FOR GPS %i,\r\n", (int)svs);	
 	}
 	
 	if (telemetry_counter == 24 || telemetry_counter % (OSD_REMZIBI_CLS_TIME * 8) == 0)	// 3 secs after home save or about every OSD_REMZIBI_CLS_TIME secs

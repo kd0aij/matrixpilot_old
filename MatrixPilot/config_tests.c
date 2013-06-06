@@ -276,3 +276,7 @@
 	#error("You cannot use both SERIAL_OUTPUT_FORMAT and USE_OSD same time")
 #endif
 
+// Check RSSI configuration for Remzibi OSD
+#if (USE_OSD == OSD_REMZIBI && OSD_LOC_RSSI != OSD_LOC_DISABLED && ANALOG_RSSI_INPUT_CHANNEL == CHANNEL_UNUSED)
+	#error("To use RSSI you have to set channel for ANALOG_RSSI_INPUT_CHANNEL")
+#endif

@@ -91,10 +91,10 @@
 #define OSD_LOC_BATT_USED				OSD_LOC(2,22)			// 5 characters wide, MP only
 #define OSD_LOC_BATT_VOLTAGE			OSD_LOC(3,17)			// 4 characters wide, MP only
 
-#define OSD_LOC_RSSI					OSD_LOC(3,23)			// 4 characters wide, MP only
+#define OSD_LOC_RSSI					OSD_LOC(3,23)			// 4 characters wide, MP and Remzibi OSD
 
 #define OSD_LOC_DISTANCE				OSD_LOC(USE_SMALL_FONT+14,2)			// Remzibi OSD only
-#define OSD_LOC_FLIGHT_TIME				OSD_LOC(USE_SMALL_FONT+15,23)			// 5 charactes wide, Remzibi OSD only
+#define OSD_LOC_FLIGHT_TIME				OSD_LOC(USE_SMALL_FONT+14,23)			// 5 charactes wide, Remzibi OSD only
 #define OSD_LOC_REMZIBI_DEBUG			OSD_LOC_DISABLED						// debug info for Remzibi OSD
 
 
