@@ -151,7 +151,7 @@ const struct waypointDef waypoints[] = {
 	{ { -185, 344, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
 	{ { 65, 51, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
 	{ { 65, 25, 20 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
-	{ { 40, 15, 10 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 6
+	{ { 40, 15, 10 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 6
 	{ { -98, -34, 0 } , F_LAND , CAM_VIEW_LAUNCH } , //Waypoint 7
 };
 
