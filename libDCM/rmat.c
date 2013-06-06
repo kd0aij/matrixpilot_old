@@ -784,6 +784,7 @@ void output_IMUvelocity(void)
 */
 
 extern void dead_reckon(void) ;
+extern uint16_t air_speed_3DIMU;
 
 void dcm_run_imu_step(void)
 //	update the matrix, renormalize it, 
@@ -796,7 +797,8 @@ void dcm_run_imu_step(void)
 	normalize() ;					// local
 	roll_pitch_drift() ;			// local
 #if (MAG_YAW_DRIFT == 1)
-	if ( magMessage == 7  )
+    // TODO: validate: disabling mag_drift when airspeed greater than 5 m/sec
+	if (( magMessage == 7  ) && (air_speed_3DIMU < 500))
 	{
 		mag_drift() ;				// local
 	}

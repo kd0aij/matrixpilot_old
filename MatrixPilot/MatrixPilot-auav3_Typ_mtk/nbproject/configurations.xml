@@ -193,6 +193,8 @@
       <itemPath>projectSpecific/projectStatus.txt</itemPath>
       <itemPath>projectSpecific/stack.S</itemPath>
       <itemPath>projectSpecific/waypoints.h</itemPath>
+      <itemPath>projectSpecific/waypoints_AVCrightHand.h</itemPath>
+      <itemPath>projectSpecific/waypoints_AVCleftHand.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"

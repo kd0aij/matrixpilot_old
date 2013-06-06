@@ -767,10 +767,10 @@
 //#define CATAPULT_LAUNCH_ENABLE
 
 // replace gps altitude with pressure altitude in IMU location estimation
-#define USE_PRESSURE_ALT
+//#define USE_PRESSURE_ALT
 
 // replace IMU altitude with pressure altitude in mavlink VFR_HUD record
-//#define TEST_BAROMETER_ALTITUDE
-#undef TEST_BAROMETER_ALTITUDE
+#define TEST_BAROMETER_ALTITUDE
+//#undef TEST_BAROMETER_ALTITUDE
 
 #endif
