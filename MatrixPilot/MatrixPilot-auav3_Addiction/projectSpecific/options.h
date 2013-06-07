@@ -477,9 +477,9 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP				0.10 //0.22
+#define ROLLKP				0.05 //0.22
 #define ROLLKD				0.01 //0.02
-#define YAWKP_AILERON		0.06 // 0.05
+#define YAWKP_AILERON		0.04 // 0.05
 #define YAWKD_AILERON		0 //0.11 //0.05
 #define AILERON_BOOST		0.5
 
@@ -507,9 +507,9 @@
 // MANUAL_AILERON_RUDDER_MIX is the fraction of manual aileron control to mix into the rudder when
 // in stabilized or waypoint mode.  This mainly helps aileron-initiated turning while in stabilized.
 // RUDDER_BOOST is the additional gain multiplier for the manually commanded rudder deflection
-#define YAWKP_RUDDER				0.06 // 0.1
+#define YAWKP_RUDDER				0.05 // 0.1
 #define YAWKD_RUDDER				0 //0.03 // 0.1
-#define ROLLKP_RUDDER				0.03
+#define ROLLKP_RUDDER				0.04
 #define ROLLKD_RUDDER				0 //0.05
 #define MANUAL_AILERON_RUDDER_MIX	0.0
 #define RUDDER_BOOST				0.5
