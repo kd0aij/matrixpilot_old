@@ -260,12 +260,12 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200              0x1fee          0x2fe5  (12261)
 .const                      0x21ee               0xe1e          0x152d  (5421)
-.text                       0x300c              0x5732          0x82cb  (33483)
-.dinit                      0x873e               0x35c           0x50a  (1290)
-.text                       0x8a9a              0x29ac          0x3e82  (16002)
-.init.delay32               0xb446                0x1c            0x2a  (42)
+.text                       0x300c              0x5734          0x82ce  (33486)
+.dinit                      0x8740               0x35c           0x50a  (1290)
+.text                       0x8a9c              0x29ea          0x3edf  (16095)
+.init.delay32               0xb486                0x1c            0x2a  (42)
 
-                     Total program memory used (bytes):        0x10b93  (68499) 13%
+                     Total program memory used (bytes):        0x10bf3  (68595) 13%
 
 
 Auxflash Memory  [Origin = 0x7fc000, Length = 0x3ff8]
@@ -280,9 +280,9 @@ Data Memory  [Origin = 0x1000, Length = 0xd000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-_0x41b78c9451b0b6ac         0x1000                   0             0x4  (4)
-_0x41b78c3851b0b6ac         0x1004                   0             0x2  (2)
-_0x41b78cf051b0b6ac         0x1006                   0             0x2  (2)
+_0x41b78c9451b1e662         0x1000                   0             0x4  (4)
+_0x41b78c3851b1e662         0x1004                   0             0x2  (2)
+_0x41b78cf051b1e662         0x1006                   0             0x2  (2)
 .nbss                       0x1008                   0             0x2  (2)
 .bss                        0x100a                   0           0x7f2  (2034)
 .data._Stdin                0x17fc                   0            0x88  (136)
@@ -316,8 +316,8 @@ _0x41b78cf051b0b6ac         0x1006                   0             0x2  (2)
 .bss                        0x1d8c                   0             0x4  (4)
 .heap                       0x1d90                   0           0x400  (1024)
 non_eds_stack               0x6000                   0          0x1000  (4096)
-_0x41c230b851b0b6ac         0xdfc0                   0             0xe  (14)
-_0x41c2305c51b0b6ac         0xdfe0                   0             0xe  (14)
+_0x41c230b851b1e662         0xdfc0                   0             0xe  (14)
+_0x41c2305c51b1e662         0xdfe0                   0             0xe  (14)
 
                         Total data memory used (bytes):         0x21ac  (8620) 16%
 
@@ -1070,242 +1070,242 @@ External Symbols in Program Memory (by address):
                   0x004818                  _is_this_the_moment_to_send
                   0x00483e                  _mavlink_frequency_send
                   0x0048c4                  _mavlink_output_40hz
-                  0x005366                  _dcm_init_rmat
-                  0x00542c                  _read_gyros
-                  0x0054c2                  _read_accel
-                  0x005dee                  _udb_magnetometer_callback
-                  0x005fcc                  _dcm_run_imu_step
-                  0x005ff6                  _sine
-                  0x006052                  _arcsine
-                  0x0060ee                  _cosine
-                  0x0060fc                  _rotate_2D_vector_by_vector
-                  0x00616a                  _rotate_2D_long_vector_by_vector
-                  0x0061c8                  _rotate_2D_vector_by_angle
-                  0x0061e4                  _rotate
-                  0x00624e                  _rect_to_polar
-                  0x006302                  _rect_to_polar16
-                  0x0063dc                  _sqrt_int
-                  0x006446                  _sqrt_long
-                  0x0064e8                  _vector2_mag
-                  0x006508                  _vector3_mag
-                  0x006534                  _vector2_normalize
-                  0x006596                  _vector3_normalize
-                  0x006620                  _long_scale
-                  0x0066ae                  _gps_startup_sequence
-                  0x00682a                  _gps_nav_valid
-                  0x00683e                  _nmea_passthru
-                  0x00686e                  _msg_B3
-                  0x0068ae                  _msg_SYNC1
-                  0x0068cc                  _msg_SYNC2
-                  0x006902                  _msg_CLASS
-                  0x00692c                  _msg_ID
-                  0x006954                  _msg_PL1
-                  0x006a44                  _msg_POSLLH
-                  0x006a8a                  _msg_DOP
-                  0x006ad0                  _msg_SOL
-                  0x006b16                  _msg_VELNED
-                  0x006b5c                  _msg_ACK_CLASS
-                  0x006b86                  _msg_ACK_ID
-                  0x006bb0                  _msg_MSGU
-                  0x006be6                  _msg_CS1
-                  0x006c1e                  _commit_gps_data
-                  0x006c82                  _rxBarometer
-                  0x006d98                  _ReadBarCalib_callback
-                  0x007046                  _ReadBarTemp_callback
-                  0x007074                  _ReadBarPres_callback
-                  0x0070e0                  _init_states
-                  0x007106                  _udb_callback_radio_did_turn_off
-                  0x007114                  _udb_background_callback_periodic
-                  0x007300                  build/default/production/_ext/1472/states.o:_startS
-                  0x007308                  build/default/production/_ext/1472/states.o:_calibrateS
-                  0x007346                  build/default/production/_ext/1472/states.o:_acquiringS
-                  0x0073c0                  build/default/production/_ext/1472/states.o:_manualS
-                  0x007404                  build/default/production/_ext/1472/states.o:_stabilizedS
-                  0x007444                  build/default/production/_ext/1472/states.o:_waypointS
-                  0x00748a                  build/default/production/_ext/1472/states.o:_returnS
-                  0x007510                  _dcm_callback_gps_location_updated
-                  0x00752c                  _set_goal
-                  0x007598                  _update_goal_alt
-                  0x0075a4                  _process_flightplan
-                  0x0075c6                  _compute_bearing_to_goal
-                  0x007750                  _wind_gain_adjustment
-                  0x007758                  _determine_navigation_deflection
-                  0x0078ac                  _wp_to_relative
-                  0x007950                  _init_flightplan
-                  0x0079b0                  _use_fixed_origin
-                  0x0079b8                  _get_fixed_origin
-                  0x007a1e                  _next_waypoint
-                  0x007b3e                  _run_flightplan
-                  0x007bfe                  _flightplan_live_begin
-                  0x007c0a                  _flightplan_live_received_byte
-                  0x007c48                  _flightplan_live_commit
-                  0x007c64                  _I2C2_Normal
-                  0x007c92                  _I2C2_Reset
-                  0x007cfe                  _I2C2_trigger_service
-                  0x007d0a                  build/default/production/_ext/1077454706/I2C2.o:_serviceI2C2
-                  0x007d20                  __MI2C2Interrupt
-                  0x007d86                  _I2C2_Write
-                  0x007dcc                  _I2C2_Read
-                  0x007e14                  _I2C2_checkACK
-                  0x007e50                  build/default/production/_ext/1077454706/I2C2.o:_isr_startWrite
-                  0x007e6c                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeAddress
-                  0x007e82                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeCommandData
-                  0x007ecc                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeData
-                  0x007f08                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeStop
-                  0x007f14                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneWrite
-                  0x007f2c                  build/default/production/_ext/1077454706/I2C2.o:_isr_readStart
-                  0x007f3c                  build/default/production/_ext/1077454706/I2C2.o:_isr_readAddress
-                  0x007f6c                  build/default/production/_ext/1077454706/I2C2.o:_isr_recen
-                  0x007f86                  build/default/production/_ext/1077454706/I2C2.o:_isr_rerecen
-                  0x007f92                  build/default/production/_ext/1077454706/I2C2.o:_isr_recstore
-                  0x007fc0                  build/default/production/_ext/1077454706/I2C2.o:_isr_stopRead
-                  0x007fcc                  build/default/production/_ext/1077454706/I2C2.o:_isr_idle
-                  0x007fd2                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneRead
-                  0x008008                  _udb_init_capture
-                  0x0080f4                  _set_udb_pwIn
-                  0x00813c                  __IC1Interrupt
-                  0x008188                  __IC2Interrupt
-                  0x0081d6                  __IC3Interrupt
-                  0x008224                  __IC4Interrupt
-                  0x008272                  __IC5Interrupt
-                  0x0082c0                  __IC6Interrupt
-                  0x00830e                  __IC7Interrupt
-                  0x00835a                  __IC8Interrupt
-                  0x0083a8                  _excess_energy_height
-                  0x0083b0                  _altitudeCntrl
-                  0x0083ca                  _set_throttle_control
-                  0x008420                  _setTargetAltitude
-                  0x00842c                  _normalAltitudeCntrl
-                  0x00869e                  _manualThrottle
-                  0x0086e6                  _hoverAltitudeCntrl
-                  0x008a9a                  _udb_init_ADC
-                  0x008b7e                  __DMA3Interrupt
-                  0x008dc6                  _gpsoutbin
-                  0x008de4                  _gpsoutline
-                  0x008dfc                  _udb_gps_callback_get_byte_to_send
-                  0x008e28                  _udb_gps_callback_received_byte
-                  0x008e36                  _udb_background_callback_triggered
-                  0x009074                  _initSPI1_master16
-                  0x0090b6                  _writeSPI1reg16
-                  0x0090e6                  _no_call_back
-                  0x0090ec                  _readSPI1_burst16n
-                  0x00912a                  __SPI1Interrupt
-                  0x00919c                  _initSPI2_master16
-                  0x0091de                  _writeSPI2reg16
-                  0x009222                  _readSPI2_burst16n
-                  0x009258                  __SPI2Interrupt
-                  0x009310                  _estimateWind
-                  0x0095a6                  _dead_reckon
-                  0x009830                  _rxMagnetometer
-                  0x00992e                  build/default/production/_ext/1077454706/magnetometer.o:_I2C_callback
-                  0x009aa4                  _HILSIM_MagData
-                  0x009ab2                  _udb_init_GPS
-                  0x009b12                  _udb_gps_set_rate
-                  0x009b3c                  _udb_gps_check_rate
-                  0x009b6e                  _udb_gps_start_sending_data
-                  0x009b76                  __U1TXInterrupt
-                  0x009bae                  __U1RXInterrupt
-                  0x009be8                  _udb_init_USART
-                  0x009c4a                  _udb_serial_set_rate
-                  0x009c74                  _udb_serial_check_rate
-                  0x009ca6                  _udb_serial_start_sending_data
-                  0x009cae                  __U2TXInterrupt
-                  0x009ce6                  __U2RXInterrupt
-                  0x009d20                  _servoMix
-                  0x009e80                  _cameraServoMix
-                  0x009f24                  _get_reset_flags
-                  0x009f2c                  _configurePPS
-                  0x00a078                  _configureDigitalIO
-                  0x00a0c0                  _init_leds
-                  0x00a0d6                  _mcu_init
-                  0x00a120                  _register_event
-                  0x00a12e                  _register_event_p
-                  0x00a176                  _trigger_event
-                  0x00a1c0                  _init_events
-                  0x00a222                  __C2Interrupt
-                  0x00a28c                  __C1Interrupt
-                  0x00a2f6                  _pitchCntrl
-                  0x00a312                  _normalPitchCntrl
-                  0x00a420                  _hoverPitchCntrl
-                  0x00a4c8                  _udb_init_clock
-                  0x00a544                  __T1Interrupt
-                  0x00a5a4                  _udb_background_trigger
-                  0x00a5ac                  __T7Interrupt
-                  0x00a5d4                  _udb_cpu_load
-                  0x00a5e6                  __T5Interrupt
-                  0x00a604                  __T6Interrupt
-                  0x00a696                  _dcm_init
-                  0x00a6ac                  _dcm_run_init_step
-                  0x00a6f2                  _udb_callback_read_sensors
-                  0x00a700                  _do_I2C_stuff
-                  0x00a74e                  _udb_servo_callback_prepare_outputs
-                  0x00a774                  _dcm_calibrate
-                  0x00a788                  _dcm_set_origin_location
-                  0x00a7ca                  _dcm_absolute_to_relative
-                  0x00a82c                  _udb_init_pwm
-                  0x00a874                  _udb_set_action_state
-                  0x00a890                  _start_pwm_outputs
-                  0x00a8a6                  __T4Interrupt
-                  0x00a99e                  _init_behavior
-                  0x00a9b0                  _setBehavior
-                  0x00a9d6                  _canStabilizeInverted
-                  0x00a9de                  _canStabilizeHover
-                  0x00a9e6                  _updateBehavior
-                  0x00aaa8                  _updateTriggerAction
-                  0x00aaf4                  _triggerActionSetValue
-                  0x00ab00                  _flight_mode_switch_manual
-                  0x00ab0e                  _flight_mode_switch_stabilize
-                  0x00ab1c                  _flight_mode_switch_waypoints
-                  0x00ab2a                  _flight_mode_switch_2pos_poll
-                  0x00ab30                  _flight_mode_switch_check_set
-                  0x00ac1c                  _MPU6000_init16
-                  0x00aca0                  _process_MPU_data
-                  0x00acc8                  _MPU6000_read
-                  0x00ace0                  __INT1Interrupt
-                  0x00ad06                  _MPU6000_print
-                  0x00ad36                  _reset
-                  0x00ad50                  __OscillatorFail
-                  0x00ad7c                  __AddressError
-                  0x00ada2                  __StackError
-                  0x00adc8                  __MathError
-                  0x00adee                  __DMACError
-                  0x00ae3e                  _rollCntrl
-                  0x00ae58                  _normalRollCntrl
-                  0x00aef2                  _hoverRollCntrl
-                  0x00af42                  _get_barometer_temperature
-                  0x00af4a                  _get_barometer_pressure
-                  0x00af54                  _get_barometer_altitude
-                  0x00af5e                  _get_barometer_agl_altitude
-                  0x00af68                  _altimeter_calibrate
-                  0x00afc4                  _udb_barometer_callback
-                  0x00afda                  _estAltitude
-                  0x00b032                  _yawCntrl
-                  0x00b04c                  _normalYawCntrl
-                  0x00b0be                  _hoverYawCntrl
-                  0x00b11c                  _init_servoPrepare
-                  0x00b17e                  _dcm_servo_callback_prepare_outputs
-                  0x00b1ce                  _manualPassthrough
-                  0x00b1e8                  _udb_init
-                  0x00b218                  _udb_run
-                  0x00b21e                  _udb_a2d_record_offsets
-                  0x00b240                  _udb_servo_record_trims
-                  0x00b26c                  _udb_servo_pulsesat
-                  0x00b29a                  _calculate_analog_sensor_values
-                  0x00b2a0                  _cam_pitchServoLimit
-                  0x00b2ca                  _cam_yawServoLimit
-                  0x00b2f4                  _set_camera_view
-                  0x00b30c                  _compute_camera_view
-                  0x00b32a                  _cameraCntrl
-                  0x00b330                  _dcm_enable_yaw_drift_correction
-                  0x00b352                  _estYawDrift
-                  0x00b3b4                  _get_geo_heading_angle
-                  0x00b3f4                  _SP_start
-                  0x00b3f8                  _SP_limit
-                  0x00b3fc                  _SP_current
-                  0x00b400                  _getErrLoc
-                  0x00b416                  _gentrap
-                  0x00b41e                  _main
-                  0x00b446                  ___delay32
+                  0x005368                  _dcm_init_rmat
+                  0x00542e                  _read_gyros
+                  0x0054c4                  _read_accel
+                  0x005df0                  _udb_magnetometer_callback
+                  0x005fce                  _dcm_run_imu_step
+                  0x005ff8                  _sine
+                  0x006054                  _arcsine
+                  0x0060f0                  _cosine
+                  0x0060fe                  _rotate_2D_vector_by_vector
+                  0x00616c                  _rotate_2D_long_vector_by_vector
+                  0x0061ca                  _rotate_2D_vector_by_angle
+                  0x0061e6                  _rotate
+                  0x006250                  _rect_to_polar
+                  0x006304                  _rect_to_polar16
+                  0x0063de                  _sqrt_int
+                  0x006448                  _sqrt_long
+                  0x0064ea                  _vector2_mag
+                  0x00650a                  _vector3_mag
+                  0x006536                  _vector2_normalize
+                  0x006598                  _vector3_normalize
+                  0x006622                  _long_scale
+                  0x0066b0                  _gps_startup_sequence
+                  0x00682c                  _gps_nav_valid
+                  0x006840                  _nmea_passthru
+                  0x006870                  _msg_B3
+                  0x0068b0                  _msg_SYNC1
+                  0x0068ce                  _msg_SYNC2
+                  0x006904                  _msg_CLASS
+                  0x00692e                  _msg_ID
+                  0x006956                  _msg_PL1
+                  0x006a46                  _msg_POSLLH
+                  0x006a8c                  _msg_DOP
+                  0x006ad2                  _msg_SOL
+                  0x006b18                  _msg_VELNED
+                  0x006b5e                  _msg_ACK_CLASS
+                  0x006b88                  _msg_ACK_ID
+                  0x006bb2                  _msg_MSGU
+                  0x006be8                  _msg_CS1
+                  0x006c20                  _commit_gps_data
+                  0x006c84                  _rxBarometer
+                  0x006d9a                  _ReadBarCalib_callback
+                  0x007048                  _ReadBarTemp_callback
+                  0x007076                  _ReadBarPres_callback
+                  0x0070e2                  _init_states
+                  0x007108                  _udb_callback_radio_did_turn_off
+                  0x007116                  _udb_background_callback_periodic
+                  0x007302                  build/default/production/_ext/1472/states.o:_startS
+                  0x00730a                  build/default/production/_ext/1472/states.o:_calibrateS
+                  0x007348                  build/default/production/_ext/1472/states.o:_acquiringS
+                  0x0073c2                  build/default/production/_ext/1472/states.o:_manualS
+                  0x007406                  build/default/production/_ext/1472/states.o:_stabilizedS
+                  0x007446                  build/default/production/_ext/1472/states.o:_waypointS
+                  0x00748c                  build/default/production/_ext/1472/states.o:_returnS
+                  0x007512                  _dcm_callback_gps_location_updated
+                  0x00752e                  _set_goal
+                  0x00759a                  _update_goal_alt
+                  0x0075a6                  _process_flightplan
+                  0x0075c8                  _compute_bearing_to_goal
+                  0x007752                  _wind_gain_adjustment
+                  0x00775a                  _determine_navigation_deflection
+                  0x0078ae                  _wp_to_relative
+                  0x007952                  _init_flightplan
+                  0x0079b2                  _use_fixed_origin
+                  0x0079ba                  _get_fixed_origin
+                  0x007a20                  _next_waypoint
+                  0x007b40                  _run_flightplan
+                  0x007c00                  _flightplan_live_begin
+                  0x007c0c                  _flightplan_live_received_byte
+                  0x007c4a                  _flightplan_live_commit
+                  0x007c66                  _I2C2_Normal
+                  0x007c94                  _I2C2_Reset
+                  0x007d00                  _I2C2_trigger_service
+                  0x007d0c                  build/default/production/_ext/1077454706/I2C2.o:_serviceI2C2
+                  0x007d22                  __MI2C2Interrupt
+                  0x007d88                  _I2C2_Write
+                  0x007dce                  _I2C2_Read
+                  0x007e16                  _I2C2_checkACK
+                  0x007e52                  build/default/production/_ext/1077454706/I2C2.o:_isr_startWrite
+                  0x007e6e                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeAddress
+                  0x007e84                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeCommandData
+                  0x007ece                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeData
+                  0x007f0a                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeStop
+                  0x007f16                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneWrite
+                  0x007f2e                  build/default/production/_ext/1077454706/I2C2.o:_isr_readStart
+                  0x007f3e                  build/default/production/_ext/1077454706/I2C2.o:_isr_readAddress
+                  0x007f6e                  build/default/production/_ext/1077454706/I2C2.o:_isr_recen
+                  0x007f88                  build/default/production/_ext/1077454706/I2C2.o:_isr_rerecen
+                  0x007f94                  build/default/production/_ext/1077454706/I2C2.o:_isr_recstore
+                  0x007fc2                  build/default/production/_ext/1077454706/I2C2.o:_isr_stopRead
+                  0x007fce                  build/default/production/_ext/1077454706/I2C2.o:_isr_idle
+                  0x007fd4                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneRead
+                  0x00800a                  _udb_init_capture
+                  0x0080f6                  _set_udb_pwIn
+                  0x00813e                  __IC1Interrupt
+                  0x00818a                  __IC2Interrupt
+                  0x0081d8                  __IC3Interrupt
+                  0x008226                  __IC4Interrupt
+                  0x008274                  __IC5Interrupt
+                  0x0082c2                  __IC6Interrupt
+                  0x008310                  __IC7Interrupt
+                  0x00835c                  __IC8Interrupt
+                  0x0083aa                  _excess_energy_height
+                  0x0083b2                  _altitudeCntrl
+                  0x0083cc                  _set_throttle_control
+                  0x008422                  _setTargetAltitude
+                  0x00842e                  _normalAltitudeCntrl
+                  0x0086a0                  _manualThrottle
+                  0x0086e8                  _hoverAltitudeCntrl
+                  0x008a9c                  _udb_init_ADC
+                  0x008b80                  __DMA3Interrupt
+                  0x008dc8                  _gpsoutbin
+                  0x008de6                  _gpsoutline
+                  0x008dfe                  _udb_gps_callback_get_byte_to_send
+                  0x008e2a                  _udb_gps_callback_received_byte
+                  0x008e38                  _udb_background_callback_triggered
+                  0x009076                  _initSPI1_master16
+                  0x0090b8                  _writeSPI1reg16
+                  0x0090e8                  _no_call_back
+                  0x0090ee                  _readSPI1_burst16n
+                  0x00912c                  __SPI1Interrupt
+                  0x00919e                  _initSPI2_master16
+                  0x0091e0                  _writeSPI2reg16
+                  0x009224                  _readSPI2_burst16n
+                  0x00925a                  __SPI2Interrupt
+                  0x009312                  _estimateWind
+                  0x0095a8                  _dead_reckon
+                  0x009832                  _rxMagnetometer
+                  0x009930                  build/default/production/_ext/1077454706/magnetometer.o:_I2C_callback
+                  0x009aa6                  _HILSIM_MagData
+                  0x009ab4                  _udb_init_GPS
+                  0x009b14                  _udb_gps_set_rate
+                  0x009b3e                  _udb_gps_check_rate
+                  0x009b70                  _udb_gps_start_sending_data
+                  0x009b78                  __U1TXInterrupt
+                  0x009bb0                  __U1RXInterrupt
+                  0x009bea                  _udb_init_USART
+                  0x009c4c                  _udb_serial_set_rate
+                  0x009c76                  _udb_serial_check_rate
+                  0x009ca8                  _udb_serial_start_sending_data
+                  0x009cb0                  __U2TXInterrupt
+                  0x009ce8                  __U2RXInterrupt
+                  0x009d22                  _servoMix
+                  0x009e82                  _cameraServoMix
+                  0x009f26                  _get_reset_flags
+                  0x009f2e                  _configurePPS
+                  0x00a07a                  _configureDigitalIO
+                  0x00a0c2                  _init_leds
+                  0x00a0d8                  _mcu_init
+                  0x00a122                  _register_event
+                  0x00a130                  _register_event_p
+                  0x00a178                  _trigger_event
+                  0x00a1c2                  _init_events
+                  0x00a224                  __C2Interrupt
+                  0x00a28e                  __C1Interrupt
+                  0x00a2f8                  _pitchCntrl
+                  0x00a314                  _normalPitchCntrl
+                  0x00a422                  _hoverPitchCntrl
+                  0x00a4ca                  _udb_init_clock
+                  0x00a546                  __T1Interrupt
+                  0x00a5a6                  _udb_background_trigger
+                  0x00a5ae                  __T7Interrupt
+                  0x00a5d6                  _udb_cpu_load
+                  0x00a5e8                  __T5Interrupt
+                  0x00a606                  __T6Interrupt
+                  0x00a698                  _dcm_init
+                  0x00a6ae                  _dcm_run_init_step
+                  0x00a6f4                  _udb_callback_read_sensors
+                  0x00a702                  _do_I2C_stuff
+                  0x00a750                  _udb_servo_callback_prepare_outputs
+                  0x00a776                  _dcm_calibrate
+                  0x00a78a                  _dcm_set_origin_location
+                  0x00a7cc                  _dcm_absolute_to_relative
+                  0x00a82e                  _udb_init_pwm
+                  0x00a876                  _udb_set_action_state
+                  0x00a892                  _start_pwm_outputs
+                  0x00a8a8                  __T4Interrupt
+                  0x00a9a0                  _init_behavior
+                  0x00a9b2                  _setBehavior
+                  0x00a9d8                  _canStabilizeInverted
+                  0x00a9e0                  _canStabilizeHover
+                  0x00a9e8                  _updateBehavior
+                  0x00aaaa                  _updateTriggerAction
+                  0x00aaf6                  _triggerActionSetValue
+                  0x00ab02                  _yawCntrl
+                  0x00ab1c                  _normalYawCntrl
+                  0x00abcc                  _hoverYawCntrl
+                  0x00ac2a                  _flight_mode_switch_manual
+                  0x00ac38                  _flight_mode_switch_stabilize
+                  0x00ac46                  _flight_mode_switch_waypoints
+                  0x00ac54                  _flight_mode_switch_2pos_poll
+                  0x00ac5a                  _flight_mode_switch_check_set
+                  0x00ad46                  _MPU6000_init16
+                  0x00adca                  _process_MPU_data
+                  0x00adf2                  _MPU6000_read
+                  0x00ae0a                  __INT1Interrupt
+                  0x00ae30                  _MPU6000_print
+                  0x00ae60                  _reset
+                  0x00ae7a                  __OscillatorFail
+                  0x00aea6                  __AddressError
+                  0x00aecc                  __StackError
+                  0x00aef2                  __MathError
+                  0x00af18                  __DMACError
+                  0x00af68                  _rollCntrl
+                  0x00af82                  _normalRollCntrl
+                  0x00b01c                  _hoverRollCntrl
+                  0x00b06c                  _get_barometer_temperature
+                  0x00b074                  _get_barometer_pressure
+                  0x00b07e                  _get_barometer_altitude
+                  0x00b088                  _get_barometer_agl_altitude
+                  0x00b092                  _altimeter_calibrate
+                  0x00b0ee                  _udb_barometer_callback
+                  0x00b104                  _estAltitude
+                  0x00b15c                  _init_servoPrepare
+                  0x00b1be                  _dcm_servo_callback_prepare_outputs
+                  0x00b20e                  _manualPassthrough
+                  0x00b228                  _udb_init
+                  0x00b258                  _udb_run
+                  0x00b25e                  _udb_a2d_record_offsets
+                  0x00b280                  _udb_servo_record_trims
+                  0x00b2ac                  _udb_servo_pulsesat
+                  0x00b2da                  _calculate_analog_sensor_values
+                  0x00b2e0                  _cam_pitchServoLimit
+                  0x00b30a                  _cam_yawServoLimit
+                  0x00b334                  _set_camera_view
+                  0x00b34c                  _compute_camera_view
+                  0x00b36a                  _cameraCntrl
+                  0x00b370                  _dcm_enable_yaw_drift_correction
+                  0x00b392                  _estYawDrift
+                  0x00b3f4                  _get_geo_heading_angle
+                  0x00b434                  _SP_start
+                  0x00b438                  _SP_limit
+                  0x00b43c                  _SP_current
+                  0x00b440                  _getErrLoc
+                  0x00b456                  _gentrap
+                  0x00b45e                  _main
+                  0x00b486                  ___delay32
 
 External Symbols in Program Memory (by name):
 
@@ -1313,16 +1313,16 @@ External Symbols in Program Memory (by name):
                   0x000e34                  _CloseSPI2
                   0x000e3c                  _ConfigIntSPI1
                   0x000e5c                  _ConfigIntSPI2
-                  0x009aa4                  _HILSIM_MagData
-                  0x007c64                  _I2C2_Normal
-                  0x007dcc                  _I2C2_Read
-                  0x007c92                  _I2C2_Reset
-                  0x007d86                  _I2C2_Write
-                  0x007e14                  _I2C2_checkACK
-                  0x007cfe                  _I2C2_trigger_service
-                  0x00ac1c                  _MPU6000_init16
-                  0x00ad06                  _MPU6000_print
-                  0x00acc8                  _MPU6000_read
+                  0x009aa6                  _HILSIM_MagData
+                  0x007c66                  _I2C2_Normal
+                  0x007dce                  _I2C2_Read
+                  0x007c94                  _I2C2_Reset
+                  0x007d88                  _I2C2_Write
+                  0x007e16                  _I2C2_checkACK
+                  0x007d00                  _I2C2_trigger_service
+                  0x00ad46                  _MPU6000_init16
+                  0x00ae30                  _MPU6000_print
+                  0x00adf2                  _MPU6000_read
                   0x000962                  _MatrixAdd
                   0x0009a2                  _MatrixMultiply
                   0x000a1c                  _MatrixScale
@@ -1330,12 +1330,12 @@ External Symbols in Program Memory (by name):
                   0x000aa6                  _MatrixTranspose
                   0x000e7c                  _OpenSPI1
                   0x000e8a                  _OpenSPI2
-                  0x006d98                  _ReadBarCalib_callback
-                  0x007074                  _ReadBarPres_callback
-                  0x007046                  _ReadBarTemp_callback
-                  0x00b3fc                  _SP_current
-                  0x00b3f8                  _SP_limit
-                  0x00b3f4                  _SP_start
+                  0x006d9a                  _ReadBarCalib_callback
+                  0x007076                  _ReadBarPres_callback
+                  0x007048                  _ReadBarTemp_callback
+                  0x00b43c                  _SP_current
+                  0x00b438                  _SP_limit
+                  0x00b434                  _SP_start
                   0x000aee                  _VectorAdd
                   0x000b2c                  _VectorConvolve
                   0x000c24                  _VectorCopy
@@ -1349,48 +1349,48 @@ External Symbols in Program Memory (by name):
                   0x000d86                  _VectorScale
                   0x000dc2                  _VectorSubtract
                   0x000e0e                  _VectorZeroPad
-                  0x00ad7c                  __AddressError
+                  0x00aea6                  __AddressError
                   0x00202e                  __Atexit
-                  0x00a28c                  __C1Interrupt
-                  0x00a222                  __C2Interrupt
+                  0x00a28e                  __C1Interrupt
+                  0x00a224                  __C2Interrupt
                   0x001f78                  __Closreg
-                  0x008b7e                  __DMA3Interrupt
-                  0x00adee                  __DMACError
+                  0x008b80                  __DMA3Interrupt
+                  0x00af18                  __DMACError
                   0x00197e                  __DNKfflush
                   0x0003dc                  __DefaultInterrupt
                   0x001acc                  __Fwprep
                   0x002164                  __Getmem
-                  0x00813c                  __IC1Interrupt
-                  0x008188                  __IC2Interrupt
-                  0x0081d6                  __IC3Interrupt
-                  0x008224                  __IC4Interrupt
-                  0x008272                  __IC5Interrupt
-                  0x0082c0                  __IC6Interrupt
-                  0x00830e                  __IC7Interrupt
-                  0x00835a                  __IC8Interrupt
-                  0x00ace0                  __INT1Interrupt
+                  0x00813e                  __IC1Interrupt
+                  0x00818a                  __IC2Interrupt
+                  0x0081d8                  __IC3Interrupt
+                  0x008226                  __IC4Interrupt
+                  0x008274                  __IC5Interrupt
+                  0x0082c2                  __IC6Interrupt
+                  0x008310                  __IC7Interrupt
+                  0x00835c                  __IC8Interrupt
+                  0x00ae0a                  __INT1Interrupt
                   0x001b5a                  __Litob
-                  0x007d20                  __MI2C2Interrupt
-                  0x00adc8                  __MathError
-                  0x00ad50                  __OscillatorFail
+                  0x007d22                  __MI2C2Interrupt
+                  0x00aef2                  __MathError
+                  0x00ae7a                  __OscillatorFail
                   0x001df6                  __Puttxt
-                  0x00912a                  __SPI1Interrupt
-                  0x009258                  __SPI2Interrupt
-                  0x00ada2                  __StackError
-                  0x00a544                  __T1Interrupt
-                  0x00a8a6                  __T4Interrupt
-                  0x00a5e6                  __T5Interrupt
-                  0x00a604                  __T6Interrupt
-                  0x00a5ac                  __T7Interrupt
-                  0x009bae                  __U1RXInterrupt
-                  0x009b76                  __U1TXInterrupt
-                  0x009ce6                  __U2RXInterrupt
-                  0x009cae                  __U2TXInterrupt
+                  0x00912c                  __SPI1Interrupt
+                  0x00925a                  __SPI2Interrupt
+                  0x00aecc                  __StackError
+                  0x00a546                  __T1Interrupt
+                  0x00a8a8                  __T4Interrupt
+                  0x00a5e8                  __T5Interrupt
+                  0x00a606                  __T6Interrupt
+                  0x00a5ae                  __T7Interrupt
+                  0x009bb0                  __U1RXInterrupt
+                  0x009b78                  __U1TXInterrupt
+                  0x009ce8                  __U2RXInterrupt
+                  0x009cb0                  __U2TXInterrupt
                   0x001f6e                  __Vacopy
                   0x0005ae                  ___Printf_cdnopuxX
                   0x000724                  ___Putfld_cdnopuxX
                   0x000e9a                  ___addsf3
-                  0x00b446                  ___delay32
+                  0x00b486                  ___delay32
                   0x001508                  ___divdi3
                   0x000f54                  ___divsf3
                   0x000fd8                  ___divsi3
@@ -1426,45 +1426,45 @@ External Symbols in Program Memory (by name):
                   0x000222                  __psv_init
                   0x000200                  __resetPRI
                   0x003002                  _aileronbgain
-                  0x00af68                  _altimeter_calibrate
-                  0x0083b0                  _altitudeCntrl
-                  0x006052                  _arcsine
+                  0x00b092                  _altimeter_calibrate
+                  0x0083b2                  _altitudeCntrl
+                  0x006054                  _arcsine
                   0x002a2e                  _bin_mode_nonmea
                   0x002a0c                  _bin_mode_withnmea
-                  0x00b29a                  _calculate_analog_sensor_values
-                  0x00b2a0                  _cam_pitchServoLimit
-                  0x00b2ca                  _cam_yawServoLimit
-                  0x00b32a                  _cameraCntrl
-                  0x009e80                  _cameraServoMix
-                  0x00a9de                  _canStabilizeHover
-                  0x00a9d6                  _canStabilizeInverted
+                  0x00b2da                  _calculate_analog_sensor_values
+                  0x00b2e0                  _cam_pitchServoLimit
+                  0x00b30a                  _cam_yawServoLimit
+                  0x00b36a                  _cameraCntrl
+                  0x009e82                  _cameraServoMix
+                  0x00a9e0                  _canStabilizeHover
+                  0x00a9d8                  _canStabilizeInverted
                   0x0047ce                  _command_ack
-                  0x006c1e                  _commit_gps_data
-                  0x0075c6                  _compute_bearing_to_goal
-                  0x00b30c                  _compute_camera_view
+                  0x006c20                  _commit_gps_data
+                  0x0075c8                  _compute_bearing_to_goal
+                  0x00b34c                  _compute_camera_view
                   0x002b5e                  _config_NAV5
                   0x002b98                  _config_NAV5_length
-                  0x00a078                  _configureDigitalIO
-                  0x009f2c                  _configurePPS
-                  0x0060ee                  _cosine
+                  0x00a07a                  _configureDigitalIO
+                  0x009f2e                  _configurePPS
+                  0x0060f0                  _cosine
                   0x002a0a                  _count_of_parameters_list
-                  0x00a7ca                  _dcm_absolute_to_relative
-                  0x00a774                  _dcm_calibrate
-                  0x007510                  _dcm_callback_gps_location_updated
-                  0x00b330                  _dcm_enable_yaw_drift_correction
-                  0x00a696                  _dcm_init
-                  0x005366                  _dcm_init_rmat
-                  0x005fcc                  _dcm_run_imu_step
-                  0x00a6ac                  _dcm_run_init_step
-                  0x00b17e                  _dcm_servo_callback_prepare_outputs
-                  0x00a788                  _dcm_set_origin_location
-                  0x0095a6                  _dead_reckon
-                  0x007758                  _determine_navigation_deflection
+                  0x00a7cc                  _dcm_absolute_to_relative
+                  0x00a776                  _dcm_calibrate
+                  0x007512                  _dcm_callback_gps_location_updated
+                  0x00b370                  _dcm_enable_yaw_drift_correction
+                  0x00a698                  _dcm_init
+                  0x005368                  _dcm_init_rmat
+                  0x005fce                  _dcm_run_imu_step
+                  0x00a6ae                  _dcm_run_init_step
+                  0x00b1be                  _dcm_servo_callback_prepare_outputs
+                  0x00a78a                  _dcm_set_origin_location
+                  0x0095a8                  _dead_reckon
+                  0x00775a                  _determine_navigation_deflection
                   0x002a8c                  _disable_GLL
                   0x002aaa                  _disable_GSA
                   0x002a50                  _disable_GSV
                   0x002a6e                  _disable_VTG
-                  0x00a700                  _do_I2C_stuff
+                  0x00a702                  _do_I2C_stuff
                   0x003004                  _elevatorbgain
                   0x002b3e                  _enable_NAV_DOP
                   0x002b92                  _enable_NAV_DOP_length
@@ -1479,61 +1479,61 @@ External Symbols in Program Memory (by name):
                   0x002af2                  _enable_UBX_NMEA
                   0x002ad6                  _enable_UBX_only
                   0x002b94                  _enable_UBX_only_length
-                  0x00afda                  _estAltitude
-                  0x00b352                  _estYawDrift
-                  0x009310                  _estimateWind
-                  0x0083a8                  _excess_energy_height
+                  0x00b104                  _estAltitude
+                  0x00b392                  _estYawDrift
+                  0x009312                  _estimateWind
+                  0x0083aa                  _excess_energy_height
                   0x0015e4                  _expf
                   0x001f8c                  _fclose
-                  0x00ab2a                  _flight_mode_switch_2pos_poll
-                  0x00ab30                  _flight_mode_switch_check_set
-                  0x00ab00                  _flight_mode_switch_manual
-                  0x00ab0e                  _flight_mode_switch_stabilize
-                  0x00ab1c                  _flight_mode_switch_waypoints
-                  0x007bfe                  _flightplan_live_begin
-                  0x007c48                  _flightplan_live_commit
-                  0x007c0a                  _flightplan_live_received_byte
+                  0x00ac54                  _flight_mode_switch_2pos_poll
+                  0x00ac5a                  _flight_mode_switch_check_set
+                  0x00ac2a                  _flight_mode_switch_manual
+                  0x00ac38                  _flight_mode_switch_stabilize
+                  0x00ac46                  _flight_mode_switch_waypoints
+                  0x007c00                  _flightplan_live_begin
+                  0x007c4a                  _flightplan_live_commit
+                  0x007c0c                  _flightplan_live_received_byte
                   0x0010d2                  _floorf
                   0x00187c                  _fputc
                   0x0018ce                  _fputs
                   0x002048                  _free
                   0x0019fe                  _fwrite
-                  0x00b416                  _gentrap
-                  0x00b400                  _getErrLoc
-                  0x00af5e                  _get_barometer_agl_altitude
-                  0x00af54                  _get_barometer_altitude
-                  0x00af4a                  _get_barometer_pressure
-                  0x00af42                  _get_barometer_temperature
-                  0x0079b8                  _get_fixed_origin
-                  0x00b3b4                  _get_geo_heading_angle
-                  0x009f24                  _get_reset_flags
-                  0x00682a                  _gps_nav_valid
-                  0x0066ae                  _gps_startup_sequence
-                  0x008dc6                  _gpsoutbin
-                  0x008de4                  _gpsoutline
+                  0x00b456                  _gentrap
+                  0x00b440                  _getErrLoc
+                  0x00b088                  _get_barometer_agl_altitude
+                  0x00b07e                  _get_barometer_altitude
+                  0x00b074                  _get_barometer_pressure
+                  0x00b06c                  _get_barometer_temperature
+                  0x0079ba                  _get_fixed_origin
+                  0x00b3f4                  _get_geo_heading_angle
+                  0x009f26                  _get_reset_flags
+                  0x00682c                  _gps_nav_valid
+                  0x0066b0                  _gps_startup_sequence
+                  0x008dc8                  _gpsoutbin
+                  0x008de6                  _gpsoutline
                   0x004568                  _handleMessage
-                  0x0086e6                  _hoverAltitudeCntrl
-                  0x00a420                  _hoverPitchCntrl
-                  0x00aef2                  _hoverRollCntrl
-                  0x00b0be                  _hoverYawCntrl
-                  0x009074                  _initSPI1_master16
-                  0x00919c                  _initSPI2_master16
-                  0x00a99e                  _init_behavior
-                  0x00a1c0                  _init_events
-                  0x007950                  _init_flightplan
-                  0x00a0c0                  _init_leds
+                  0x0086e8                  _hoverAltitudeCntrl
+                  0x00a422                  _hoverPitchCntrl
+                  0x00b01c                  _hoverRollCntrl
+                  0x00abcc                  _hoverYawCntrl
+                  0x009076                  _initSPI1_master16
+                  0x00919e                  _initSPI2_master16
+                  0x00a9a0                  _init_behavior
+                  0x00a1c2                  _init_events
+                  0x007952                  _init_flightplan
+                  0x00a0c2                  _init_leds
                   0x003c3a                  _init_mavlink
                   0x003c2a                  _init_serial
-                  0x00b11c                  _init_servoPrepare
-                  0x0070e0                  _init_states
+                  0x00b15c                  _init_servoPrepare
+                  0x0070e2                  _init_states
                   0x004818                  _is_this_the_moment_to_send
                   0x00172c                  _ldexpf
                   0x001770                  _logf
-                  0x006620                  _long_scale
-                  0x00b41e                  _main
+                  0x006622                  _long_scale
+                  0x00b45e                  _main
                   0x002110                  _malloc
-                  0x00b1ce                  _manualPassthrough
-                  0x00869e                  _manualThrottle
+                  0x00b20e                  _manualPassthrough
+                  0x0086a0                  _manualThrottle
                   0x004546                  _mavlink_check_target
                   0x002cd5                  _mavlink_freq_table
                   0x00483e                  _mavlink_frequency_send
@@ -1564,161 +1564,161 @@ External Symbols in Program Memory (by name):
                   0x0040e0                  _mavlink_set_param_int16
                   0x004116                  _mavlink_set_param_null
                   0x004056                  _mavlink_set_param_pwtrim
-                  0x00a0d6                  _mcu_init
+                  0x00a0d8                  _mcu_init
                   0x001aa8                  _memchr
                   0x00181e                  _memcpy
                   0x00182c                  _memset
                   0x003d1c                  _mp_mavlink_transmit
-                  0x006b5c                  _msg_ACK_CLASS
-                  0x006b86                  _msg_ACK_ID
-                  0x00686e                  _msg_B3
-                  0x006902                  _msg_CLASS
-                  0x006be6                  _msg_CS1
-                  0x006a8a                  _msg_DOP
+                  0x006b5e                  _msg_ACK_CLASS
+                  0x006b88                  _msg_ACK_ID
+                  0x006870                  _msg_B3
+                  0x006904                  _msg_CLASS
+                  0x006be8                  _msg_CS1
+                  0x006a8c                  _msg_DOP
                   0x002c02                  _msg_DOP_parse
-                  0x00692c                  _msg_ID
-                  0x006bb0                  _msg_MSGU
-                  0x006954                  _msg_PL1
-                  0x006a44                  _msg_POSLLH
+                  0x00692e                  _msg_ID
+                  0x006bb2                  _msg_MSGU
+                  0x006956                  _msg_PL1
+                  0x006a46                  _msg_POSLLH
                   0x002c26                  _msg_POSLLH_parse
-                  0x006ad0                  _msg_SOL
+                  0x006ad2                  _msg_SOL
                   0x002b9a                  _msg_SOL_parse
-                  0x0068ae                  _msg_SYNC1
-                  0x0068cc                  _msg_SYNC2
-                  0x006b16                  _msg_VELNED
+                  0x0068b0                  _msg_SYNC1
+                  0x0068ce                  _msg_SYNC2
+                  0x006b18                  _msg_VELNED
                   0x002c5e                  _msg_VELNED_parse
-                  0x007a1e                  _next_waypoint
-                  0x00683e                  _nmea_passthru
-                  0x0090e6                  _no_call_back
-                  0x00842c                  _normalAltitudeCntrl
-                  0x00a312                  _normalPitchCntrl
-                  0x00ae58                  _normalRollCntrl
-                  0x00b04c                  _normalYawCntrl
-                  0x00a2f6                  _pitchCntrl
+                  0x007a20                  _next_waypoint
+                  0x006840                  _nmea_passthru
+                  0x0090e8                  _no_call_back
+                  0x00842e                  _normalAltitudeCntrl
+                  0x00a314                  _normalPitchCntrl
+                  0x00af82                  _normalRollCntrl
+                  0x00ab1c                  _normalYawCntrl
+                  0x00a2f8                  _pitchCntrl
                   0x002ff6                  _pitch_offset_centred_pwm
                   0x002ff0                  _pitch_servo_high_ratio
                   0x002ffa                  _pitch_servo_pwm_max
                   0x002ffc                  _pitch_servo_pwm_min
                   0x0011f0                  _powf
                   0x0047ee                  _preflight_storage_complete_callback
-                  0x00aca0                  _process_MPU_data
-                  0x0075a4                  _process_flightplan
+                  0x00adca                  _process_MPU_data
+                  0x0075a6                  _process_flightplan
                   0x00183a                  _puts
-                  0x0090ec                  _readSPI1_burst16n
-                  0x009222                  _readSPI2_burst16n
-                  0x0054c2                  _read_accel
-                  0x00542c                  _read_gyros
-                  0x00624e                  _rect_to_polar
-                  0x006302                  _rect_to_polar16
-                  0x00a120                  _register_event
-                  0x00a12e                  _register_event_p
-                  0x00ad36                  _reset
-                  0x00ae3e                  _rollCntrl
-                  0x0061e4                  _rotate
-                  0x00616a                  _rotate_2D_long_vector_by_vector
-                  0x0061c8                  _rotate_2D_vector_by_angle
-                  0x0060fc                  _rotate_2D_vector_by_vector
+                  0x0090ee                  _readSPI1_burst16n
+                  0x009224                  _readSPI2_burst16n
+                  0x0054c4                  _read_accel
+                  0x00542e                  _read_gyros
+                  0x006250                  _rect_to_polar
+                  0x006304                  _rect_to_polar16
+                  0x00a122                  _register_event
+                  0x00a130                  _register_event_p
+                  0x00ae60                  _reset
+                  0x00af68                  _rollCntrl
+                  0x0061e6                  _rotate
+                  0x00616c                  _rotate_2D_long_vector_by_vector
+                  0x0061ca                  _rotate_2D_vector_by_angle
+                  0x0060fe                  _rotate_2D_vector_by_vector
                   0x002ec2                  _rtlWaypoints
                   0x003006                  _rudderbgain
-                  0x007b3e                  _run_flightplan
-                  0x006c82                  _rxBarometer
-                  0x009830                  _rxMagnetometer
+                  0x007b40                  _run_flightplan
+                  0x006c84                  _rxBarometer
+                  0x009832                  _rxMagnetometer
                   0x003d2c                  _send_text
                   0x003d60                  _send_uint8
-                  0x009d20                  _servoMix
-                  0x00a9b0                  _setBehavior
-                  0x008420                  _setTargetAltitude
-                  0x00b2f4                  _set_camera_view
-                  0x00752c                  _set_goal
+                  0x009d22                  _servoMix
+                  0x00a9b2                  _setBehavior
+                  0x008422                  _setTargetAltitude
+                  0x00b334                  _set_camera_view
+                  0x00752e                  _set_goal
                   0x002ac8                  _set_rate
                   0x002b8a                  _set_rate_length
-                  0x0083ca                  _set_throttle_control
-                  0x0080f4                  _set_udb_pwIn
-                  0x005ff6                  _sine
+                  0x0083cc                  _set_throttle_control
+                  0x0080f6                  _set_udb_pwIn
+                  0x005ff8                  _sine
                   0x002eee                  _sintab
-                  0x0063dc                  _sqrt_int
-                  0x006446                  _sqrt_long
-                  0x00a890                  _start_pwm_outputs
+                  0x0063de                  _sqrt_int
+                  0x006448                  _sqrt_long
+                  0x00a892                  _start_pwm_outputs
                   0x001aba                  _strchr
                   0x001850                  _strcmp
                   0x00186c                  _strlen
                   0x001968                  _strrchr
                   0x002ff4                  _tan_pitch_in_stabilized_mode
-                  0x00aaf4                  _triggerActionSetValue
-                  0x00a176                  _trigger_event
-                  0x00b21e                  _udb_a2d_record_offsets
-                  0x007114                  _udb_background_callback_periodic
-                  0x008e36                  _udb_background_callback_triggered
-                  0x00a5a4                  _udb_background_trigger
-                  0x00afc4                  _udb_barometer_callback
-                  0x007106                  _udb_callback_radio_did_turn_off
-                  0x00a6f2                  _udb_callback_read_sensors
-                  0x00a5d4                  _udb_cpu_load
-                  0x008dfc                  _udb_gps_callback_get_byte_to_send
-                  0x008e28                  _udb_gps_callback_received_byte
-                  0x009b3c                  _udb_gps_check_rate
-                  0x009b12                  _udb_gps_set_rate
-                  0x009b6e                  _udb_gps_start_sending_data
-                  0x00b1e8                  _udb_init
-                  0x008a9a                  _udb_init_ADC
-                  0x009ab2                  _udb_init_GPS
-                  0x009be8                  _udb_init_USART
-                  0x008008                  _udb_init_capture
-                  0x00a4c8                  _udb_init_clock
-                  0x00a82c                  _udb_init_pwm
-                  0x005dee                  _udb_magnetometer_callback
-                  0x00b218                  _udb_run
+                  0x00aaf6                  _triggerActionSetValue
+                  0x00a178                  _trigger_event
+                  0x00b25e                  _udb_a2d_record_offsets
+                  0x007116                  _udb_background_callback_periodic
+                  0x008e38                  _udb_background_callback_triggered
+                  0x00a5a6                  _udb_background_trigger
+                  0x00b0ee                  _udb_barometer_callback
+                  0x007108                  _udb_callback_radio_did_turn_off
+                  0x00a6f4                  _udb_callback_read_sensors
+                  0x00a5d6                  _udb_cpu_load
+                  0x008dfe                  _udb_gps_callback_get_byte_to_send
+                  0x008e2a                  _udb_gps_callback_received_byte
+                  0x009b3e                  _udb_gps_check_rate
+                  0x009b14                  _udb_gps_set_rate
+                  0x009b70                  _udb_gps_start_sending_data
+                  0x00b228                  _udb_init
+                  0x008a9c                  _udb_init_ADC
+                  0x009ab4                  _udb_init_GPS
+                  0x009bea                  _udb_init_USART
+                  0x00800a                  _udb_init_capture
+                  0x00a4ca                  _udb_init_clock
+                  0x00a82e                  _udb_init_pwm
+                  0x005df0                  _udb_magnetometer_callback
+                  0x00b258                  _udb_run
                   0x003c8a                  _udb_serial_callback_get_byte_to_send
                   0x003d9c                  _udb_serial_callback_received_byte
-                  0x009c74                  _udb_serial_check_rate
-                  0x009c4a                  _udb_serial_set_rate
-                  0x009ca6                  _udb_serial_start_sending_data
-                  0x00a74e                  _udb_servo_callback_prepare_outputs
-                  0x00b26c                  _udb_servo_pulsesat
-                  0x00b240                  _udb_servo_record_trims
-                  0x00a874                  _udb_set_action_state
-                  0x00a9e6                  _updateBehavior
-                  0x00aaa8                  _updateTriggerAction
-                  0x007598                  _update_goal_alt
-                  0x0079b0                  _use_fixed_origin
-                  0x0064e8                  _vector2_mag
-                  0x006534                  _vector2_normalize
-                  0x006508                  _vector3_mag
-                  0x006596                  _vector3_normalize
+                  0x009c76                  _udb_serial_check_rate
+                  0x009c4c                  _udb_serial_set_rate
+                  0x009ca8                  _udb_serial_start_sending_data
+                  0x00a750                  _udb_servo_callback_prepare_outputs
+                  0x00b2ac                  _udb_servo_pulsesat
+                  0x00b280                  _udb_servo_record_trims
+                  0x00a876                  _udb_set_action_state
+                  0x00a9e8                  _updateBehavior
+                  0x00aaaa                  _updateTriggerAction
+                  0x00759a                  _update_goal_alt
+                  0x0079b2                  _use_fixed_origin
+                  0x0064ea                  _vector2_mag
+                  0x006536                  _vector2_normalize
+                  0x00650a                  _vector3_mag
+                  0x006598                  _vector3_normalize
                   0x002e28                  _waypoints
-                  0x007750                  _wind_gain_adjustment
+                  0x007752                  _wind_gain_adjustment
                   0x002ed8                  _wp_inject_byte_order
-                  0x0078ac                  _wp_to_relative
-                  0x0090b6                  _writeSPI1reg16
-                  0x0091de                  _writeSPI2reg16
-                  0x00b032                  _yawCntrl
+                  0x0078ae                  _wp_to_relative
+                  0x0090b8                  _writeSPI1reg16
+                  0x0091e0                  _writeSPI2reg16
+                  0x00ab02                  _yawCntrl
                   0x002ff8                  _yaw_offset_centred_pwm
                   0x002ff2                  _yaw_servo_high_ratio
                   0x002ffe                  _yaw_servo_pwm_max
                   0x003000                  _yaw_servo_pwm_min
-                  0x007fd2                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneRead
-                  0x007f14                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneWrite
-                  0x007fcc                  build/default/production/_ext/1077454706/I2C2.o:_isr_idle
-                  0x007f3c                  build/default/production/_ext/1077454706/I2C2.o:_isr_readAddress
-                  0x007f2c                  build/default/production/_ext/1077454706/I2C2.o:_isr_readStart
-                  0x007f6c                  build/default/production/_ext/1077454706/I2C2.o:_isr_recen
-                  0x007f92                  build/default/production/_ext/1077454706/I2C2.o:_isr_recstore
-                  0x007f86                  build/default/production/_ext/1077454706/I2C2.o:_isr_rerecen
-                  0x007e50                  build/default/production/_ext/1077454706/I2C2.o:_isr_startWrite
-                  0x007fc0                  build/default/production/_ext/1077454706/I2C2.o:_isr_stopRead
-                  0x007e6c                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeAddress
-                  0x007e82                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeCommandData
-                  0x007ecc                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeData
-                  0x007f08                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeStop
-                  0x007d0a                  build/default/production/_ext/1077454706/I2C2.o:_serviceI2C2
-                  0x00992e                  build/default/production/_ext/1077454706/magnetometer.o:_I2C_callback
-                  0x007346                  build/default/production/_ext/1472/states.o:_acquiringS
-                  0x007308                  build/default/production/_ext/1472/states.o:_calibrateS
-                  0x0073c0                  build/default/production/_ext/1472/states.o:_manualS
-                  0x00748a                  build/default/production/_ext/1472/states.o:_returnS
-                  0x007404                  build/default/production/_ext/1472/states.o:_stabilizedS
-                  0x007300                  build/default/production/_ext/1472/states.o:_startS
-                  0x007444                  build/default/production/_ext/1472/states.o:_waypointS
+                  0x007fd4                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneRead
+                  0x007f16                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneWrite
+                  0x007fce                  build/default/production/_ext/1077454706/I2C2.o:_isr_idle
+                  0x007f3e                  build/default/production/_ext/1077454706/I2C2.o:_isr_readAddress
+                  0x007f2e                  build/default/production/_ext/1077454706/I2C2.o:_isr_readStart
+                  0x007f6e                  build/default/production/_ext/1077454706/I2C2.o:_isr_recen
+                  0x007f94                  build/default/production/_ext/1077454706/I2C2.o:_isr_recstore
+                  0x007f88                  build/default/production/_ext/1077454706/I2C2.o:_isr_rerecen
+                  0x007e52                  build/default/production/_ext/1077454706/I2C2.o:_isr_startWrite
+                  0x007fc2                  build/default/production/_ext/1077454706/I2C2.o:_isr_stopRead
+                  0x007e6e                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeAddress
+                  0x007e84                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeCommandData
+                  0x007ece                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeData
+                  0x007f0a                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeStop
+                  0x007d0c                  build/default/production/_ext/1077454706/I2C2.o:_serviceI2C2
+                  0x009930                  build/default/production/_ext/1077454706/magnetometer.o:_I2C_callback
+                  0x007348                  build/default/production/_ext/1472/states.o:_acquiringS
+                  0x00730a                  build/default/production/_ext/1472/states.o:_calibrateS
+                  0x0073c2                  build/default/production/_ext/1472/states.o:_manualS
+                  0x00748c                  build/default/production/_ext/1472/states.o:_returnS
+                  0x007406                  build/default/production/_ext/1472/states.o:_stabilizedS
+                  0x007302                  build/default/production/_ext/1472/states.o:_startS
+                  0x007446                  build/default/production/_ext/1472/states.o:_waypointS
                   0x002014                  fclose.EPelo:_closeall
                   0x000582                  printf_cdnopuxX.EPeo:_prout
 
@@ -2284,7 +2284,7 @@ __FUID0
  .debug_abbrev    0x0036b7         0x8f build/default/production/_ext/1472/euler_angles.o
  .debug_abbrev    0x003746         0x36 build/default/production/_ext/1472/main.o
 
-.debug_line       0x000000       0xc38a
+.debug_line       0x000000       0xc3ba
  *(.debug_line)
  .debug_line      0x000000        0x24e build/default/production/projectSpecific/servoMix.o
  .debug_line      0x00024e         0x1a build/default/production/projectSpecific/stack.o
@@ -2347,23 +2347,23 @@ __FUID0
  .debug_line      0x00792a        0x320 build/default/production/_ext/1472/pitchCntrl.o
  .debug_line      0x007c4a        0x251 build/default/production/_ext/1472/rollCntrl.o
  .debug_line      0x007e9b        0x71e build/default/production/_ext/1472/states.o
- .debug_line      0x0085b9        0x24e build/default/production/_ext/1472/yawCntrl.o
- .debug_line      0x008807         0x24 build/default/production/_ext/1472/telemetry.o
- .debug_line      0x00882b        0x1e9 build/default/production/_ext/1472/servoPrepare.o
- .debug_line      0x008a14        0x43f build/default/production/_ext/1472/flightplan-waypoints.o
- .debug_line      0x008e53         0x24 build/default/production/_ext/1472/flightplan-logo.o
- .debug_line      0x008e77         0x24 build/default/production/_ext/1472/mp_osd.o
- .debug_line      0x008e9b        0x467 build/default/production/_ext/1472/altitudeCntrl.o
- .debug_line      0x009302       0x297a build/default/production/_ext/1472/MAVLink.o
- .debug_line      0x00bc7c        0x231 build/default/production/_ext/1472/mode_switch.o
- .debug_line      0x00bead         0x24 build/default/production/_ext/1472/data_services.o
- .debug_line      0x00bed1         0x24 build/default/production/_ext/1472/data_storage.o
- .debug_line      0x00bef5         0x24 build/default/production/_ext/1472/nv_memory_table.o
- .debug_line      0x00bf19        0x1a4 build/default/production/_ext/1472/parameter_table.o
- .debug_line      0x00c0bd         0xc0 build/default/production/_ext/1472/airspeedCntrl.o
- .debug_line      0x00c17d         0x24 build/default/production/_ext/1472/altitudeCntrlVariable.o
- .debug_line      0x00c1a1        0x156 build/default/production/_ext/1472/euler_angles.o
- .debug_line      0x00c2f7         0x93 build/default/production/_ext/1472/main.o
+ .debug_line      0x0085b9        0x27e build/default/production/_ext/1472/yawCntrl.o
+ .debug_line      0x008837         0x24 build/default/production/_ext/1472/telemetry.o
+ .debug_line      0x00885b        0x1e9 build/default/production/_ext/1472/servoPrepare.o
+ .debug_line      0x008a44        0x43f build/default/production/_ext/1472/flightplan-waypoints.o
+ .debug_line      0x008e83         0x24 build/default/production/_ext/1472/flightplan-logo.o
+ .debug_line      0x008ea7         0x24 build/default/production/_ext/1472/mp_osd.o
+ .debug_line      0x008ecb        0x467 build/default/production/_ext/1472/altitudeCntrl.o
+ .debug_line      0x009332       0x297a build/default/production/_ext/1472/MAVLink.o
+ .debug_line      0x00bcac        0x231 build/default/production/_ext/1472/mode_switch.o
+ .debug_line      0x00bedd         0x24 build/default/production/_ext/1472/data_services.o
+ .debug_line      0x00bf01         0x24 build/default/production/_ext/1472/data_storage.o
+ .debug_line      0x00bf25         0x24 build/default/production/_ext/1472/nv_memory_table.o
+ .debug_line      0x00bf49        0x1a4 build/default/production/_ext/1472/parameter_table.o
+ .debug_line      0x00c0ed         0xc0 build/default/production/_ext/1472/airspeedCntrl.o
+ .debug_line      0x00c1ad         0x24 build/default/production/_ext/1472/altitudeCntrlVariable.o
+ .debug_line      0x00c1d1        0x156 build/default/production/_ext/1472/euler_angles.o
+ .debug_line      0x00c327         0x93 build/default/production/_ext/1472/main.o
 
 .debug_frame      0x000000       0x1da0
  *(.debug_frame)
@@ -2669,27 +2669,27 @@ __FUID0
                   0x000580         0x18 build/default/production/_ext/1472/main.o
 
 .ivt              0x000004        0x130
-                  0x000004          0x4 LONG 0xad50 DEFINED (__OscillatorFail)?ABSOLUTE (__OscillatorFail):ABSOLUTE (__DefaultInterrupt)
-                  0x000006          0x4 LONG 0xad7c DEFINED (__AddressError)?ABSOLUTE (__AddressError):ABSOLUTE (__DefaultInterrupt)
+                  0x000004          0x4 LONG 0xae7a DEFINED (__OscillatorFail)?ABSOLUTE (__OscillatorFail):ABSOLUTE (__DefaultInterrupt)
+                  0x000006          0x4 LONG 0xaea6 DEFINED (__AddressError)?ABSOLUTE (__AddressError):ABSOLUTE (__DefaultInterrupt)
                   0x000008          0x4 LONG 0x3dc DEFINED (__HardTrapError)?ABSOLUTE (__HardTrapError):ABSOLUTE (__DefaultInterrupt)
-                  0x00000a          0x4 LONG 0xada2 DEFINED (__StackError)?ABSOLUTE (__StackError):ABSOLUTE (__DefaultInterrupt)
-                  0x00000c          0x4 LONG 0xadc8 DEFINED (__MathError)?ABSOLUTE (__MathError):ABSOLUTE (__DefaultInterrupt)
-                  0x00000e          0x4 LONG 0xadee DEFINED (__DMACError)?ABSOLUTE (__DMACError):ABSOLUTE (__DefaultInterrupt)
+                  0x00000a          0x4 LONG 0xaecc DEFINED (__StackError)?ABSOLUTE (__StackError):ABSOLUTE (__DefaultInterrupt)
+                  0x00000c          0x4 LONG 0xaef2 DEFINED (__MathError)?ABSOLUTE (__MathError):ABSOLUTE (__DefaultInterrupt)
+                  0x00000e          0x4 LONG 0xaf18 DEFINED (__DMACError)?ABSOLUTE (__DMACError):ABSOLUTE (__DefaultInterrupt)
                   0x000010          0x4 LONG 0x3dc DEFINED (__SoftTrapError)?ABSOLUTE (__SoftTrapError):ABSOLUTE (__DefaultInterrupt)
                   0x000012          0x4 LONG 0x3dc DEFINED (__ReservedTrap7)?ABSOLUTE (__ReservedTrap7):ABSOLUTE (__DefaultInterrupt)
                   0x000014          0x4 LONG 0x3dc DEFINED (__INT0Interrupt)?ABSOLUTE (__INT0Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000016          0x4 LONG 0x813c DEFINED (__IC1Interrupt)?ABSOLUTE (__IC1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000016          0x4 LONG 0x813e DEFINED (__IC1Interrupt)?ABSOLUTE (__IC1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000018          0x4 LONG 0x3dc DEFINED (__OC1Interrupt)?ABSOLUTE (__OC1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00001a          0x4 LONG 0xa544 DEFINED (__T1Interrupt)?ABSOLUTE (__T1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00001a          0x4 LONG 0xa546 DEFINED (__T1Interrupt)?ABSOLUTE (__T1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00001c          0x4 LONG 0x3dc DEFINED (__DMA0Interrupt)?ABSOLUTE (__DMA0Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00001e          0x4 LONG 0x8188 DEFINED (__IC2Interrupt)?ABSOLUTE (__IC2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00001e          0x4 LONG 0x818a DEFINED (__IC2Interrupt)?ABSOLUTE (__IC2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000020          0x4 LONG 0x3dc DEFINED (__OC2Interrupt)?ABSOLUTE (__OC2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000022          0x4 LONG 0x3dc DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000024          0x4 LONG 0x3dc DEFINED (__T3Interrupt)?ABSOLUTE (__T3Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000026          0x4 LONG 0x3dc DEFINED (__SPI1ErrInterrupt)?ABSOLUTE (__SPI1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000028          0x4 LONG 0x912a DEFINED (__SPI1Interrupt)?ABSOLUTE (__SPI1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00002a          0x4 LONG 0x9bae DEFINED (__U1RXInterrupt)?ABSOLUTE (__U1RXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00002c          0x4 LONG 0x9b76 DEFINED (__U1TXInterrupt)?ABSOLUTE (__U1TXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000028          0x4 LONG 0x912c DEFINED (__SPI1Interrupt)?ABSOLUTE (__SPI1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00002a          0x4 LONG 0x9bb0 DEFINED (__U1RXInterrupt)?ABSOLUTE (__U1RXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00002c          0x4 LONG 0x9b78 DEFINED (__U1TXInterrupt)?ABSOLUTE (__U1TXInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00002e          0x4 LONG 0x3dc DEFINED (__AD1Interrupt)?ABSOLUTE (__AD1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000030          0x4 LONG 0x3dc DEFINED (__DMA1Interrupt)?ABSOLUTE (__DMA1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000032          0x4 LONG 0x3dc DEFINED (__NVMInterrupt)?ABSOLUTE (__NVMInterrupt):ABSOLUTE (__DefaultInterrupt)
@@ -2697,43 +2697,43 @@ __FUID0
                   0x000036          0x4 LONG 0x3dc DEFINED (__MI2C1Interrupt)?ABSOLUTE (__MI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000038          0x4 LONG 0x3dc DEFINED (__CM1Interrupt)?ABSOLUTE (__CM1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00003a          0x4 LONG 0x3dc DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00003c          0x4 LONG 0xace0 DEFINED (__INT1Interrupt)?ABSOLUTE (__INT1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00003c          0x4 LONG 0xae0a DEFINED (__INT1Interrupt)?ABSOLUTE (__INT1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00003e          0x4 LONG 0x3dc DEFINED (__AD2Interrupt)?ABSOLUTE (__AD2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000040          0x4 LONG 0x830e DEFINED (__IC7Interrupt)?ABSOLUTE (__IC7Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000042          0x4 LONG 0x835a DEFINED (__IC8Interrupt)?ABSOLUTE (__IC8Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000040          0x4 LONG 0x8310 DEFINED (__IC7Interrupt)?ABSOLUTE (__IC7Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000042          0x4 LONG 0x835c DEFINED (__IC8Interrupt)?ABSOLUTE (__IC8Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000044          0x4 LONG 0x3dc DEFINED (__DMA2Interrupt)?ABSOLUTE (__DMA2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000046          0x4 LONG 0x3dc DEFINED (__OC3Interrupt)?ABSOLUTE (__OC3Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000048          0x4 LONG 0x3dc DEFINED (__OC4Interrupt)?ABSOLUTE (__OC4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00004a          0x4 LONG 0xa8a6 DEFINED (__T4Interrupt)?ABSOLUTE (__T4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00004c          0x4 LONG 0xa5e6 DEFINED (__T5Interrupt)?ABSOLUTE (__T5Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00004a          0x4 LONG 0xa8a8 DEFINED (__T4Interrupt)?ABSOLUTE (__T4Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00004c          0x4 LONG 0xa5e8 DEFINED (__T5Interrupt)?ABSOLUTE (__T5Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00004e          0x4 LONG 0x3dc DEFINED (__INT2Interrupt)?ABSOLUTE (__INT2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000050          0x4 LONG 0x9ce6 DEFINED (__U2RXInterrupt)?ABSOLUTE (__U2RXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000052          0x4 LONG 0x9cae DEFINED (__U2TXInterrupt)?ABSOLUTE (__U2TXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000050          0x4 LONG 0x9ce8 DEFINED (__U2RXInterrupt)?ABSOLUTE (__U2RXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000052          0x4 LONG 0x9cb0 DEFINED (__U2TXInterrupt)?ABSOLUTE (__U2TXInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000054          0x4 LONG 0x3dc DEFINED (__SPI2ErrInterrupt)?ABSOLUTE (__SPI2ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000056          0x4 LONG 0x9258 DEFINED (__SPI2Interrupt)?ABSOLUTE (__SPI2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000056          0x4 LONG 0x925a DEFINED (__SPI2Interrupt)?ABSOLUTE (__SPI2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000058          0x4 LONG 0x3dc DEFINED (__C1RxRdyInterrupt)?ABSOLUTE (__C1RxRdyInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00005a          0x4 LONG 0xa28c DEFINED (__C1Interrupt)?ABSOLUTE (__C1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00005c          0x4 LONG 0x8b7e DEFINED (__DMA3Interrupt)?ABSOLUTE (__DMA3Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00005e          0x4 LONG 0x81d6 DEFINED (__IC3Interrupt)?ABSOLUTE (__IC3Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000060          0x4 LONG 0x8224 DEFINED (__IC4Interrupt)?ABSOLUTE (__IC4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000062          0x4 LONG 0x8272 DEFINED (__IC5Interrupt)?ABSOLUTE (__IC5Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000064          0x4 LONG 0x82c0 DEFINED (__IC6Interrupt)?ABSOLUTE (__IC6Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00005a          0x4 LONG 0xa28e DEFINED (__C1Interrupt)?ABSOLUTE (__C1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00005c          0x4 LONG 0x8b80 DEFINED (__DMA3Interrupt)?ABSOLUTE (__DMA3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00005e          0x4 LONG 0x81d8 DEFINED (__IC3Interrupt)?ABSOLUTE (__IC3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000060          0x4 LONG 0x8226 DEFINED (__IC4Interrupt)?ABSOLUTE (__IC4Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000062          0x4 LONG 0x8274 DEFINED (__IC5Interrupt)?ABSOLUTE (__IC5Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000064          0x4 LONG 0x82c2 DEFINED (__IC6Interrupt)?ABSOLUTE (__IC6Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000066          0x4 LONG 0x3dc DEFINED (__OC5Interrupt)?ABSOLUTE (__OC5Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000068          0x4 LONG 0x3dc DEFINED (__OC6Interrupt)?ABSOLUTE (__OC6Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00006a          0x4 LONG 0x3dc DEFINED (__OC7Interrupt)?ABSOLUTE (__OC7Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00006c          0x4 LONG 0x3dc DEFINED (__OC8Interrupt)?ABSOLUTE (__OC8Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00006e          0x4 LONG 0x3dc DEFINED (__PMPInterrupt)?ABSOLUTE (__PMPInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000070          0x4 LONG 0x3dc DEFINED (__DMA4Interrupt)?ABSOLUTE (__DMA4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000072          0x4 LONG 0xa604 DEFINED (__T6Interrupt)?ABSOLUTE (__T6Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000074          0x4 LONG 0xa5ac DEFINED (__T7Interrupt)?ABSOLUTE (__T7Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000072          0x4 LONG 0xa606 DEFINED (__T6Interrupt)?ABSOLUTE (__T6Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000074          0x4 LONG 0xa5ae DEFINED (__T7Interrupt)?ABSOLUTE (__T7Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000076          0x4 LONG 0x3dc DEFINED (__SI2C2Interrupt)?ABSOLUTE (__SI2C2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000078          0x4 LONG 0x7d20 DEFINED (__MI2C2Interrupt)?ABSOLUTE (__MI2C2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000078          0x4 LONG 0x7d22 DEFINED (__MI2C2Interrupt)?ABSOLUTE (__MI2C2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00007a          0x4 LONG 0x3dc DEFINED (__T8Interrupt)?ABSOLUTE (__T8Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00007c          0x4 LONG 0x3dc DEFINED (__T9Interrupt)?ABSOLUTE (__T9Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00007e          0x4 LONG 0x3dc DEFINED (__INT3Interrupt)?ABSOLUTE (__INT3Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000080          0x4 LONG 0x3dc DEFINED (__INT4Interrupt)?ABSOLUTE (__INT4Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000082          0x4 LONG 0x3dc DEFINED (__C2RxRdyInterrupt)?ABSOLUTE (__C2RxRdyInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000084          0x4 LONG 0xa222 DEFINED (__C2Interrupt)?ABSOLUTE (__C2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000084          0x4 LONG 0xa224 DEFINED (__C2Interrupt)?ABSOLUTE (__C2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000086          0x4 LONG 0x3dc DEFINED (__PWMSpEventMatchInterrupt)?ABSOLUTE (__PWMSpEventMatchInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000088          0x4 LONG 0x3dc DEFINED (__QEI1Interrupt)?ABSOLUTE (__QEI1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00008a          0x4 LONG 0x3dc DEFINED (__DCIEInterrupt)?ABSOLUTE (__DCIEInterrupt):ABSOLUTE (__DefaultInterrupt)
@@ -5880,33 +5880,33 @@ __c30_signature
 non_eds_stack       0x6000       0x1000
  non_eds_stack      0x6000       0x1000 build/default/production/projectSpecific/stack.o
 
-_0x41c230b851b0b6ac
+_0x41c230b851b1e662
                     0xdfc0          0xe
- _0x41c230b851b0b6ac
+ _0x41c230b851b1e662
                     0xdfc0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfc0                  _BufferB
 
-_0x41c2305c51b0b6ac
+_0x41c2305c51b1e662
                     0xdfe0          0xe
- _0x41c2305c51b0b6ac
+ _0x41c2305c51b1e662
                     0xdfe0          0xe build/default/production/_ext/1077454706/analog2digital_auav3.o
                     0xdfe0                  _BufferA
 
-_0x41b78c9451b0b6ac
+_0x41b78c9451b1e662
                     0x1000          0x4
- _0x41b78c9451b0b6ac
+ _0x41b78c9451b1e662
                     0x1000          0x4 build/default/production/_ext/1077454706/mcu.o
                     0x1000                  _trap_source
 
-_0x41b78c3851b0b6ac
+_0x41b78c3851b1e662
                     0x1004          0x2
- _0x41b78c3851b0b6ac
+ _0x41b78c3851b1e662
                     0x1004          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1004                  _trap_flags
 
-_0x41b78cf051b0b6ac
+_0x41b78cf051b1e662
                     0x1006          0x2
- _0x41b78cf051b0b6ac
+ _0x41b78cf051b1e662
                     0x1006          0x2 build/default/production/_ext/1077454706/mcu.o
                     0x1006                  _osc_fail_count
 
@@ -6396,8 +6396,8 @@ _0x41b78cf051b0b6ac
                     0xb006                  _rudderbgain
  .const             0xb008          0x4 build/default/production/_ext/1077454706/barometer.o
 
-.text             0x00300c       0x5732
- .text            0x00300c       0x235a build/default/production/_ext/1472/MAVLink.o
+.text             0x00300c       0x5734
+ .text            0x00300c       0x235c build/default/production/_ext/1472/MAVLink.o
                   0x003c2a                  _init_serial
                   0x003c3a                  _init_mavlink
                   0x003c8a                  _udb_serial_callback_get_byte_to_send
@@ -6436,285 +6436,285 @@ _0x41b78cf051b0b6ac
                   0x004818                  _is_this_the_moment_to_send
                   0x00483e                  _mavlink_frequency_send
                   0x0048c4                  _mavlink_output_40hz
- .text            0x005366        0xc90 build/default/production/_ext/1077471063/rmat.o
-                  0x005366                  _dcm_init_rmat
-                  0x00542c                  _read_gyros
-                  0x0054c2                  _read_accel
-                  0x005dee                  _udb_magnetometer_callback
-                  0x005fcc                  _dcm_run_imu_step
- .text            0x005ff6        0x6b8 build/default/production/_ext/1077471063/mathlibNAV.o
-                  0x005ff6                  _sine
-                  0x006052                  _arcsine
-                  0x0060ee                  _cosine
-                  0x0060fc                  _rotate_2D_vector_by_vector
-                  0x00616a                  _rotate_2D_long_vector_by_vector
-                  0x0061c8                  _rotate_2D_vector_by_angle
-                  0x0061e4                  _rotate
-                  0x00624e                  _rect_to_polar
-                  0x006302                  _rect_to_polar16
-                  0x0063dc                  _sqrt_int
-                  0x006446                  _sqrt_long
-                  0x0064e8                  _vector2_mag
-                  0x006508                  _vector3_mag
-                  0x006534                  _vector2_normalize
-                  0x006596                  _vector3_normalize
-                  0x006620                  _long_scale
- .text            0x0066ae        0x5d4 build/default/production/_ext/1077471063/gpsParseUBX.o
-                  0x0066ae                  _gps_startup_sequence
-                  0x00682a                  _gps_nav_valid
-                  0x00683e                  _nmea_passthru
-                  0x00686e                  _msg_B3
-                  0x0068ae                  _msg_SYNC1
-                  0x0068cc                  _msg_SYNC2
-                  0x006902                  _msg_CLASS
-                  0x00692c                  _msg_ID
-                  0x006954                  _msg_PL1
-                  0x006a44                  _msg_POSLLH
-                  0x006a8a                  _msg_DOP
-                  0x006ad0                  _msg_SOL
-                  0x006b16                  _msg_VELNED
-                  0x006b5c                  _msg_ACK_CLASS
-                  0x006b86                  _msg_ACK_ID
-                  0x006bb0                  _msg_MSGU
-                  0x006be6                  _msg_CS1
-                  0x006c1e                  _commit_gps_data
- .text            0x006c82        0x45e build/default/production/_ext/1077454706/barometer.o
-                  0x006c82                  _rxBarometer
-                  0x006d98                  _ReadBarCalib_callback
-                  0x007046                  _ReadBarTemp_callback
-                  0x007074                  _ReadBarPres_callback
- .text            0x0070e0        0x3e8 build/default/production/_ext/1472/states.o
-                  0x0070e0                  _init_states
-                  0x007106                  _udb_callback_radio_did_turn_off
-                  0x007114                  _udb_background_callback_periodic
-                  0x007300                  build/default/production/_ext/1472/states.o:_startS
-                  0x007308                  build/default/production/_ext/1472/states.o:_calibrateS
-                  0x007346                  build/default/production/_ext/1472/states.o:_acquiringS
-                  0x0073c0                  build/default/production/_ext/1472/states.o:_manualS
-                  0x007404                  build/default/production/_ext/1472/states.o:_stabilizedS
-                  0x007444                  build/default/production/_ext/1472/states.o:_waypointS
-                  0x00748a                  build/default/production/_ext/1472/states.o:_returnS
- .text            0x0074c8        0x3e4 build/default/production/_ext/1472/navigate.o
-                  0x007510                  _dcm_callback_gps_location_updated
-                  0x00752c                  _set_goal
-                  0x007598                  _update_goal_alt
-                  0x0075a4                  _process_flightplan
-                  0x0075c6                  _compute_bearing_to_goal
-                  0x007750                  _wind_gain_adjustment
-                  0x007758                  _determine_navigation_deflection
- .text            0x0078ac        0x3b8 build/default/production/_ext/1472/flightplan-waypoints.o
-                  0x0078ac                  _wp_to_relative
-                  0x007950                  _init_flightplan
-                  0x0079b0                  _use_fixed_origin
-                  0x0079b8                  _get_fixed_origin
-                  0x007a1e                  _next_waypoint
-                  0x007b3e                  _run_flightplan
-                  0x007bfe                  _flightplan_live_begin
-                  0x007c0a                  _flightplan_live_received_byte
-                  0x007c48                  _flightplan_live_commit
- .text            0x007c64        0x3a4 build/default/production/_ext/1077454706/I2C2.o
-                  0x007c64                  _I2C2_Normal
-                  0x007c92                  _I2C2_Reset
-                  0x007cfe                  _I2C2_trigger_service
-                  0x007d0a                  build/default/production/_ext/1077454706/I2C2.o:_serviceI2C2
-                  0x007d20                  __MI2C2Interrupt
-                  0x007d86                  _I2C2_Write
-                  0x007dcc                  _I2C2_Read
-                  0x007e14                  _I2C2_checkACK
-                  0x007e50                  build/default/production/_ext/1077454706/I2C2.o:_isr_startWrite
-                  0x007e6c                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeAddress
-                  0x007e82                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeCommandData
-                  0x007ecc                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeData
-                  0x007f08                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeStop
-                  0x007f14                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneWrite
-                  0x007f2c                  build/default/production/_ext/1077454706/I2C2.o:_isr_readStart
-                  0x007f3c                  build/default/production/_ext/1077454706/I2C2.o:_isr_readAddress
-                  0x007f6c                  build/default/production/_ext/1077454706/I2C2.o:_isr_recen
-                  0x007f86                  build/default/production/_ext/1077454706/I2C2.o:_isr_rerecen
-                  0x007f92                  build/default/production/_ext/1077454706/I2C2.o:_isr_recstore
-                  0x007fc0                  build/default/production/_ext/1077454706/I2C2.o:_isr_stopRead
-                  0x007fcc                  build/default/production/_ext/1077454706/I2C2.o:_isr_idle
-                  0x007fd2                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneRead
- .text            0x008008        0x3a0 build/default/production/_ext/1077454706/radioIn.o
-                  0x008008                  _udb_init_capture
-                  0x0080f4                  _set_udb_pwIn
-                  0x00813c                  __IC1Interrupt
-                  0x008188                  __IC2Interrupt
-                  0x0081d6                  __IC3Interrupt
-                  0x008224                  __IC4Interrupt
-                  0x008272                  __IC5Interrupt
-                  0x0082c0                  __IC6Interrupt
-                  0x00830e                  __IC7Interrupt
-                  0x00835a                  __IC8Interrupt
- .text            0x0083a8        0x396 build/default/production/_ext/1472/altitudeCntrl.o
-                  0x0083a8                  _excess_energy_height
-                  0x0083b0                  _altitudeCntrl
-                  0x0083ca                  _set_throttle_control
-                  0x008420                  _setTargetAltitude
-                  0x00842c                  _normalAltitudeCntrl
-                  0x00869e                  _manualThrottle
-                  0x0086e6                  _hoverAltitudeCntrl
+ .text            0x005368        0xc90 build/default/production/_ext/1077471063/rmat.o
+                  0x005368                  _dcm_init_rmat
+                  0x00542e                  _read_gyros
+                  0x0054c4                  _read_accel
+                  0x005df0                  _udb_magnetometer_callback
+                  0x005fce                  _dcm_run_imu_step
+ .text            0x005ff8        0x6b8 build/default/production/_ext/1077471063/mathlibNAV.o
+                  0x005ff8                  _sine
+                  0x006054                  _arcsine
+                  0x0060f0                  _cosine
+                  0x0060fe                  _rotate_2D_vector_by_vector
+                  0x00616c                  _rotate_2D_long_vector_by_vector
+                  0x0061ca                  _rotate_2D_vector_by_angle
+                  0x0061e6                  _rotate
+                  0x006250                  _rect_to_polar
+                  0x006304                  _rect_to_polar16
+                  0x0063de                  _sqrt_int
+                  0x006448                  _sqrt_long
+                  0x0064ea                  _vector2_mag
+                  0x00650a                  _vector3_mag
+                  0x006536                  _vector2_normalize
+                  0x006598                  _vector3_normalize
+                  0x006622                  _long_scale
+ .text            0x0066b0        0x5d4 build/default/production/_ext/1077471063/gpsParseUBX.o
+                  0x0066b0                  _gps_startup_sequence
+                  0x00682c                  _gps_nav_valid
+                  0x006840                  _nmea_passthru
+                  0x006870                  _msg_B3
+                  0x0068b0                  _msg_SYNC1
+                  0x0068ce                  _msg_SYNC2
+                  0x006904                  _msg_CLASS
+                  0x00692e                  _msg_ID
+                  0x006956                  _msg_PL1
+                  0x006a46                  _msg_POSLLH
+                  0x006a8c                  _msg_DOP
+                  0x006ad2                  _msg_SOL
+                  0x006b18                  _msg_VELNED
+                  0x006b5e                  _msg_ACK_CLASS
+                  0x006b88                  _msg_ACK_ID
+                  0x006bb2                  _msg_MSGU
+                  0x006be8                  _msg_CS1
+                  0x006c20                  _commit_gps_data
+ .text            0x006c84        0x45e build/default/production/_ext/1077454706/barometer.o
+                  0x006c84                  _rxBarometer
+                  0x006d9a                  _ReadBarCalib_callback
+                  0x007048                  _ReadBarTemp_callback
+                  0x007076                  _ReadBarPres_callback
+ .text            0x0070e2        0x3e8 build/default/production/_ext/1472/states.o
+                  0x0070e2                  _init_states
+                  0x007108                  _udb_callback_radio_did_turn_off
+                  0x007116                  _udb_background_callback_periodic
+                  0x007302                  build/default/production/_ext/1472/states.o:_startS
+                  0x00730a                  build/default/production/_ext/1472/states.o:_calibrateS
+                  0x007348                  build/default/production/_ext/1472/states.o:_acquiringS
+                  0x0073c2                  build/default/production/_ext/1472/states.o:_manualS
+                  0x007406                  build/default/production/_ext/1472/states.o:_stabilizedS
+                  0x007446                  build/default/production/_ext/1472/states.o:_waypointS
+                  0x00748c                  build/default/production/_ext/1472/states.o:_returnS
+ .text            0x0074ca        0x3e4 build/default/production/_ext/1472/navigate.o
+                  0x007512                  _dcm_callback_gps_location_updated
+                  0x00752e                  _set_goal
+                  0x00759a                  _update_goal_alt
+                  0x0075a6                  _process_flightplan
+                  0x0075c8                  _compute_bearing_to_goal
+                  0x007752                  _wind_gain_adjustment
+                  0x00775a                  _determine_navigation_deflection
+ .text            0x0078ae        0x3b8 build/default/production/_ext/1472/flightplan-waypoints.o
+                  0x0078ae                  _wp_to_relative
+                  0x007952                  _init_flightplan
+                  0x0079b2                  _use_fixed_origin
+                  0x0079ba                  _get_fixed_origin
+                  0x007a20                  _next_waypoint
+                  0x007b40                  _run_flightplan
+                  0x007c00                  _flightplan_live_begin
+                  0x007c0c                  _flightplan_live_received_byte
+                  0x007c4a                  _flightplan_live_commit
+ .text            0x007c66        0x3a4 build/default/production/_ext/1077454706/I2C2.o
+                  0x007c66                  _I2C2_Normal
+                  0x007c94                  _I2C2_Reset
+                  0x007d00                  _I2C2_trigger_service
+                  0x007d0c                  build/default/production/_ext/1077454706/I2C2.o:_serviceI2C2
+                  0x007d22                  __MI2C2Interrupt
+                  0x007d88                  _I2C2_Write
+                  0x007dce                  _I2C2_Read
+                  0x007e16                  _I2C2_checkACK
+                  0x007e52                  build/default/production/_ext/1077454706/I2C2.o:_isr_startWrite
+                  0x007e6e                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeAddress
+                  0x007e84                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeCommandData
+                  0x007ece                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeData
+                  0x007f0a                  build/default/production/_ext/1077454706/I2C2.o:_isr_writeStop
+                  0x007f16                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneWrite
+                  0x007f2e                  build/default/production/_ext/1077454706/I2C2.o:_isr_readStart
+                  0x007f3e                  build/default/production/_ext/1077454706/I2C2.o:_isr_readAddress
+                  0x007f6e                  build/default/production/_ext/1077454706/I2C2.o:_isr_recen
+                  0x007f88                  build/default/production/_ext/1077454706/I2C2.o:_isr_rerecen
+                  0x007f94                  build/default/production/_ext/1077454706/I2C2.o:_isr_recstore
+                  0x007fc2                  build/default/production/_ext/1077454706/I2C2.o:_isr_stopRead
+                  0x007fce                  build/default/production/_ext/1077454706/I2C2.o:_isr_idle
+                  0x007fd4                  build/default/production/_ext/1077454706/I2C2.o:_isr_doneRead
+ .text            0x00800a        0x3a0 build/default/production/_ext/1077454706/radioIn.o
+                  0x00800a                  _udb_init_capture
+                  0x0080f6                  _set_udb_pwIn
+                  0x00813e                  __IC1Interrupt
+                  0x00818a                  __IC2Interrupt
+                  0x0081d8                  __IC3Interrupt
+                  0x008226                  __IC4Interrupt
+                  0x008274                  __IC5Interrupt
+                  0x0082c2                  __IC6Interrupt
+                  0x008310                  __IC7Interrupt
+                  0x00835c                  __IC8Interrupt
+ .text            0x0083aa        0x396 build/default/production/_ext/1472/altitudeCntrl.o
+                  0x0083aa                  _excess_energy_height
+                  0x0083b2                  _altitudeCntrl
+                  0x0083cc                  _set_throttle_control
+                  0x008422                  _setTargetAltitude
+                  0x00842e                  _normalAltitudeCntrl
+                  0x0086a0                  _manualThrottle
+                  0x0086e8                  _hoverAltitudeCntrl
 
-.dinit            0x00873e        0x35c
- .dinit           0x00873e        0x35c data_init
+.dinit            0x008740        0x35c
+ .dinit           0x008740        0x35c data_init
 
-.text             0x008a9a       0x29ac
- .text            0x008a9a        0x32c build/default/production/_ext/1077454706/analog2digital_auav3.o
-                  0x008a9a                  _udb_init_ADC
-                  0x008b7e                  __DMA3Interrupt
- .text            0x008dc6        0x2ae build/default/production/_ext/1077471063/gpsParseCommon.o
-                  0x008dc6                  _gpsoutbin
-                  0x008de4                  _gpsoutline
-                  0x008dfc                  _udb_gps_callback_get_byte_to_send
-                  0x008e28                  _udb_gps_callback_received_byte
-                  0x008e36                  _udb_background_callback_triggered
- .text            0x009074        0x29c build/default/production/_ext/1077454706/spiUtils.o
-                  0x009074                  _initSPI1_master16
-                  0x0090b6                  _writeSPI1reg16
-                  0x0090e6                  _no_call_back
-                  0x0090ec                  _readSPI1_burst16n
-                  0x00912a                  __SPI1Interrupt
-                  0x00919c                  _initSPI2_master16
-                  0x0091de                  _writeSPI2reg16
-                  0x009222                  _readSPI2_burst16n
-                  0x009258                  __SPI2Interrupt
- .text            0x009310        0x296 build/default/production/_ext/1077471063/estWind.o
-                  0x009310                  _estimateWind
- .text            0x0095a6        0x28a build/default/production/_ext/1077471063/deadReckoning.o
-                  0x0095a6                  _dead_reckon
- .text            0x009830        0x282 build/default/production/_ext/1077454706/magnetometer.o
-                  0x009830                  _rxMagnetometer
-                  0x00992e                  build/default/production/_ext/1077454706/magnetometer.o:_I2C_callback
-                  0x009aa4                  _HILSIM_MagData
- .text            0x009ab2        0x26e build/default/production/_ext/1077454706/serialIO.o
-                  0x009ab2                  _udb_init_GPS
-                  0x009b12                  _udb_gps_set_rate
-                  0x009b3c                  _udb_gps_check_rate
-                  0x009b6e                  _udb_gps_start_sending_data
-                  0x009b76                  __U1TXInterrupt
-                  0x009bae                  __U1RXInterrupt
-                  0x009be8                  _udb_init_USART
-                  0x009c4a                  _udb_serial_set_rate
-                  0x009c74                  _udb_serial_check_rate
-                  0x009ca6                  _udb_serial_start_sending_data
-                  0x009cae                  __U2TXInterrupt
-                  0x009ce6                  __U2RXInterrupt
- .text            0x009d20        0x204 build/default/production/projectSpecific/servoMix.o
-                  0x009d20                  _servoMix
-                  0x009e80                  _cameraServoMix
- .text            0x009f24        0x1fc build/default/production/_ext/1077454706/mcu.o
-                  0x009f24                  _get_reset_flags
-                  0x009f2c                  _configurePPS
-                  0x00a078                  _configureDigitalIO
-                  0x00a0c0                  _init_leds
-                  0x00a0d6                  _mcu_init
- .text            0x00a120        0x1d6 build/default/production/_ext/1077454706/events.o
-                  0x00a120                  _register_event
-                  0x00a12e                  _register_event_p
-                  0x00a176                  _trigger_event
-                  0x00a1c0                  _init_events
-                  0x00a222                  __C2Interrupt
-                  0x00a28c                  __C1Interrupt
- .text            0x00a2f6        0x1d2 build/default/production/_ext/1472/pitchCntrl.o
-                  0x00a2f6                  _pitchCntrl
-                  0x00a312                  _normalPitchCntrl
-                  0x00a420                  _hoverPitchCntrl
- .text            0x00a4c8        0x1ce build/default/production/_ext/1077454706/background.o
-                  0x00a4c8                  _udb_init_clock
-                  0x00a544                  __T1Interrupt
-                  0x00a5a4                  _udb_background_trigger
-                  0x00a5ac                  __T7Interrupt
-                  0x00a5d4                  _udb_cpu_load
-                  0x00a5e6                  __T5Interrupt
-                  0x00a604                  __T6Interrupt
- .text            0x00a696        0x196 build/default/production/_ext/1077471063/libDCM.o
-                  0x00a696                  _dcm_init
-                  0x00a6ac                  _dcm_run_init_step
-                  0x00a6f2                  _udb_callback_read_sensors
-                  0x00a700                  _do_I2C_stuff
-                  0x00a74e                  _udb_servo_callback_prepare_outputs
-                  0x00a774                  _dcm_calibrate
-                  0x00a788                  _dcm_set_origin_location
-                  0x00a7ca                  _dcm_absolute_to_relative
- .text            0x00a82c        0x172 build/default/production/_ext/1077454706/servoOut.o
-                  0x00a82c                  _udb_init_pwm
-                  0x00a874                  _udb_set_action_state
-                  0x00a890                  _start_pwm_outputs
-                  0x00a8a6                  __T4Interrupt
- .text            0x00a99e        0x162 build/default/production/_ext/1472/behavior.o
-                  0x00a99e                  _init_behavior
-                  0x00a9b0                  _setBehavior
-                  0x00a9d6                  _canStabilizeInverted
-                  0x00a9de                  _canStabilizeHover
-                  0x00a9e6                  _updateBehavior
-                  0x00aaa8                  _updateTriggerAction
-                  0x00aaf4                  _triggerActionSetValue
- .text            0x00ab00        0x11c build/default/production/_ext/1472/mode_switch.o
-                  0x00ab00                  _flight_mode_switch_manual
-                  0x00ab0e                  _flight_mode_switch_stabilize
-                  0x00ab1c                  _flight_mode_switch_waypoints
-                  0x00ab2a                  _flight_mode_switch_2pos_poll
-                  0x00ab30                  _flight_mode_switch_check_set
- .text            0x00ac1c        0x11a build/default/production/_ext/1077454706/mpu6000.o
-                  0x00ac1c                  _MPU6000_init16
-                  0x00aca0                  _process_MPU_data
-                  0x00acc8                  _MPU6000_read
-                  0x00ace0                  __INT1Interrupt
-                  0x00ad06                  _MPU6000_print
- .text            0x00ad36        0x108 build/default/production/_ext/1077454706/traps.o
-                  0x00ad36                  _reset
-                  0x00ad50                  __OscillatorFail
-                  0x00ad7c                  __AddressError
-                  0x00ada2                  __StackError
-                  0x00adc8                  __MathError
-                  0x00adee                  __DMACError
- .text            0x00ae3e        0x104 build/default/production/_ext/1472/rollCntrl.o
-                  0x00ae3e                  _rollCntrl
-                  0x00ae58                  _normalRollCntrl
-                  0x00aef2                  _hoverRollCntrl
- .text            0x00af42         0xf0 build/default/production/_ext/1077471063/estAltitude.o
-                  0x00af42                  _get_barometer_temperature
-                  0x00af4a                  _get_barometer_pressure
-                  0x00af54                  _get_barometer_altitude
-                  0x00af5e                  _get_barometer_agl_altitude
-                  0x00af68                  _altimeter_calibrate
-                  0x00afc4                  _udb_barometer_callback
-                  0x00afda                  _estAltitude
- .text            0x00b032         0xea build/default/production/_ext/1472/yawCntrl.o
-                  0x00b032                  _yawCntrl
-                  0x00b04c                  _normalYawCntrl
-                  0x00b0be                  _hoverYawCntrl
- .text            0x00b11c         0xcc build/default/production/_ext/1472/servoPrepare.o
-                  0x00b11c                  _init_servoPrepare
-                  0x00b17e                  _dcm_servo_callback_prepare_outputs
-                  0x00b1ce                  _manualPassthrough
- .text            0x00b1e8         0xb8 build/default/production/_ext/1077454706/libUDB.o
-                  0x00b1e8                  _udb_init
-                  0x00b218                  _udb_run
-                  0x00b21e                  _udb_a2d_record_offsets
-                  0x00b240                  _udb_servo_record_trims
-                  0x00b26c                  _udb_servo_pulsesat
-                  0x00b29a                  _calculate_analog_sensor_values
- .text            0x00b2a0         0x90 build/default/production/_ext/1472/cameraCntrl.o
-                  0x00b2a0                  _cam_pitchServoLimit
-                  0x00b2ca                  _cam_yawServoLimit
-                  0x00b2f4                  _set_camera_view
-                  0x00b30c                  _compute_camera_view
-                  0x00b32a                  _cameraCntrl
- .text            0x00b330         0x84 build/default/production/_ext/1077471063/estYawDrift.o
-                  0x00b330                  _dcm_enable_yaw_drift_correction
-                  0x00b352                  _estYawDrift
- .text            0x00b3b4         0x40 build/default/production/_ext/1472/euler_angles.o
-                  0x00b3b4                  _get_geo_heading_angle
- .text            0x00b3f4         0x2a build/default/production/_ext/1077454706/traps_asm.o
-                  0x00b3f4                  _SP_start
-                  0x00b3f8                  _SP_limit
-                  0x00b3fc                  _SP_current
-                  0x00b400                  _getErrLoc
-                  0x00b416                  _gentrap
- .text            0x00b41e         0x28 build/default/production/_ext/1472/main.o
-                  0x00b41e                  _main
+.text             0x008a9c       0x29ea
+ .text            0x008a9c        0x32c build/default/production/_ext/1077454706/analog2digital_auav3.o
+                  0x008a9c                  _udb_init_ADC
+                  0x008b80                  __DMA3Interrupt
+ .text            0x008dc8        0x2ae build/default/production/_ext/1077471063/gpsParseCommon.o
+                  0x008dc8                  _gpsoutbin
+                  0x008de6                  _gpsoutline
+                  0x008dfe                  _udb_gps_callback_get_byte_to_send
+                  0x008e2a                  _udb_gps_callback_received_byte
+                  0x008e38                  _udb_background_callback_triggered
+ .text            0x009076        0x29c build/default/production/_ext/1077454706/spiUtils.o
+                  0x009076                  _initSPI1_master16
+                  0x0090b8                  _writeSPI1reg16
+                  0x0090e8                  _no_call_back
+                  0x0090ee                  _readSPI1_burst16n
+                  0x00912c                  __SPI1Interrupt
+                  0x00919e                  _initSPI2_master16
+                  0x0091e0                  _writeSPI2reg16
+                  0x009224                  _readSPI2_burst16n
+                  0x00925a                  __SPI2Interrupt
+ .text            0x009312        0x296 build/default/production/_ext/1077471063/estWind.o
+                  0x009312                  _estimateWind
+ .text            0x0095a8        0x28a build/default/production/_ext/1077471063/deadReckoning.o
+                  0x0095a8                  _dead_reckon
+ .text            0x009832        0x282 build/default/production/_ext/1077454706/magnetometer.o
+                  0x009832                  _rxMagnetometer
+                  0x009930                  build/default/production/_ext/1077454706/magnetometer.o:_I2C_callback
+                  0x009aa6                  _HILSIM_MagData
+ .text            0x009ab4        0x26e build/default/production/_ext/1077454706/serialIO.o
+                  0x009ab4                  _udb_init_GPS
+                  0x009b14                  _udb_gps_set_rate
+                  0x009b3e                  _udb_gps_check_rate
+                  0x009b70                  _udb_gps_start_sending_data
+                  0x009b78                  __U1TXInterrupt
+                  0x009bb0                  __U1RXInterrupt
+                  0x009bea                  _udb_init_USART
+                  0x009c4c                  _udb_serial_set_rate
+                  0x009c76                  _udb_serial_check_rate
+                  0x009ca8                  _udb_serial_start_sending_data
+                  0x009cb0                  __U2TXInterrupt
+                  0x009ce8                  __U2RXInterrupt
+ .text            0x009d22        0x204 build/default/production/projectSpecific/servoMix.o
+                  0x009d22                  _servoMix
+                  0x009e82                  _cameraServoMix
+ .text            0x009f26        0x1fc build/default/production/_ext/1077454706/mcu.o
+                  0x009f26                  _get_reset_flags
+                  0x009f2e                  _configurePPS
+                  0x00a07a                  _configureDigitalIO
+                  0x00a0c2                  _init_leds
+                  0x00a0d8                  _mcu_init
+ .text            0x00a122        0x1d6 build/default/production/_ext/1077454706/events.o
+                  0x00a122                  _register_event
+                  0x00a130                  _register_event_p
+                  0x00a178                  _trigger_event
+                  0x00a1c2                  _init_events
+                  0x00a224                  __C2Interrupt
+                  0x00a28e                  __C1Interrupt
+ .text            0x00a2f8        0x1d2 build/default/production/_ext/1472/pitchCntrl.o
+                  0x00a2f8                  _pitchCntrl
+                  0x00a314                  _normalPitchCntrl
+                  0x00a422                  _hoverPitchCntrl
+ .text            0x00a4ca        0x1ce build/default/production/_ext/1077454706/background.o
+                  0x00a4ca                  _udb_init_clock
+                  0x00a546                  __T1Interrupt
+                  0x00a5a6                  _udb_background_trigger
+                  0x00a5ae                  __T7Interrupt
+                  0x00a5d6                  _udb_cpu_load
+                  0x00a5e8                  __T5Interrupt
+                  0x00a606                  __T6Interrupt
+ .text            0x00a698        0x196 build/default/production/_ext/1077471063/libDCM.o
+                  0x00a698                  _dcm_init
+                  0x00a6ae                  _dcm_run_init_step
+                  0x00a6f4                  _udb_callback_read_sensors
+                  0x00a702                  _do_I2C_stuff
+                  0x00a750                  _udb_servo_callback_prepare_outputs
+                  0x00a776                  _dcm_calibrate
+                  0x00a78a                  _dcm_set_origin_location
+                  0x00a7cc                  _dcm_absolute_to_relative
+ .text            0x00a82e        0x172 build/default/production/_ext/1077454706/servoOut.o
+                  0x00a82e                  _udb_init_pwm
+                  0x00a876                  _udb_set_action_state
+                  0x00a892                  _start_pwm_outputs
+                  0x00a8a8                  __T4Interrupt
+ .text            0x00a9a0        0x162 build/default/production/_ext/1472/behavior.o
+                  0x00a9a0                  _init_behavior
+                  0x00a9b2                  _setBehavior
+                  0x00a9d8                  _canStabilizeInverted
+                  0x00a9e0                  _canStabilizeHover
+                  0x00a9e8                  _updateBehavior
+                  0x00aaaa                  _updateTriggerAction
+                  0x00aaf6                  _triggerActionSetValue
+ .text            0x00ab02        0x128 build/default/production/_ext/1472/yawCntrl.o
+                  0x00ab02                  _yawCntrl
+                  0x00ab1c                  _normalYawCntrl
+                  0x00abcc                  _hoverYawCntrl
+ .text            0x00ac2a        0x11c build/default/production/_ext/1472/mode_switch.o
+                  0x00ac2a                  _flight_mode_switch_manual
+                  0x00ac38                  _flight_mode_switch_stabilize
+                  0x00ac46                  _flight_mode_switch_waypoints
+                  0x00ac54                  _flight_mode_switch_2pos_poll
+                  0x00ac5a                  _flight_mode_switch_check_set
+ .text            0x00ad46        0x11a build/default/production/_ext/1077454706/mpu6000.o
+                  0x00ad46                  _MPU6000_init16
+                  0x00adca                  _process_MPU_data
+                  0x00adf2                  _MPU6000_read
+                  0x00ae0a                  __INT1Interrupt
+                  0x00ae30                  _MPU6000_print
+ .text            0x00ae60        0x108 build/default/production/_ext/1077454706/traps.o
+                  0x00ae60                  _reset
+                  0x00ae7a                  __OscillatorFail
+                  0x00aea6                  __AddressError
+                  0x00aecc                  __StackError
+                  0x00aef2                  __MathError
+                  0x00af18                  __DMACError
+ .text            0x00af68        0x104 build/default/production/_ext/1472/rollCntrl.o
+                  0x00af68                  _rollCntrl
+                  0x00af82                  _normalRollCntrl
+                  0x00b01c                  _hoverRollCntrl
+ .text            0x00b06c         0xf0 build/default/production/_ext/1077471063/estAltitude.o
+                  0x00b06c                  _get_barometer_temperature
+                  0x00b074                  _get_barometer_pressure
+                  0x00b07e                  _get_barometer_altitude
+                  0x00b088                  _get_barometer_agl_altitude
+                  0x00b092                  _altimeter_calibrate
+                  0x00b0ee                  _udb_barometer_callback
+                  0x00b104                  _estAltitude
+ .text            0x00b15c         0xcc build/default/production/_ext/1472/servoPrepare.o
+                  0x00b15c                  _init_servoPrepare
+                  0x00b1be                  _dcm_servo_callback_prepare_outputs
+                  0x00b20e                  _manualPassthrough
+ .text            0x00b228         0xb8 build/default/production/_ext/1077454706/libUDB.o
+                  0x00b228                  _udb_init
+                  0x00b258                  _udb_run
+                  0x00b25e                  _udb_a2d_record_offsets
+                  0x00b280                  _udb_servo_record_trims
+                  0x00b2ac                  _udb_servo_pulsesat
+                  0x00b2da                  _calculate_analog_sensor_values
+ .text            0x00b2e0         0x90 build/default/production/_ext/1472/cameraCntrl.o
+                  0x00b2e0                  _cam_pitchServoLimit
+                  0x00b30a                  _cam_yawServoLimit
+                  0x00b334                  _set_camera_view
+                  0x00b34c                  _compute_camera_view
+                  0x00b36a                  _cameraCntrl
+ .text            0x00b370         0x84 build/default/production/_ext/1077471063/estYawDrift.o
+                  0x00b370                  _dcm_enable_yaw_drift_correction
+                  0x00b392                  _estYawDrift
+ .text            0x00b3f4         0x40 build/default/production/_ext/1472/euler_angles.o
+                  0x00b3f4                  _get_geo_heading_angle
+ .text            0x00b434         0x2a build/default/production/_ext/1077454706/traps_asm.o
+                  0x00b434                  _SP_start
+                  0x00b438                  _SP_limit
+                  0x00b43c                  _SP_current
+                  0x00b440                  _getErrLoc
+                  0x00b456                  _gentrap
+ .text            0x00b45e         0x28 build/default/production/_ext/1472/main.o
+                  0x00b45e                  _main
 
-.init.delay32     0x00b446         0x1c
- .init.delay32    0x00b446         0x1c /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-pic30-elf.a(delay32ep.Leo)
-                  0x00b446                  ___delay32
+.init.delay32     0x00b486         0x1c
+ .init.delay32    0x00b486         0x1c /opt/microchip/xc16/v1.10/bin/bin/../../lib/liblega-pic30-elf.a(delay32ep.Leo)
+                  0x00b486                  ___delay32
