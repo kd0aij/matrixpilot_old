@@ -96,13 +96,13 @@
 #define ROLL_STABILIZATION_AILERONS			1
 #define ROLL_STABILIZATION_RUDDER			0
 #define PITCH_STABILIZATION					1
-#define YAW_STABILIZATION_RUDDER			0
+#define YAW_STABILIZATION_RUDDER			1
 #define YAW_STABILIZATION_AILERON			1
 
 // Aileron and Rudder Navigation
 // Set either of these to 0 to disable use of that control surface for navigation.
 #define AILERON_NAVIGATION					1
-#define RUDDER_NAVIGATION					0
+#define RUDDER_NAVIGATION					1
 
 // Cross track margin, in meters
 // This is used when the cross track option is attached to a waypoint
@@ -174,7 +174,7 @@
 // RACING_MODE_WP_THROTTLE is the throttle value to use, and should be set between 0.0 and 1.0.
 // Racing performance can be improved by disabling cross tracking for your waypoints.
 #define RACING_MODE							1
-#define RACING_MODE_WP_THROTTLE				1
+#define RACING_MODE_WP_THROTTLE				.7
 
 // Set this to 1 if you want the UAV Dev Board to fly your plane without a radio transmitter or
 // receiver. (Totally autonomous.)  This is just meant for simulation and debugging.  It is not
@@ -477,9 +477,9 @@
 // YAWKP_AILERON is the proportional feedback gain for ailerons in response to yaw error
 // YAWKD_AILERON is the derivative feedback gain for ailerons in response to yaw rotation
 // AILERON_BOOST is the additional gain multiplier for the manually commanded aileron deflection
-#define ROLLKP				0.05 //0.22
+#define ROLLKP				0.10 //0.22
 #define ROLLKD				0.01 //0.02
-#define YAWKP_AILERON		0.03 // 0.05
+#define YAWKP_AILERON		0.06 // 0.05
 #define YAWKD_AILERON		0 //0.11 //0.05
 #define AILERON_BOOST		0.5
 
@@ -491,7 +491,7 @@
 // ELEVATOR_BOOST is the additional gain multiplier for the manually commanded elevator deflection
 #define PITCHGAIN			0.08 // 0.150
 #define PITCHKD				0 //0.015 // 0.075
-#define RUDDER_ELEV_MIX		0.0
+#define RUDDER_ELEV_MIX		0.04
 #define ROLL_ELEV_MIX		0.5
 #define ELEVATOR_BOOST		1.0
 

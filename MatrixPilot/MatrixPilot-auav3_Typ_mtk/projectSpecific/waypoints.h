@@ -70,7 +70,7 @@
 const struct waypointDef waypoints[] = {
 	{ { 44, 10, 20 } , F_TAKEOFF , CAM_VIEW_LAUNCH } , //Waypoint 1
 	{ { 58, 50, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 2
-	{ { -172, 330, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
+	{ { -107, 140, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 3
 	{ { -101, 24, 35 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 4
 	{ { -81, -14, 20 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 5
 	{ { -44, -15, 10 } , F_CROSS_TRACK , CAM_VIEW_LAUNCH } , //Waypoint 6
