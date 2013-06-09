@@ -138,6 +138,8 @@ int16_t gps_imu_velocity_offset_previous[3] = { 0 , 0 , 0 } ;
 
 int16_t gps_location_noise[3] = { 0 , 0 , 0 } ;
 int16_t gps_velocity_noise[3] = { 0 , 0 , 0 } ;
+int16_t gps_location_noise_total = 0 ;
+int16_t gps_velocity_noise_total = 0 ;
 
 void dead_reckon(void)
 {
@@ -224,6 +226,9 @@ void dead_reckon(void)
 			gps_velocity_noise[2] += ( gps_imu_velocity_offset[2] - gps_imu_velocity_offset_previous[2] ) - ( ( gps_velocity_noise[2] ) >> 2 ) ;	
 
 			VectorCopy ( 3 , gps_imu_velocity_offset_previous , gps_imu_velocity_offset ) ;
+
+			gps_location_noise_total = abs( gps_location_noise[0] ) + abs( gps_location_noise[1] ) +abs( gps_location_noise[2] ) ;
+			gps_velocity_noise_total = abs( gps_velocity_noise[0] ) + abs( gps_velocity_noise[1] ) +abs( gps_velocity_noise[2] ) ;
 		
 		}
 	}

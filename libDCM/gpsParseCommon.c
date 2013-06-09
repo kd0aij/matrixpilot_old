@@ -108,6 +108,7 @@ int16_t location_previous[] = { 0 , 0 , 0 } ;
 union longww GPS_location_previous[3] ;
 int16_t GPS_raw_velocity_previous[3] ;
 int16_t GPS_consistency[3] = { 0 , 0 , 0 } ;
+int16_t GPS_consistency_total = 0 ;
 
 // Received a full set of GPS messages
 void udb_background_callback_triggered(void) 
@@ -163,12 +164,14 @@ void udb_background_callback_triggered(void)
 			GPS_raw_location_delta[1] = ((lat_gps._.W0 - GPS_location_previous[1]._.W0)/9)*10 ; 
 			GPS_raw_location_delta[2] = alt_sl_gps._.W0 - GPS_location_previous[2]._.W0 ;
 
-			GPS_consistency[0] = GPS_raw_location_delta[0] 
-								- (  GPS_raw_velocity[0] /(2*GPS_RATE ) +  GPS_raw_velocity_previous[0] /(2*GPS_RATE) ) ;
-			GPS_consistency[1] = GPS_raw_location_delta[1] 
-								- (  GPS_raw_velocity[1] /(2*GPS_RATE ) +  GPS_raw_velocity_previous[1] /(2*GPS_RATE) ) ;
-			GPS_consistency[2] = GPS_raw_location_delta[2] 
-								- (  GPS_raw_velocity[2] /(2*GPS_RATE ) +  GPS_raw_velocity_previous[2] /(2*GPS_RATE) ) ;
+			GPS_consistency[0] += ( GPS_raw_location_delta[0] 
+								- (  GPS_raw_velocity[0] /(2*GPS_RATE ) +  GPS_raw_velocity_previous[0] /(2*GPS_RATE) )) - ( ( GPS_consistency[0] ) >> 2 ) ;
+			GPS_consistency[1] += ( GPS_raw_location_delta[1] 
+								- (  GPS_raw_velocity[1] /(2*GPS_RATE ) +  GPS_raw_velocity_previous[1] /(2*GPS_RATE) )) - ( ( GPS_consistency[1] ) >> 2 ) ;
+			GPS_consistency[2] += ( GPS_raw_location_delta[2] 
+								- (  GPS_raw_velocity[2] /(2*GPS_RATE ) +  GPS_raw_velocity_previous[2] /(2*GPS_RATE) )) - ( ( GPS_consistency[2] ) >> 2 ) ;
+
+			GPS_consistency_total = abs( GPS_consistency[0] ) + abs( GPS_consistency[1] ) +abs( GPS_consistency[2] ) ;
 		}
 
 		GPS_raw_velocity_previous[0] = GPS_raw_velocity[0] ;
