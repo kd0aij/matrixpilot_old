@@ -454,6 +454,7 @@ int16_t pwIn_save[NUM_INPUTS + 1] ;
 int16_t pwOut_save[NUM_OUTPUTS + 1] ;
 extern int16_t gps_location_noise[3] ;
 extern int16_t gps_velocity_noise[3] ;
+extern int16_t GPS_consistency[3] ;
 extern fractional aero_forces[3] ;
 #endif
 
@@ -580,7 +581,8 @@ void serial_output_8hz( void )
 					serial_output("p%io%i:",i,pwOut_save[i]);
 				serial_output("imx%i:imy%i:imz%i:lex%i:ley%i:lez%i:fgs%X:ofc%i:tx%i:ty%i:tz%i:G%d,%d,%d:",IMUlocationx._.W1 ,IMUlocationy._.W1 ,IMUlocationz._.W1,
 //					omegaAccum[0] , aero_forces[2] , 0 ,
-					gps_velocity_noise[0] , gps_velocity_noise[1] , gps_velocity_noise[2] ,
+					GPS_consistency[0] , GPS_consistency[1] , GPS_consistency[2] , 
+//					gps_velocity_noise[0] , gps_velocity_noise[1] , gps_velocity_noise[2] ,
 //					gps_location_noise[0] , gps_location_noise[1] , gps_location_noise[2] ,
 //					locationErrorEarth[0] , locationErrorEarth[1] , locationErrorEarth[2] , 
 					 flags.WW, osc_fail_count,
