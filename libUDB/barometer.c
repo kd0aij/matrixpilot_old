@@ -38,10 +38,10 @@
 #endif
 
 // BMP085 oversampling can be set from 0 thru 3
-//#define OSS 3
+#define OSS 3
 //#define OSS 2
 //#define OSS 1
-#define OSS 0
+//#define OSS 0
 
 typedef union 
 {

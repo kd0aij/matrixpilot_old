@@ -746,7 +746,7 @@
 
 // Set USE_CONSOLE to 1, 2, 3 or 4 to enable debug console on UART of that number.
 // UART 3 and 4 option only available with the AUAV3 board.
-#define USE_CONSOLE						0
+#define USE_CONSOLE						3
 
 // Optionally enable the new power saving idle mode of the MCU during mainloop
 #define USE_MCU_IDLE					1

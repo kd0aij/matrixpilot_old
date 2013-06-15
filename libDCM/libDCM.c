@@ -98,27 +98,33 @@ void udb_callback_read_sensors(void)
 }
 
 #if (BAROMETER_ALTITUDE == 1)
+
 void do_I2C_stuff(void)
 {
-	static int toggle = 0;
-	static int counter = 0;
+    static int toggle = 0;
+    static int counter = 0;
 
-	if (toggle) {
-		if (counter++ > 0) {
+    if (toggle)
+    {
+        if (counter++ > 0)
+        {
 #if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
-//printf("rxMag %u\r\n", udb_heartbeat_counter);
-			rxMagnetometer(udb_magnetometer_callback);
+            //printf("rxMag %u\r\n", udb_heartbeat_counter);
+            rxMagnetometer(udb_magnetometer_callback);
 #endif
-			counter = 0;
-			toggle = 0;
-}
-	} else {
-		rxBarometer(udb_barometer_callback);
-		if (counter++ > 6) {
-			counter = 0;
-			toggle = 1;
-		}
-	}
+            counter = 0;
+            toggle = 0;
+        }
+    }
+    else
+    {
+        rxBarometer(udb_barometer_callback);
+        if (counter++ > 6)
+        {
+            counter = 0;
+            toggle = 1;
+        }
+    }
 }
 #endif // BAROMETER_ALTITUDE
 
