@@ -170,6 +170,18 @@ struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute)
 	return rel ;
 }
 
+struct relative3D_32 dcm_absolute_to_relative_32(struct waypoint3D absolute)
+{
+	struct relative3D_32 rel ;
+	
+	rel.z = absolute.z ;
+	
+	rel.y = (absolute.y - lat_origin.WW)/90 ; // in meters
+
+	rel.x = long_scale((absolute.x - long_origin.WW)/90 , cos_lat ) ;
+	
+	return rel ;
+}
 
 #if ( HILSIM == 1 )
 

@@ -23,7 +23,7 @@
 #include <string.h>
 
 
-struct relative3D GPSlocation 		  = { 0 , 0 , 0 } ;
+struct relative3D_32 GPSlocation 		  = { 0 , 0 , 0 } ;
 struct relative3D GPSvelocity 		  = { 0 , 0 , 0 } ;
 
 union longbbbb lat_gps , long_gps , alt_sl_gps, tow ;  	// latitude, longitude, altitude
@@ -118,7 +118,7 @@ void udb_background_callback_triggered(void)
 	int8_t cog_delta ;
 	int16_t sog_delta ;
 	int16_t climb_rate_delta ;
-	int16_t location[3] ;
+	int32_t location[3] ;
 	int16_t location_deltaZ ;
 	struct relative2D location_deltaXY ;
 	struct relative2D velocity_thru_air ;
@@ -136,14 +136,14 @@ void udb_background_callback_triggered(void)
 
 		dcm_callback_gps_location_updated() ;
 		
-		accum_nav.WW = ((lat_gps.WW - lat_origin.WW)/90) ; // in meters, range is about 20 miles
-		location[1] = accum_nav._.W0 ;
+		location[1] = accum_nav.WW = ((lat_gps.WW - lat_origin.WW)/90) ; // in meters, range is about 20 miles
+//		location[1] = accum_nav._.W0 ;
 
-		accum_nav.WW = long_scale((long_gps.WW - long_origin.WW)/90 , cos_lat ) ;
-		location[0] = accum_nav._.W0 ;	
+		location[0] = accum_nav.WW = long_scale((long_gps.WW - long_origin.WW)/90 , cos_lat ) ;
+//		location[0] = accum_nav._.W0 ;	
 		
-		accum_nav.WW = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
-		location[2] = accum_nav._.W0 ;
+		location[2] = accum_nav.WW = ( alt_sl_gps.WW - alt_origin.WW)/100 ; // height in meters
+//		location[2] = accum_nav._.W0 ;
 
 	    // convert GPS course of 360 degrees to a binary model with 256	
 		accum.WW = __builtin_muluu ( COURSEDEG_2_BYTECIR , cog_gps.BB ) + 0x00008000 ;

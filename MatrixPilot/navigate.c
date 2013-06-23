@@ -83,7 +83,7 @@ void dcm_callback_gps_location_updated(void)
 }
 
 
-void set_goal( struct relative3D fromPoint , struct relative3D toPoint )
+void set_goal( struct relative3D_32 fromPoint , struct relative3D_32 toPoint )
 {
 	struct relative2D courseLeg ;
 

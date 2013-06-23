@@ -24,7 +24,7 @@
 #if (FLIGHT_PLAN_TYPE == FP_WAYPOINTS)
 
 
-struct relWaypointDef { struct relative3D loc ; int16_t flags ; struct relative3D viewpoint ; } ;
+struct relWaypointDef { struct relative3D_32 loc ; int16_t flags ; struct relative3D viewpoint ; } ;
 struct waypointDef { struct waypoint3D loc ; int16_t flags ; struct waypoint3D viewpoint ; } ;
 
 #include "waypoints.h"
@@ -55,7 +55,7 @@ struct relWaypointDef wp_to_relative(struct waypointDef wp)
 	
 	if ( wp.flags & F_ABSOLUTE )
 	{
-		rel.loc = dcm_absolute_to_relative(wp.loc) ;
+		rel.loc = dcm_absolute_to_relative_32(wp.loc) ;
 		rel.viewpoint = dcm_absolute_to_relative(wp.viewpoint) ;
 		
 		rel.flags = wp.flags - F_ABSOLUTE ;
