@@ -1,0 +1,8 @@
+C:\source\gentlenav_Google\branches\MatrixPilot_NASA_challenge\Tools\XplaneTesting\XplaneTesting\obj\Debug\ResolveAssemblyReference.cache
+C:\source\gentlenav_Google\branches\MatrixPilot_NASA_challenge\Tools\XplaneTesting\XplaneTesting\obj\Debug\XplaneTesting.MainForm.resources
+C:\source\gentlenav_Google\branches\MatrixPilot_NASA_challenge\Tools\XplaneTesting\XplaneTesting\obj\Debug\XplaneTesting.Properties.Resources.resources
+C:\source\gentlenav_Google\branches\MatrixPilot_NASA_challenge\Tools\XplaneTesting\XplaneTesting\obj\Debug\XplaneTesting.csproj.GenerateResource.Cache
+C:\source\gentlenav_Google\branches\MatrixPilot_NASA_challenge\Tools\XplaneTesting\XplaneTesting\bin\Debug\XplaneTesting.exe
+C:\source\gentlenav_Google\branches\MatrixPilot_NASA_challenge\Tools\XplaneTesting\XplaneTesting\bin\Debug\XplaneTesting.pdb
+C:\source\gentlenav_Google\branches\MatrixPilot_NASA_challenge\Tools\XplaneTesting\XplaneTesting\obj\Debug\XplaneTesting.exe
+C:\source\gentlenav_Google\branches\MatrixPilot_NASA_challenge\Tools\XplaneTesting\XplaneTesting\obj\Debug\XplaneTesting.pdb
