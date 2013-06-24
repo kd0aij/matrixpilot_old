@@ -364,7 +364,7 @@ static void update_flight_time()
 void show_rssi()
 {
 #if (OSD_LOC_RSSI != OSD_LOC_DISABLED && ANALOG_RSSI_INPUT_CHANNEL != CHANNEL_UNUSED)
-	serial_send_location(OSD_LOC_FLIGHT_TIME);
+	serial_send_location(OSD_LOC_RSSI);
 	serial_output("179,,%i,\r\n", rc_signal_strength);
 #endif
 }
@@ -467,7 +467,7 @@ static int counter = 0;
 
 	int throttleIn = udb_pwIn[THROTTLE_INPUT_CHANNEL] ;
 
-	if (flight_mode == PLANE_ON_GROUND || flight_mode == PLANE_LANDED)	// we are on ground before or after flight
+	if (flight_mode == PLANE_ON_GROUND || flight_mode == PLANE_IN_FLIGHT)	// we are on ground before or after flight
 	{				// we need 7 meters of movement
 		if (last_long != log && last_lat != lat)	// we are moving 
 		{
@@ -517,7 +517,7 @@ void serial_output_8hz( void )
 {
 	if (home_saved)
 	{
-		if (flight_mode == PLANE_ON_GROUND || flight_mode == PLANE_IN_FLIGHT)
+		if (flight_mode == PLANE_ON_GROUND || flight_mode == PLANE_LANDED)
 		{
 			serial_show_AH();
 		}
