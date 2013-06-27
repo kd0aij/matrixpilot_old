@@ -184,6 +184,7 @@ void putsUART2(unsigned int *buffer)
         }
     }
 }
+#if (BOARD_TYPE == AUAV3_BOARD)
 void putsUART3(unsigned int *buffer)
 {
     char * temp_ptr = (char *) buffer;
@@ -207,7 +208,7 @@ void putsUART3(unsigned int *buffer)
         }
     }
 }
-
+#endif
 /******************************************************************************
 * Function Name     : getsUART2                                               *
 * Description       : This function gets a string of data of specified length * 
@@ -262,11 +263,12 @@ char DataRdyUART2(void)
 {
     return(U2STAbits.URXDA);
 }
+#if (BOARD_TYPE == AUAV3_BOARD)
 char DataRdyUART3(void)
 {
     return(U3STAbits.URXDA);
 }
-
+#endif
 
 /*************************************************************************
 * Function Name     : BusyUART2                                          *
@@ -280,11 +282,12 @@ char BusyUART2(void)
 {  
     return(!U2STAbits.TRMT);
 }
+#if (BOARD_TYPE == AUAV3_BOARD)
 char BusyUART3(void)
 {  
     return(!U3STAbits.TRMT);
 }
-
+#endif
 
 /***************************************************************************
 * Function Name     : ReadUART2                                            *
@@ -300,6 +303,7 @@ unsigned int ReadUART2(void)
     else
         return (U2RXREG & 0xFF);
 }
+#if (BOARD_TYPE == AUAV3_BOARD)
 unsigned int ReadUART3(void)
 {
     if(U3MODEbits.PDSEL == 3)
@@ -307,7 +311,7 @@ unsigned int ReadUART3(void)
     else
         return (U3RXREG & 0xFF);
 }
-
+#endif
 
 /*********************************************************************
 * Function Name     : WriteUART2                                     *
@@ -323,6 +327,7 @@ void WriteUART2(unsigned int data)
     else
         U2TXREG = data & 0xFF;  
 }
+#if (BOARD_TYPE == AUAV3_BOARD)
 void WriteUART3(unsigned int data)
 {
     if(U3MODEbits.PDSEL == 3)
@@ -330,7 +335,7 @@ void WriteUART3(unsigned int data)
     else
         U3TXREG = data & 0xFF;  
 }
-
+#endif
 #endif
 
 

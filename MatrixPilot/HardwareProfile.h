@@ -2,7 +2,7 @@
 #define HARDWARE_PROFILE_H
 
 
-//#include "defines.h"
+#include "defines.h"
 #include "../libUDB/oscillator.h"
 
 // Hardware I/O pin mappings
@@ -24,7 +24,6 @@
 
 
 #if (BOARD_TYPE == AUAV3_BOARD)
-
 	#define BAUDRATE3	   115200UL
 	#define BRGH3		   1
   #if (BRGH3 == 0)
@@ -110,12 +109,6 @@
 
 
 #elif (BOARD_TYPE == UDB4_BOARD) || (BOARD_TYPE == UDB5_BOARD)
-
-  // Clock frequency values
-  // These directly influence timed events using the Tick module.  They also are used for UART and SPI baud rate generation.
-  #define GetSystemClock()		(FREQOSC)			   // Hz
-  #define GetInstructionClock()   (GetSystemClock()/2)	// Normally GetSystemClock()/4 for PIC18, GetSystemClock()/2 for PIC24/dsPIC, and GetSystemClock()/1 for PIC32.  Might need changing if using Doze modes.
-  #define GetPeripheralClock()	(GetSystemClock()/2)	// Normally GetSystemClock()/4 for PIC18, GetSystemClock()/2 for PIC24/dsPIC, and GetSystemClock()/1 for PIC32.  Divisor may be different if using a PIC32 since it's configurable.
 
   // Select which UART the STACK_USE_UART and STACK_USE_UART2TCP_BRIDGE
   // options will use.  You can change these to U1BRG, U1MODE, etc. if you
@@ -212,8 +205,8 @@
 #endif // BOARD_TYPE
 
 #if (NETWORK_INTERFACE == NETWORK_INTERFACE_NONE)
-//  #define MAX_UDP_SOCKETS	   (1) // dummy value to keep compiler quiet when Network interface is disabled
-//  #define MAX_HTTP_CONNECTIONS  (1) // dummy value to keep compiler quiet when Network interface is disabled
+  #define MAX_UDP_SOCKETS	   (1) // dummy value to keep compiler quiet when Network interface is disabled
+  #define MAX_HTTP_CONNECTIONS  (1) // dummy value to keep compiler quiet when Network interface is disabled
 #endif
 
 #endif // HARDWARE_PROFILE_H

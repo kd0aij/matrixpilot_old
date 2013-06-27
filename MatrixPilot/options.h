@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Set Up Board Type
 // See the MatrixPilot wiki for more details on different board types.
+// UDB4, UDB5 or AUAV3 is defined in the project file
 #ifdef UDB4
 #define BOARD_TYPE                          UDB4_BOARD
 #endif
@@ -45,8 +46,9 @@
 #endif
 
 #ifndef BOARD_TYPE
-#define BOARD_TYPE                          UDB5_BOARD
+#error BOARD_TYPE is not defined, please check configuration.xml for preprocessor-macros
 #endif
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
