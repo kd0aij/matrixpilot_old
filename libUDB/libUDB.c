@@ -171,15 +171,14 @@ void udb_run(void)
 		console();
 #endif
 
-#if (USE_MCU_IDLE == 1) && (NETWORK_INTERFACE == NETWORK_INTERFACE_NONE)
+#if (NETWORK_INTERFACE != NETWORK_INTERFACE_NONE)
+    ServiceMyIpNetwork(); // TODO: investigate how much idle() slows down the IP stack
+#elif (USE_MCU_IDLE == 1)
 		Idle();
 #endif
 		// pause cpu counting timer while not in an ISR
 		indicate_loading_main ;
 		
-    #if (NETWORK_INTERFACE != NETWORK_INTERFACE_NONE)
-    ServiceMyIpNetwork();
-    #endif
 		// TODO: is the LPRC disabled?
 	}
 	// Never returns

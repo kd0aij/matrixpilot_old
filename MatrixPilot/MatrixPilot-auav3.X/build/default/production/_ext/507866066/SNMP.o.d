@@ -15,6 +15,6 @@ build/default/production/_ext/507866066/SNMP.o:  \
 ../gain_variables.h  \
 ../../libUDB/libUDB.h  \
  ../HardwareProfile.h  \
-../defines.h  \
-../../Microchip/Include/Compiler.h  \
- ../../MyIpNetwork/MyIpData.h 
+../../libUDB/oscillator.h  \
+ ../../MyIpNetwork/MyIpData.h  \
+../../Microchip/Include/Compiler.h 

@@ -15,10 +15,10 @@ build/default/production/_ext/507866066/NBNS.o:  \
 ../gain_variables.h  \
 ../../libUDB/libUDB.h  \
  ../HardwareProfile.h  \
-../defines.h  \
-../../Microchip/Include/Compiler.h  \
+../../libUDB/oscillator.h  \
  ../../MyIpNetwork/MyIpData.h  \
-../../Microchip/Include/TCPIP_Stack/TCPIP.h  \
+../../Microchip/Include/Compiler.h  \
+ ../../Microchip/Include/TCPIP_Stack/TCPIP.h  \
  ../../Microchip/Include/GenericTypeDefs.h  \
  ../../Microchip/Include/TCPIP_Stack/StackTsk.h  \
  ../../Microchip/Include/TCPIP_Stack/Helpers.h  \

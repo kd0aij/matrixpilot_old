@@ -17,7 +17,6 @@ build/default/production/_ext/469387661/MyIpUART2.o:  \
  ../../Microchip/Include/GenericTypeDefs.h  \
  ../../Microchip/Include/Compiler.h  \
 ../HardwareProfile.h  \
-../defines.h  \
  ../../libUDB/oscillator.h  \
 ../../MyIpNetwork/TCPIPConfig.h  \
  ../../MyIpNetwork/MyIpData.h  \

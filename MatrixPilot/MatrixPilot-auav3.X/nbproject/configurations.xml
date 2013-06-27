@@ -212,6 +212,95 @@
         <itemPath>../../Microchip/Include/USB/usb_hal_dspic33E.h</itemPath>
         <itemPath>../../Microchip/USB/usb_device_local.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f5" displayName="MyIpNetwork" projectFiles="true">
+        <logicalFolder name="f1" displayName="modules" projectFiles="true">
+          <itemPath>../../MyIpNetwork/modules/MyIpADSB.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpAircraftConfig.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpCam.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpDebug.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpFlyByWire.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpGPStest.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpGroundStation.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpLOGO.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpMAVLink.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpPWMreport.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpTelemetryEXTRA.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpUART1.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpUART2.h</itemPath>
+          <itemPath>../../MyIpNetwork/modules/MyIpXPlane.h</itemPath>
+        </logicalFolder>
+        <itemPath>../../MyIpNetwork/MyIpData.h</itemPath>
+        <itemPath>../../MyIpNetwork/MyIpHelpers.h</itemPath>
+        <itemPath>../../MyIpNetwork/MyIpKnownPorts.h</itemPath>
+        <itemPath>../../MyIpNetwork/MyIpNetwork.h</itemPath>
+        <itemPath>../../MyIpNetwork/MyIpOptions.h</itemPath>
+        <itemPath>../../MyIpNetwork/TCPIPConfig.h</itemPath>
+        <itemPath>../../MyIpNetwork/WF_Config.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="TCPIP" projectFiles="true">
+        <itemPath>../../Microchip/Include/TCPIP_Stack/AES.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/AES_CBC.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/AES_CFB.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/AES_CTR.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/AES_ECB.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/AES_ECB_PIC32.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/AES_OFB.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ARCFOUR.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ARP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/Announce.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/AutoIP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/BerkeleyAPI.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/BigInt.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/DHCP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/DNS.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/Delay.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/DynDNS.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ENC28J60.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ENCX24J600.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ETH97J60.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ETHPIC32ExtPhy.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ETHPIC32ExtPhyRegs.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/FTP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/FileSystem.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/HTTP2.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/Hashes.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/Helpers.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ICMP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/IP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/LCDBlocking.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/MAC.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/MPFS2.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/NBNS.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/RSA.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/Random.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/Reboot.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/SMTP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/SNMP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/SNMPv3.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/SNTP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/SPIFlash.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/SPIRAM.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/SSL.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/SSLClientSize.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/StackTsk.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/TCP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/TCPIP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/TCPPerformanceTest.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/TFTPc.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/Telnet.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/Tick.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/UART.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/UART2TCPBridge.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/UDP.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/UDPPerformanceTest.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/XEEPROM.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ZeroconfHelper.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ZeroconfLinkLocal.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/ZeroconfMulticastDNS.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/_HTTP2.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/aes_pic24f.h</itemPath>
+        <itemPath>../../Microchip/Include/TCPIP_Stack/regdef.h</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -384,31 +473,6 @@
         <itemPath>../../Microchip/TCPIP_Stack/TCPPerformanceTest.c</itemPath>
         <itemPath>../../Microchip/TCPIP_Stack/UDPPerformanceTest.c</itemPath>
         <itemPath>../../Microchip/TCPIP_Stack/Delay.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WF_Eint.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WF_pbkdf2.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WF_Spi.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConnectionAlgorithm.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConnectionManager.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConnectionProfile.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConsole.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConsoleIfconfig.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConsoleIwconfig.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConsoleIwpriv.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConsoleMsgHandler.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFConsoleMsgs.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFDataTxRx.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFDebugStrings.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFDriverCom_24G.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFDriverRaw_24G.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFEasyConfig.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFEventHandler.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFInit.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFMac_24G.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFMgmtMsg_24G.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFParamMsg_24G.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFPowerSave.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFScan.c</itemPath>
-        <itemPath>../../Microchip/TCPIP_Stack/WiFi/WFTxPower.c</itemPath>
         <itemPath>../../Microchip/TCPIP_Stack/ENCX24J600.c</itemPath>
       </logicalFolder>
     </logicalFolder>
@@ -420,7 +484,8 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../</Elem>
-    <Elem>../../MyIpNetwork/modules</Elem>
+    <Elem>../../Microchip/Include/TCPIP_Stack</Elem>
+    <Elem>../../MyIpNetwork</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -430,9 +495,9 @@
         <targetDevice>dsPIC33EP512MU810</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>PICkit3PlatformTool</platformTool>
+        <platformTool>PICkit2PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>1.11</languageToolchainVersion>
+        <languageToolchainVersion>1.10</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
@@ -560,96 +625,8 @@
         <property key="output-file-format" value="elf"/>
         <property key="save-temps" value="false"/>
       </C30Global>
-      <PICkit3PlatformTool>
-        <property key="ADC 1" value="true"/>
-        <property key="ADC 2" value="true"/>
-        <property key="AutoSelectMemRanges" value="auto"/>
-        <property key="COMPARATOR" value="true"/>
-        <property key="CRC" value="true"/>
-        <property key="DCI" value="true"/>
-        <property key="Freeze All Other Peripherals" value="true"/>
-        <property key="I2C1" value="true"/>
-        <property key="I2C2" value="true"/>
-        <property key="INPUT CAPTURE 1" value="true"/>
-        <property key="INPUT CAPTURE 10" value="true"/>
-        <property key="INPUT CAPTURE 11" value="true"/>
-        <property key="INPUT CAPTURE 12" value="true"/>
-        <property key="INPUT CAPTURE 13" value="true"/>
-        <property key="INPUT CAPTURE 14" value="true"/>
-        <property key="INPUT CAPTURE 15" value="true"/>
-        <property key="INPUT CAPTURE 16" value="true"/>
-        <property key="INPUT CAPTURE 2" value="true"/>
-        <property key="INPUT CAPTURE 3" value="true"/>
-        <property key="INPUT CAPTURE 4" value="true"/>
-        <property key="INPUT CAPTURE 5" value="true"/>
-        <property key="INPUT CAPTURE 6" value="true"/>
-        <property key="INPUT CAPTURE 7" value="true"/>
-        <property key="INPUT CAPTURE 8" value="true"/>
-        <property key="INPUT CAPTURE 9" value="true"/>
-        <property key="OUTPUT COMPARE 1" value="true"/>
-        <property key="OUTPUT COMPARE 10" value="true"/>
-        <property key="OUTPUT COMPARE 11" value="true"/>
-        <property key="OUTPUT COMPARE 12" value="true"/>
-        <property key="OUTPUT COMPARE 13" value="true"/>
-        <property key="OUTPUT COMPARE 14" value="true"/>
-        <property key="OUTPUT COMPARE 15" value="true"/>
-        <property key="OUTPUT COMPARE 16" value="true"/>
-        <property key="OUTPUT COMPARE 2" value="true"/>
-        <property key="OUTPUT COMPARE 3" value="true"/>
-        <property key="OUTPUT COMPARE 4" value="true"/>
-        <property key="OUTPUT COMPARE 5" value="true"/>
-        <property key="OUTPUT COMPARE 6" value="true"/>
-        <property key="OUTPUT COMPARE 7" value="true"/>
-        <property key="OUTPUT COMPARE 8" value="true"/>
-        <property key="OUTPUT COMPARE 9" value="true"/>
-        <property key="PARALLEL MASTER/SLAVE PORT" value="true"/>
-        <property key="PWM" value="true"/>
-        <property key="REAL TIME CLOCK AND CALENDAR" value="true"/>
-        <property key="SPI 1" value="true"/>
-        <property key="SPI 2" value="true"/>
-        <property key="SPI 3" value="true"/>
-        <property key="SPI 4" value="true"/>
-        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
-        <property key="TIMER1" value="true"/>
-        <property key="TIMER2" value="true"/>
-        <property key="TIMER3" value="true"/>
-        <property key="TIMER4" value="true"/>
-        <property key="TIMER5" value="true"/>
-        <property key="TIMER6" value="true"/>
-        <property key="TIMER7" value="true"/>
-        <property key="TIMER8" value="true"/>
-        <property key="TIMER9" value="true"/>
-        <property key="ToolFirmwareFilePath"
-                  value="Press to browse for a specific firmware version"/>
-        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
-        <property key="UART 1" value="true"/>
-        <property key="UART 2" value="true"/>
-        <property key="UART 3" value="true"/>
-        <property key="UART 4" value="true"/>
-        <property key="USB" value="true"/>
-        <property key="hwtoolclock.frcindebug" value="false"/>
-        <property key="memories.aux" value="false"/>
-        <property key="memories.bootflash" value="false"/>
-        <property key="memories.configurationmemory" value="false"/>
-        <property key="memories.eeprom" value="false"/>
-        <property key="memories.flashdata" value="true"/>
-        <property key="memories.id" value="false"/>
-        <property key="memories.programmemory" value="true"/>
-        <property key="memories.programmemory.end" value="0x557ff"/>
-        <property key="memories.programmemory.start" value="0x0"/>
-        <property key="poweroptions.powerenable" value="false"/>
-        <property key="programmertogo.imagename" value=""/>
-        <property key="programoptions.eraseb4program" value="true"/>
-        <property key="programoptions.pgmspeed" value="2"/>
-        <property key="programoptions.preserveeeprom" value="false"/>
-        <property key="programoptions.preserveprogramrange" value="false"/>
-        <property key="programoptions.preserveprogramrange.end" value="0x557ff"/>
-        <property key="programoptions.preserveprogramrange.start" value="0x0"/>
-        <property key="programoptions.preserveuserid" value="false"/>
-        <property key="programoptions.usehighvoltageonmclr" value="false"/>
-        <property key="programoptions.uselvpprogramming" value="false"/>
-        <property key="voltagevalue" value="3.25"/>
-      </PICkit3PlatformTool>
+      <PICkit2PlatformTool>
+      </PICkit2PlatformTool>
     </conf>
   </confs>
 </configurationDescriptor>

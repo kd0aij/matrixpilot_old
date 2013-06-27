@@ -147,7 +147,7 @@
 
 
 // UDB4
-#if (NUM_ANALOG_INPUTS > 4)
+#if ((NUM_ANALOG_INPUTS > 4) && (BOARD_TYPE == UDB4_BOARD))
 	#error("Only 4 extra Analog Inputs are available the UDB4.")
 #endif
 
@@ -236,8 +236,8 @@
          (NETWORK_INTERFACE != NETWORK_INTERFACE_ETHERNET_ENC624J600) && \
          (NETWORK_INTERFACE != NETWORK_INTERFACE_ETHERNET_ENC28J60))
         #error("NETWORK_INTERFACE is configured incorrectly.")
-    #elif (BOARD_TYPE != UDB4_BOARD) && (BOARD_TYPE !=AUAV3_BOARD)
-        #error("The IP Stack and WiFi interface requires a UDB4_BOARD or AUAV3_BOARD")
+    #elif (BOARD_TYPE != UDB4_BOARD) && (BOARD_TYPE != UDB5_BOARD) && (BOARD_TYPE != AUAV3_BOARD)
+        #error("The IP Stack and WiFi interface requires UDB4_BOARD, UDB5_BOARD or AUAV3_BOARD")
     #elif ((NETWORK_USE_CAM_TRACKING == 1) && (CAM_USE_EXTERNAL_TARGET_DATA == 0))
         #error("For Network Cam Tractinkg to work you must enable CAM_USE_EXTERNAL_TARGET_DATA in options.h")
     #elif ((NETWORK_USE_FLYBYWIRE == 1) && (FLYBYWIRE_ENABLED == 0))

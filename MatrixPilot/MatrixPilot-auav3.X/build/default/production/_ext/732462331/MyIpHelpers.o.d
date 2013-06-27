@@ -19,8 +19,8 @@ build/default/production/_ext/732462331/MyIpHelpers.o:  \
  ../../Microchip/Include/GenericTypeDefs.h  \
  ../../Microchip/Include/Compiler.h  \
 ../HardwareProfile.h  \
-../defines.h  \
- ../../MyIpNetwork/TCPIPConfig.h  \
+ ../../libUDB/oscillator.h  \
+../../MyIpNetwork/TCPIPConfig.h  \
  ../../Microchip/Include/TCPIP_Stack/StackTsk.h  \
  ../../Microchip/Include/TCPIP_Stack/Helpers.h  \
  ../../Microchip/Include/TCPIP_Stack/Delay.h  \

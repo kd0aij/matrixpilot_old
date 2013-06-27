@@ -47,6 +47,7 @@
 #define delay_us(x) __delay32((((((long long)x)*FCY)/1000000L)) // delays x us
 #define delay_ms(x) __delay32(((((long long)x)*FCY)/1000L))     // delays x ms
 
+#define __delay_us(x) delay_us(x)
 void __delay32(unsigned long cycles);
 
 

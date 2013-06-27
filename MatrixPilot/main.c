@@ -35,7 +35,7 @@
 
 #if (NETWORK_INTERFACE != NETWORK_INTERFACE_NONE)
     #define THIS_IS_STACK_APPLICATION
-    #include "TCPIP_Stack/TCPIP.h"
+    //#include "TCPIP_Stack/TCPIP.h"
     #include "MyIpNetwork.h"
 #endif
 

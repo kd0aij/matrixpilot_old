@@ -17,9 +17,9 @@ build/default/production/_ext/507866066/ARP.o:  \
  ../../Microchip/Include/GenericTypeDefs.h  \
  ../../Microchip/Include/Compiler.h  \
 ../HardwareProfile.h  \
-../defines.h  \
- ../../MyIpNetwork/TCPIPConfig.h  \
-../../MyIpNetwork/MyIpData.h  \
+ ../../libUDB/oscillator.h  \
+../../MyIpNetwork/TCPIPConfig.h  \
+ ../../MyIpNetwork/MyIpData.h  \
  ../../Microchip/Include/TCPIP_Stack/StackTsk.h  \
  ../../Microchip/Include/TCPIP_Stack/Helpers.h  \
  ../../Microchip/Include/TCPIP_Stack/Delay.h  \

@@ -24,12 +24,16 @@
 #include "spiUtils.h"
 #include "interrupt.h"
 #include "oscillator.h"
+#include "libpic30.h"
 
-#if (BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
+#if (BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD || BOARD_TYPE == AUAV4_BOARD)
 
-#include <libpic30.h>
 #include <stdbool.h>
+#if (BOARD_TYPE != AUAV4_BOARD)
 #include <spi.h>
+#else
+#include <plib.h>
+#endif
 
 void initSPI1_master16(uint16_t priPre, uint16_t secPre)
 {
