@@ -88,6 +88,11 @@ void set_goal( struct relative3D_32 fromPoint , struct relative3D_32 toPoint )
 	struct relative2D courseLeg ;
 
 	int courseDirection[2] ;
+
+	union longww from_to_xy[2] ;
+
+	from_to_xy[0].WW = toPoint.x - fromPoint.x ;
+	from_to_xy[1].WW = toPoint.y - fromPoint.y ;
 	
 	goal.x = toPoint.x ;
 	goal.y = toPoint.y ;

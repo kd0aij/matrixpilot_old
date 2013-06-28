@@ -410,5 +410,33 @@ int32_t long_scale ( int32_t arg1 , int16_t arg2 )
 
 }
 
+int16_t find_binary_point_int16 ( int16_t input )
+{
+	// returns the position of the first changed bit
+	// MSB position is 0 (can never happen)
+	// LSB position is 15
+	// returns 16 for all 1s or all 0s
+	return 1 - FindFirstBitChangeFromLeft( input ) ;  // note:FBCL counts from 1 to -15 
+}
 
- 
+int16_t find_binary_point_int32 ( int32_t argument )
+{
+	// returns the position of the first changed bit
+	// MSB position is 0 (can never happen)
+	// LSB position is 31
+	// returns 32 for all 1s or all 0s
+	union longww input ;
+	int16_t binw0 , binw1 ;
+	input.WW = argument ;
+	binw1 = 1 - FindFirstBitChangeFromLeft( input._.W1 ) ; // note:FBCL counts from 1 to -15
+	binw0 = 1 - FindFirstBitChangeFromLeft( input._.W0 ) ; // note:FBCL counts from 1 to -15
+
+	if ( binw1 == 16 ) {
+		return binw0 + 16 ;
+	}
+	else{
+		return binw1 ;
+	}
+
+}
+

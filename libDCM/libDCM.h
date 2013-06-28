@@ -81,6 +81,11 @@ void rotate_2D_vector_by_angle( int16_t vector[2], int8_t ) ;
 void rotate_2D_vector_by_vector( int16_t vector1[2], int16_t vector2[2] ) ;
 void rotate_2D_long_vector_by_vector ( int32_t vector[2] , int16_t rotate[2] ) ;
 
+// first changed bit location functions
+int16_t FindFirstBitChangeFromLeft( int16_t ) ; // applies raw FBCL instruction and returns result
+int16_t find_binary_point_int16 ( int16_t input ) ; // finds first changed bit for a 16 bit signed integer
+int16_t find_binary_point_int32 ( int32_t argument ) ; // finds first changed bit for a 32 bit signed integer
+
 // integer and int32_t integer square roots
 uint16_t sqrt_int ( uint16_t ) ;
 uint16_t sqrt_long ( uint32_t ) ;
