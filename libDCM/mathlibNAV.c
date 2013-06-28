@@ -410,32 +410,53 @@ int32_t long_scale ( int32_t arg1 , int16_t arg2 )
 
 }
 
-int16_t find_binary_point_int16 ( int16_t input )
+int16_t find_first_bit_int16 ( int16_t argument )
 {
-	// returns the position of the first changed bit
-	// MSB position is 0 (can never happen)
+	// finds first bit position in the absolute value of a 16 bit signed integer
+	// returns the position of the first significant bit
+	// MSB position is 0
 	// LSB position is 15
-	// returns 16 for all 1s or all 0s
-	return 1 - FindFirstBitChangeFromLeft( input ) ;  // note:FBCL counts from 1 to -15 
-}
-
-int16_t find_binary_point_int32 ( int32_t argument )
-{
-	// returns the position of the first changed bit
-	// MSB position is 0 (can never happen)
-	// LSB position is 31
-	// returns 32 for all 1s or all 0s
-	union longww input ;
-	int16_t binw0 , binw1 ;
-	input.WW = argument ;
-	binw1 = 1 - FindFirstBitChangeFromLeft( input._.W1 ) ; // note:FBCL counts from 1 to -15
-	binw0 = 1 - FindFirstBitChangeFromLeft( input._.W0 ) ; // note:FBCL counts from 1 to -15
-
-	if ( binw1 == 16 ) {
-		return binw0 + 16 ;
+	// returns 16 for input=0 and 0 for input= 0x8000H
+	int16_t input ;
+	if ( argument == 0 ){
+		return 16 ;
+	}
+	if ( argument < 0 ) {
+		input = - argument ;
 	}
 	else{
-		return binw1 ;
+		input = argument ;
+	}
+	return FindFirstBitFromLeft( input ) - 1 ; 	
+}
+
+int16_t find_first_bit_int32 ( int32_t argument )
+{
+	// finds first bit position in the absolute value of a 32 bit signed integer
+	// returns the position of the first significan bit
+	// MSB position is 0
+	// LSB position is 31
+	// returns 32 for input=0 and 0 for input= 0x80000000H
+	union longww input ;
+	int16_t binw0 , binw1 ;
+	if ( argument == 0 ) {
+		return 32 ;
+	}
+	if ( argument < 0 ){
+		input.WW = - argument ;
+	}
+	else{
+		input.WW = argument ;
+	}
+
+	binw1 = FindFirstBitFromLeft( input._.W1 ) ; 
+	binw0 = FindFirstBitFromLeft( input._.W0 ) ; 
+
+	if ( binw1 == 0 ) {
+		return binw0 + 15 ;
+	}
+	else{
+		return binw1 - 1 ;
 	}
 
 }
