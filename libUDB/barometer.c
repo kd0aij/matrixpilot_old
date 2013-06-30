@@ -23,13 +23,13 @@
 #include "I2C.h"
 #include "barometer.h"
 
-#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == AUAV3_BOARD)
+//#if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == AUAV3_BOARD)
 
 #if (BAROMETER_ALTITUDE == 1)
 
 #define BMP085_ADDRESS 0xEE  // I2C address of BMP085
 
-#if( BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == AUAV3_BOARD)
+#if( BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
 	#define USE_BMP085_ON_I2C1  0
 	#define USE_BMP085_ON_I2C2  1
 #elif (BOARD_TYPE == MADRE_BOARD)	
@@ -287,4 +287,4 @@ void ReadBarPres_callback(boolean I2CtrxOK)
 
 #endif // BAROMETER_ALTITUDE
 
-#endif // BOARD_TYPE
+//#endif // BOARD_TYPE

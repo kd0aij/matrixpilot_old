@@ -28,6 +28,7 @@
 #endif
 #include <stdint.h>
 #include <stdio.h>
+#include "defines.h"
 #include "interrupt.h"
 
 #define TRAP_SRC_MATHERR	1
@@ -106,6 +107,6 @@ void __attribute__((interrupt, no_auto_psv)) _DMACError(void)
 
 	DMARQC = 0;						// Clear the DMA Request Collision Flag Bit
 	DMAPWC = 0;						// Clear the Peripheral Write Collision Flag Bit
-#endif // BOARD_TYPE	
+#endif // BOARD_TYPE
 	reset(TRAP_SRC_DMACERR, getErrLoc());
 }
