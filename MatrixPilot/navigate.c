@@ -41,6 +41,7 @@ struct relative2D togoal = { 0 , 0 } ;
 int16_t tofinish_line  = 0 ;
 int16_t progress_to_goal = 0 ;
 int8_t desired_dir = 0;
+int8_t extended_range = 0 ;
 
 extern union longww IMUintegralAccelerationx ;
 extern union longww IMUintegralAccelerationy ;
@@ -89,14 +90,47 @@ void set_goal( struct relative3D_32 fromPoint , struct relative3D_32 toPoint )
 
 	int courseDirection[2] ;
 
-	union longww from_to_xy[2] ;
+	union longww from_to_x ;
+	union longww from_to_y ;
+	int16_t from_to_z ;
+	int16_t first_one_bit_location_min ;
+	int16_t first_one_bit_location_x ;
+	int16_t first_one_bit_location_y ;
 
-	from_to_xy[0].WW = toPoint.x - fromPoint.x ;
-	from_to_xy[1].WW = toPoint.y - fromPoint.y ;
+	from_to_x.WW = toPoint.x - fromPoint.x ;
+	from_to_y.WW = toPoint.y - fromPoint.y ;
+	from_to_z = toPoint.z - fromPoint.z ;
+
+	first_one_bit_location_x = find_first_bit_int32 ( from_to_x.WW ) ;
+	first_one_bit_location_y = find_first_bit_int32 ( from_to_y.WW ) ;
+
+	if ( first_one_bit_location_x < first_one_bit_location_y ) {
+		first_one_bit_location_min = first_one_bit_location_x ;
+	}
+	else {
+		first_one_bit_location_min = first_one_bit_location_y ;
+	}
+
+	if ( first_one_bit_location_min < 18 ) {
+		from_to_x.WW =  ( from_to_x.WW ) >> ( 18 - first_one_bit_location_min ) ;
+		from_to_y.WW =  ( from_to_y.WW ) >> ( 18 - first_one_bit_location_min ) ;
+		from_to_z =  ( from_to_z ) >> ( 18 - first_one_bit_location_min ) ;
+		
+		toPoint.x = fromPoint.x + from_to_x.WW ;
+		toPoint.y = fromPoint.y + from_to_y.WW ;
+		toPoint.z = fromPoint.z + from_to_z ;
+
+		extended_range = 1;
+
+	}
+	else {
+		extended_range = 0 ;
+	}
 	
 	goal.x = toPoint.x ;
 	goal.y = toPoint.y ;
 	goal.height = toPoint.z ;
+
 	goal.fromHeight = fromPoint.z ;
 	
 	courseLeg.x = toPoint.x - fromPoint.x ;

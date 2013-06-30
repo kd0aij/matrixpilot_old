@@ -40,6 +40,10 @@ int16_t waypointIndex = 0 ;
 struct waypointDef *currentWaypointSet = (struct waypointDef*)waypoints ;
 int16_t numPointsInCurrentSet = NUMBER_POINTS ;
 
+extern int8_t extended_range ;
+
+struct relWaypointDef current_waypoint ;
+
 struct waypointDef wp_inject ;
 uint8_t wp_inject_pos = 0 ;
 #define WP_INJECT_READY 255
@@ -93,7 +97,7 @@ void init_flightplan ( int16_t flightplanNum )
     }
 	
 	waypointIndex = 0 ;
-	struct relWaypointDef current_waypoint = wp_to_relative(currentWaypointSet[0]) ;
+	current_waypoint = wp_to_relative(currentWaypointSet[0]) ;
 	set_goal( GPSlocation , current_waypoint.loc ) ;
 	set_camera_view(current_waypoint.viewpoint) ;
 	setBehavior(current_waypoint.flags) ;
@@ -127,43 +131,51 @@ struct absolute3D get_fixed_origin( void )
 }
 
 
+
 void next_waypoint ( void ) 
 {
-	waypointIndex++ ;
+
+	if ( extended_range == 0 ) {
+		waypointIndex++ ;
 	
-	if ( waypointIndex >= numPointsInCurrentSet ) waypointIndex = 0 ;
+		if ( waypointIndex >= numPointsInCurrentSet ) waypointIndex = 0 ;
 	
-	if ( waypointIndex == 0 )
-	{
-		if (numPointsInCurrentSet > 1)
+		if ( waypointIndex == 0 )
 		{
-			struct relWaypointDef previous_waypoint = wp_to_relative( currentWaypointSet[numPointsInCurrentSet-1] ) ;
-			struct relWaypointDef current_waypoint  = wp_to_relative( currentWaypointSet[0] ) ;
-			set_goal( previous_waypoint.loc, current_waypoint.loc ) ;
-			set_camera_view( current_waypoint.viewpoint ) ;
+			if (numPointsInCurrentSet > 1)
+			{
+				struct relWaypointDef previous_waypoint = wp_to_relative( currentWaypointSet[numPointsInCurrentSet-1] ) ;
+				current_waypoint  = wp_to_relative( currentWaypointSet[0] ) ;
+				set_goal( previous_waypoint.loc, current_waypoint.loc ) ;
+				set_camera_view( current_waypoint.viewpoint ) ;
+			}
+			else
+			{
+				current_waypoint = wp_to_relative( currentWaypointSet[0] ) ;
+				set_goal( GPSlocation, current_waypoint.loc ) ;
+				set_camera_view( current_waypoint.viewpoint ) ;
+			}
+			setBehavior( currentWaypointSet[0].flags ) ;
 		}
 		else
 		{
-			struct relWaypointDef current_waypoint = wp_to_relative( currentWaypointSet[0] ) ;
-			set_goal( GPSlocation, current_waypoint.loc ) ;
+			struct relWaypointDef previous_waypoint = wp_to_relative( currentWaypointSet[waypointIndex-1] ) ;
+			current_waypoint = wp_to_relative( currentWaypointSet[waypointIndex] ) ;
+			set_goal( previous_waypoint.loc, current_waypoint.loc ) ;
 			set_camera_view( current_waypoint.viewpoint ) ;
+			setBehavior( current_waypoint.flags ) ;
 		}
-		setBehavior( currentWaypointSet[0].flags ) ;
-	}
-	else
-	{
-		struct relWaypointDef previous_waypoint = wp_to_relative( currentWaypointSet[waypointIndex-1] ) ;
-		struct relWaypointDef current_waypoint = wp_to_relative( currentWaypointSet[waypointIndex] ) ;
-		set_goal( previous_waypoint.loc, current_waypoint.loc ) ;
-		set_camera_view( current_waypoint.viewpoint ) ;
-		setBehavior( current_waypoint.flags ) ;
-	}
 	
 #if	( DEADRECKONING == 0 )
-	compute_bearing_to_goal() ;
+		compute_bearing_to_goal() ;
 #endif
-	
-	return ;
+	}
+	else {
+		set_goal( GPSlocation, current_waypoint.loc ) ;
+#if	( DEADRECKONING == 0 )
+		compute_bearing_to_goal() ;
+#endif
+	}
 }
 
 
@@ -172,7 +184,7 @@ void run_flightplan( void )
 	// first run any injected wp from the serial port
 	if (wp_inject_pos == WP_INJECT_READY)
 	{
-		struct relWaypointDef current_waypoint = wp_to_relative( wp_inject ) ;
+		current_waypoint = wp_to_relative( wp_inject ) ;
 		set_goal( GPSlocation, current_waypoint.loc ) ;
 		set_camera_view( current_waypoint.viewpoint ) ;
 		setBehavior( current_waypoint.flags ) ;
