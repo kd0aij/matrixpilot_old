@@ -4,19 +4,11 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
-        <itemPath>../../libCommon/commands.h</itemPath>
-        <itemPath>../../libCommon/uart.h</itemPath>
-      </logicalFolder>
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
         <itemPath>../../libDCM/libDCM.h</itemPath>
         <itemPath>../../libDCM/libDCM_defines.h</itemPath>
         <itemPath>../../libDCM/libDCM_internal.h</itemPath>
         <itemPath>../../libDCM/estAltitude.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f3" displayName="libFlashFS" projectFiles="true">
-      </logicalFolder>
-      <logicalFolder name="f4" displayName="libMDD" projectFiles="true">
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../libUDB/magnetometerOptions.h</itemPath>
@@ -34,8 +26,6 @@
         <itemPath>../../libUDB/ConfigAUAV3.h</itemPath>
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/barometer.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f5" displayName="libUSB" projectFiles="true">
       </logicalFolder>
       <logicalFolder name="f1" displayName="libVectorMatrix" projectFiles="true">
         <itemPath>../../libVectorMatrix/dspcommon.inc</itemPath>
@@ -198,8 +188,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="f2" displayName="libCommon" projectFiles="true">
-      </logicalFolder>
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
         <itemPath>../../libDCM/estWind.c</itemPath>
         <itemPath>../../libDCM/estYawDrift.c</itemPath>
@@ -212,10 +200,6 @@
         <itemPath>../../libDCM/deadReckoning.c</itemPath>
         <itemPath>../../libDCM/gpsParseMTEK.c</itemPath>
         <itemPath>../../libDCM/estAltitude.c</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f4" displayName="libFlashFS" projectFiles="true">
-      </logicalFolder>
-      <logicalFolder name="f5" displayName="libMDD" projectFiles="true">
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../libUDB/background.c</itemPath>
@@ -238,8 +222,6 @@
         <itemPath>../../libUDB/I2C2.c</itemPath>
         <itemPath>../../libUDB/barometer.c</itemPath>
         <itemPath>../../../../trunk/libUDB/analog2digital_udb5.c</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f6" displayName="libUSB" projectFiles="true">
       </logicalFolder>
       <logicalFolder name="f1" displayName="libVectorMatrix" projectFiles="true">
         <itemPath>../../libVectorMatrix/madd.s</itemPath>

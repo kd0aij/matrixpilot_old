@@ -100,4 +100,7 @@ notes and changes:
 
 30 Jun:
 	copied from -auav3-Addiction and modified for UDB5
-	Bench test ok after a few project changes
+	Bench stabilization test ok after a few functional and project changes
+
+2 Jul:
+	bench stabilization test with LEA6 Ublox GPS at 4Hz: OK
