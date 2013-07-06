@@ -112,6 +112,20 @@ void dcm_servo_callback_prepare_outputs(void)
 }
 
 
+void send_debug_line( void )
+{
+	db_index = 0 ;
+	sprintf( debug_buffer , "r6: %i, r7: %i, wx: %i, wy: %i, wz: %i, ax: %i, ay: %i, az: %i\r\n" , 
+		rmat[6] , rmat[7] , 
+		omegagyro[0] , omegagyro[1] , omegagyro[2] , 
+		XACCEL_VALUE , 		YACCEL_VALUE , 		ZACCEL_VALUE ) ; 
+	
+	udb_serial_start_sending_data() ;
+	
+	return ;
+}
+
+/*
 // Prepare a line of serial output and start it sending
 void send_debug_line( void )
 {
@@ -126,6 +140,7 @@ void send_debug_line( void )
 	
 	return ;
 }
+*/
 
 
 // Return one character at a time, as requested.
