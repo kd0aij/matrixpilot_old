@@ -46,6 +46,7 @@ const int16_t pitch_servo_pwm_min = ((CAM_PITCH_SERVO_MIN - CAM_PITCH_OFFSET_CEN
 const int16_t yaw_servo_pwm_max   = ((CAM_YAW_SERVO_MAX   - CAM_YAW_OFFSET_CENTRED  ) * 65536.0 / 360.0) * YAW_SERVO_RATIO;
 const int16_t yaw_servo_pwm_min   = ((CAM_YAW_SERVO_MIN   - CAM_YAW_OFFSET_CENTRED  ) * 65536.0 / 360.0) * YAW_SERVO_RATIO;
 
+struct absolute3D view_location_absolute = { 0 , 20 , 0 };
 struct relative3D view_location = { 0 , 20 , 0 };
 struct relative3D camera_view   = { 0 ,  0 , 0 };
 
@@ -281,11 +282,28 @@ void camera_live_commit_relative_position(const struct relative3D target)
  * Commits the target's absolute position
  * @param target - the absolute position of the target (latitude, longitude, and cm above sea level)
  */
-/*
-struct relative3D camera_live_commit_absolute_position(const struct absolute3D target)
-{
-    struct relative3D relativeLoc ;
 
+void camera_live_commit_absolute_position(const struct absolute3D target)
+{
+    //struct relative3D relativeLoc ;
+
+ //FIXED IMPLEMETATION BELOW:
+  
+    struct absolute3D absoluteLoc;
+
+     absoluteLoc = dcm_absolute_to_absolute_all(target);
+
+    view_location_absolute.x = absoluteLoc.x ; //taget location in meters east of the origin
+    view_location_absolute.y = absoluteLoc.y ; //taget location in meters north of the origin
+    view_location_absolute.z = absoluteLoc.z ; //taget location in meters above the origin
+    //return the relative view location for reference
+    //return view_location_absolute;
+
+ 
+
+
+//OLD IMPLEMETATION:
+ /*
     //convert target's absolute GPS position to a location relative to the origin
     relativeLoc = dcm_absolute_to_relative_all(target);
 
@@ -294,6 +312,8 @@ struct relative3D camera_live_commit_absolute_position(const struct absolute3D t
     view_location.z = relativeLoc.z ; //taget location in meters above the origin
     //return the relative view location for reference
     return view_location;
+  */
+
 }
-*/
+
 #endif // CAM_USE_EXTERNAL_TARGET_DATA

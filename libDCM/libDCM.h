@@ -61,6 +61,10 @@ struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute);
 
 struct relative3D dcm_absolute_to_relative_all(const struct absolute3D absolute) ;
 
+// Convert an absolute location to absolute value relative to origin.
+//FIX:
+struct absolute3D dcm_absolute_to_absolute_all(const struct absolute3D absolute);
+
 // FIXME: This should be handled internally, along with DCM calibration
 // Count down from 1000 at 40Hz
 void gps_startup_sequence(int16_t gpscount);

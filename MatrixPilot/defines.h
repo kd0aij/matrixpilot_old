@@ -239,6 +239,7 @@ void camera_live_begin(void);
 void camera_live_received_byte(uint8_t inbyte);
 void camera_live_commit(void);
 void camera_live_commit_relative_position(const struct relative3D target);
+void camera_live_commit_absolute_position(const struct absolute3D target);
 
 #define CAM_VIEW_LAUNCH     { 0, 0, 0 }
 
