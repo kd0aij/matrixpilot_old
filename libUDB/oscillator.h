@@ -40,14 +40,15 @@
 #define CLK_PHASES	2
 #define FCY      	(FOSC/CLK_PHASES)	// MCU is running at FCY MIPS
 
+// these are only used in uart.c
 #define GetSystemClock()        (FCY)
-#define GetInstructionClock()   (FCY)    // Normally GetSystemClock()/2 for PIC24/dsPIC
 #define GetPeripheralClock()    (FCY)
 
-#define delay_us(x) __delay32((((((long long)x)*FCY)/1000000L))	// delays x us
-#define delay_ms(x) __delay32(((((long long)x)*FCY)/1000L))		// delays x ms
-
-void __delay32(unsigned long cycles);
+// the following is in libpic30.h and is dependent on FCY being defined
+//#define delay_us(x) __delay32(((((long long)x)*FCY)/1000000L))	// delays x us
+//#define delay_ms(x) __delay32(((((long long)x)*FCY)/1000L))		// delays x ms
+//
+//void __delay32(unsigned long cycles);
 
 
 #endif // OSCILLATOR_H

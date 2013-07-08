@@ -244,13 +244,13 @@ static long bmp085CalcPressure(long up)
 void ReadBarTemp_callback(boolean I2CtrxOK)
 {
 	long temperature;
-	int ut;
+	unsigned int ut;
 
 	if (I2CtrxOK == true)
 	{
 //		byteswaparray((unsigned char*)&barData, 2);
 //		temperature = ((long) (long)barData[0] << 8 | (long)barData[1]);
-  		ut = ((int) (int)barData[0] << 8 | (int)barData[1]);
+		ut = (unsigned int)barData[0] << 8 | (unsigned int)barData[1];
 		temperature = ut;
 #ifdef TEST_WITH_DATASHEET_VALUES
 		temperature = 27898;

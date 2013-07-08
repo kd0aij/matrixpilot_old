@@ -34,6 +34,7 @@
         <itemPath>../../libUDB/ConfigAUAV3.h</itemPath>
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/barometer.h</itemPath>
+        <itemPath>../../libUDB/oscillator.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="libUSB" projectFiles="true">
       </logicalFolder>

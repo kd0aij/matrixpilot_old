@@ -67,6 +67,11 @@ void MPU6000_init16(void) {
 #elif (MIPS == 16)
 	// set prescaler for FCY/24 = 666 KHz at 16MIPS
 	initMPUSPI_master16(SEC_PRESCAL_6_1, PRI_PRESCAL_4_1);
+
+	// always fails to stabilize
+//	initMPUSPI_master16(SEC_PRESCAL_8_1, PRI_PRESCAL_16_1);	// 125KHz
+	// always works
+//	initMPUSPI_master16(SEC_PRESCAL_2_1, PRI_PRESCAL_16_1);	// 500KHz
 #else
 #error Invalid MIPS Configuration
 #endif // MIPS
