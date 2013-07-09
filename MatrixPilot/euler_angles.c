@@ -1,4 +1,4 @@
-// This file is part of MatrixPilot.
+ // This file is part of MatrixPilot.
 //
 //    http://code.google.com/p/gentlenav/
 //
@@ -21,31 +21,26 @@
 // Implements a set of functions that return vehicle euler_angles.
 // Provides centralized logic for commonly needed code.
 
-
 #include "defines.h"
-#include "magnetometerOptions.h"
+
 /**
  * Returns the aircraft heading angle (a.k.a., yaw angle) in degrees relative
  * to geographic north.
  * Values returned range from 0 - 360 degrees, positive clockwise.
  */
-uint16_t get_geo_heading_angle()
-{
-	struct relative2D matrix_accum;
-	matrix_accum.x = rmat[4];
-	matrix_accum.y = rmat[1];
-	int16_t accum = rect_to_polar(&matrix_accum);   // binary angle (0 to 180, -1 to -179 for complete 360 degrees)
-	int16_t angle = (accum * 180 + 64) >> 7;        // Angle measured counter clockwise, 0=Geographic North
-	angle = -angle;                                 // Angle measure clockwise, 0=Geographic North
-	if (angle > 360)
-	{
-		angle = angle - 360;
-	}
-	else if (angle < 0)
-	{
-		angle = angle + 360;
-	}
-	return angle;                                   // Aircraft heading in degrees from geographic north
+uint16_t get_geo_heading_angle() {
+    struct relative2D matrix_accum ;
+    matrix_accum.x = rmat[4] ;
+    matrix_accum.y = rmat[1] ;
+    int16_t accum = rect_to_polar(&matrix_accum) ;	// binary angle (0 to 180, -1 to -179 for complete 360 degrees)
+    int16_t angle = (accum * 180 + 64) >> 7 ;	// Angle measured counter clockwise, 0=Geographic North
+    angle = -angle ;				// Angle measure clockwise, 0=Geographic North
+    if (angle > 360 ) {
+        angle = angle - 360 ;
+    } else if (angle < 0   ) {
+        angle = angle + 360 ;
+    }
+    return angle;	// Aircraft heading in degrees from geographic north
 }
 
 /**
@@ -55,5 +50,10 @@ uint16_t get_geo_heading_angle()
  */
 uint16_t get_mag_heading_angle() {
     uint16_t angle = get_geo_heading_angle() - MAGNETICDECLINATION;
+    if (angle > 360 ) {
+        angle = angle - 360 ;
+    } else if (angle < 0   ) {
+        angle = angle + 360 ;
+    }
     return angle;	// Aircraft heading in degrees from magnetic north
 }
