@@ -22,6 +22,7 @@
 // Provides centralized logic for commonly needed code.
 
 #include "defines.h"
+#include "magnetometerOptions.h"
 
 /**
  * Returns the aircraft heading angle (a.k.a., yaw angle) in degrees relative

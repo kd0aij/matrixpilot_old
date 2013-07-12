@@ -258,7 +258,7 @@ static void acquiringS(void)
 	return;
 #endif
 
-	if (dcm_flags._.nav_capable && ((MAG_YAW_DRIFT == 0) || (magMessage == 7)))
+	if (true)//dcm_flags._.nav_capable && ((MAG_YAW_DRIFT == 0) || (magMessage == 7)))
 	{
 #if (NORADIO == 1)
 		if (1)
