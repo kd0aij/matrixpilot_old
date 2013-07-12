@@ -78,7 +78,11 @@ uint8_t* const msgDataParse[] = {
 
 boolean gps_nav_valid(void)
 {
+    #if (GROUNDSTATION_MODE != BASESTATION_DISABLED)
+    return true;
+    #else
 	return (fix_type_ == 0x03); // Fix type is 3D fix
+    #endif
 }
 
 void gps_startup_sequence(int16_t gpscount)

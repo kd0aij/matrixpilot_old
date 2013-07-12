@@ -19,6 +19,10 @@ void DebugAirspeedPitotTerminalInput(const uint8_t s, const uint8_t rxData);
     void DebugWiFiStatusTerminalOutput(const uint8_t s);
 #endif
 
+#if (GROUNDSTATION_MODE == 1)
+    void DebugGroundstation();
+#endif
+
 #if (NETWORK_USE_FLYBYWIRE == 1)
 void DebugFlyByWireTerminalOutput(const uint8_t s);
 #endif

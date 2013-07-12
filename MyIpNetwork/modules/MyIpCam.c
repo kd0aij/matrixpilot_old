@@ -131,8 +131,6 @@ void parseCamPacket(const uint8_t s, const uint8_t* bufCSV, const int16_t len)
             absolute.z = 5000;//camData[3]; //altitude
 
             //convert the target's absolute GPS position to a location relative to the origin
-            //relative = dcm_absolute_to_relative_all(absolute);
-            //FIX:
             absolutePos = dcm_absolute_to_absolute_all(absolute);
 
             StringToSrc(eSourceCamTracking, ",\r\n\absolute.x (beginning meters east) ="); ltoaSocket(s, absolute.x);
@@ -149,8 +147,6 @@ void parseCamPacket(const uint8_t s, const uint8_t* bufCSV, const int16_t len)
             StringToSrc(eSourceCamTracking, "\r\n");
             StringToSrc(eSourceCamTracking, "\r\n");
             
-            //camera_live_commit_relative_position(relative);
-            //FIX:
             camera_live_commit_absolute_position(absolutePos);
 
             StringToSrc(eSourceCamTracking, ", \r\nabsolute.x (beginning meters east) ="); ltoaSocket(s, absolute.x);

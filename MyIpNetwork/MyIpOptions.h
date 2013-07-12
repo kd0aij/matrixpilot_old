@@ -17,7 +17,8 @@ MyIpDataType MyIpData[] __attribute__ ((far)) =
 //    { {},0,0,0,0,0,0,0,0,       eSourceUART2,eTCP, "76.102.60.245", MYIP_UART2_PORT_1},
 //    { {},0,0,0,0,0,0,0,0,       eSourceUART2,eUDP, "crashandburn.no-ip.org", MYIP_QGROUND_CONTROL_UDP_PORT},
 //    { {},0,0,0,0,0,0,0,0,         eSourceUART2,eUDP, "192.168.1.103", MYIP_PORT_QGROUND_CONTROL_1}, // QGCS client on MacBook
-    //  { {},0,0,0,0,0,0,0,0,       eSourceUART2,eTCP, NULL, MYIP_DROID_PLANNER+1},
+      //{ {},0,0,0,0,0,0,0,0,       eSourceUART2,eTCP, NULL, MYIP_DROID_PLANNER+1},
+      { {},0,0,0,0,0,0,0,0,       eSourceUART2,eTCP, NULL, MYIP_UART2_PORT_1},
     //{ {},0,0,0,0,0,0,0,0,       eSourceUART2,eUDP, "192.168.1.109", MYIP_QGROUND_CONTROL_UDP_PORT},
     #endif
     #if (NETWORK_USE_FLYBYWIRE == 1) && (FLYBYWIRE_ENABLED)

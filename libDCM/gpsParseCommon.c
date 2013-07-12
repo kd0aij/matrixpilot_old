@@ -120,7 +120,7 @@ void udb_background_callback_triggered(void)
 	dirovergndHRmat[0] = rmat[1];
 	dirovergndHRmat[1] = rmat[4];
 	dirovergndHRmat[2] = 0;
-
+        
 	if (gps_nav_valid())
 	{
 		commit_gps_data();

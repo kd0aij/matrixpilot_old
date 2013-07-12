@@ -285,10 +285,6 @@ void camera_live_commit_relative_position(const struct relative3D target)
 
 void camera_live_commit_absolute_position(const struct absolute3D target)
 {
-    //struct relative3D relativeLoc ;
-
- //FIXED IMPLEMETATION BELOW:
-  
     struct absolute3D absoluteLoc;
 
      absoluteLoc = dcm_absolute_to_absolute_all(target);
@@ -296,24 +292,6 @@ void camera_live_commit_absolute_position(const struct absolute3D target)
     view_location_absolute.x = absoluteLoc.x ; //taget location in meters east of the origin
     view_location_absolute.y = absoluteLoc.y ; //taget location in meters north of the origin
     view_location_absolute.z = absoluteLoc.z ; //taget location in meters above the origin
-    //return the relative view location for reference
-    //return view_location_absolute;
-
- 
-
-
-//OLD IMPLEMETATION:
- /*
-    //convert target's absolute GPS position to a location relative to the origin
-    relativeLoc = dcm_absolute_to_relative_all(target);
-
-    view_location.x = relativeLoc.x ; //taget location in meters east of the origin
-    view_location.y = relativeLoc.y ; //taget location in meters north of the origin
-    view_location.z = relativeLoc.z ; //taget location in meters above the origin
-    //return the relative view location for reference
-    return view_location;
-  */
-
 }
 
 #endif // CAM_USE_EXTERNAL_TARGET_DATA

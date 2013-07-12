@@ -219,4 +219,7 @@ extern int16_t vref_adj;
 #define NETWORK_INTERFACE_ETHERNET_ENC624J600   2
 #define NETWORK_INTERFACE_ETHERNET_ENC28J60     3
 
+#define GROUNDSTATION_DISABLED                  0
+#define GROUNDSTATION_ENABLED                   1
+
 #endif // UDB_DEFINES_H

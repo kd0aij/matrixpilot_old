@@ -209,68 +209,53 @@ struct relative3D dcm_absolute_to_relative_all(const struct absolute3D absolute)
          
 }
 
-//Same calculations as dcm_absolute_to_relative_all() but returns an absolute3D struct.
+/**
+ * Converts absolute GPS position greater than 20 miles away to a relative position
+ * (x,y,z) in metersfrom the origin. Includes the relative altitude in the return.
+ * Reduces the distance to under 20 miles while maintaining the same pointing
+ * direction.
+**/
 struct absolute3D dcm_absolute_to_absolute_all(const struct absolute3D absolute)
 {
     	struct absolute3D abs ;
-        uint8_t s;
+        int16_t first_one_bit_location_min ;
+	int16_t first_one_bit_location_x ;
+	int16_t first_one_bit_location_y ;
         
-        StringToSrc(eSourceCamTracking, ",\r\n\long_origin.WW (beginning meters east) ="); ltoaSrc(eSourceCamTracking, long_origin.WW);
+        StringToSrc(eSourceCamTracking, ",\r\nlong_origin.WW (beginning meters east) ="); ltoaSrc(eSourceCamTracking, long_origin.WW);
         StringToSrc(eSourceCamTracking, ", \r\nlat_origin.WW (beginning meters north)="); ltoaSrc(eSourceCamTracking, lat_origin.WW);
         StringToSrc(eSourceCamTracking, ", \r\nalt_origin.WW (beginning meters up)   ="); ltoaSrc(eSourceCamTracking, alt_origin.WW);
 
 
+        //Calculate distance greater than 20 miles.
 	abs.z = (absolute.z - alt_origin.WW)/100 ; //meters above origin
 
 	abs.y = (absolute.y - lat_origin.WW)/90 ; //meters north or origin
 
 	abs.x = long_scale((absolute.x - long_origin.WW)/90 , cos_lat ) ; //meters east of origin
 
-        StringToSrc(eSourceCamTracking, ",\r\n\long_origin.WW (beginning meters east) ="); ltoaSrc(eSourceCamTracking, long_origin.WW);
+        StringToSrc(eSourceCamTracking, ",\r\nlong_origin.WW (beginning meters east) ="); ltoaSrc(eSourceCamTracking, long_origin.WW);
         StringToSrc(eSourceCamTracking, ", \r\nlat_origin.WW (beginning meters north)="); ltoaSrc(eSourceCamTracking, lat_origin.WW);
         StringToSrc(eSourceCamTracking, ", \r\nalt_origin.WW (beginning meters up)   ="); ltoaSrc(eSourceCamTracking, alt_origin.WW);
 
+        //Reduce distance to less than 20 miles while maintaining pointing direction.
+	first_one_bit_location_x = find_first_bit_int32 ( abs.x ) ;
+	first_one_bit_location_y = find_first_bit_int32 ( abs.y ) ;
 
+	if ( first_one_bit_location_x < first_one_bit_location_y ) {
+		first_one_bit_location_min = first_one_bit_location_x ;
+	}
+	else {
+		first_one_bit_location_min = first_one_bit_location_y ;
+	}
+
+	if ( first_one_bit_location_min < 18 ) {
+		abs.x =  ( abs.x ) >> ( 18 - first_one_bit_location_min ) ;
+		abs.y =  ( abs.y ) >> ( 18 - first_one_bit_location_min ) ;
+		abs.z =  ( abs.z ) >> ( 18 - first_one_bit_location_min ) ; 
+	}
+        
 	return abs ;
-}
-
-
-//Function I have added:
-struct relative3D dcm_absolute_to_unitvec(const struct absolute3D absolute)
-{
-    struct relative3D rel;
-    struct absolute3D hold32;
-    const int16_t SIGNMAX16 = 32768;
-    float magnitude;
-    float unitx, unity, unitz;
-
-    hold32.z = (absolute.z - alt_origin.WW)/100 ; //meters above origin
-
-    hold32.y = (absolute.y - lat_origin.WW)/90 ; //meters north or origin
-
-    hold32.x = long_scale((absolute.x - long_origin.WW)/90 , cos_lat ) ; //meters east of origin
-
-    magnitude = sqrt((hold32.z * hold32.z) + (hold32.y * hold32.y) + (hold32.x * hold32.x));
-
-
-
-
-    if ( (hold32.z > SIGNMAX16) || (hold32.y > SIGNMAX16) || (hold32.x > SIGNMAX16) )
-        {
-            rel.z = (hold32.z >> 16); //Divide by max32 / max16 (65536)
-            rel.y = (hold32.y >> 16);
-            rel.x = (hold32.x >> 16);
-
-            return rel;
-        }
-    else
-        {
-            rel.z = hold32.z;
-            rel.y = hold32.y;
-            rel.x = hold32.x;
-
-            return rel;
-        }
 }
 
 #if (HILSIM == 1)

@@ -130,7 +130,7 @@
 // altitude is determined by the position of the throttle stick on the transmitter.
 // NOTE: even when set to AH_NONE, MatrixPilot will still try to stabilize pitch as long
 // as PITCH_STABILIZATION is set to 1 above, but will not aim for any specific altitude.
-#define ALTITUDEHOLD_STABILIZED             AH_FULL
+#define ALTITUDEHOLD_STABILIZED             AH_NONE
 #define ALTITUDEHOLD_WAYPOINT               AH_FULL
 
 // Speed Control
@@ -154,7 +154,7 @@
 
 // Camera Stabilization
 // Set this value to 1, for camera to be stabilized using camera options further below.
-#define USE_CAMERA_STABILIZATION            1
+#define USE_CAMERA_STABILIZATION            0
 
 // Define MAG_YAW_DRIFT to be 1 to use magnetometer for yaw drift correction.
 // Otherwise, if set to 0 the GPS will be used.
@@ -174,7 +174,7 @@
 // receiver. (Totally autonomous.)  This is just meant for simulation and debugging.  It is not
 // recommended that you actually use this option, since you'd have no manual control to fall
 // back on if things go wrong.  It may not even be legal in your area.
-#define NORADIO                             0
+#define NORADIO                             1
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -219,7 +219,7 @@
 #define ELEVATOR_INPUT_CHANNEL              CHANNEL_4
 #define RUDDER_INPUT_CHANNEL                CHANNEL_3
 
-#define PASSTHROUGH_A_INPUT_CHANNEL         CHANNEL_1 //gear switch
+#define PASSTHROUGH_A_INPUT_CHANNEL         CHANNEL_2 //gear switch
 #define MODE_SWITCH_INPUT_CHANNEL			CHANNEL_1
 #define CAMERA_PITCH_INPUT_CHANNEL          CHANNEL_UNUSED
 #define CAMERA_YAW_INPUT_CHANNEL            CHANNEL_UNUSED
@@ -274,7 +274,7 @@
 #define RUDDER_CHANNEL_REVERSED             1
 #define AILERON_SECONDARY_CHANNEL_REVERSED  0
 #define THROTTLE_CHANNEL_REVERSED           0
-#define CAMERA_PITCH_CHANNEL_REVERSED       1
+#define CAMERA_PITCH_CHANNEL_REVERSED       0
 #define CAMERA_YAW_CHANNEL_REVERSED         0
 
 // Set this to 1 if you need to switch the left and right elevon or vtail surfaces
@@ -402,7 +402,7 @@
 #define ANALOG_CURRENT_INPUT_CHANNEL        CHANNEL_UNUSED
 #define ANALOG_VOLTAGE_INPUT_CHANNEL        CHANNEL_UNUSED
 #define ANALOG_RSSI_INPUT_CHANNEL           CHANNEL_UNUSED
-#define ANALOG_AIRSPEED_INPUT_CHANNEL       CHANNEL_1
+#define ANALOG_AIRSPEED_INPUT_CHANNEL       CHANNEL_2
 
 // RSSI - RC Receiver signal strength
 #define RSSI_MIN_SIGNAL_VOLTAGE             0.5     // Voltage when RSSI should show 0%
@@ -572,14 +572,14 @@
 #define CAM_PITCH_SERVO_THROW               90      // Camera lens rotation at maximum PWM change (2000 to 4000), in degrees.          
 #define CAM_PITCH_SERVO_MAX                 90      // Max pitch up that plane can tilt and keep camera level, in degrees.  
 #define CAM_PITCH_SERVO_MIN                -90      // Max pitch down that plane can tilt and keep camera level, in degrees. 
-#define CAM_PITCH_OFFSET_CENTRED            0      // Offset in degrees of servo that results in a level camera.           
+#define CAM_PITCH_OFFSET_CENTRED            -45      // Offset in degrees of servo that results in a level camera.
                                                     // Example: 30 would mean that a centered pitch servo points the camera
                                                     // 30 degrees down from horizontal when looking to the front of the plane.
 
 #define CAM_YAW_SERVO_THROW                 90     // Camera yaw movement for maximum yaw PWM change (2000 to 4000) in Degrees. 
-#define CAM_YAW_SERVO_MAX                   930     // Max positive yaw of camera relative to front of plane in Degrees.              
+#define CAM_YAW_SERVO_MAX                   90     // Max positive yaw of camera relative to front of plane in Degrees.              
 #define CAM_YAW_SERVO_MIN                  -90     // Min reverse  yaw of camera relative to front of plane in Degrees.   
-#define CAM_YAW_OFFSET_CENTRED              0      // Yaw offset in degrees that results in camera pointing forward. 
+#define CAM_YAW_OFFSET_CENTRED             -20      // Yaw offset in degrees that results in camera pointing forward.
 
 
 // Camera test mode will move the yaw from + 90 degrees to + 90 degrees every 5 seconds. (180 degree turn around)
@@ -818,16 +818,21 @@
 #define NETWORK_USE_UART2               (1) // Forward UART2 data
 #define NETWORK_USE_FLYBYWIRE           (0) // Joystick -> flight surfaces (over the internet!)
 #define NETWORK_USE_MAVLINK             (0) // Forward MAVLink data
-#define NETWORK_USE_DEBUG               (0) // Debug - Simple Telnet in ASCII
+#define NETWORK_USE_DEBUG               (1) // Debug - Simple Telnet in ASCII
 #define NETWORK_USE_ADSB                (0)
 #define NETWORK_USE_LOGO                (0)
-#define NETWORK_USE_CAM_TRACKING        (0) // Camera Tracking, also set CAM_USE_EXTERNAL_TARGET_DATA=1
-#define NETWORK_USE_GPSTEST             (0) // GPS spoof testing
+#define NETWORK_USE_CAM_TRACKING        (1) // Camera Tracking, also set CAM_USE_EXTERNAL_TARGET_DATA=1
+#define NETWORK_USE_GPSTEST             (1) // GPS spoof testing
 #define NETWORK_USE_PWMREPORT           (0) // PWM pin states
 #define NETWORK_USE_XPLANE              (0) // Talk directly to Xplane without a plug. Weeee!!!!!
-#define NETWORK_USE_TELEMETRY_EXTRA     (0) // Same data as what SERIAL_UDB_EXTRA generates in telemetry.c
+#define NETWORK_USE_TELEMETRY_EXTRA     (1) // Same data as what SERIAL_UDB_EXTRA generates in telemetry.c
 #define NETWORK_USE_GROUND_STATION      (0) // Reduced binary telemetry data for ground stations - proprietary
 #define NETWORK_USE_AIRCRAFT_CONFIG     (1) // read/write the config of the system such as options.h and set select values like PIDs
+
+// Possible groundstation modes:
+// GROUNDSTATION_DISABLED                  
+// GROUNDSTATION_ENABLED
+#define GROUNDSTATION_MODE              (GROUNDSTATION_ENABLED) //
 
 
 
