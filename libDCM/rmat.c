@@ -205,9 +205,11 @@ void read_accel(void)
 #endif
 
 #ifdef CATAPULT_LAUNCH_ENABLE
-    if (gplane[1] < -(GRAVITY/2)) {
-        dcm_flags._.launch_detected = 1;
-    }
+	// Danger Will Robinson! forward acceleration is negative!
+	if (gplane[1] < -(GRAVITY / 2))
+	{
+		dcm_flags._.launch_detected = 1;
+	}
 #endif
 	
 	accelEarth[0] =  VectorDotProduct( 3 , &rmat[0] , gplane )<<1;

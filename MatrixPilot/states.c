@@ -113,6 +113,7 @@ void udb_background_callback_periodic(void)
         // For now, nav_capable will always be 0 when the Airframe type is AIRFRAME_HELI.
 #if (AIRFRAME_TYPE != AIRFRAME_HELI)
 #ifdef CATAPULT_LAUNCH_ENABLE
+				// this disables detection of GPS loss between detection of launch and entering
         if (stateS != &cat_delayS)
 #endif
         {

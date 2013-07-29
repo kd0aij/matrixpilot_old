@@ -1568,7 +1568,7 @@ void mavlink_output_40hz(void)
 		{
             mavlink_base_mode = MAV_MODE_TEST_ARMED; // Unknown state
             mavlink_custom_mode = MAV_CUSTOM_UDB_MODE_MANUAL;
-        }
+    }
 
 //         ovverride mavlink mode
 //        mavlink_base_mode = MAV_MODE_PREFLIGHT;
