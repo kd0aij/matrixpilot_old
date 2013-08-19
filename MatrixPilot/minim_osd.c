@@ -32,6 +32,7 @@
 extern int waypointIndex ;
 
 static int telemetry_counter = 0 ;
+static int home_saved = false;
 
 void init_serial()
 {
@@ -185,11 +186,7 @@ static void update_climb_rate()
 {
 // $Z,rate,CRLF
 // called every 1 sec so difference in height is climg rate
-static int alt = 0;
-
-	serial_output("$Z,%i,\r\n", IMUlocationz._.W1 - alt);
-
-	alt = IMUlocationz._.W1;
+	serial_output("$Z,%i,\r\n", IMUvelocityz._.W1);
 }
 
 static void update_battery()
@@ -229,27 +226,44 @@ static void update_channels()
 	serial_output("%i,\r\n", rssi);
 }
 
+void init_squence()
+{
+	home_saved = true;
+	serial_output("$R,\r\n");
+}
+
 void serial_output_8hz( void )
 {
 	serial_show_AH();
 
-	if (telemetry_counter & 1)
+	if (home_saved)
 	{
-		update_coords();
+		if (telemetry_counter & 1)
+		{
+			update_coords();
+		}
+	
+		if (telemetry_counter % 4 == 1)
+		{
+			update_mp_mode();
+			update_wp();
+			update_channels();
+		}
+	
+		if (telemetry_counter % 8 == 0)
+		{
+			update_battery();
+			update_climb_rate();
+		}
+	}
+	else
+	{
+		if (gps_nav_valid())
+		{
+			init_sequence();
+		}
 	}
 
-	if (telemetry_counter % 4 == 1)
-	{
-		update_mp_mode();
-		update_wp();
-		update_channels();
-	}
-
-	if (telemetry_counter % 8 == 0)
-	{
-		update_battery();
-		update_climb_rate();
-	}
 
 	++telemetry_counter;
 
