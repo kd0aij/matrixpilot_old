@@ -226,7 +226,7 @@ static void update_channels()
 	serial_output("%i,\r\n", rssi);
 }
 
-void init_squence()
+void init_sequence()
 {
 	home_saved = true;
 	serial_output("$R,\r\n");
