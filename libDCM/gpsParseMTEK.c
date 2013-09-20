@@ -269,5 +269,10 @@ void commit_gps_data(void)
 	return ;
 }
 
+void update_svs(void)
+{
+	svs			= svs_ ;
+}
+
 
 #endif

@@ -237,6 +237,11 @@ void udb_background_callback_triggered(void)
 		dirovergndHGPS[2] = 0 ;
 		dcm_flags._.yaw_req = 1 ;  // request yaw drift correction 	
 		dcm_flags._.gps_history_valid = 0 ; // gps history has to be restarted
+
+#if ( GPS_TYPE == GPS_MTEK )
+		update_svs();
+#endif
+
 	}
 	
 	return ;
