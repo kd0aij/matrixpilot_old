@@ -1,0 +1,11 @@
+build/
+dist/
+private/
+*.orig
+*.mk
+*.properties
+*LOCAL*
+*BACKUP*
+*BASE*
+*REMOTE*
+
