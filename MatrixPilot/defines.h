@@ -22,6 +22,7 @@
 #define _DEFINES_H_
 
 #include "../libDCM/libDCM.h"
+#include "gain_variables.h"
 
 
 #define BYTECIR_TO_DEGREE 92160 // (360.0/256 * 2^16)
@@ -33,14 +34,8 @@ void init_states(void);
 
 extern int16_t waggle;
 
-// these all moved to states.c as they are purely local defines
-//#define CALIB_PAUSE 21        // wait for 10.5 seconds of runs through the state machine
-//#define STANDBY_PAUSE 48      // pause for 24 seconds of runs through the state machine
-//#define NUM_WAGGLES 4         // waggle 4 times during the end of the standby pause (this number must be less than STANDBY_PAUSE)
-//#define WAGGLE_SIZE 300
-
 struct flag_bits {
-	uint16_t unused                     : 4;
+	uint16_t unused                     : 6;
 	uint16_t save_origin                : 1;
 	uint16_t GPS_steering               : 1;
 	uint16_t pitch_feedback             : 1;
@@ -51,8 +46,6 @@ struct flag_bits {
 	uint16_t home_req                   : 1;
 	uint16_t rtl_hold                   : 1;
 	uint16_t f13_print_req              : 1;
-	uint16_t disable_throttle           : 1;
-	uint16_t update_autopilot_state_asap: 1;
 };
 
 union fbts_int { struct flag_bits _; int16_t WW; };
@@ -75,8 +68,6 @@ void setTargetAltitude(int16_t targetAlt);
 void init_yawCntrl(void);
 void init_rollCntrl(void);
 void init_pitchCntrl(void);
-void init_altitudeCntrl(void);
-void init_altitudeCntrlVariable(void);
 
 
 // wind gain adjustment
@@ -120,37 +111,36 @@ int32_t cam_pitchServoLimit(int32_t pwm_pulse);
 int32_t cam_yawServoLimit(int32_t pwm_pulse);
 
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // navigation.c
-//void init_navigation(void);
-//#ifdef USE_EXTENDED_NAV
-//void set_goal(struct relative3D_32 fromPoint, struct relative3D_32 toPoint);
-//#else
-//void set_goal(struct relative3D fromPoint , struct relative3D toPoint);
-//#endif // USE_EXTENDED_NAV
-//void update_goal_alt(int16_t z);
-//void compute_bearing_to_goal (void);
-//void process_flightplan(void);
-//int16_t determine_navigation_deflection(char navType);
+void set_goal(struct relative3D fromPoint , struct relative3D toPoint);
+void update_goal_alt(int16_t z);
+void compute_bearing_to_goal (void);
+void process_flightplan(void);
+int16_t determine_navigation_deflection(char navType);
 
-//struct waypointparameters { int16_t x; int16_t y; int16_t cosphi; int16_t sinphi; int8_t phi; int16_t height; int16_t fromHeight; int16_t legDist; };
-//extern struct waypointparameters goal;
-//extern struct relative2D togoal;
-//extern int16_t tofinish_line;
-//extern int16_t progress_to_goal; // Fraction of the way to the goal in the range 0-4096 (2^12)
-//extern int8_t desired_dir;
+struct waypointparameters { int16_t x; int16_t y; int16_t cosphi; int16_t sinphi; int8_t phi; int16_t height; int16_t fromHeight; int16_t legDist; };
+extern struct waypointparameters goal;
+
+extern struct relative2D togoal;
+extern int16_t tofinish_line;
+extern int16_t progress_to_goal; // Fraction of the way to the goal in the range 0-4096 (2^12)
+extern int8_t desired_dir;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Flight Planning modules - flightplan-waypoints.c and flightplan-logo.c
-//void init_flightplan(int16_t flightplanNum);
-//boolean use_fixed_origin(void);
-//struct absolute3D get_fixed_origin(void);
-//void run_flightplan(void);
+void init_flightplan(int16_t flightplanNum);
+boolean use_fixed_origin(void);
+struct absolute3D get_fixed_origin(void);
+int32_t get_fixed_altitude(void);
+void run_flightplan(void);
 
-//void flightplan_live_begin(void);
-//void flightplan_live_received_byte(uint8_t inbyte);
-//void flightplan_live_commit(void);
+void flightplan_live_begin(void);
+void flightplan_live_received_byte(uint8_t inbyte);
+void flightplan_live_commit(void);
 
 // Failsafe Type
 #define FAILSAFE_RTL                1
@@ -244,24 +234,15 @@ void camera_live_received_byte(uint8_t inbyte);
 void camera_live_commit(void);
 void camera_live_commit_values(const struct relative3D target);
 
-//#define CAM_VIEW_LAUNCH     { 0, 0, 0 }
+#define CAM_VIEW_LAUNCH     { 0, 0, 0 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // mp_osd.c
 void osd_run_step(void);
 
-//#define OSD_NTSC            0
-//#define OSD_PAL             1
-
-// new OSD types
-//#define OSD_NONE            0   // OSD disabled
-//#define OSD_NATIVE          1   // native OSD
-//#define OSD_REMZIBI         2   // Output data formatted to use as input to a Remzibi OSD
-//#define OSD_MINIM           3   // Output data formatted for minim OSD
-
-
-#include "gain_variables.h"
+#define OSD_NTSC            0
+#define OSD_PAL             1
 
 // GNU compiler specific macros for specifically marking variables as unused
 // If not using GNU, then macro makes no alteration to the code

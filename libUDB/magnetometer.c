@@ -23,6 +23,7 @@
 #include "I2C.h"
 #include "magnetometer.h"
 #include "magnetometerOptions.h"
+#include "rmat.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -39,7 +40,7 @@ static magnetometer_callback_funcptr magnetometer_callback = NULL;
 //#if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
 
 #define HMC5883_COMMAND 0x3C
-
+//FIXME: why is this done here???
 #define USE_HMC5883L_ON_I2C1  0
 #define USE_HMC5883L_ON_I2C2  1
 
@@ -206,6 +207,7 @@ void HILSIM_MagData(magnetometer_callback_funcptr callback)
 	magnetometer_callback = callback;
 	magMessage = 7;     // indicate valid magnetometer data
 	I2C_callback(true); // run the magnetometer computations
+	udb_magnetometer_callback();
 }
 
 //#else
