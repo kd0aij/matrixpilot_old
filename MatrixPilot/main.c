@@ -20,8 +20,6 @@
 
 
 #include "defines.h"
-#include "../libDCM/gpsParseCommon.h"
-#include "config.h"
 
 #ifdef USE_MAVLINK_DBGIO
 #include "mavlink_types.h"
@@ -61,10 +59,9 @@ int main(void)
 #if (USE_USB == 1)
 	preflight();    // perhaps this would be better called usb_init()
 #endif
-	gps_init();     // this sets function pointers so i'm calling it early for now
 	udb_init();
 	dcm_init();
-	init_config();  // this will need to be moved up in order to support runtime hardware options
+//	init_config();  // this will need to be moved up in order to support runtime hardware options
 	init_servoPrepare();
 	init_states();
 	init_behavior();
@@ -75,11 +72,11 @@ int main(void)
 	mavlink_serial_send(0, dbg_buff, len);
 #endif
 
-	if (setjmp())
-	{
-		// a processor exception occurred and we're resuming execution here 
-		DPRINT("longjmp'd\r\n");
-	}
+//	if (setjmp())
+//	{
+//		// a processor exception occurred and we're resuming execution here
+//		DPRINT("longjmp'd\r\n");
+//	}
 
 	while (1)
 	{

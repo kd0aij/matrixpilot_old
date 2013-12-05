@@ -19,23 +19,21 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef FLIGHTPLAN_WAYPOINTS_H
-#define FLIGHTPLAN_WAYPOINTS_H
+#ifndef SPIUTILS_H
+#define SPIUTILS_H
 
 
-extern uint16_t number_of_waypoints;
-extern int16_t waypointIndex;
-extern int8_t extended_range;  // TODO: move this to navigate.h
+// initialize SPI in master mode, 16 bit
+void initSPI1_master16(uint16_t, uint16_t);
+void initSPI2_master16(uint16_t, uint16_t);
+
+// 16 bit SPI blocking write
+void writeSPI1reg16(uint16_t addr, uint16_t data);
+void writeSPI2reg16(uint16_t addr, uint16_t data);
+
+// n-word, non-blocking SPI read, followed by call_back
+void readSPI1_burst16n(uint16_t data[], int16_t n, uint16_t addr, void (*call_back)(void));
+void readSPI2_burst16n(uint16_t data[], int16_t n, uint16_t addr, void (*call_back)(void));
 
 
-void init_flightplan(int16_t flightplanNum);
-//vect3D_32 getWaypoint3D(uint16_t wp);
-boolean use_fixed_origin(void);
-struct absolute3D get_fixed_origin(void);
-void run_flightplan(void);
-void flightplan_live_begin(void);
-void flightplan_live_received_byte(uint8_t inbyte);
-void flightplan_live_commit(void);
-
-
-#endif // FLIGHTPLAN_WAYPOINTS_H
+#endif // SPIUTILS_H
