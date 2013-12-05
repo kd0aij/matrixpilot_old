@@ -21,17 +21,18 @@
 
 #include "libDCM_internal.h"
 #include "gpsParseCommon.h"
+#include "heartbeat.h"
 
+#if (GPS_TYPE == GPS_NMEA)
 
-#if (GPS_TYPE == GPS_NMEA || GPS_TYPE == GPS_ALL)
-
-#define DEBUG_NMEA
+//FIXME: code won't copile with DEBUG_NMEA undefined
+//#define DEBUG_NMEA
 
 #ifdef DEBUG_NMEA
 static uint16_t RMCpos = 0;
 static uint16_t GGApos = 0;
-int8_t debug_RMC[80];
-int8_t debug_GGA[80];
+char debug_RMC[80];
+char debug_GGA[80];
 #include <string.h>
 void debug_rmc(uint8_t ch)
 {
@@ -56,7 +57,7 @@ void debug_gga(uint8_t ch)
 }
 #else
 #define debug_rmc(a)
-#define debug_rmc_send(int8_t ch)
+#define debug_rmc_send(a)
 #define debug_gga(a)
 #endif
 
@@ -90,6 +91,8 @@ static void gps_checksum(uint8_t gpschar);
 
 void (*msg_parse)(uint8_t gpschar) = &msg_start;
 
+//FIXME: the uncommented messages below assume MTEK gps module
+
 //const char disable_GGA[]        = "$PSRF103,00,00,00,01*24\r\n";
 //const char disable_GLL[]        = "$PSRF103,01,00,00,01*25\r\n";
 //const char disable_GSA[]        = "$PSRF103,02,00,00,01*26\r\n";
@@ -104,14 +107,14 @@ void (*msg_parse)(uint8_t gpschar) = &msg_start;
 //const char set_BAUD_38400[]     = "$PMTK251,38400*27\r\n";
 //const char set_BAUD_57600[]     = "$PMTK251,57600*2C\r\n";
 //const char set_BAUD_115200[]    = "$PMTK251,115200*1F\r\n";
-static const char set_FIX_1Hz[] = "$PMTK220,1000*1F\r\n";
+//static const char set_FIX_1Hz[] = "$PMTK220,1000*1F\r\n";
 //const char set_FIX_2Hz[]        = "$PMTK220,500*2B\r\n";
 //const char set_FIX_3Hz[]        = "$PMTK220,333*2D\r\n";
 //const char set_FIX_4Hz[]        = "$PMTK220,250*29\r\n";
 //const char set_FIX_5Hz[]        = "$PMTK220,200*2C\r\n";
 //const char set_RMC[]            = "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n";
 //const char set_GGA_RMC[]        = "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n";
-static const char set_DEFAULT[] = "$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n";
+//static const char set_DEFAULT[] = "$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n";
 
 static uint16_t rmc_counter, gga_counter;
 static uint8_t id1, id2, XOR;
@@ -119,20 +122,31 @@ static uint8_t id1, id2, XOR;
 static int16_t digit;
 static int32_t degrees, minutes;
 
-//static union longbbbb lat_gps_, lon_gps_, alt_sl_gps_;
-static union intbb sog_gps_;
-static union uintbb cog_gps_;
-static uint8_t svs_;
-static uint8_t data_valid_, NS_, EW_;
-//static uint8_t hdop_;
-//static uint8_t day_of_week;
-static union longbbbb last_alt;
+union longbbbb lat_gps_, long_gps_, alt_sl_gps_;
+union intbb sog_gps_, cog_gps_;
+uint8_t svs_;
+uint8_t data_valid_, NS_, EW_;
+union intbb hdop_;
+//uint8_t day_of_week;
+union longbbbb last_alt;
 
 //union longbbbb tow_;
 //union longbbbb date_gps_, time_gps_;
 union intbb nav_valid_, nav_type_;
 //union longbbbb climb_gps_;
 union longbbbb week_no_;
+
+
+union longbbbb date_gps_, time_gps_;
+
+int32_t get_gps_date(void)
+{
+	return date_gps_.WW;
+}
+int32_t get_gps_time(void)
+{
+	return time_gps_.WW;
+}
 
 
 // if data_valid is 'A', there is valid GPS data that can be used for navigation.
@@ -143,27 +157,25 @@ boolean gps_nav_valid(void)
 
 void gps_startup_sequence(int16_t gpscount)
 {
-	if (gpscount == 60)
+	if (gpscount == 1.5 * HEARTBEAT_HZ)
 	{
-		#ifdef DEFAULT_GPS_BAUD
+#ifdef DEFAULT_GPS_BAUD
 		udb_gps_set_rate(DEFAULT_GPS_BAUD);
-		#else
-		udb_gps_set_rate(38400);
-		#warning "Default GPS BAUD not specified, now set at 38400"
-		#endif
+#else
+		udb_gps_set_rate(9600);
+#warning "Default GPS BAUD not specified, now set at 9600"
+#endif
 	}
-	else if (gpscount == 50)
+	else if (gpscount == 1.25 * HEARTBEAT_HZ)
 	{
-		gpsoutline(set_FIX_1Hz);
+		//FIXME: this can't work unless we know the proprietary GPS type
+		//		gpsoutline(set_FIX_1Hz);
 	}
-	else if (gpscount == 20)
+	else if (gpscount == 0.5 * HEARTBEAT_HZ)
 	{
-		gpsoutline(set_DEFAULT);
+		//FIXME: this can't work unless we know the proprietary GPS type
+		//		gpsoutline(set_DEFAULT);
 	}
-//	else if (gpscount == 850)
-//		gpsoutline(set_BAUD_9600);
-//	else if (gpscount == 800)
-//		udb_gps_set_rate(9600);
 }
 
 static void msg_start(uint8_t gpschar)
@@ -243,8 +255,8 @@ static void gps_id3(uint8_t gpschar)
 	{
 		gga_counter = 1;                    // Next gga message after the comma
 		msg_parse = &gps_comma;             // A comma ',' is expected now	
-		GGApos = 6;
 #ifdef DEBUG_NMEA
+		GGApos = 6;
 //	msg_parse = &msg_start;
 		strcpy(debug_GGA, "$GPGGA");
 #endif
@@ -457,7 +469,7 @@ static void gps_rmc5(uint8_t gpschar)       // Longitude
 			case 10:
 				minutes = 10 * minutes + (gpschar - '0');
 				rmc_counter = 6;
-				lon_gps_.WW = (((long)10000000)*degrees+(50*minutes)/3); // Sure that minutes should be multiplied by 10?
+				long_gps_.WW = (((long)10000000)*degrees+(50*minutes)/3); // Sure that minutes should be multiplied by 10?
 				msg_parse = &gps_comma;
 				break;
 			default:
@@ -481,7 +493,7 @@ static void gps_rmc6(uint8_t gpschar)       // E or W int8_t
 	else
 	{
 		EW_ = gpschar;
-		if (EW_ == 'W') lon_gps_.WW = - lon_gps_.WW;
+		if (EW_ == 'W') long_gps_.WW = - long_gps_.WW;
 		rmc_counter = 7;
 		msg_parse = &gps_comma;
 	}
@@ -495,7 +507,7 @@ static void gps_rmc7(uint8_t gpschar)       // Speed over ground
 	XOR ^= gpschar;
 	if (gpschar == ',')
 	{
-		sog_gps_.BB = sog_gps_.BB >> 1;     // knots*100/2? almost cm/s. 1 knot ˜ 50cm/s
+		sog_gps_.BB = sog_gps_.BB >> 1;     // knots*100/2? almost cm/s. 1 knot ï¿½ 50cm/s
 		rmc_counter = 8;
 		cog_gps_.BB = 0;
 		msg_parse = &gps_rmc8;
@@ -622,7 +634,7 @@ static void gps_checksum(uint8_t gpschar)   // checksum calculation
 #ifdef DEBUG_NMEA
 				debug_rmc_send(gpschar);
 #endif
-				gps_parse_common();         // parsing is complete, schedule navigation
+				udb_background_trigger();   // parsing is complete, schedule navigation
 			}
 		}
 		else
@@ -644,7 +656,7 @@ LED_RED = LED_OFF;
 #endif
 }
 
-void gps_commit_data(void)
+void commit_gps_data(void)
 {
 	if (week_no.BB == 0)
 	{
@@ -653,10 +665,10 @@ void gps_commit_data(void)
 	tow.WW = calculate_time_of_week(time_gps_.WW);
 
 	lat_gps      = lat_gps_;
-	lon_gps      = lon_gps_;
+	long_gps      = long_gps_;
 	alt_sl_gps   = alt_sl_gps_;             // Altitude
 	sog_gps      = sog_gps_;                // Speed over ground
-	cog_gps      = cog_gps_;                // Course over ground
+	cog_gps.BB      = cog_gps_.BB;                // Course over ground
 
 	climb_gps.BB = (alt_sl_gps_.WW - last_alt.WW) * GPS_RATE;
 	hdop         = hdop_._.B0;

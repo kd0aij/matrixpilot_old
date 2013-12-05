@@ -29,7 +29,7 @@ extern int8_t extended_range;  // TODO: move this to navigate.h
 
 
 void init_flightplan(int16_t flightplanNum);
-vect3D_32 getWaypoint3D(uint16_t wp);
+//vect3D_32 getWaypoint3D(uint16_t wp);
 boolean use_fixed_origin(void);
 struct absolute3D get_fixed_origin(void);
 void run_flightplan(void);

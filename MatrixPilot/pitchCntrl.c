@@ -20,7 +20,6 @@
 
 
 #include "defines.h"
-#include "navigate.h"
 #include "airspeedCntrl.h"
 
 //  If the state machine selects pitch feedback, compute it from the pitch gyro and accelerometer.
@@ -34,22 +33,37 @@
 #if (USE_CONFIGFILE == 1)
 #include "config.h"
 #include "redef.h"
-#endif // USE_CONFIGFILE
 
-uint16_t pitchgain;
-uint16_t pitchkd;
-uint16_t hoverpitchgain;
-uint16_t hoverpitchkd;
-uint16_t rudderElevMixGain;
-uint16_t rollElevMixGain;
+	uint16_t pitchgain;
+	uint16_t pitchkd;
+	uint16_t hoverpitchgain;
+	uint16_t hoverpitchkd;
+	uint16_t rudderElevMixGain;
+	uint16_t rollElevMixGain;
+#elif ((SERIAL_OUTPUT_FORMAT == SERIAL_MAVLINK) || (GAINS_VARIABLE == 1))
+	uint16_t pitchgain = (uint16_t)(PITCHGAIN*RMAX);
+	uint16_t pitchkd = (uint16_t) (PITCHKD*SCALEGYRO*RMAX);
+	uint16_t hoverpitchgain = (uint16_t)(HOVER_PITCHGAIN*RMAX);
+	uint16_t hoverpitchkd = (uint16_t) (HOVER_PITCHKD*SCALEGYRO*RMAX);
+	uint16_t rudderElevMixGain = (uint16_t)(RMAX*RUDDER_ELEV_MIX);
+	uint16_t rollElevMixGain = (uint16_t)(RMAX*ROLL_ELEV_MIX);
+#else
+	const uint16_t pitchgain = (uint16_t)(PITCHGAIN*RMAX);
+	const uint16_t pitchkd = (uint16_t) (PITCHKD*SCALEGYRO*RMAX);
+	const uint16_t hoverpitchgain = (uint16_t)(HOVER_PITCHGAIN*RMAX);
+	const uint16_t hoverpitchkd = (uint16_t) (HOVER_PITCHKD*SCALEGYRO*RMAX);
+	const uint16_t rudderElevMixGain = (uint16_t)(RMAX*RUDDER_ELEV_MIX);
+	const uint16_t rollElevMixGain = (uint16_t)(RMAX*ROLL_ELEV_MIX);
+#endif
 
 int16_t pitchrate;
 int16_t navElevMix;
 int16_t elevInput;
 
-static void normalPitchCntrl(void);
-static void hoverPitchCntrl(void);
+void normalPitchCntrl(void);
+void hoverPitchCntrl(void);
 
+#if (USE_CONFIGFILE == 1)
 void init_pitchCntrl(void)
 {
 	pitchgain = (uint16_t)(PITCHGAIN*RMAX);
@@ -59,6 +73,7 @@ void init_pitchCntrl(void)
 	rudderElevMixGain = (uint16_t)(RMAX*RUDDER_ELEV_MIX);
 	rollElevMixGain = (uint16_t)(RMAX*ROLL_ELEV_MIX);
 }
+#endif
 
 void pitchCntrl(void)
 {
@@ -72,7 +87,7 @@ void pitchCntrl(void)
 	}
 }
 
-static void normalPitchCntrl(void)
+void normalPitchCntrl(void)
 {
 	union longww pitchAccum;
 	int16_t rtlkick;
@@ -106,21 +121,21 @@ static void normalPitchCntrl(void)
 	if (flags._.pitch_feedback)
 	{
 		if (RUDDER_OUTPUT_CHANNEL != CHANNEL_UNUSED && RUDDER_INPUT_CHANNEL != CHANNEL_UNUSED) {
-			pitchAccum.WW = __builtin_mulsu(rmat6, rudderElevMixGain) << 1;
-			pitchAccum.WW = __builtin_mulss(pitchAccum._.W1,
+			pitchAccum.WW = __builtin_mulsu(rmat6 , rudderElevMixGain) << 1;
+			pitchAccum.WW = __builtin_mulss(pitchAccum._.W1 ,
 			    REVERSE_IF_NEEDED(RUDDER_CHANNEL_REVERSED, udb_pwTrim[RUDDER_INPUT_CHANNEL] - udb_pwOut[RUDDER_OUTPUT_CHANNEL])) << 3;
 			navElevMix += pitchAccum._.W1;
 		}
 
-		pitchAccum.WW = __builtin_mulsu(rmat6, rollElevMixGain) << 1;
-		pitchAccum.WW = __builtin_mulss(pitchAccum._.W1, rmat[6]) >> 3;
+		pitchAccum.WW = __builtin_mulsu(rmat6 , rollElevMixGain) << 1;
+		pitchAccum.WW = __builtin_mulss(pitchAccum._.W1 , rmat[6]) >> 3;
 		navElevMix += pitchAccum._.W1;
 	}
 
-	pitchAccum.WW = (__builtin_mulss(rmat8, omegagyro[0])
-	               - __builtin_mulss(rmat6, omegagyro[2])) << 1;
+	pitchAccum.WW = (__builtin_mulss(rmat8 , omegagyro[0])
+	               - __builtin_mulss(rmat6 , omegagyro[2])) << 1;
 	pitchrate = pitchAccum._.W1;
-	
+
 	if (!udb_flags._.radio_on && flags._.GPS_steering)
 	{
 		rtlkick = RTLKICK;
@@ -137,11 +152,11 @@ static void normalPitchCntrl(void)
 	if (PITCH_STABILIZATION && flags._.pitch_feedback)
 	{
 #if(GLIDE_AIRSPEED_CONTROL == 1)
-		pitchAccum.WW = __builtin_mulsu(rmat7 - rtlkick + aspd_pitch_adj + pitchAltitudeAdjust, pitchgain) 
-		              + __builtin_mulus(pitchkd, pitchrate);
+		pitchAccum.WW = __builtin_mulsu(rmat7 - rtlkick + aspd_pitch_adj + pitchAltitudeAdjust, pitchgain)
+		              + __builtin_mulus(pitchkd , pitchrate);
 #else
-		pitchAccum.WW = __builtin_mulsu(rmat7 - rtlkick + pitchAltitudeAdjust, pitchgain) 
-		              + __builtin_mulus(pitchkd, pitchrate);
+		pitchAccum.WW = __builtin_mulsu(rmat7 - rtlkick + pitchAltitudeAdjust, pitchgain)
+		              + __builtin_mulus(pitchkd , pitchrate);
 #endif
 	}
 	else
@@ -152,16 +167,16 @@ static void normalPitchCntrl(void)
 	pitch_control = (int32_t)pitchAccum._.W1 + navElevMix;
 }
 
-static void hoverPitchCntrl(void)
+void hoverPitchCntrl(void)
 {
 	union longww pitchAccum;
 
 	if (flags._.pitch_feedback)
 	{
-		pitchAccum.WW = (__builtin_mulss(-rmat[7], omegagyro[0])
-		               - __builtin_mulss(rmat[6], omegagyro[1])) << 1;
+		pitchAccum.WW = (__builtin_mulss(-rmat[7] , omegagyro[0])
+		               - __builtin_mulss(rmat[6] , omegagyro[1])) << 1;
 		pitchrate = pitchAccum._.W1;
-		
+
 		int16_t elevInput = (udb_flags._.radio_on == 1) ?
 		    REVERSE_IF_NEEDED(ELEVATOR_CHANNEL_REVERSED, udb_pwIn[ELEVATOR_INPUT_CHANNEL] - udb_pwTrim[ELEVATOR_INPUT_CHANNEL]) : 0;
 		int16_t manualPitchOffset = elevInput * (int16_t)(RMAX/600);
@@ -178,8 +193,8 @@ static void hoverPitchCntrl(void)
 			pitchToWP = 0;
 		}
 
-		pitchAccum.WW = __builtin_mulsu(rmat[8] + HOVERPOFFSET - pitchToWP + manualPitchOffset, hoverpitchgain)
-		              + __builtin_mulus(hoverpitchkd, pitchrate);
+		pitchAccum.WW = __builtin_mulsu(rmat[8] + HOVERPOFFSET - pitchToWP + manualPitchOffset , hoverpitchgain)
+		              + __builtin_mulus(hoverpitchkd , pitchrate);
 	}
 	else
 	{

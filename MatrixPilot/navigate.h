@@ -22,16 +22,16 @@
 #define NAVIGATE_H
 
 
-struct waypointparameters {
-	int16_t x;
-	int16_t y;
-	int16_t cosphi;
-	int16_t sinphi;
-	int8_t  phi;
-	int16_t height;
-	int16_t fromHeight;
-	int16_t legDist;
-};
+//struct waypointparameters {
+//	int16_t x;
+//	int16_t y;
+//	int16_t cosphi;
+//	int16_t sinphi;
+//	int8_t  phi;
+//	int16_t height;
+//	int16_t fromHeight;
+//	int16_t legDist;
+//};
 
 extern struct waypointparameters goal;
 extern struct relative2D togoal;

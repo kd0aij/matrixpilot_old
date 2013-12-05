@@ -19,17 +19,18 @@
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#define INT_PRI_T1      6   // background.c : high priority HEARTBEAT of libUDB
+#define INT_PRI_T1      6   // background.c : high priority HEARTBEAT_HZ heartbeat of libUDB
 //#define INT_PRI_T2      ?   // radioIn.c : does not use the timer interrupt
 //#define INT_PRI_T3      ?   // unused
 #define INT_PRI_T4      7   // servoOut.c : highest priority interrupt for pwm
 #define INT_PRI_T5      6   // background.c : high priority, but ISR is very short - used to measure CPU usage.
-#define INT_PRI_T6      3   // background.c : trigger HEARTBEAT processing at a lower priority - NOTE: timer 6 is not actually being used
-#define INT_PRI_T7      2   // background.c : trigger navigation processing after new data is received from the GPS
+#define INT_PRI_T6      3   // background.c : trigger from the high priority heartbeat ISR to start all the HEARTBEAT_HZ processing at a lower priority - NOTE: timer 6 is not actually being used
+#define INT_PRI_T7      2   // background.c : used to trigger background tasks such as navigation processing after binary data is received from the GPS
 
-#define INT_PRI_MPUSPI  6   // mpu6000.c : SPI1 (UDB4 or AUAV3) or SPI2 (UDB4 or UDB5)
-#define INT_PRI_INT1    6   // mpu6000.c : mpu on SPI1 uses external interrupt 1
-#define INT_PRI_INT3    6   // mpu6000.c : mpu on SPI3 uses external interrupt 3
+#define INT_PRI_SPI1    6   // mpu6000.c : SPI1 (UDB4 or AUAV3) else,
+#define INT_PRI_SPI2    6   // mpu6000.c : SPI2 (UDB4 or UDB5)
+#define INT_PRI_INT1    6   // mpu6000.c : SPI1 uses external interrupt 1
+#define INT_PRI_INT3    6   // mpu6000.c : SPI3 uses external interrupt 3
 
 #define INT_PRI_IC      6   // radioIn.c : input capture interrupt
 
@@ -53,6 +54,8 @@
 
 
 extern int16_t defaultCorcon;
+extern uint16_t cpu_timer;
+extern uint16_t _cpu_timer;
 
 void sleep(void);
 void idle(void);
@@ -61,7 +64,7 @@ uint16_t SP_limit(void);
 uint16_t SP_current(void);
 
 #if (USE_MCU_IDLE == 1)
-#define indicate_loading_inter {}
+#define indicate_loading_inter { LED_ORANGE = LED_ON; }
 #define indicate_loading_main  {}
 #else
 #define indicate_loading_inter \

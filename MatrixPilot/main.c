@@ -20,8 +20,12 @@
 
 
 #include "defines.h"
-#include "../libDCM/gpsParseCommon.h"
-#include "config.h"
+
+#ifdef USE_MAVLINK_DBGIO
+#include "mavlink_types.h"
+int16_t mavlink_serial_send(mavlink_channel_t chan, uint8_t buf[], uint16_t len);
+uint8_t dbg_buff[50];
+#endif
 
 #if (USE_TELELOG == 1)
 #include "telemetry_log.h"
@@ -55,20 +59,24 @@ int main(void)
 #if (USE_USB == 1)
 	preflight();    // perhaps this would be better called usb_init()
 #endif
-	gps_init();     // this sets function pointers so i'm calling it early for now
 	udb_init();
 	dcm_init();
-	init_config();  // this will need to be moved up in order to support runtime hardware options
+//	init_config();  // this will need to be moved up in order to support runtime hardware options
 	init_servoPrepare();
 	init_states();
 	init_behavior();
 	init_serial();
 
-	if (setjmp())
-	{
-		// a processor exception occurred and we're resuming execution here 
-		DPRINT("longjmp'd\r\n");
-	}
+#ifdef USE_MAVLINK_DBGIO
+	int len = snprintf((char*) dbg_buff, 50, "\r\n\r\n\r\nMatrixPilot v4.1, " __TIME__ " " __DATE__ "\r\n");
+	mavlink_serial_send(0, dbg_buff, len);
+#endif
+
+//	if (setjmp())
+//	{
+//		// a processor exception occurred and we're resuming execution here
+//		DPRINT("longjmp'd\r\n");
+//	}
 
 	while (1)
 	{

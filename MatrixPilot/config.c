@@ -248,12 +248,12 @@ void init_config(void)
 
 	init_yawCntrl();
 	init_rollCntrl();
-	init_pitchCntrl();
+//	init_pitchCntrl();
 
-	init_navigation();
+//	init_navigation();
 	init_airspeedCntrl();
-	init_altitudeCntrl();
-	init_altitudeCntrlVariable();
+//	init_altitudeCntrl();
+//	init_altitudeCntrlVariable();
 }
 
 /*

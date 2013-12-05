@@ -22,103 +22,31 @@
 #include "libDCM_internal.h"
 #include "gpsParseCommon.h"
 #include "estAltitude.h"
-#include "mathlibNAV.h"
-#include "rmat.h"
-#include "../libUDB/interrupt.h"
+#include "heartbeat.h"
 #include <string.h>
 
 
-// GPS modules global variables
-#ifdef USE_EXTENDED_NAV
-struct relative3D_32 GPSlocation = { 0, 0, 0 };
-#else
 struct relative3D GPSlocation = { 0, 0, 0 };
-#endif // USE_EXTENDED_NAV
 struct relative3D GPSvelocity = { 0, 0, 0 };
 
-union longbbbb lat_origin, lon_origin, alt_origin;
-union longbbbb lat_gps, lon_gps, alt_sl_gps;        // latitude, longitude, altitude
-union intbb week_no;
-union intbb sog_gps;                                // speed over ground
-union uintbb cog_gps;                               // course over ground
-union intbb climb_gps;                              // climb
+union longbbbb lat_gps, long_gps, alt_sl_gps, tow;  // latitude, longitude, altitude
+union intbb sog_gps, climb_gps, week_no;   // speed over ground, climb
+union uintbb cog_gps;   // course over ground, units: degrees * 100, range [0-35999]
 union intbb as_sim;
-union longbbbb tow;
+uint8_t hdop;                                       // horizontal dilution of precision
+union longbbbb lat_origin, long_origin, alt_origin;
 //union longbbbb xpg, ypg, zpg;                     // gps x, y, z position
 //union intbb    xvg, yvg, zvg;                     // gps x, y, z velocity
 //uint8_t mode1, mode2;                             // gps mode1, mode2
-uint8_t hdop;                                       // horizontal dilution of precision
 uint8_t svs;                                        // number of satellites
+uint8_t lat_cir;
 int16_t cos_lat = 0;
 int16_t gps_data_age;
-const uint8_t* gps_out_buffer = 0;
+uint8_t *gps_out_buffer = 0;
 int16_t gps_out_buffer_length = 0;
 int16_t gps_out_index = 0;
 
-// GPS parser modules variables
-union longbbbb lat_gps_, lon_gps_;
-union longbbbb alt_sl_gps_;
-union longbbbb tow_;
-//union intbb sog_gps_, cog_gps_, climb_gps_;
-//union intbb nav_valid_, nav_type_, week_no_;
-union intbb hdop_;
-
-int8_t actual_dir;
-uint16_t ground_velocity_magnitudeXY = 0;
-int16_t forward_acceleration = 0;
-uint16_t air_speed_magnitudeXY = 0;
-uint16_t air_speed_3DGPS = 0;
-int8_t calculated_heading;           // takes into account wind velocity
-
-static int8_t cog_previous = 64;
-static int16_t sog_previous = 0;
-static int16_t climb_rate_previous = 0;
-static int16_t location_previous[] = { 0, 0, 0 };
-static uint16_t velocity_previous = 0;
-
-extern void (*msg_parse)(uint8_t gpschar);
-
-union longbbbb date_gps_, time_gps_;
-
-int32_t get_gps_date(void)
-{
-	return date_gps_.WW;
-}
-int32_t get_gps_time(void)
-{
-	return time_gps_.WW;
-}
-
-void init_gps_std(void);
-void init_gps_ubx(void);
-void init_gps_mtek(void);
-void init_gps_nmea(void);
-void init_gps_none(void);
-
-void gps_init(void)
-{
-#if (GPS_TYPE == GPS_STD)
-	init_gps_std();
-#elif (GPS_TYPE == GPS_UBX_2HZ || GPS_TYPE == GPS_UBX_4HZ)
-	init_gps_ubx();
-#elif (GPS_TYPE == GPS_MTEK)
-	init_gps_mtek();
-#elif (GPS_TYPE == GPS_NMEA)
-	init_gps_nmea();
-#elif (GPS_TYPE == GPS_NONE)
-	init_gps_none();
-#endif
-}
-
-#if (GPS_TYPE == GPS_NONE)
-void init_gps_none(void) { }
-boolean gps_nav_valid(void) { return 0; }
-void gps_startup_sequence(int16_t gpscount) { }
-void gps_commit_data(void) { }
-void gps_parse_none(uint8_t gpschar) { }
-void (*msg_parse)(uint8_t) = &gps_parse_none;
-#endif // GPS_TYPE
-
+extern void (*msg_parse)(uint8_t inchar);
 
 void gpsoutbin(int16_t length, const uint8_t msg[]) // output a binary message to the GPS
 {
@@ -132,7 +60,7 @@ void gpsoutbin(int16_t length, const uint8_t msg[]) // output a binary message t
 
 void gpsoutline(const char *message) // output one NMEA line to the GPS
 {
-	gpsoutbin(strlen(message), (const uint8_t*)message);
+	gpsoutbin(strlen(message), (uint8_t*)message);
 }
 
 int16_t udb_gps_callback_get_byte_to_send(void)
@@ -157,36 +85,30 @@ void udb_gps_callback_received_byte(uint8_t rxchar)
 	(*msg_parse)(rxchar);   // parse the input byte
 }
 
-boolean gps_nav_capable_check_set(void)
-{
-	if (gps_data_age < GPS_DATA_MAX_AGE) gps_data_age++;
-	dcm_flags._.nav_capable = (gps_data_age < GPS_DATA_MAX_AGE);
-//	return (gps_data_age < GPS_DATA_MAX_AGE);
-	return dcm_flags._.nav_capable;
-}
+int8_t actual_dir;
+uint16_t ground_velocity_magnitudeXY = 0;
+int16_t forward_acceleration = 0;
+uint16_t air_speed_magnitudeXY = 0;
+uint16_t air_speed_3DGPS = 0;
+int8_t calculated_heading;
 
-void udb_background_callback_triggered(void);
+static int8_t cog_previous = 64;
+static int16_t sog_previous = 0;
+static int16_t climb_rate_previous = 0;
+static int16_t location_previous[] = { 0, 0, 0 };
+static uint16_t velocity_previous = 0;
 
 // Received a full set of GPS messages
-void gps_parse_common(void)
-{
-	udb_background_trigger(&udb_background_callback_triggered);
-}
-
 void udb_background_callback_triggered(void)
 {
+	union longbbbb accum_nav;
 	union longbbbb accum;
 	union longww accum_velocity;
 	int8_t cog_circular;
 	int8_t cog_delta;
 	int16_t sog_delta;
 	int16_t climb_rate_delta;
-#ifdef USE_EXTENDED_NAV
-	int32_t location[3];
-#else
 	int16_t location[3];
-	union longbbbb accum_nav;
-#endif // USE_EXTENDED_NAV
 	int16_t location_deltaZ;
 	struct relative2D location_deltaXY;
 	struct relative2D velocity_thru_air;
@@ -198,44 +120,30 @@ void udb_background_callback_triggered(void)
 
 	if (gps_nav_valid())
 	{
-		gps_commit_data();
+		commit_gps_data();
 
 		gps_data_age = 0;
 
 		dcm_callback_gps_location_updated();
 
-#ifdef USE_EXTENDED_NAV
-		location[1] = ((lat_gps.WW - lat_origin.WW)/90); // in meters, range is about 20 miles
-		location[0] = long_scale((lon_gps.WW - lon_origin.WW)/90, cos_lat);
-		location[2] = (alt_sl_gps.WW - alt_origin.WW)/100; // height in meters
-#else
 		accum_nav.WW = ((lat_gps.WW - lat_origin.WW)/90); // in meters, range is about 20 miles
 		location[1] = accum_nav._.W0;
-		accum_nav.WW = long_scale((lon_gps.WW - lon_origin.WW)/90, cos_lat);
+
+		accum_nav.WW = long_scale((long_gps.WW - long_origin.WW)/90, cos_lat);
 		location[0] = accum_nav._.W0;
-#ifdef USE_PRESSURE_ALT
-#warning "using pressure altitude instead of GPS altitude"
-		// division by 100 implies alt_origin is in centimeters; not documented elsewhere
-		// longword result = (longword/10 - longword)/100 : range
-		accum_nav.WW = ((get_barometer_altitude()/10) - alt_origin.WW)/100; // height in meters
-#else
+
 		accum_nav.WW = (alt_sl_gps.WW - alt_origin.WW)/100; // height in meters
-#endif // USE_PRESSURE_ALT
 		location[2] = accum_nav._.W0;
-#endif // USE_EXTENDED_NAV
 
 		// convert GPS course of 360 degrees to a binary model with 256
 		accum.WW = __builtin_muluu (COURSEDEG_2_BYTECIR, cog_gps.BB) + 0x00008000;
 		// re-orientate from compass (clockwise) to maths (anti-clockwise) with 0 degrees in East
 		cog_circular = -accum.__.B2 + 64;
 
-		// compensate for GPS reporting latency.
+                // compensate for GPS reporting latency.
 		// The dynamic model of the EM406 and uBlox is not well known.
 		// However, it seems likely much of it is simply reporting latency.
 		// This section of the code compensates for reporting latency.
-		// markw: what is the latency? It doesn't appear numerically or as a comment
-		// in the following code. Since this method is called at the GPS reporting rate
-		// it must be assumed to be one reporting interval?
 
 		if (dcm_flags._.gps_history_valid)
 		{
@@ -263,7 +171,7 @@ void udb_background_callback_triggered(void)
 
 		GPSvelocity.z = climb_gps.BB + climb_rate_delta;
 		climb_rate_previous = climb_gps.BB;
-
+		
 		accum_velocity.WW = (__builtin_mulss(cosine(actual_dir), ground_velocity_magnitudeXY) << 2) + 0x00008000;
 		GPSvelocity.x = accum_velocity._.W1;
 
@@ -316,12 +224,12 @@ void udb_background_callback_triggered(void)
 	}
 	else
 	{
-		gps_data_age = GPS_DATA_MAX_AGE+1;
+		gps_data_age = HEARTBEAT_HZ * (GPS_DATA_MAX_AGE + 1);
 		dirovergndHGPS[0] = dirovergndHRmat[0];
 		dirovergndHGPS[1] = dirovergndHRmat[1];
 		dirovergndHGPS[2] = 0;
-		dcm_flags._.yaw_req = 1;            // request yaw drift correction
-		dcm_flags._.gps_history_valid = 0;  // gps history has to be restarted
+		dcm_flags._.yaw_req = 1;           // request yaw drift correction
+		dcm_flags._.gps_history_valid = 0; // gps history has to be restarted
 	}
 }
 
@@ -331,7 +239,7 @@ static uint8_t day_of_week;
 
 int16_t calculate_week_num(int32_t date)
 {
-//	DPRINT("date %li\r\n", date);
+//	printf("date %li\r\n", date);
 
 	// Convert date from DDMMYY to week_num and day_of_week
 	uint8_t year = date % 100;
@@ -369,7 +277,7 @@ int16_t calculate_week_num(int32_t date)
 
 int32_t calculate_time_of_week(int32_t time)
 {
-//	DPRINT("time %li\r\n", time);
+//	printf("time %li\r\n", time);
 
 	// Convert time from HHMMSSmil to time_of_week in ms
 	int16_t ms = time % 1000;
